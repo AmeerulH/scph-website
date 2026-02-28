@@ -57,8 +57,8 @@ export function ScphNavbar() {
         className={cn(
           "flex w-full max-w-7xl items-center justify-between gap-6 rounded-full border border-white/30 px-4 py-2 transition-all duration-300",
           scrolled
-            ? "bg-white/90 shadow-xl backdrop-blur-md"
-            : "bg-white/75 shadow-lg backdrop-blur-md"
+            ? "bg-white/60 shadow-xl backdrop-blur-xl"
+            : "bg-white/40 shadow-lg backdrop-blur-xl"
         )}
       >
         {/* Logo */}

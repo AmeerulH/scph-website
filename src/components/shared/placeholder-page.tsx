@@ -43,7 +43,7 @@ export function PlaceholderPage({
   const styles = themeStyles[theme];
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 py-24 text-center">
+    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center px-4 text-center">
       <div
         className={cn(
           "mb-6 flex h-20 w-20 items-center justify-center rounded-full border-2",

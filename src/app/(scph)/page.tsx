@@ -1,40 +1,381 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowRight,
+  ExternalLink,
+  Building2,
+  Leaf,
+  GraduationCap,
+  ShieldAlert,
+  Thermometer,
+  Wheat,
+  Megaphone,
+  Landmark,
+  BookOpen,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { ScphHero } from "@/components/scph/hero";
+
+// ─── Stats Band ──────────────────────────────────────────────────────────────
+
+const stats = [
+  { value: "3", label: "Priority Areas" },
+  { value: "10+", label: "Research Projects" },
+  { value: "50+", label: "Partners & Collaborators" },
+  { value: "Est. 2022", label: "Founded" },
+];
+
+function StatsBand() {
+  return (
+    <div className="bg-scph-blue py-12">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          {stats.map((stat, i) => (
+            <div key={stat.label} className="relative text-center">
+              {/* Divider between stats (desktop only) */}
+              {i > 0 && (
+                <span className="absolute -left-4 top-1/2 hidden h-10 w-px -translate-y-1/2 bg-white/15 md:block" />
+              )}
+              <p className="font-heading text-4xl font-bold text-scph-green">
+                {stat.value}
+              </p>
+              <p className="mt-1 text-sm text-white/70">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── About Section ───────────────────────────────────────────────────────────
+
+function AboutSection() {
+  return (
+    <SectionWrapper theme="scph" background="default">
+      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+        {/* Left — text */}
+        <div>
+          <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
+            <span className="h-px w-8 bg-current opacity-60 shrink-0" />
+            <span className="text-xs font-semibold uppercase tracking-[0.15em]">
+              About Us
+            </span>
+          </div>
+          <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
+            A Think-and-Do Tank for Planetary Health
+          </h2>
+          <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
+          <p className="mt-6 text-lg leading-relaxed text-gray-600">
+            Sunway Centre for Planetary Health is committed to research and
+            advocacy that advances planetary health through three priority
+            areas: healthy cities, health-centred decarbonisation, and driving
+            an education revolution.
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-gray-500">
+            Anchored at Sunway University in Kuala Lumpur, we work across
+            disciplines and borders to translate evidence into meaningful action
+            for people and the planet.
+          </p>
+          <Button variant="scph" size="lg" className="mt-8" asChild>
+            <Link href="/about-us">
+              Read More <ArrowRight />
+            </Link>
+          </Button>
+        </div>
+
+        {/* Right — logo in coloured container */}
+        <div className="flex items-center justify-center">
+          <div className="flex h-80 w-80 items-center justify-center rounded-3xl bg-scph-blue/8 p-10 ring-1 ring-scph-blue/10">
+            <Image
+              src="/images/scph/logo-round.png"
+              alt="SCPH Round Logo"
+              width={220}
+              height={220}
+              className="h-auto w-full object-contain drop-shadow-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+// ─── Priority Areas ──────────────────────────────────────────────────────────
+
+const priorities = [
+  {
+    icon: Building2,
+    title: "Healthy Cities",
+    description:
+      "Advancing urban health through research, policy advocacy, and community engagement. We explore how city design, green spaces, and urban planning can drive healthier populations.",
+    colour: "text-scph-blue",
+    iconBg: "bg-scph-blue/10",
+    iconColour: "text-scph-blue",
+  },
+  {
+    icon: Leaf,
+    title: "Health-Centred Decarbonisation",
+    description:
+      "Integrating health considerations into climate action and decarbonisation strategies. Clean energy transitions can deliver significant co-benefits for human health.",
+    colour: "text-scph-dark-green",
+    iconBg: "bg-scph-green/15",
+    iconColour: "text-scph-dark-green",
+  },
+  {
+    icon: GraduationCap,
+    title: "Driving an Education Revolution",
+    description:
+      "Reimagining education systems to equip the next generation with the knowledge, values, and skills needed to protect and restore planetary health.",
+    colour: "text-scph-blue",
+    iconBg: "bg-scph-dark-green/10",
+    iconColour: "text-scph-dark-green",
+  },
+];
+
+function PriorityAreasSection() {
+  return (
+    <SectionWrapper
+      title="Three Pillars of Planetary Health"
+      subtitle="Our Priority Areas"
+      theme="scph"
+      background="muted"
+    >
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        {priorities.map(({ icon: Icon, title, description, colour, iconBg, iconColour }) => (
+          <div
+            key={title}
+            className="group flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+          >
+            {/* Icon */}
+            <div
+              className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${iconBg}`}
+            >
+              <Icon className={`h-7 w-7 ${iconColour}`} />
+            </div>
+
+            {/* Title */}
+            <h3 className={`font-heading text-xl font-bold ${colour}`}>
+              {title}
+            </h3>
+
+            {/* Body */}
+            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
+              {description}
+            </p>
+
+            {/* Link */}
+            <Link
+              href="/projects"
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-scph-blue transition-colors hover:text-scph-dark-green"
+            >
+              Learn More <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        ))}
+      </div>
+    </SectionWrapper>
+  );
+}
+
+// ─── Events Teaser ───────────────────────────────────────────────────────────
+
+function EventsTeaserSection() {
+  return (
+    <SectionWrapper
+      title="Where Science Meets Action"
+      subtitle="Upcoming Events"
+      theme="scph"
+      background="dark"
+    >
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* GTP 2026 — featured large card */}
+        <div className="col-span-1 flex flex-col overflow-hidden rounded-2xl bg-gradient-to-br from-gtp-dark-teal to-gtp-dark-teal-dark p-8 shadow-xl lg:col-span-2">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/gtp/logo.png"
+              alt="GTP 2026"
+              width={80}
+              height={32}
+              className="h-auto w-20 object-contain brightness-0 invert"
+            />
+            <Badge variant="gtpOrange">Upcoming · 2026</Badge>
+          </div>
+          <h3 className="mt-6 font-heading text-3xl font-bold text-white md:text-4xl">
+            Global Tipping Points 2026
+          </h3>
+          <p className="mt-1 text-sm font-medium text-gtp-teal">
+            Kuala Lumpur, Malaysia · 2026
+          </p>
+          <p className="mt-4 max-w-lg text-base leading-relaxed text-white/75">
+            A landmark conference bringing together science, finance, culture
+            and policy to identify where progress can move fastest and how
+            leaders can unlock positive tipping points.
+          </p>
+          <div className="mt-8">
+            <Button variant="gtpCta" size="lg" asChild>
+              <Link href="/events/gtp-2026">
+                Learn More <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* PHAM 2024 — smaller card */}
+        <div className="flex flex-col overflow-hidden rounded-2xl bg-white/10 p-8 ring-1 ring-white/15 backdrop-blur-sm">
+          <Badge className="w-fit border border-white/30 bg-white/20 text-white backdrop-blur-sm">Past Event</Badge>
+          <h3 className="mt-4 font-heading text-2xl font-bold text-white">
+            PHAM 2024
+          </h3>
+          <p className="mt-1 text-sm font-medium text-scph-green">
+            Planetary Health Annual Meeting
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-white/70">
+            The 2024 Planetary Health Summit and 6th Annual Meeting —
+            From Evidence to Action: Confronting Reality.
+          </p>
+          <div className="mt-auto pt-6">
+            <Button
+              variant="scphOutline"
+              size="sm"
+              className="border-white/40 text-white hover:bg-white/10 hover:border-white/70 hover:text-white"
+              asChild
+            >
+              <a
+                href="https://www.pham2024.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit Website <ExternalLink />
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+// ─── Roadmap Teaser ──────────────────────────────────────────────────────────
+
+const roadmapPillars = [
+  { icon: ShieldAlert, label: "Preventing the Next Pandemic" },
+  { icon: Thermometer, label: "Tackling the Climate Emergency" },
+  { icon: Building2, label: "Creating Healthy Cities" },
+  { icon: Wheat, label: "Achieving Sustainable Food Systems" },
+  { icon: Megaphone, label: "Advancing Planetary Health Communications" },
+  { icon: Landmark, label: "Encouraging Effective Planetary Health Governance" },
+  { icon: GraduationCap, label: "Creating A Planetary Health Education Revolution" },
+];
+
+function RoadmapTeaserSection() {
+  return (
+    <SectionWrapper
+      title="How Do We 'Do' Planetary Health?"
+      subtitle="Planetary Health Roadmap"
+      theme="scph"
+      background="muted"
+    >
+      <p className="mb-10 max-w-3xl text-base leading-relaxed text-gray-600">
+        The Planetary Health Roadmap and Action Plan was unveiled as the primary
+        outcome of PHAM 2024. Drawing on more than 100 experts across four
+        working groups, it bridges Planetary Health discourse between academia
+        and action via policy, political, and civil society spaces.
+      </p>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {roadmapPillars.map(({ icon: Icon, label }, i) => (
+          <div
+            key={label}
+            className="flex items-start gap-4 rounded-2xl bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-scph-blue/10">
+              <Icon className="h-5 w-5 text-scph-blue" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-scph-dark-green/70">
+                {String(i + 1).padStart(2, "0")}
+              </p>
+              <p className="mt-0.5 text-sm font-medium leading-snug text-gray-700">
+                {label}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-10 flex flex-wrap gap-4">
+        <Button variant="scph" asChild>
+          <a
+            href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read the Roadmap <ArrowRight />
+          </a>
+        </Button>
+        <Button variant="outline" asChild>
+          <a
+            href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <BookOpen className="mr-2 h-4 w-4" /> Download Briefing Note
+          </a>
+        </Button>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+// ─── Partners ────────────────────────────────────────────────────────────────
+
+const partnerPlaceholders = Array.from({ length: 8 }, (_, i) => i + 1);
+
+function PartnersSection() {
+  return (
+    <SectionWrapper
+      title="Building Coalitions for Change"
+      subtitle="Our Partners"
+      theme="scph"
+      background="default"
+    >
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {partnerPlaceholders.map((n) => (
+          <div
+            key={n}
+            className="flex h-24 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 transition-all duration-200 hover:border-scph-green/30 hover:shadow-md"
+          >
+            <span className="text-xs font-medium text-gray-400">
+              Partner Logo
+            </span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-8 text-center text-sm text-gray-400">
+        Partner logos coming soon. Interested in partnering?{" "}
+        <Link href="/network" className="font-semibold text-scph-blue hover:underline">
+          Get in touch →
+        </Link>
+      </p>
+    </SectionWrapper>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
     <>
-      {/* Full-screen hero placeholder — navbar floats over this */}
-      <section className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-scph-blue via-scph-dark-green to-scph-blue-dark px-4 text-center">
-        <div className="max-w-3xl">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-scph-green">
-            Sunway University · Kuala Lumpur
-          </p>
-          <h1 className="font-heading text-6xl font-bold leading-tight text-white md:text-7xl">
-            Sunway Centre for<br />Planetary Health
-          </h1>
-          <p className="mt-6 text-xl leading-relaxed text-white/75">
-            A Think-and-Do tank committed to research and advocacy that advances
-            planetary health.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <Button variant="scphSecondary" size="lg" asChild>
-              <Link href="/about-us">
-                Explore Our Work <ArrowRight />
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-white/60 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 hover:border-white/80 hover:text-white"
-              asChild
-            >
-              <Link href="/events/gtp-2026">GTP 2026</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <ScphHero />
+      <StatsBand />
+      <AboutSection />
+      <PriorityAreasSection />
+      <EventsTeaserSection />
+      <RoadmapTeaserSection />
+      <PartnersSection />
     </>
   );
 }
