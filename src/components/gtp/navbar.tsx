@@ -17,8 +17,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Organising Committee", href: "/events/gtp-2026/organising-committee" },
+  { label: "SCPH", href: "/" },
+  {
+    label: "Organising Committee",
+    href: "/events/gtp-2026/organising-committee",
+  },
   { label: "Programmes", href: "/events/gtp-2026/programmes" },
   { label: "Biz Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
@@ -55,7 +58,7 @@ export function GtpNavbar() {
           "flex w-full max-w-7xl items-center justify-between gap-6 rounded-full border border-white/20 px-4 py-2 transition-all duration-300",
           scrolled
             ? "bg-gtp-dark-teal/90 shadow-xl backdrop-blur-xl"
-            : "bg-gtp-dark-teal/75 shadow-lg backdrop-blur-xl"
+            : "bg-gtp-dark-teal/75 shadow-lg backdrop-blur-xl",
         )}
       >
         {/* GTP wordmark */}
@@ -76,7 +79,7 @@ export function GtpNavbar() {
                 "rounded-full px-4 py-2 text-sm font-medium transition-colors",
                 isActive(href)
                   ? "bg-white/15 text-white"
-                  : "text-white/75 hover:bg-white/10 hover:text-white"
+                  : "text-white/75 hover:bg-white/10 hover:text-white",
               )}
             >
               {label}
@@ -129,7 +132,7 @@ export function GtpNavbar() {
                         "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                         isActive(href)
                           ? "bg-white/15 text-white"
-                          : "text-white/70 hover:bg-white/10 hover:text-white"
+                          : "text-white/70 hover:bg-white/10 hover:text-white",
                       )}
                     >
                       {label}
@@ -147,7 +150,11 @@ export function GtpNavbar() {
                 </p>
                 {ctaLinks.map(({ label, href }) => (
                   <SheetClose asChild key={label}>
-                    <Button variant="gtpCta" className="w-full justify-start" asChild>
+                    <Button
+                      variant="gtpCta"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href={href} onClick={closeSheet}>
                         {label}
                       </Link>

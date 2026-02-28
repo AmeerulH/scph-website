@@ -1,6 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, TrendingDown, Lightbulb, Zap, ImageIcon } from "lucide-react";
+import {
+  ArrowRight,
+  TrendingDown,
+  Lightbulb,
+  Zap,
+  ImageIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { GtpHeroCarousel } from "@/components/gtp/hero-carousel";
@@ -10,7 +16,7 @@ import { GtpHeroCarousel } from "@/components/gtp/hero-carousel";
 function WhatIsGtpSection() {
   return (
     <SectionWrapper
-      title="What is Global Tipping Points?"
+      title="What are Global Tipping Points?"
       subtitle="About GTP 2026"
       theme="gtp"
       background="default"
@@ -21,9 +27,9 @@ function WhatIsGtpSection() {
         <div>
           <p className="text-lg leading-relaxed text-gray-600">
             The world is approaching a set of unavoidable decisions that will
-            shape lives, economies and ecosystems for generations. Climate change
-            is no longer a distant risk. Its impacts are already visible in food
-            systems, health, cities and financial stability.
+            shape lives, economies and ecosystems for generations. Climate
+            change is no longer a distant risk. Its impacts are already visible
+            in food systems, health, cities and financial stability.
           </p>
           <p className="mt-4 text-base leading-relaxed text-gray-500">
             What is less widely understood is that the future is not fixed.
@@ -46,7 +52,8 @@ function WhatIsGtpSection() {
           </div>
           <blockquote className="rounded-2xl bg-gtp-teal/10 p-6 ring-1 ring-gtp-teal/20">
             <p className="font-heading text-lg font-semibold italic leading-snug text-gtp-dark-teal">
-              &ldquo;Systems that once seemed immovable can suddenly shift.&rdquo;
+              &ldquo;Systems that once seemed immovable can suddenly
+              shift.&rdquo;
             </p>
           </blockquote>
         </div>
@@ -199,13 +206,21 @@ function SponsorsSection() {
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
         {/* Row 1 — scrolls left */}
         <div className="mb-4 flex animate-marquee will-change-transform">
-          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r1a-${n}`} n={n} />)}
-          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r1b-${n}`} n={n} />)}
+          {partnerPlaceholders.map((n) => (
+            <SponsorLogoItem key={`r1a-${n}`} n={n} />
+          ))}
+          {partnerPlaceholders.map((n) => (
+            <SponsorLogoItem key={`r1b-${n}`} n={n} />
+          ))}
         </div>
         {/* Row 2 — scrolls right */}
         <div className="flex animate-marquee-reverse will-change-transform">
-          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r2a-${n}`} n={n} />)}
-          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r2b-${n}`} n={n} />)}
+          {partnerPlaceholders.map((n) => (
+            <SponsorLogoItem key={`r2a-${n}`} n={n} />
+          ))}
+          {partnerPlaceholders.map((n) => (
+            <SponsorLogoItem key={`r2b-${n}`} n={n} />
+          ))}
         </div>
       </div>
 
