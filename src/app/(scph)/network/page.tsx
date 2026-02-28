@@ -11,7 +11,7 @@ function NetworkHero() {
         <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           Network
         </span>
-        <h1 className="mt-6 font-heading text-5xl font-bold leading-tight text-white md:text-6xl">
+        <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
           Join the Planetary Health Community
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-scph-green" />

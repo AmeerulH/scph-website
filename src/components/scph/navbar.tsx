@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, ChevronDown } from "lucide-react";
+import { ExternalLink, ChevronDown, Menu, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
   { label: "About Us", href: "/about-us" },
@@ -42,6 +49,8 @@ const eventLinks = [
 export function ScphNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
+  const [eventsOpen, setEventsOpen] = React.useState(false);
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -51,8 +60,10 @@ export function ScphNavbar() {
 
   const isActive = (href: string) => pathname === href;
 
+  const closeSheet = () => setSheetOpen(false);
+
   return (
-    <header className="fixed inset-x-4 top-4 z-50 flex justify-center">
+    <header className="fixed inset-x-2 top-4 z-50 flex justify-center md:inset-x-4">
       <nav
         className={cn(
           "flex w-full max-w-7xl items-center justify-between gap-6 rounded-full border border-white/30 px-4 py-2 transition-all duration-300",
@@ -146,20 +157,119 @@ export function ScphNavbar() {
           </NavigationMenu>
         </div>
 
-        {/* CTA */}
+        {/* Desktop CTA */}
         <div className="hidden lg:block">
           <Button variant="scph" size="sm" asChild>
-            <Link href="/contact">Contact Us</Link>
+            <Link href="/network">Contact Us</Link>
           </Button>
         </div>
 
-        {/* Mobile hamburger — placeholder, wired up in Step 8 */}
-        <button
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:bg-gray-100 lg:hidden"
-          aria-label="Open menu"
-        >
-          <ChevronDown className="h-4 w-4" />
-        </button>
+        {/* Mobile hamburger */}
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetTrigger asChild>
+            <button
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:bg-gray-100 lg:hidden"
+              aria-label="Open menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </SheetTrigger>
+
+          <SheetContent side="right" className="w-80 p-0">
+            {/* Sheet header */}
+            <div className="border-b border-gray-100 px-6 py-5">
+              <Image
+                src="/images/scph/logo.png"
+                alt="Sunway Centre for Planetary Health"
+                width={140}
+                height={40}
+                className="h-7 w-auto object-contain"
+              />
+            </div>
+
+            {/* Sheet nav links */}
+            <nav className="flex flex-col px-4 py-4">
+              {navLinks.map(({ label, href }) => (
+                <SheetClose asChild key={label}>
+                  <Link
+                    href={href}
+                    onClick={closeSheet}
+                    className={cn(
+                      "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                      isActive(href)
+                        ? "bg-scph-blue/8 text-scph-blue"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-scph-blue"
+                    )}
+                  >
+                    {label}
+                  </Link>
+                </SheetClose>
+              ))}
+
+              {/* Events expandable section */}
+              <button
+                onClick={() => setEventsOpen((p) => !p)}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                  pathname.startsWith("/events")
+                    ? "bg-scph-blue/8 text-scph-blue"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-scph-blue"
+                )}
+              >
+                Events
+                <ChevronRight
+                  className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    eventsOpen && "rotate-90"
+                  )}
+                />
+              </button>
+
+              {eventsOpen && (
+                <div className="ml-4 flex flex-col gap-1 border-l-2 border-scph-blue/15 pl-4">
+                  {eventLinks.map(({ label, href, external }) =>
+                    external ? (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={closeSheet}
+                        className="flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:text-scph-blue"
+                      >
+                        {label}
+                        <ExternalLink className="h-3 w-3 opacity-50" />
+                      </a>
+                    ) : (
+                      <SheetClose asChild key={label}>
+                        <Link
+                          href={href}
+                          onClick={closeSheet}
+                          className="rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:text-scph-blue"
+                        >
+                          {label}
+                        </Link>
+                      </SheetClose>
+                    )
+                  )}
+                </div>
+              )}
+            </nav>
+
+            <Separator className="mx-4" />
+
+            {/* Sheet CTA */}
+            <div className="px-6 py-4">
+              <SheetClose asChild>
+                <Button variant="scph" className="w-full" asChild>
+                  <Link href="/network" onClick={closeSheet}>
+                    Contact Us
+                  </Link>
+                </Button>
+              </SheetClose>
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </header>
   );

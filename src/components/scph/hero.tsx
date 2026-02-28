@@ -10,24 +10,24 @@ export function ScphHero() {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-scph-blue via-scph-dark-green to-scph-blue-dark" />
 
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+      {/* Content — pb-24 on mobile keeps CTAs clear of the absolute scroll indicator */}
+      <div className="relative z-10 mx-auto max-w-4xl px-6 pb-24 pt-28 text-center md:pb-0 md:pt-0">
         {/* Eyebrow */}
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 backdrop-blur-sm">
           <span className="h-1.5 w-1.5 rounded-full bg-scph-green" />
-          <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/90">
+          <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.12em] text-white/90 sm:text-xs sm:tracking-[0.15em]">
             Sunway University · Kuala Lumpur
           </span>
         </div>
 
         {/* Headline */}
-        <h1 className="font-heading text-6xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl">
+        <h1 className="font-heading text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
           Advancing<br />
           <span className="text-scph-green">Planetary Health</span>
         </h1>
 
         {/* Subheading */}
-        <p className="mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-white/80">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/80 md:text-xl">
           A Think-and-Do tank committed to research and advocacy that advances
           planetary health for a healthier, more sustainable world.
         </p>

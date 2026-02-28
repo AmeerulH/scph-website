@@ -11,7 +11,7 @@ function MediaHero() {
         <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           Media
         </span>
-        <h1 className="mt-6 font-heading text-5xl font-bold leading-tight text-white md:text-6xl">
+        <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
           News &amp; Articles
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-scph-green" />
@@ -112,11 +112,12 @@ function ArticlesSection() {
       theme="scph"
       background="default"
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {/* Mobile: horizontal swipe carousel / Desktop: 3-col grid */}
+      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0 lg:grid-cols-3">
         {articles.map(({ title, tag, excerpt }) => (
           <div
             key={title}
-            className="group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <Badge variant="scph" className="mb-4 w-fit">
               {tag}

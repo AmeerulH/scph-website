@@ -83,7 +83,7 @@ export function SectionWrapper({
               <div>
                 <h2
                   className={cn(
-                    "font-heading text-4xl font-bold leading-tight md:text-5xl",
+                    "font-heading text-3xl font-bold leading-tight md:text-4xl lg:text-5xl",
                     isDark ? "text-white" : titleClasses[theme]
                   )}
                 >

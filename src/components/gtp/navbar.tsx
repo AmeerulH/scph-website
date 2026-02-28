@@ -6,6 +6,13 @@ import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -16,9 +23,17 @@ const navLinks = [
   { label: "Get Involved", href: "/events/gtp-2026/get-involved" },
 ];
 
+const ctaLinks = [
+  { label: "Registration", href: "/events/gtp-2026/get-involved" },
+  { label: "Call for Abstracts", href: "/events/gtp-2026/get-involved" },
+  { label: "Call for Proposals", href: "/events/gtp-2026/get-involved" },
+  { label: "Contact Us", href: "/events/gtp-2026/get-involved" },
+];
+
 export function GtpNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
+  const [sheetOpen, setSheetOpen] = React.useState(false);
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -29,8 +44,10 @@ export function GtpNavbar() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  const closeSheet = () => setSheetOpen(false);
+
   return (
-    <header className="fixed inset-x-4 top-4 z-50 flex justify-center">
+    <header className="fixed inset-x-2 top-4 z-50 flex justify-center md:inset-x-4">
       <nav
         className={cn(
           "flex w-full max-w-7xl items-center justify-between gap-6 rounded-full border border-white/20 px-4 py-2 transition-all duration-300",
@@ -39,7 +56,7 @@ export function GtpNavbar() {
             : "bg-gtp-dark-teal/75 shadow-lg backdrop-blur-xl"
         )}
       >
-        {/* GTP wordmark / home link */}
+        {/* GTP wordmark */}
         <Link
           href="/events/gtp-2026/about"
           className="shrink-0 font-heading text-sm font-bold tracking-wide text-white/90 transition-colors hover:text-white"
@@ -65,20 +82,77 @@ export function GtpNavbar() {
           ))}
         </div>
 
-        {/* CTA */}
+        {/* Desktop CTA */}
         <div className="hidden lg:block">
           <Button variant="gtpCta" size="sm" asChild>
             <Link href="/events/gtp-2026/get-involved">Register Now</Link>
           </Button>
         </div>
 
-        {/* Mobile hamburger — placeholder, wired up in Step 8 */}
-        <button
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/70 transition-colors hover:bg-white/10 lg:hidden"
-          aria-label="Open menu"
-        >
-          <Menu className="h-4 w-4" />
-        </button>
+        {/* Mobile hamburger */}
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetTrigger asChild>
+            <button
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:bg-white/10 lg:hidden"
+              aria-label="Open menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </SheetTrigger>
+
+          <SheetContent
+            side="right"
+            className="w-80 border-gtp-dark-teal/20 bg-gtp-dark-teal p-0 text-white"
+          >
+            {/* Sheet header */}
+            <div className="border-b border-white/10 px-6 py-5">
+              <span className="font-heading text-lg font-bold tracking-wide text-white">
+                GTP 2026
+              </span>
+              <p className="mt-0.5 text-xs text-white/50">
+                Global Tipping Points Conference
+              </p>
+            </div>
+
+            {/* Sheet nav links */}
+            <nav className="flex flex-col px-4 py-4">
+              {navLinks.map(({ label, href }) => (
+                <SheetClose asChild key={label}>
+                  <Link
+                    href={href}
+                    onClick={closeSheet}
+                    className={cn(
+                      "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                      isActive(href)
+                        ? "bg-white/15 text-white"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
+                    )}
+                  >
+                    {label}
+                  </Link>
+                </SheetClose>
+              ))}
+            </nav>
+
+            <Separator className="mx-4 bg-white/10" />
+
+            {/* Sheet CTAs */}
+            <div className="flex flex-col gap-3 px-6 py-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40">
+                Get Involved
+              </p>
+              {ctaLinks.map(({ label, href }) => (
+                <SheetClose asChild key={label}>
+                  <Button variant="gtpCta" className="w-full justify-start" asChild>
+                    <Link href={href} onClick={closeSheet}>
+                      {label}
+                    </Link>
+                  </Button>
+                </SheetClose>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </header>
   );
