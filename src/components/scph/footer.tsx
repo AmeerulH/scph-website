@@ -140,7 +140,16 @@ export function ScphFooter() {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/40 md:flex-row">
           <p>© 2026 Sunway Centre for Planetary Health. All rights reserved.</p>
-          <p>Part of Sunway University, Kuala Lumpur</p>
+          <div className="flex items-center gap-3">
+            <span>Part of</span>
+            <Image
+              src="/images/scph/sunway-uni-logo-white.png"
+              alt="Sunway University"
+              width={100}
+              height={30}
+              className="h-6 w-auto object-contain opacity-60"
+            />
+          </div>
         </div>
       </div>
     </footer>

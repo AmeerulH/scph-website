@@ -18,6 +18,8 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
+  SheetDescription,
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
@@ -177,7 +179,11 @@ export function ScphNavbar() {
 
           <SheetContent side="right" className="w-80 p-0">
             {/* Sheet header */}
-            <div className="border-b border-gray-100 px-6 py-5">
+            <div className="shrink-0 border-b border-gray-100 px-6 py-5">
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+              <SheetDescription className="sr-only">
+                Sunway Centre for Planetary Health site navigation
+              </SheetDescription>
               <Image
                 src="/images/scph/logo.png"
                 alt="Sunway Centre for Planetary Health"

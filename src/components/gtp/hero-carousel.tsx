@@ -15,16 +15,30 @@ import {
 } from "@/components/ui/carousel";
 
 const slides = [
-  { src: "/images/gtp/carousel/pexels-arthousestudio-4534200.jpg",      alt: "Global Tipping Points 2026 Conference" },
-  { src: "/images/gtp/carousel/pexels-baskincreativeco-1480807.jpg",    alt: "Leaders shaping the future" },
-  { src: "/images/gtp/carousel/pexels-manuela-adler-344311-949194.jpg", alt: "Science meeting action" },
-  { src: "/images/gtp/carousel/pexels-pok-rie-33563-2049422.jpg",       alt: "Tipping points for a healthy planet" },
+  {
+    src: "/images/gtp/carousel/pexels-arthousestudio-4534200.jpg",
+    alt: "Global Tipping Points 2026 Conference",
+  },
+  {
+    src: "/images/gtp/carousel/pexels-baskincreativeco-1480807.jpg",
+    alt: "Leaders shaping the future",
+  },
+  {
+    src: "/images/gtp/carousel/pexels-manuela-adler-344311-949194.jpg",
+    alt: "Science meeting action",
+  },
+  {
+    src: "/images/gtp/carousel/pexels-pok-rie-33563-2049422.jpg",
+    alt: "Tipping points for a healthy planet",
+  },
 ];
 
 export function GtpHeroCarousel() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
-  const plugin = React.useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true }),
+  );
 
   React.useEffect(() => {
     if (!api) return;
@@ -61,21 +75,21 @@ export function GtpHeroCarousel() {
         </CarouselContent>
       </Carousel>
 
-      {/* Hero content — centred */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 text-center">
+      {/* Hero content — centred, pb clears dot indicators */}
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-28 pt-24 text-center md:pb-20 md:pt-0">
         {/* Eyebrow */}
-        <span className="mb-6 inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm">
-          Kuala Lumpur · 2026
+        <span className="mb-6 inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 lg:text-lg text-xs font-semibold text-white/90 backdrop-blur-sm">
+          12-15 October 2026 · Kuala Lumpur, Malaysia
         </span>
 
         {/* Headline */}
-        <h1 className="max-w-4xl font-heading text-6xl font-bold leading-tight text-white md:text-7xl">
-          The Moment to Tip the Future
+        <h1 className="max-w-4xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+          Global Tipping Points Conference 2026
         </h1>
 
         {/* Subheading */}
-        <p className="mt-6 max-w-xl text-2xl font-light text-white/80">
-          Global Tipping Points 2026 Conference
+        <p className="mt-6 max-w-xl text-base font-light text-white/80 sm:text-lg md:text-2xl">
+          The moment to tip the future
         </p>
 
         {/* CTAs */}
@@ -104,7 +118,7 @@ export function GtpHeroCarousel() {
               "h-2 rounded-full transition-all duration-300",
               i === current
                 ? "w-6 bg-gtp-teal"
-                : "w-2 bg-white/40 hover:bg-white/70"
+                : "w-2 bg-white/40 hover:bg-white/70",
             )}
           />
         ))}

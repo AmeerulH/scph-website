@@ -145,11 +145,12 @@ function ThemesSection() {
       theme="gtp"
       background="muted"
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {/* Mobile: horizontal swipe carousel / Desktop: 3-col grid */}
+      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
         {themes.map(({ num, icon: Icon, title, body, iconBg, iconColour }) => (
           <div
             key={num}
-            className="flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <div className="mb-5 flex items-center gap-3">
               <div
@@ -178,6 +179,14 @@ function ThemesSection() {
 
 const partnerPlaceholders = Array.from({ length: 8 }, (_, i) => i + 1);
 
+function SponsorLogoItem({ n }: { n: number }) {
+  return (
+    <div className="flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 mr-4">
+      <span className="text-xs font-medium text-gray-400">Partner Logo</span>
+    </div>
+  );
+}
+
 function SponsorsSection() {
   return (
     <SectionWrapper
@@ -186,18 +195,20 @@ function SponsorsSection() {
       theme="gtp"
       background="default"
     >
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {partnerPlaceholders.map((n) => (
-          <div
-            key={n}
-            className="flex h-24 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 transition-all duration-200 hover:border-gtp-teal/30 hover:shadow-md"
-          >
-            <span className="text-xs font-medium text-gray-400">
-              Partner Logo
-            </span>
-          </div>
-        ))}
+      {/* Infinite 2-row marquee ticker */}
+      <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        {/* Row 1 — scrolls left */}
+        <div className="mb-4 flex animate-marquee will-change-transform">
+          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r1a-${n}`} n={n} />)}
+          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r1b-${n}`} n={n} />)}
+        </div>
+        {/* Row 2 — scrolls right */}
+        <div className="flex animate-marquee-reverse will-change-transform">
+          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r2a-${n}`} n={n} />)}
+          {partnerPlaceholders.map((n) => <SponsorLogoItem key={`r2b-${n}`} n={n} />)}
+        </div>
       </div>
+
       <p className="mt-8 text-center text-sm text-gray-400">
         Partner and sponsor logos coming soon. Interested in partnering?{" "}
         <Link

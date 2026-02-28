@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MapPin, Linkedin, Twitter, Instagram, Youtube, ExternalLink } from "lucide-react";
+import { Mail, MapPin, CalendarDays, Linkedin, Twitter, Instagram, Youtube, ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const quickLinks = [
@@ -32,30 +32,34 @@ export function GtpFooter() {
     <footer className="bg-gtp-dark-teal text-white">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         {/* Top — Three logos */}
-        <div className="flex flex-wrap items-center gap-6 md:gap-10">
+        <div className="flex flex-wrap items-center gap-8 md:gap-12">
           <Link href="/events/gtp-2026/about" className="shrink-0">
             <Image
               src="/images/gtp/logo.png"
               alt="Global Tipping Points 2026"
-              width={140}
-              height={40}
-              className="h-10 w-auto object-contain brightness-0 invert"
+              width={200}
+              height={80}
+              className="h-20 w-auto object-contain brightness-0 invert"
             />
           </Link>
-          <div className="hidden h-8 w-px bg-white/20 md:block" />
+          <div className="hidden h-14 w-px bg-white/20 md:block" />
           <Link href="/" className="shrink-0">
             <Image
               src="/images/scph/logo.png"
               alt="Sunway Centre for Planetary Health"
-              width={140}
-              height={40}
-              className="h-9 w-auto object-contain brightness-0 invert"
+              width={200}
+              height={60}
+              className="h-12 w-auto object-contain brightness-0 invert"
             />
           </Link>
-          <div className="hidden h-8 w-px bg-white/20 md:block" />
-          <span className="text-sm font-medium text-white/50">
-            Sunway University
-          </span>
+          <div className="hidden h-14 w-px bg-white/20 md:block" />
+          <Image
+            src="/images/scph/sunway-uni-logo-white.png"
+            alt="Sunway University"
+            width={200}
+            height={60}
+            className="h-14 w-auto object-contain"
+          />
         </div>
 
         <Separator className="my-8 bg-white/10" />
@@ -107,11 +111,12 @@ export function GtpFooter() {
                 <span>info@gtp2026.com</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-white/70">
+                <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
+                <span>12–15 October 2026</span>
+              </li>
+              <li className="flex items-start gap-2 text-sm text-white/70">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
-                <span>
-                  Kuala Lumpur<br />
-                  Malaysia · 2026
-                </span>
+                <span>Kuala Lumpur, Malaysia</span>
               </li>
             </ul>
 

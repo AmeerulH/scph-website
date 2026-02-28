@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetTitle,
+  SheetDescription,
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
@@ -102,54 +104,57 @@ export function GtpNavbar() {
 
           <SheetContent
             side="right"
-            className="w-80 border-gtp-dark-teal/20 bg-gtp-dark-teal p-0 text-white"
+            className="flex w-80 flex-col border-gtp-dark-teal/20 bg-gtp-dark-teal p-0 text-white"
           >
-            {/* Sheet header */}
-            <div className="border-b border-white/10 px-6 py-5">
-              <span className="font-heading text-lg font-bold tracking-wide text-white">
+            {/* Sheet header — fixed, never scrolls */}
+            <div className="shrink-0 border-b border-white/10 px-6 py-5">
+              <SheetTitle className="font-heading text-lg font-bold tracking-wide text-white">
                 GTP 2026
-              </span>
-              <p className="mt-0.5 text-xs text-white/50">
+              </SheetTitle>
+              <SheetDescription className="mt-0.5 text-xs text-white/50">
                 Global Tipping Points Conference
-              </p>
+              </SheetDescription>
             </div>
 
-            {/* Sheet nav links */}
-            <nav className="flex flex-col px-4 py-4">
-              {navLinks.map(({ label, href }) => (
-                <SheetClose asChild key={label}>
-                  <Link
-                    href={href}
-                    onClick={closeSheet}
-                    className={cn(
-                      "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
-                      isActive(href)
-                        ? "bg-white/15 text-white"
-                        : "text-white/70 hover:bg-white/10 hover:text-white"
-                    )}
-                  >
-                    {label}
-                  </Link>
-                </SheetClose>
-              ))}
-            </nav>
-
-            <Separator className="mx-4 bg-white/10" />
-
-            {/* Sheet CTAs */}
-            <div className="flex flex-col gap-3 px-6 py-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40">
-                Get Involved
-              </p>
-              {ctaLinks.map(({ label, href }) => (
-                <SheetClose asChild key={label}>
-                  <Button variant="gtpCta" className="w-full justify-start" asChild>
-                    <Link href={href} onClick={closeSheet}>
+            {/* Scrollable body */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Sheet nav links */}
+              <nav className="flex flex-col px-4 py-4">
+                {navLinks.map(({ label, href }) => (
+                  <SheetClose asChild key={label}>
+                    <Link
+                      href={href}
+                      onClick={closeSheet}
+                      className={cn(
+                        "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                        isActive(href)
+                          ? "bg-white/15 text-white"
+                          : "text-white/70 hover:bg-white/10 hover:text-white"
+                      )}
+                    >
                       {label}
                     </Link>
-                  </Button>
-                </SheetClose>
-              ))}
+                  </SheetClose>
+                ))}
+              </nav>
+
+              <Separator className="mx-4 bg-white/10" />
+
+              {/* Sheet CTAs */}
+              <div className="flex flex-col gap-3 px-6 py-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40">
+                  Get Involved
+                </p>
+                {ctaLinks.map(({ label, href }) => (
+                  <SheetClose asChild key={label}>
+                    <Button variant="gtpCta" className="w-full justify-start" asChild>
+                      <Link href={href} onClick={closeSheet}>
+                        {label}
+                      </Link>
+                    </Button>
+                  </SheetClose>
+                ))}
+              </div>
             </div>
           </SheetContent>
         </Sheet>
