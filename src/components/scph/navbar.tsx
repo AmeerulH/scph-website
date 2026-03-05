@@ -4,9 +4,8 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ExternalLink, ChevronDown, Menu, ChevronRight } from "lucide-react";
+import { ExternalLink, ChevronRight, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,15 +24,20 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
-const navLinks = [
-  { label: "About Us", href: "/about-us" },
-  { label: "Projects", href: "/projects" },
-  { label: "Research", href: "/research" },
-  { label: "Media", href: "/media" },
-  { label: "Network", href: "/network" },
+const aboutLinks = [
+  { label: "Our Foundation", href: "/about-us#foundation" },
+  { label: "Our Strategy", href: "/about-us#strategy" },
+  { label: "Meet The Team", href: "/about-us#team" },
 ];
 
-const eventLinks = [
+const navLinks = [
+  { label: "Programmes", href: "/programmes" },
+  { label: "Research", href: "/research" },
+  { label: "Media", href: "/media" },
+  { label: "Community", href: "/network" },
+];
+
+const conferenceLinks = [
   {
     label: "GTP 2026",
     href: "/events/gtp-2026",
@@ -51,7 +55,8 @@ const eventLinks = [
 export function ScphNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
-  const [eventsOpen, setEventsOpen] = React.useState(false);
+  const [conferencesOpen, setConferencesOpen] = React.useState(false);
+  const [aboutOpen, setAboutOpen] = React.useState(false);
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -61,7 +66,6 @@ export function ScphNavbar() {
   }, []);
 
   const isActive = (href: string) => pathname === href;
-
   const closeSheet = () => setSheetOpen(false);
 
   return (
@@ -90,6 +94,35 @@ export function ScphNavbar() {
         <div className="hidden items-center gap-1 lg:flex">
           <NavigationMenu viewport={false}>
             <NavigationMenuList>
+              {/* About Us dropdown */}
+              <NavigationMenuItem>
+                <NavigationMenuTrigger
+                  className={cn(
+                    "rounded-full px-4 py-2 text-sm font-medium transition-colors bg-transparent hover:bg-gray-100 data-[state=open]:bg-gray-100",
+                    pathname.startsWith("/about-us")
+                      ? "bg-scph-blue/10 text-scph-blue"
+                      : "text-gray-700 hover:text-scph-blue"
+                  )}
+                >
+                  About Us
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="rounded-2xl border-gray-100 shadow-xl">
+                  <ul className="w-64 p-2">
+                    {aboutLinks.map(({ label, href }) => (
+                      <li key={label}>
+                        <Link
+                          href={href}
+                          className="flex items-start gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-scph-blue/5"
+                        >
+                          <div className="text-sm font-medium text-gray-900">{label}</div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              {/* Flat nav links */}
               {navLinks.map(({ label, href }) => (
                 <NavigationMenuItem key={label}>
                   <NavigationMenuLink asChild>
@@ -108,7 +141,7 @@ export function ScphNavbar() {
                 </NavigationMenuItem>
               ))}
 
-              {/* Events dropdown */}
+              {/* Conferences dropdown */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger
                   className={cn(
@@ -118,11 +151,11 @@ export function ScphNavbar() {
                       : "text-gray-700 hover:text-scph-blue"
                   )}
                 >
-                  Events
+                  Conferences
                 </NavigationMenuTrigger>
-                <NavigationMenuContent className="rounded-2xl border-gray-100 shadow-xl">
+                <NavigationMenuContent className="rounded-2xl border-gray-100 shadow-xl !left-auto right-0">
                   <ul className="w-72 p-2">
-                    {eventLinks.map(({ label, href, description, external }) => (
+                    {conferenceLinks.map(({ label, href, description, external }) => (
                       <li key={label}>
                         {external ? (
                           <a
@@ -159,13 +192,6 @@ export function ScphNavbar() {
           </NavigationMenu>
         </div>
 
-        {/* Desktop CTA */}
-        <div className="hidden lg:block">
-          <Button variant="scph" size="sm" asChild>
-            <Link href="/network">Contact Us</Link>
-          </Button>
-        </div>
-
         {/* Mobile hamburger */}
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
@@ -195,6 +221,41 @@ export function ScphNavbar() {
 
             {/* Sheet nav links */}
             <nav className="flex flex-col px-4 py-4">
+              {/* About Us expandable */}
+              <button
+                onClick={() => setAboutOpen((p) => !p)}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                  pathname.startsWith("/about-us")
+                    ? "bg-scph-blue/8 text-scph-blue"
+                    : "text-gray-700 hover:bg-gray-50 hover:text-scph-blue"
+                )}
+              >
+                About Us
+                <ChevronRight
+                  className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    aboutOpen && "rotate-90"
+                  )}
+                />
+              </button>
+
+              {aboutOpen && (
+                <div className="ml-4 flex flex-col gap-1 border-l-2 border-scph-blue/15 pl-4">
+                  {aboutLinks.map(({ label, href }) => (
+                    <SheetClose asChild key={label}>
+                      <Link
+                        href={href}
+                        onClick={closeSheet}
+                        className="rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:text-scph-blue"
+                      >
+                        {label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </div>
+              )}
+
               {navLinks.map(({ label, href }) => (
                 <SheetClose asChild key={label}>
                   <Link
@@ -212,9 +273,9 @@ export function ScphNavbar() {
                 </SheetClose>
               ))}
 
-              {/* Events expandable section */}
+              {/* Conferences expandable */}
               <button
-                onClick={() => setEventsOpen((p) => !p)}
+                onClick={() => setConferencesOpen((p) => !p)}
                 className={cn(
                   "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                   pathname.startsWith("/events")
@@ -222,18 +283,18 @@ export function ScphNavbar() {
                     : "text-gray-700 hover:bg-gray-50 hover:text-scph-blue"
                 )}
               >
-                Events
+                Conferences
                 <ChevronRight
                   className={cn(
                     "h-4 w-4 transition-transform duration-200",
-                    eventsOpen && "rotate-90"
+                    conferencesOpen && "rotate-90"
                   )}
                 />
               </button>
 
-              {eventsOpen && (
+              {conferencesOpen && (
                 <div className="ml-4 flex flex-col gap-1 border-l-2 border-scph-blue/15 pl-4">
-                  {eventLinks.map(({ label, href, external }) =>
+                  {conferenceLinks.map(({ label, href, external }) =>
                     external ? (
                       <a
                         key={label}
@@ -263,17 +324,6 @@ export function ScphNavbar() {
             </nav>
 
             <Separator className="mx-4" />
-
-            {/* Sheet CTA */}
-            <div className="px-6 py-4">
-              <SheetClose asChild>
-                <Button variant="scph" className="w-full" asChild>
-                  <Link href="/network" onClick={closeSheet}>
-                    Contact Us
-                  </Link>
-                </Button>
-              </SheetClose>
-            </div>
           </SheetContent>
         </Sheet>
       </nav>

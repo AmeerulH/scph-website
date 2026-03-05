@@ -1,59 +1,92 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
+
+// ─── Events carousel data ────────────────────────────────────────────────────
+
+const highlightedEvents = [
+  {
+    id: "gtp-2026",
+    label: "Upcoming · 2026",
+    title: "Global Tipping Points 2026",
+    subtitle: "Kuala Lumpur, Malaysia",
+    href: "/events/gtp-2026",
+    external: false,
+  },
+];
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 
 export function ScphHero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-scph-blue via-scph-dark-green to-scph-blue-dark" />
+    <section className="relative flex min-h-[85vh] flex-col">
+      {/* Background — group photo with dark overlay */}
+      {/* Place group-photo-1.jpg in public/images/scph/ to activate */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/scph/group-photo-1.jpg"
+          alt="SCPH Team"
+          fill
+          className="object-cover object-center"
+          priority
+        />
+        {/* Gradient overlay — also serves as fallback when image is missing */}
+        <div className="absolute inset-0 bg-gradient-to-br from-scph-blue/90 via-scph-dark-green/80 to-scph-blue-dark/90" />
+      </div>
 
-      {/* Content — pb-24 on mobile keeps CTAs clear of the absolute scroll indicator */}
-      <div className="relative z-10 mx-auto max-w-4xl px-6 pb-24 pt-28 text-center md:pb-0 md:pt-0">
-        {/* Eyebrow */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 backdrop-blur-sm">
-          <span className="h-1.5 w-1.5 rounded-full bg-scph-green" />
-          <span className="whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.12em] text-white/90 sm:text-xs sm:tracking-[0.15em]">
-            Sunway University · Kuala Lumpur
-          </span>
+      {/* Content */}
+      <div className="relative z-10 flex flex-1 flex-col justify-between px-6 pb-0 pt-28 md:px-12 lg:px-20">
+        {/* Top-left — title + tagline */}
+        <div className="max-w-2xl">
+          <h1 className="font-heading text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            Sunway Centre for{" "}
+            <span className="text-scph-green">Planetary Health</span>
+          </h1>
+          <p className="mt-4 text-lg font-medium text-white/60 md:text-xl">
+            Where knowledge meets action
+          </p>
         </div>
 
-        {/* Headline */}
-        <h1 className="font-heading text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-          Advancing<br />
-          <span className="text-scph-green">Planetary Health</span>
-        </h1>
+        {/* Bottom-left — description */}
+        <div className="mb-6 max-w-xl md:mb-8">
+          <p className="text-base leading-relaxed text-white/80 md:text-lg">
+            A &ldquo;Think-and-Do&rdquo; tank, committed to research and advocacy that
+            advances planetary health through three priority areas: healthy
+            cities, health-centred decarbonisation, and driving an education
+            revolution.
+          </p>
+        </div>
+      </div>
 
-        {/* Subheading */}
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/80 md:text-xl">
-          A Think-and-Do tank committed to research and advocacy that advances
-          planetary health for a healthier, more sustainable world.
-        </p>
-
-        {/* CTAs */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Button variant="scphSecondary" size="lg" asChild>
-            <Link href="/about-us">
-              Explore Our Work <ArrowRight className="ml-1" />
+      {/* Highlighted events strip */}
+      <div className="relative z-10 border-t border-white/15 bg-black/25 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-7xl items-stretch overflow-x-auto px-6 [&::-webkit-scrollbar]:hidden md:px-12 lg:px-20">
+          <div className="shrink-0 flex items-center border-r border-white/15 pr-5 mr-5 py-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-white/50 whitespace-nowrap">
+              Highlighted Events
+            </span>
+          </div>
+          {highlightedEvents.map((event) => (
+            <Link
+              key={event.id}
+              href={event.href}
+              className="group flex shrink-0 items-center gap-4 py-4 pr-6 transition-opacity hover:opacity-80"
+            >
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-scph-green">
+                  {event.label}
+                </span>
+                <p className="text-sm font-semibold text-white">{event.title}</p>
+                <p className="text-xs text-white/50">{event.subtitle}</p>
+              </div>
+              <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
             </Link>
-          </Button>
-          <Button
-            size="lg"
-            className="border border-white/60 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 hover:border-white/80 hover:text-white"
-            asChild
-          >
-            <Link href="/events/gtp-2026">GTP 2026</Link>
-          </Button>
+          ))}
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50">
-        <span className="text-xs uppercase tracking-widest">Scroll</span>
-        <ChevronDown className="h-5 w-5 animate-bounce" />
-      </div>
     </section>
   );
 }

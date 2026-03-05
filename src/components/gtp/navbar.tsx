@@ -22,7 +22,7 @@ const navLinks = [
     label: "Organising Committee",
     href: "/events/gtp-2026/organising-committee",
   },
-  { label: "Programmes", href: "/events/gtp-2026/programmes" },
+  { label: "Programme", href: "/events/gtp-2026/programmes" },
   { label: "Biz Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
   { label: "Get Involved", href: "/events/gtp-2026/get-involved" },

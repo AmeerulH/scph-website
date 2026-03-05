@@ -1,11 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, MapPin, CalendarDays, Linkedin, Twitter, Instagram, Youtube, ExternalLink } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  CalendarDays,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Youtube,
+  ExternalLink,
+} from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const quickLinks = [
   { label: "About", href: "/events/gtp-2026/about" },
-  { label: "Organising Committee", href: "/events/gtp-2026/organising-committee" },
+  {
+    label: "Organising Committee",
+    href: "/events/gtp-2026/organising-committee",
+  },
   { label: "Programmes", href: "/events/gtp-2026/programmes" },
   { label: "Biz Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
@@ -93,7 +105,9 @@ export function GtpFooter() {
             <ul className="space-y-3">
               {importantDates.map(({ label, date }) => (
                 <li key={label} className="flex flex-col">
-                  <span className="text-xs font-medium text-white/50">{label}</span>
+                  <span className="text-xs font-medium text-white/50">
+                    {label}
+                  </span>
                   <span className="text-sm text-white/80">{date}</span>
                 </li>
               ))}
@@ -108,7 +122,7 @@ export function GtpFooter() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-white/70">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
-                <span>info@gtp2026.com</span>
+                <span>scph_gtpc2026@sunway.edu.my</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-white/70">
                 <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
