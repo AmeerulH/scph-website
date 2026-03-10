@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, AnimatePresence } from "motion/react";
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,12 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import {
+  heroStaggerContainer,
+  heroStaggerItem,
+  heroStaggerItemReduced,
+} from "@/lib/motion-presets";
 
 const slides = [
   {
@@ -36,6 +43,12 @@ const slides = [
 export function GtpHeroCarousel() {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
+  const [imagesReady, setImagesReady] = React.useState(false);
+  const prefersReducedMotion = useReducedMotion();
+  const containerVariants = prefersReducedMotion
+    ? { animate: { transition: { staggerChildren: 0, delayChildren: 0 } } }
+    : heroStaggerContainer;
+  const itemVariants = prefersReducedMotion ? heroStaggerItemReduced : heroStaggerItem;
   const plugin = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true }),
   );
@@ -46,8 +59,38 @@ export function GtpHeroCarousel() {
     api.on("select", () => setCurrent(api.selectedScrollSnap()));
   }, [api]);
 
+  const firstImageLoaded = React.useCallback(() => {
+    setImagesReady(true);
+  }, []);
+
+  const firstImageError = React.useCallback(() => {
+    setImagesReady(true);
+  }, []);
+
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative h-screen min-h-[100dvh] w-full overflow-hidden">
+      {/* Loader overlay — shown until first image loads, fills viewport */}
+      <AnimatePresence>
+        {!imagesReady && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="absolute inset-0 z-20 flex min-h-[100dvh] flex-col items-center justify-center bg-gtp-dark-teal"
+            aria-live="polite"
+            aria-busy={!imagesReady}
+          >
+            <div
+              className="hero-loader-spinner h-12 w-12 rounded-full border-2 border-gtp-teal/30 border-t-gtp-teal"
+              aria-hidden
+            />
+            <p className="mt-4 text-sm font-medium text-white/70">
+              Loading…
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Carousel backgrounds */}
       <Carousel
         setApi={setApi}
@@ -56,8 +99,8 @@ export function GtpHeroCarousel() {
         className="absolute inset-0 h-full w-full"
       >
         <CarouselContent className="h-full -ml-0">
-          {slides.map((slide) => (
-            <CarouselItem key={slide.src} className="relative h-screen pl-0">
+          {slides.map((slide, index) => (
+            <CarouselItem key={slide.src} className="relative h-screen min-h-[100dvh] pl-0">
               <Image
                 src={slide.src}
                 alt={slide.alt}
@@ -65,8 +108,10 @@ export function GtpHeroCarousel() {
                 sizes="100vw"
                 quality={80}
                 className="object-cover"
-                priority={slide.src === slides[0].src}
-                loading={slide.src === slides[0].src ? "eager" : "lazy"}
+                priority={index === 0}
+                loading={index === 0 ? "eager" : "lazy"}
+                onLoad={index === 0 ? firstImageLoaded : undefined}
+                onError={index === 0 ? firstImageError : undefined}
               />
               {/* Dark gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-b from-gtp-dark-teal/70 via-black/20 to-gtp-dark-teal/80" />
@@ -76,24 +121,41 @@ export function GtpHeroCarousel() {
       </Carousel>
 
       {/* Hero content — centred, pb clears dot indicators */}
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pb-28 pt-24 text-center md:pb-20 md:pt-0">
+      <motion.div
+        className="relative z-10 flex h-full min-h-screen flex-col items-center justify-center px-4 pb-28 pt-24 text-center md:pb-20 md:pt-0"
+        variants={containerVariants}
+        initial="initial"
+        animate="animate"
+      >
         {/* Eyebrow */}
-        <span className="mb-6 inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 lg:text-lg text-xs font-semibold text-white/90 backdrop-blur-sm">
+        <motion.span
+          variants={itemVariants}
+          className="mb-6 inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 lg:text-lg text-xs font-semibold text-white/90 backdrop-blur-sm"
+        >
           12-15 October 2026 · Kuala Lumpur, Malaysia
-        </span>
+        </motion.span>
 
         {/* Headline */}
-        <h1 className="max-w-4xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+        <motion.h1
+          variants={itemVariants}
+          className="max-w-4xl font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
+        >
           Global Tipping Points Conference 2026
-        </h1>
+        </motion.h1>
 
         {/* Subheading */}
-        <p className="mt-6 max-w-xl text-base font-light text-white/80 sm:text-lg md:text-2xl">
+        <motion.p
+          variants={itemVariants}
+          className="mt-6 max-w-xl text-base font-light text-white/80 sm:text-lg md:text-2xl"
+        >
           The moment to tip the future
-        </p>
+        </motion.p>
 
         {/* CTAs */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <motion.div
+          variants={itemVariants}
+          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+        >
           <Button variant="gtpCta" size="lg" asChild>
             <Link href="/events/gtp-2026/register">Register Now →</Link>
           </Button>
@@ -104,8 +166,8 @@ export function GtpHeroCarousel() {
           >
             <Link href="/events/gtp-2026/about#about">Learn More</Link>
           </Button>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Dot indicators */}
       <div className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 gap-2">

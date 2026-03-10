@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GtpHeroCarousel } from "@/components/gtp/hero-carousel";
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
@@ -190,11 +193,13 @@ function ThemesSection() {
       theme="gtp"
       background="muted"
     >
-      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
+      <StaggerReveal
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0"
+      >
         {themes.map(({ num, icon: Icon, title, body, iconBg, iconColour }) => (
           <div
             key={num}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
+            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <div className="mb-5 flex items-center gap-3">
               <div
@@ -214,7 +219,7 @@ function ThemesSection() {
             </p>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
       <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
         The conference is designed for leaders who want clarity, confidence that
         they are not alone, and credible pathways forward.
@@ -347,11 +352,13 @@ function QuoteSection() {
       theme="gtp"
       background="dark"
     >
-      <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
+      <StaggerReveal
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0"
+      >
         {coChairQuotes.map(({ name, designation, quote, hasPhoto, photoSrc }) => (
           <div
             key={name}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm md:w-auto md:max-w-none"
+            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm md:w-auto md:max-w-none"
           >
             {/* Quote icon */}
             <Quote className="mb-4 h-8 w-8 shrink-0 text-gtp-teal/60" />
@@ -389,7 +396,7 @@ function QuoteSection() {
             </div>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
     </SectionWrapper>
   );
 }

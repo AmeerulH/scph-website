@@ -212,3 +212,18 @@
     background-clip: unset;
   }
 }
+
+/* Hero loader spinner */
+@keyframes hero-loader-spin {
+  to { transform: rotate(360deg); }
+}
+
+.hero-loader-spinner {
+  animation: hero-loader-spin 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-loader-spinner {
+    animation: none;
+  }
+}

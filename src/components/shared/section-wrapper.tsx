@@ -13,7 +13,7 @@ interface SectionWrapperProps {
   /** "default" = white bg, "muted" = subtle tinted bg, "dark" = brand dark bg */
   background?: "default" | "muted" | "dark";
   id?: string;
-  /** Enable scroll-triggered reveal animation (default: true for scph) */
+  /** Enable scroll-triggered reveal animation (default: true for both scph and gtp) */
   scrollReveal?: boolean;
 }
 
@@ -51,7 +51,7 @@ export function SectionWrapper({
   contentClassName,
   background = "default",
   id,
-  scrollReveal = theme === "scph",
+  scrollReveal = true,
 }: SectionWrapperProps) {
   const bgClass =
     background === "muted"

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
 // ─── Media item data ───────────────────────────────────────────────────────────
 
@@ -343,7 +344,10 @@ function MediaGridSection() {
 
         {/* Photo grid */}
       {filtered.length > 0 ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <StaggerReveal
+          variant="long"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {filtered.map((item) => (
             <article
               key={item.id}
@@ -374,7 +378,7 @@ function MediaGridSection() {
               </div>
             </article>
           ))}
-        </div>
+        </StaggerReveal>
       ) : (
         <div className="flex flex-col items-center justify-center py-24 text-center">
           <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
