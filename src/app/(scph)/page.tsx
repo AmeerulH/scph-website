@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   ExternalLink,
@@ -75,17 +74,9 @@ function AboutSection() {
           </Button>
         </div>
 
-        {/* Right — group photo (replace logo) */}
-        {/* Place group-photo-2.jpg in public/images/scph/ to activate */}
+        {/* Right — visual placeholder until group photo is available */}
         <div className="hidden items-center justify-center lg:flex">
-          <div className="relative h-80 w-full overflow-hidden rounded-3xl bg-scph-blue/8 ring-1 ring-scph-blue/10">
-            <Image
-              src="/images/scph/group-photo-2.jpg"
-              alt="SCPH Team"
-              fill
-              className="object-cover object-center"
-            />
-          </div>
+          <div className="relative h-80 w-full overflow-hidden rounded-3xl bg-scph-blue/8 ring-1 ring-scph-blue/10" />
         </div>
       </div>
     </SectionWrapper>

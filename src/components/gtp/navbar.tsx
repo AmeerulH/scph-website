@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,29 +16,111 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 
-const navLinks = [
-  { label: "SCPH", href: "/" },
+// ─── Nav structure ────────────────────────────────────────────────────────────
+
+type SimpleLink = { label: string; href: string; dropdown?: never };
+type DropdownLink = {
+  label: string;
+  href?: never;
+  dropdown: { label: string; href: string }[];
+};
+type NavItem = SimpleLink | DropdownLink;
+
+const navItems: NavItem[] = [
+  { label: "Home", href: "/" },
   {
     label: "Organising Committee",
     href: "/events/gtp-2026/organising-committee",
   },
   { label: "Programme", href: "/events/gtp-2026/programmes" },
-  { label: "Biz Forum", href: "/events/gtp-2026/biz-forum" },
+  { label: "Business Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
-  { label: "Get Involved", href: "/events/gtp-2026/get-involved" },
+  {
+    label: "Get Involved",
+    dropdown: [
+      { label: "Contact Us", href: "/events/gtp-2026/get-involved#contact" },
+      {
+        label: "Partnership",
+        href: "/events/gtp-2026/get-involved#partnership",
+      },
+      {
+        label: "Collaboration",
+        href: "/events/gtp-2026/get-involved#collaboration",
+      },
+    ],
+  },
+  {
+    label: "Submissions",
+    dropdown: [
+      { label: "Abstract", href: "/events/gtp-2026/submissions#abstract" },
+      { label: "Proposal", href: "/events/gtp-2026/submissions#proposal" },
+    ],
+  },
 ];
 
-const ctaLinks = [
-  { label: "Registration", href: "/events/gtp-2026/get-involved" },
-  { label: "Call for Abstracts", href: "/events/gtp-2026/get-involved" },
-  { label: "Call for Proposals", href: "/events/gtp-2026/get-involved" },
-  { label: "Contact Us", href: "/events/gtp-2026/get-involved" },
-];
+// ─── Desktop dropdown ─────────────────────────────────────────────────────────
+
+function DesktopDropdown({
+  label,
+  items,
+  isActive,
+}: {
+  label: string;
+  items: { label: string; href: string }[];
+  isActive: boolean;
+}) {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        className={cn(
+          "flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+          open || isActive
+            ? "bg-white/15 text-white"
+            : "text-white/75 hover:bg-white/10 hover:text-white",
+        )}
+        aria-expanded={open}
+      >
+        {label}
+        <ChevronDown
+          className={cn(
+            "h-3 w-3 shrink-0 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full z-50 mt-2 min-w-[180px] overflow-hidden rounded-xl border border-white/10 bg-gtp-dark-teal/95 p-1.5 shadow-xl backdrop-blur-xl">
+          {items.map(({ label: itemLabel, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className="block rounded-lg px-4 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              {itemLabel}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main Navbar ──────────────────────────────────────────────────────────────
 
 export function GtpNavbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = React.useState(false);
   const [sheetOpen, setSheetOpen] = React.useState(false);
+  const [mobileExpanded, setMobileExpanded] = React.useState<string | null>(
+    null,
+  );
 
   React.useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -47,9 +129,17 @@ export function GtpNavbar() {
   }, []);
 
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/"
+      ? false
+      : pathname.startsWith(href);
 
-  const closeSheet = () => setSheetOpen(false);
+  const isDropdownActive = (items: { href: string }[]) =>
+    items.some(({ href }) => pathname.startsWith(href.split("#")[0]));
+
+  const closeSheet = () => {
+    setSheetOpen(false);
+    setMobileExpanded(null);
+  };
 
   return (
     <header className="fixed inset-x-2 top-4 z-50 flex justify-center md:inset-x-4">
@@ -61,36 +151,51 @@ export function GtpNavbar() {
             : "bg-gtp-dark-teal/75 shadow-lg backdrop-blur-xl",
         )}
       >
-        {/* GTP wordmark */}
+        {/* GTP logo */}
         <Link
           href="/events/gtp-2026/about"
-          className="shrink-0 font-heading text-sm font-bold tracking-wide text-white/90 transition-colors hover:text-white"
+          className="shrink-0 transition-opacity hover:opacity-80"
+          aria-label="GTP 2026 Home"
         >
-          GTP 2026
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/gtp/logo-blue-wide.svg"
+            alt="Global Tipping Points 2026"
+            className="h-6 w-auto object-contain brightness-0 invert"
+          />
         </Link>
 
         {/* Desktop nav links */}
-        <div className="hidden items-center gap-1 lg:flex">
-          {navLinks.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className={cn(
-                "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                isActive(href)
-                  ? "bg-white/15 text-white"
-                  : "text-white/75 hover:bg-white/10 hover:text-white",
-              )}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="hidden items-center gap-0.5 lg:flex">
+          {navItems.map((item) =>
+            item.dropdown ? (
+              <DesktopDropdown
+                key={item.label}
+                label={item.label}
+                items={item.dropdown}
+                isActive={isDropdownActive(item.dropdown)}
+              />
+            ) : (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                  isActive(item.href)
+                    ? "bg-white/15 text-white"
+                    : "text-white/75 hover:bg-white/10 hover:text-white",
+                )}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </div>
 
         {/* Desktop CTA */}
         <div className="hidden lg:block">
           <Button variant="gtpCta" size="sm" asChild>
-            <Link href="/events/gtp-2026/get-involved">Register Now</Link>
+            <Link href="/events/gtp-2026/register">Register Now</Link>
           </Button>
         </div>
 
@@ -109,7 +214,7 @@ export function GtpNavbar() {
             side="right"
             className="flex w-80 flex-col border-gtp-dark-teal/20 bg-gtp-dark-teal p-0 text-white"
           >
-            {/* Sheet header — fixed, never scrolls */}
+            {/* Sheet header */}
             <div className="shrink-0 border-b border-white/10 px-6 py-5">
               <SheetTitle className="font-heading text-lg font-bold tracking-wide text-white">
                 GTP 2026
@@ -121,46 +226,82 @@ export function GtpNavbar() {
 
             {/* Scrollable body */}
             <div className="flex-1 overflow-y-auto">
-              {/* Sheet nav links */}
               <nav className="flex flex-col px-4 py-4">
-                {navLinks.map(({ label, href }) => (
-                  <SheetClose asChild key={label}>
-                    <Link
-                      href={href}
-                      onClick={closeSheet}
-                      className={cn(
-                        "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
-                        isActive(href)
-                          ? "bg-white/15 text-white"
-                          : "text-white/70 hover:bg-white/10 hover:text-white",
+                {navItems.map((item) =>
+                  item.dropdown ? (
+                    <div key={item.label}>
+                      <button
+                        onClick={() =>
+                          setMobileExpanded(
+                            mobileExpanded === item.label
+                              ? null
+                              : item.label,
+                          )
+                        }
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                          isDropdownActive(item.dropdown)
+                            ? "bg-white/15 text-white"
+                            : "text-white/70 hover:bg-white/10 hover:text-white",
+                        )}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform duration-200",
+                            mobileExpanded === item.label && "rotate-180",
+                          )}
+                        />
+                      </button>
+                      {mobileExpanded === item.label && (
+                        <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-white/10 pl-4">
+                          {item.dropdown.map(({ label: subLabel, href }) => (
+                            <SheetClose asChild key={href}>
+                              <Link
+                                href={href}
+                                onClick={closeSheet}
+                                className="rounded-lg px-3 py-2.5 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+                              >
+                                {subLabel}
+                              </Link>
+                            </SheetClose>
+                          ))}
+                        </div>
                       )}
-                    >
-                      {label}
-                    </Link>
-                  </SheetClose>
-                ))}
+                    </div>
+                  ) : (
+                    <SheetClose asChild key={item.label}>
+                      <Link
+                        href={item.href}
+                        onClick={closeSheet}
+                        className={cn(
+                          "rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                          isActive(item.href)
+                            ? "bg-white/15 text-white"
+                            : "text-white/70 hover:bg-white/10 hover:text-white",
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    </SheetClose>
+                  ),
+                )}
               </nav>
 
               <Separator className="mx-4 bg-white/10" />
 
-              {/* Sheet CTAs */}
-              <div className="flex flex-col gap-3 px-6 py-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-white/40">
-                  Get Involved
-                </p>
-                {ctaLinks.map(({ label, href }) => (
-                  <SheetClose asChild key={label}>
-                    <Button
-                      variant="gtpCta"
-                      className="w-full justify-start"
-                      asChild
-                    >
-                      <Link href={href} onClick={closeSheet}>
-                        {label}
-                      </Link>
-                    </Button>
-                  </SheetClose>
-                ))}
+              <div className="px-6 py-5">
+                <SheetClose asChild>
+                  <Button
+                    variant="gtpCta"
+                    className="w-full"
+                    asChild
+                  >
+                    <Link href="/events/gtp-2026/register" onClick={closeSheet}>
+                      Register Now
+                    </Link>
+                  </Button>
+                </SheetClose>
               </div>
             </div>
           </SheetContent>

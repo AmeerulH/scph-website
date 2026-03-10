@@ -5,19 +5,21 @@ import {
   TrendingDown,
   Lightbulb,
   Zap,
-  ImageIcon,
+  Download,
+  Quote,
+  UserCircle2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { GtpHeroCarousel } from "@/components/gtp/hero-carousel";
 
-// ─── What is Global Tipping Points ───────────────────────────────────────────
+// ─── About GTP (New Reality) ──────────────────────────────────────────────────
 
 function WhatIsGtpSection() {
   return (
     <SectionWrapper
-      title="What are Global Tipping Points?"
-      subtitle="About GTP 2026"
+      title="What are Global Tipping Points"
+      subtitle="New Reality"
       theme="gtp"
       background="default"
       id="about"
@@ -37,54 +39,66 @@ function WhatIsGtpSection() {
             leadership, investment and public confidence comes together, change
             can accelerate very quickly.
           </p>
-        </div>
+          <p className="mt-4 text-sm text-gray-400">
+            To learn more about Global Tipping Points, visit{" "}
+            <a
+              href="https://global-tipping-points.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-gtp-teal hover:underline"
+            >
+              global-tipping-points.org
+            </a>
+          </p>
 
-        {/* Right — GTP logo + pull quote */}
-        <div className="flex flex-col gap-6">
-          <div className="flex items-center justify-center rounded-2xl bg-gtp-dark-teal/5 p-8 ring-1 ring-gtp-dark-teal/10">
-            <Image
-              src="/images/gtp/logo.png"
-              alt="Global Tipping Points 2026"
-              width={200}
-              height={80}
-              className="h-auto w-48 object-contain"
-            />
-          </div>
-          <blockquote className="rounded-2xl bg-gtp-teal/10 p-6 ring-1 ring-gtp-teal/20">
+          {/* Pull quote */}
+          <blockquote className="mt-8 rounded-2xl bg-gtp-teal/10 p-6 ring-1 ring-gtp-teal/20">
+            <Quote className="mb-3 h-6 w-6 text-gtp-teal/50" />
             <p className="font-heading text-lg font-semibold italic leading-snug text-gtp-dark-teal">
               &ldquo;Systems that once seemed immovable can suddenly
               shift.&rdquo;
             </p>
           </blockquote>
         </div>
+
+        {/* Right — GTP 2025 Report Cover + download */}
+        <div className="flex flex-col items-center gap-5">
+          <div className="mx-auto w-full max-w-[200px] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gtp-dark-teal/10">
+            <Image
+              src="/images/gtp/report-cover.avif"
+              alt="Global Tipping Points 2025 Report Cover"
+              width={200}
+              height={266}
+              className="h-auto w-full object-cover"
+            />
+          </div>
+          <Button variant="gtpSecondary" size="default" asChild>
+            <a
+              href="https://global-tipping-points.org/download/1418/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              Download GTP 2025 Report
+            </a>
+          </Button>
+        </div>
       </div>
     </SectionWrapper>
   );
 }
 
-// ─── Placeholder block helper ─────────────────────────────────────────────────
-
-function ImgPlaceholder({ className }: { className?: string }) {
-  return (
-    <div
-      className={`flex items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/15 ${className ?? ""}`}
-    >
-      <ImageIcon className="h-8 w-8 text-white/25" />
-    </div>
-  );
-}
-
-// ─── Why This Conference Matters ─────────────────────────────────────────────
+// ─── About Conference ─────────────────────────────────────────────────────────
 
 function WhyItMattersSection() {
   return (
     <SectionWrapper
-      title="Designed for This Moment"
-      subtitle="Why It Matters"
+      title="The Idea behind Global Tipping Points 2026"
+      subtitle="Why This Meeting Matters"
       theme="gtp"
       background="dark"
     >
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
         {/* Left — text */}
         <div>
           <p className="text-lg leading-relaxed text-white/80">
@@ -99,23 +113,47 @@ function WhyItMattersSection() {
           </p>
           <Button variant="gtpSecondary" size="lg" className="mt-8" asChild>
             <Link href="/events/gtp-2026/programmes">
-              Learn About the Programme <ArrowRight />
+              Explore the Programme <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
 
-        {/* Right — bento placeholder grid */}
+        {/* Right — bento photo grid using stock images */}
         <div className="grid grid-cols-2 grid-rows-2 gap-3">
-          <ImgPlaceholder className="row-span-2 min-h-[280px]" />
-          <ImgPlaceholder className="aspect-[4/3]" />
-          <ImgPlaceholder className="aspect-[4/3]" />
+          <div className="relative row-span-2 min-h-[280px] overflow-hidden rounded-2xl">
+            <Image
+              src="/images/gtp/conference/leaves.jpg"
+              alt="Nature and sustainability"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <Image
+              src="/images/gtp/conference/river.jpg"
+              alt="River ecosystem"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <Image
+              src="/images/gtp/conference/solar.jpg"
+              alt="Solar energy transition"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
         </div>
       </div>
     </SectionWrapper>
   );
 }
 
-// ─── Themes ───────────────────────────────────────────────────────────────────
+// ─── Conference Themes ────────────────────────────────────────────────────────
 
 const themes = [
   {
@@ -152,7 +190,6 @@ function ThemesSection() {
       theme="gtp"
       background="muted"
     >
-      {/* Mobile: horizontal swipe carousel / Desktop: 3-col grid */}
       <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
         {themes.map(({ num, icon: Icon, title, body, iconBg, iconColour }) => (
           <div
@@ -178,6 +215,10 @@ function ThemesSection() {
           </div>
         ))}
       </div>
+      <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
+        The conference is designed for leaders who want clarity, confidence that
+        they are not alone, and credible pathways forward.
+      </p>
     </SectionWrapper>
   );
 }
@@ -186,7 +227,7 @@ function ThemesSection() {
 
 const partnerPlaceholders = Array.from({ length: 8 }, (_, i) => i + 1);
 
-function SponsorLogoItem({ n }: { n: number }) {
+function SponsorLogoItem() {
   return (
     <div className="flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 mr-4">
       <span className="text-xs font-medium text-gray-400">Partner Logo</span>
@@ -198,28 +239,25 @@ function SponsorsSection() {
   return (
     <SectionWrapper
       title="Building a Global Coalition"
-      subtitle="Sponsors & Partners"
+      subtitle="Our Sponsors & Partners"
       theme="gtp"
       background="default"
     >
-      {/* Infinite 2-row marquee ticker */}
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        {/* Row 1 — scrolls left */}
         <div className="mb-4 flex animate-marquee will-change-transform">
           {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r1a-${n}`} n={n} />
+            <SponsorLogoItem key={`r1a-${n}`} />
           ))}
           {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r1b-${n}`} n={n} />
+            <SponsorLogoItem key={`r1b-${n}`} />
           ))}
         </div>
-        {/* Row 2 — scrolls right */}
         <div className="flex animate-marquee-reverse will-change-transform">
           {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r2a-${n}`} n={n} />
+            <SponsorLogoItem key={`r2a-${n}`} />
           ))}
           {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r2b-${n}`} n={n} />
+            <SponsorLogoItem key={`r2b-${n}`} />
           ))}
         </div>
       </div>
@@ -227,7 +265,7 @@ function SponsorsSection() {
       <p className="mt-8 text-center text-sm text-gray-400">
         Partner and sponsor logos coming soon. Interested in partnering?{" "}
         <Link
-          href="/events/gtp-2026/get-involved"
+          href="/events/gtp-2026/get-involved#partnership"
           className="font-semibold text-gtp-dark-teal hover:underline"
         >
           Get in touch →
@@ -243,27 +281,115 @@ function GallerySection() {
   return (
     <SectionWrapper
       title="Moments That Matter"
-      subtitle="Gallery"
+      subtitle="Our Gallery"
       theme="gtp"
       background="muted"
     >
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        {/* First placeholder spans 2 columns */}
         <div className="col-span-2 aspect-[16/7] rounded-2xl bg-gtp-dark-teal/8 ring-1 ring-gtp-dark-teal/15 flex items-center justify-center md:col-span-2">
-          <ImageIcon className="h-10 w-10 text-gtp-dark-teal/25" />
+          <span className="text-xs font-medium text-gtp-dark-teal/30">
+            Photos coming soon
+          </span>
         </div>
         {Array.from({ length: 5 }).map((_, i) => (
           <div
             key={i}
             className="aspect-[4/3] rounded-2xl bg-gtp-dark-teal/8 ring-1 ring-gtp-dark-teal/15 flex items-center justify-center"
           >
-            <ImageIcon className="h-7 w-7 text-gtp-dark-teal/25" />
+            <span className="text-xs font-medium text-gtp-dark-teal/30">
+              Photo
+            </span>
           </div>
         ))}
       </div>
       <p className="mt-6 text-center text-sm text-gray-400">
-        Photos from the conference will be added here.
+        Photos from the conference will be added here.{" "}
+        <Link
+          href="/events/gtp-2026/media"
+          className="font-semibold text-gtp-dark-teal hover:underline"
+        >
+          See more →
+        </Link>
       </p>
+    </SectionWrapper>
+  );
+}
+
+// ─── Quote Section ────────────────────────────────────────────────────────────
+
+const coChairQuotes = [
+  {
+    name: "Tim Lenton",
+    designation: "Co-Chair · Founding Director, Global Systems Institute, University of Exeter",
+    quote: "TBC — Quote by Tim Lenton will be provided separately.",
+    hasPhoto: false,
+  },
+  {
+    name: "Johan Rockström",
+    designation: "Co-Chair · Director, Potsdam Institute for Climate Impact Research",
+    quote: "TBC — Quote by Johan Rockström will be provided separately.",
+    hasPhoto: false,
+  },
+  {
+    name: "Jemilah Mahmood",
+    designation: "Co-Chair · Executive Director, Sunway Centre for Planetary Health, Sunway University",
+    quote: "TBC — Quote by Jemilah Mahmood will be provided separately.",
+    hasPhoto: true,
+    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
+  },
+];
+
+function QuoteSection() {
+  return (
+    <SectionWrapper
+      title="Words from Our Co-Chairs"
+      subtitle="Leadership Voices"
+      theme="gtp"
+      background="dark"
+    >
+      <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
+        {coChairQuotes.map(({ name, designation, quote, hasPhoto, photoSrc }) => (
+          <div
+            key={name}
+            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex flex-col rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm md:w-auto md:max-w-none"
+          >
+            {/* Quote icon */}
+            <Quote className="mb-4 h-8 w-8 shrink-0 text-gtp-teal/60" />
+
+            {/* Quote text */}
+            <p className="flex-1 font-heading text-base font-semibold italic leading-relaxed text-white/90">
+              &ldquo;{quote}&rdquo;
+            </p>
+
+            {/* Attribution */}
+            <div className="mt-6 flex items-center gap-4 border-t border-white/10 pt-5">
+              {hasPhoto && photoSrc ? (
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-2 ring-gtp-teal/30">
+                  <Image
+                    src={photoSrc}
+                    alt={name}
+                    fill
+                    className="object-cover"
+                    sizes="56px"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gtp-teal/10 ring-2 ring-gtp-teal/20">
+                  <UserCircle2 className="h-8 w-8 text-gtp-teal/40" />
+                </div>
+              )}
+              <div>
+                <p className="font-heading text-sm font-bold text-white">
+                  {name}
+                </p>
+                <p className="mt-0.5 text-xs leading-relaxed text-white/50">
+                  {designation}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </SectionWrapper>
   );
 }
@@ -279,6 +405,7 @@ export default function GtpAboutPage() {
       <ThemesSection />
       <SponsorsSection />
       <GallerySection />
+      <QuoteSection />
     </>
   );
 }

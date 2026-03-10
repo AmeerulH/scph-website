@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 // ─── Events carousel data ────────────────────────────────────────────────────
@@ -22,17 +21,8 @@ const highlightedEvents = [
 export function ScphHero() {
   return (
     <section className="relative flex min-h-[85vh] flex-col">
-      {/* Background — group photo with dark overlay */}
-      {/* Place group-photo-1.jpg in public/images/scph/ to activate */}
+      {/* Background gradient */}
       <div className="absolute inset-0">
-        <Image
-          src="/images/scph/group-photo-1.jpg"
-          alt="SCPH Team"
-          fill
-          className="object-cover object-center"
-          priority
-        />
-        {/* Gradient overlay — also serves as fallback when image is missing */}
         <div className="absolute inset-0 bg-gradient-to-br from-scph-blue/90 via-scph-dark-green/80 to-scph-blue-dark/90" />
       </div>
 

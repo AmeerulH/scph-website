@@ -95,7 +95,7 @@ export function GtpHeroCarousel() {
         {/* CTAs */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Button variant="gtpCta" size="lg" asChild>
-            <Link href="/events/gtp-2026/get-involved">Register Now →</Link>
+            <Link href="/events/gtp-2026/register">Register Now →</Link>
           </Button>
           <Button
             size="lg"

@@ -1,7 +1,20 @@
+import Image from "next/image";
+
 export function ProgrammesHero() {
   return (
-    <div className="bg-gtp-dark-teal px-4 pb-16 pt-40 text-center">
-      <div className="mx-auto max-w-4xl">
+    <div className="relative overflow-hidden px-4 pb-16 pt-40 text-center">
+      {/* Forest background */}
+      <Image
+        src="/images/gtp/forest-bg.jpg"
+        alt=""
+        fill
+        className="object-cover object-center"
+        priority
+      />
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-gtp-dark-teal/75" />
+
+      <div className="relative mx-auto max-w-4xl">
         <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           GTP 2026
         </span>
