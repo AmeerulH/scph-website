@@ -3,19 +3,27 @@ import Image from "next/image";
 import { ArrowRight, BookOpen, Target, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 
+// Forest background: add forest-bg.jpg to public/images/scph/ for custom image.
+// Using Unsplash fallback until local file is added.
+const FOREST_BG_SRC =
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80";
+
 function AboutHero() {
   return (
-    <div className="relative px-4 pb-24 pt-40 text-center overflow-hidden">
-      {/* Forest background — place forest-bg.jpg in public/images/scph/ */}
+    <div className="relative min-h-[50vh] px-4 pb-24 pt-40 text-center overflow-hidden">
+      {/* Forest background */}
       <Image
-        src="/images/scph/forest-bg.jpg"
+        src={FOREST_BG_SRC}
         alt="Forest background"
         fill
         className="object-cover object-center"
         priority
+        sizes="100vw"
       />
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-scph-blue/80" />
@@ -156,11 +164,11 @@ function OurStrategySection() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <StaggerReveal className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" variant="default">
         {strategyCards.map(({ icon: Icon, title, description, href }) => (
           <div
             key={title}
-            className="group flex flex-col rounded-2xl bg-white p-7 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="group flex flex-col min-h-[320px] rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-scph-blue/10">
               <Icon className="h-6 w-6 text-scph-blue" />
@@ -175,7 +183,7 @@ function OurStrategySection() {
             </Link>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
     </SectionWrapper>
   );
 }
@@ -621,11 +629,13 @@ function MeetTheTeamSection() {
       </div>
 
       <div className="mt-14 text-center">
-        <Button variant="scphSecondary" size="lg" asChild>
-          <Link href="/network">
-            Get Involved <ArrowRight />
-          </Link>
-        </Button>
+        <MagneticButton>
+          <Button variant="scphSecondary" size="lg" asChild>
+            <Link href="/network">
+              Get Involved <ArrowRight />
+            </Link>
+          </Button>
+        </MagneticButton>
       </div>
     </SectionWrapper>
   );

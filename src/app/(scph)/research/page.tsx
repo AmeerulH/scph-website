@@ -11,6 +11,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { ScrollProgressSection } from "@/components/motion/ScrollProgressSection";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { MagneticButton } from "@/components/motion/MagneticButton";
 
 // ─── Hero Band ───────────────────────────────────────────────────────────────
 
@@ -69,48 +72,51 @@ function ResearchStatsRow() {
 
 function RoadmapIntroSection() {
   return (
-    <SectionWrapper
-      title="How Do We 'Do' Planetary Health?"
-      subtitle="The Roadmap"
-      theme="scph"
-      background="default"
-    >
-      <div className="max-w-3xl">
-        <p className="text-lg leading-relaxed text-gray-600">
-          The Planetary Health Roadmap and Action Plan was unveiled as the
-          primary outcome of the 2024 Planetary Health Summit and 6th Annual
-          Meeting (PHAM 2024). In today&apos;s world, marked by escalating
-          environmental challenges and their impact on human well-being, the
-          Roadmap and Action Plan can help to answer the question: &ldquo;How
-          do we &lsquo;do&rsquo; Planetary Health?&rdquo;
-        </p>
-        <p className="mt-4 text-base leading-relaxed text-gray-500">
-          The development of this Roadmap and Action Plan was made possible
-          through the collaborative efforts of experts working across four
-          working groups and includes more than 100 experts from prestigious
-          institutions around the planet. The document aims to bridge Planetary
-          Health discourse between academia and action via policy, political,
-          and civil society spaces, and to begin the process of pulling together
-          an impactful set of actions that address the interconnected issues of
-          human and environmental health.
-        </p>
-        <p className="mt-4 text-base leading-relaxed text-gray-500">
-          The Roadmap addresses the pressing need for a coordinated global
-          response to the environmental challenges that threaten human health
-          and biodiversity.
-        </p>
-      </div>
+    <ScrollProgressSection>
+      <SectionWrapper
+        title="How Do We 'Do' Planetary Health?"
+        subtitle="The Roadmap"
+        theme="scph"
+        background="default"
+      >
+        <div className="max-w-3xl">
+          <p className="text-lg leading-relaxed text-gray-600">
+            The Planetary Health Roadmap and Action Plan was unveiled as the
+            primary outcome of the 2024 Planetary Health Summit and 6th Annual
+            Meeting (PHAM 2024). In today&apos;s world, marked by escalating
+            environmental challenges and their impact on human well-being, the
+            Roadmap and Action Plan can help to answer the question: &ldquo;How
+            do we &lsquo;do&rsquo; Planetary Health?&rdquo;
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-gray-500">
+            The development of this Roadmap and Action Plan was made possible
+            through the collaborative efforts of experts working across four
+            working groups and includes more than 100 experts from prestigious
+            institutions around the planet. The document aims to bridge Planetary
+            Health discourse between academia and action via policy, political,
+            and civil society spaces, and to begin the process of pulling together
+            an impactful set of actions that address the interconnected issues of
+            human and environmental health.
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-gray-500">
+            The Roadmap addresses the pressing need for a coordinated global
+            response to the environmental challenges that threaten human health
+            and biodiversity.
+          </p>
+        </div>
 
-      <div className="mt-10 flex flex-wrap gap-4">
-        <Button variant="scph" asChild>
-          <a
-            href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read the Full Roadmap <ArrowRight />
-          </a>
-        </Button>
+        <div className="mt-10 flex flex-wrap gap-4">
+          <MagneticButton>
+            <Button variant="scph" asChild>
+              <a
+                href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read the Full Roadmap <ArrowRight />
+              </a>
+            </Button>
+          </MagneticButton>
         <Button variant="outline" asChild>
           <a
             href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
@@ -122,6 +128,7 @@ function RoadmapIntroSection() {
         </Button>
       </div>
     </SectionWrapper>
+    </ScrollProgressSection>
   );
 }
 
@@ -187,11 +194,14 @@ function PillarsSection() {
       theme="scph"
       background="muted"
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <StaggerReveal
+        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+        variant="long"
+      >
         {pillars.map(({ num, icon: Icon, title, description }) => (
           <div
             key={num}
-            className="flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            className="flex flex-col min-h-[320px] rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="mb-4 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-scph-blue/10">
@@ -209,7 +219,7 @@ function PillarsSection() {
             </p>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
     </SectionWrapper>
   );
 }

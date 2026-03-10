@@ -1,5 +1,6 @@
 import { ScphNavbar } from "@/components/scph/navbar";
 import { ScphFooter } from "@/components/scph/footer";
+import { AtmosphericReveal } from "@/components/motion/AtmosphericReveal";
 
 export default function ScphLayout({
   children,
@@ -9,7 +10,9 @@ export default function ScphLayout({
   return (
     <>
       <ScphNavbar />
-      <main>{children}</main>
+      <main>
+        <AtmosphericReveal>{children}</AtmosphericReveal>
+      </main>
       <ScphFooter />
     </>
   );

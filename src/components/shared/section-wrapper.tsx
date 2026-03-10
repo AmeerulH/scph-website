@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 type Theme = "scph" | "gtp";
 
@@ -12,6 +13,8 @@ interface SectionWrapperProps {
   /** "default" = white bg, "muted" = subtle tinted bg, "dark" = brand dark bg */
   background?: "default" | "muted" | "dark";
   id?: string;
+  /** Enable scroll-triggered reveal animation (default: true for scph) */
+  scrollReveal?: boolean;
 }
 
 const accentClasses: Record<Theme, string> = {
@@ -48,6 +51,7 @@ export function SectionWrapper({
   contentClassName,
   background = "default",
   id,
+  scrollReveal = theme === "scph",
 }: SectionWrapperProps) {
   const bgClass =
     background === "muted"
@@ -58,48 +62,58 @@ export function SectionWrapper({
 
   const isDark = background === "dark";
 
+  const content = (
+    <>
+      {(title || subtitle) && (
+        <div className="mb-12">
+          {subtitle && (
+            <div
+              className={cn(
+                "mb-4 flex items-center gap-3",
+                isDark ? "text-white/60" : subtitleClasses[theme]
+              )}
+            >
+              <span className="h-px w-8 bg-current opacity-60 shrink-0" />
+              <span className="text-xs font-semibold uppercase tracking-[0.15em]">
+                {subtitle}
+              </span>
+            </div>
+          )}
+          {title && (
+            <div>
+              <h2
+                className={cn(
+                  "font-heading text-3xl font-bold leading-tight md:text-4xl lg:text-5xl",
+                  isDark ? "text-white" : titleClasses[theme]
+                )}
+              >
+                {title}
+              </h2>
+              <div
+                className={cn(
+                  "mt-4 h-1 w-20 rounded-full",
+                  isDark ? "bg-white/30" : accentClasses[theme]
+                )}
+              />
+            </div>
+          )}
+        </div>
+      )}
+      {children}
+    </>
+  );
+
   return (
     <section
       id={id}
       className={cn("py-20 px-4 md:px-6 lg:px-8 md:py-28", bgClass, className)}
     >
       <div className={cn("mx-auto max-w-7xl", contentClassName)}>
-        {(title || subtitle) && (
-          <div className="mb-12">
-            {subtitle && (
-              <div
-                className={cn(
-                  "mb-4 flex items-center gap-3",
-                  isDark ? "text-white/60" : subtitleClasses[theme]
-                )}
-              >
-                <span className="h-px w-8 bg-current opacity-60 shrink-0" />
-                <span className="text-xs font-semibold uppercase tracking-[0.15em]">
-                  {subtitle}
-                </span>
-              </div>
-            )}
-            {title && (
-              <div>
-                <h2
-                  className={cn(
-                    "font-heading text-3xl font-bold leading-tight md:text-4xl lg:text-5xl",
-                    isDark ? "text-white" : titleClasses[theme]
-                  )}
-                >
-                  {title}
-                </h2>
-                <div
-                  className={cn(
-                    "mt-4 h-1 w-20 rounded-full",
-                    isDark ? "bg-white/30" : accentClasses[theme]
-                  )}
-                />
-              </div>
-            )}
-          </div>
+        {scrollReveal ? (
+          <ScrollReveal>{content}</ScrollReveal>
+        ) : (
+          content
         )}
-        {children}
       </div>
     </section>
   );

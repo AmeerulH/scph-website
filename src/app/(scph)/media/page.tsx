@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
 // ─── Hero Band ───────────────────────────────────────────────────────────────
 
@@ -113,11 +114,14 @@ function ArticlesSection() {
       background="default"
     >
       {/* Mobile: horizontal swipe carousel / Desktop: 3-col grid */}
-      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-x-visible md:pb-0 lg:grid-cols-3">
+      <StaggerReveal
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:py-0 md:pb-0 lg:grid-cols-3"
+        variant="long"
+      >
         {articles.map(({ title, tag, excerpt }) => (
           <div
             key={title}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
+            className="w-[85vw] max-w-[85vw] min-h-[320px] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <Badge variant="scph" className="mb-4 w-fit">
               {tag}
@@ -138,7 +142,7 @@ function ArticlesSection() {
             </a>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
 
       <p className="mt-12 text-center text-sm text-gray-400">
         Articles are published on the Sunway University website.{" "}

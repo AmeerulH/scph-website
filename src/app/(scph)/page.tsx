@@ -10,6 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphHero } from "@/components/scph/hero";
+import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { MagneticButton } from "@/components/motion/MagneticButton";
+import { ScrollReveal } from "@/components/motion/ScrollReveal";
 
 // ─── Stats Band ──────────────────────────────────────────────────────────────
 
@@ -23,7 +26,7 @@ const stats = [
 function StatsBand() {
   return (
     <div className="bg-scph-blue py-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <ScrollReveal className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           {stats.map((stat, i) => (
             <div key={stat.label} className="relative text-center">
@@ -37,7 +40,7 @@ function StatsBand() {
             </div>
           ))}
         </div>
-      </div>
+      </ScrollReveal>
     </div>
   );
 }
@@ -67,11 +70,13 @@ function AboutSection() {
             decarbonisation, and driving an education revolution. Established
             in 2021.
           </p>
-          <Button variant="scph" size="lg" className="mt-8" asChild>
-            <Link href="/about-us">
-              Learn More <ArrowRight />
-            </Link>
-          </Button>
+          <MagneticButton className="mt-8">
+            <Button variant="scph" size="lg" asChild>
+              <Link href="/about-us">
+                Learn More <ArrowRight />
+              </Link>
+            </Button>
+          </MagneticButton>
         </div>
 
         {/* Right — visual placeholder until group photo is available */}
@@ -123,11 +128,14 @@ function PriorityAreasSection() {
       theme="scph"
       background="muted"
     >
-      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:pb-0">
+      <StaggerReveal
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:py-0 md:pb-0"
+        variant="default"
+      >
         {priorities.map(({ icon: Icon, title, description, colour, iconBg, iconColour }) => (
           <div
             key={title}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-8 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
+            className="w-[85vw] max-w-[85vw] min-h-[320px] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <div
               className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${iconBg}`}
@@ -148,7 +156,7 @@ function PriorityAreasSection() {
             </Link>
           </div>
         ))}
-      </div>
+      </StaggerReveal>
     </SectionWrapper>
   );
 }
@@ -174,15 +182,17 @@ function RoadmapSection() {
       </p>
 
       <div className="flex flex-wrap gap-4">
-        <Button variant="scph" asChild>
-          <a
-            href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read the Roadmap Action Plan <ArrowRight />
-          </a>
-        </Button>
+        <MagneticButton>
+          <Button variant="scph" asChild>
+            <a
+              href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read the Roadmap Action Plan <ArrowRight />
+            </a>
+          </Button>
+        </MagneticButton>
         <Button variant="outline" asChild>
           <a
             href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
@@ -220,15 +230,17 @@ function NphapSection() {
           planetary boundaries.
         </p>
         <div className="mt-8 flex flex-wrap gap-4">
-          <Button variant="scph" asChild>
-            <a
-              href="https://www.akademisains.gov.my/nphap-full-report/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Read the full NPHAP <ExternalLink className="ml-1 h-4 w-4" />
-            </a>
-          </Button>
+          <MagneticButton>
+            <Button variant="scph" asChild>
+              <a
+                href="https://www.akademisains.gov.my/nphap-full-report/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read the full NPHAP <ExternalLink className="ml-1 h-4 w-4" />
+              </a>
+            </Button>
+          </MagneticButton>
         </div>
       </div>
     </SectionWrapper>

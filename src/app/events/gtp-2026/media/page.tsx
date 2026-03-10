@@ -360,7 +360,7 @@ function MediaGridSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-gtp-dark-teal/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                    {DAY_LABELS[item.day]}
+                    {item.day in DAY_LABELS ? DAY_LABELS[item.day as keyof typeof DAY_LABELS] : ""}
                   </span>
                 </div>
               </div>
@@ -369,7 +369,7 @@ function MediaGridSection() {
                   {item.title}
                 </h3>
                 <p className="mt-1 text-xs text-gray-500">
-                  {THEME_LABELS[item.theme]} · {TYPE_LABELS[item.type]}
+                  {item.theme in THEME_LABELS ? THEME_LABELS[item.theme as keyof typeof THEME_LABELS] : ""} · {item.type in TYPE_LABELS ? TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] : ""}
                 </p>
               </div>
             </article>
