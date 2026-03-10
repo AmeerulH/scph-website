@@ -1,15 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Mail,
-  MapPin,
-  CalendarDays,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Youtube,
-  ExternalLink,
-} from "lucide-react";
+import { Mail, MapPin, CalendarDays, ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const quickLinks = [
@@ -18,10 +9,11 @@ const quickLinks = [
     label: "Organising Committee",
     href: "/events/gtp-2026/organising-committee",
   },
-  { label: "Programmes", href: "/events/gtp-2026/programmes" },
-  { label: "Biz Forum", href: "/events/gtp-2026/biz-forum" },
+  { label: "Programme", href: "/events/gtp-2026/programmes" },
+  { label: "Business Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
   { label: "Get Involved", href: "/events/gtp-2026/get-involved" },
+  { label: "Submissions", href: "/events/gtp-2026/submissions" },
 ];
 
 const importantDates = [
@@ -29,48 +21,48 @@ const importantDates = [
   { label: "Abstract Submission Deadline", date: "TBC" },
   { label: "Registration Opens", date: "TBC" },
   { label: "Early Bird Deadline", date: "TBC" },
-  { label: "Conference Dates", date: "2026, Kuala Lumpur" },
+  { label: "Conference Dates", date: "12–15 October 2026" },
 ];
 
 const socialLinks = [
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Twitter, href: "#", label: "Twitter / X" },
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Youtube, href: "#", label: "YouTube" },
+  { icon: "/images/gtp/social/fb.png", href: "#", label: "Facebook" },
+  { icon: "/images/gtp/social/ig.png", href: "#", label: "Instagram" },
+  { icon: "/images/gtp/social/li.png", href: "#", label: "LinkedIn" },
+  { icon: "/images/gtp/social/tt.png", href: "#", label: "TikTok" },
+  { icon: "/images/gtp/social/x.png", href: "#", label: "X / Twitter" },
+  { icon: "/images/gtp/social/yt.png", href: "#", label: "YouTube" },
 ];
 
 export function GtpFooter() {
   return (
     <footer className="bg-gtp-dark-teal text-white">
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        {/* Top — Three logos */}
-        <div className="flex flex-wrap items-center gap-8 md:gap-12">
+        {/* Top — Logo row (no separators) */}
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 lg:gap-14">
           <Link href="/events/gtp-2026/about" className="shrink-0">
             <Image
-              src="/images/gtp/logo.png"
+              src="/images/gtp/logo-blue-wide.svg"
               alt="Global Tipping Points 2026"
-              width={200}
-              height={80}
-              className="h-20 w-auto object-contain brightness-0 invert"
+              width={220}
+              height={48}
+              className="h-8 w-auto object-contain brightness-0 invert sm:h-10 md:h-14"
             />
           </Link>
-          <div className="hidden h-14 w-px bg-white/20 md:block" />
           <Link href="/" className="shrink-0">
             <Image
-              src="/images/scph/logo.png"
+              src="/images/gtp/logos/scph.png"
               alt="Sunway Centre for Planetary Health"
-              width={200}
+              width={180}
               height={60}
-              className="h-12 w-auto object-contain brightness-0 invert"
+              className="h-8 w-auto object-contain sm:h-10 md:h-14"
             />
           </Link>
-          <div className="hidden h-14 w-px bg-white/20 md:block" />
           <Image
-            src="/images/scph/sunway-uni-logo-white.png"
+            src="/images/gtp/logos/sunway-uni-white.png"
             alt="Sunway University"
-            width={200}
+            width={180}
             height={60}
-            className="h-14 w-auto object-contain"
+            className="h-8 w-auto object-contain sm:h-10 md:h-14"
           />
         </div>
 
@@ -135,15 +127,21 @@ export function GtpFooter() {
             </ul>
 
             {/* Social icons */}
-            <div className="mt-6 flex gap-3">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
+            <div className="mt-6 flex flex-wrap gap-3">
+              {socialLinks.map(({ icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/60 transition-all duration-200 hover:border-white/60 hover:text-white"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all duration-200 hover:border-white/60 hover:opacity-100"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Image
+                    src={icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 object-contain brightness-0 invert opacity-80"
+                  />
                 </a>
               ))}
             </div>

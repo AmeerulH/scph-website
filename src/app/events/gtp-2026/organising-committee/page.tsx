@@ -90,7 +90,7 @@ function CoChairPhoto({ name, photoSrc }: { name: string; photoSrc?: string }) {
 function CochairsSection() {
   return (
     <SectionWrapper
-      title="Meet the Co-Chair"
+      title="Meet the Co-Chairs"
       subtitle="Join the Conversation"
       theme="gtp"
       background="default"
@@ -125,7 +125,11 @@ type CommitteeMember = {
 };
 
 const planningCommittee: CommitteeMember[] = [
-  { name: "Andy Richards", role: "Co-Chair", organisation: "University of Exeter" },
+  {
+    name: "Andy Richards",
+    role: "Co-Chair",
+    organisation: "University of Exeter",
+  },
   { name: "Nazia Ahmad", role: "Co-Chair", organisation: "SCPH" },
   { name: "TBC", role: "Media Strategy", isPlaceholder: true },
   { name: "TBC", role: "Logistics", isPlaceholder: true },
@@ -137,7 +141,11 @@ const planningCommittee: CommitteeMember[] = [
 
 const programmeCommittee: CommitteeMember[] = [
   { name: "Dr. Fatimah Ahamad", role: "Co-Chair", organisation: "SCPH" },
-  { name: "Prof. Tim Lenton", role: "Co-Chair", organisation: "University of Exeter" },
+  {
+    name: "Prof. Tim Lenton",
+    role: "Co-Chair",
+    organisation: "University of Exeter",
+  },
   { name: "TBC", role: "Abstract Review", isPlaceholder: true },
   { name: "TBC", role: "Programme Agenda", isPlaceholder: true },
   { name: "TBC", role: "Outcome Report", isPlaceholder: true },

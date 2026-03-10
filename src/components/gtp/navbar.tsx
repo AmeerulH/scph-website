@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/separator";
 type SimpleLink = { label: string; href: string; dropdown?: never };
 type DropdownLink = {
   label: string;
-  href?: never;
+  parentHref: string;
   dropdown: { label: string; href: string }[];
 };
 type NavItem = SimpleLink | DropdownLink;
@@ -37,6 +37,7 @@ const navItems: NavItem[] = [
   { label: "Media", href: "/events/gtp-2026/media" },
   {
     label: "Get Involved",
+    parentHref: "/events/gtp-2026/get-involved",
     dropdown: [
       { label: "Contact Us", href: "/events/gtp-2026/get-involved#contact" },
       {
@@ -51,6 +52,7 @@ const navItems: NavItem[] = [
   },
   {
     label: "Submissions",
+    parentHref: "/events/gtp-2026/submissions",
     dropdown: [
       { label: "Abstract", href: "/events/gtp-2026/submissions#abstract" },
       { label: "Proposal", href: "/events/gtp-2026/submissions#proposal" },
@@ -62,10 +64,12 @@ const navItems: NavItem[] = [
 
 function DesktopDropdown({
   label,
+  parentHref,
   items,
   isActive,
 }: {
   label: string;
+  parentHref: string;
   items: { label: string; href: string }[];
   isActive: boolean;
 }) {
@@ -77,7 +81,8 @@ function DesktopDropdown({
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <button
+      <Link
+        href={parentHref}
         className={cn(
           "flex items-center gap-1 rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
           open || isActive
@@ -93,10 +98,11 @@ function DesktopDropdown({
             open && "rotate-180",
           )}
         />
-      </button>
+      </Link>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-2 min-w-[180px] overflow-hidden rounded-xl border border-white/10 bg-gtp-dark-teal/95 p-1.5 shadow-xl backdrop-blur-xl">
+        <div className="absolute left-0 top-full z-50 pt-2">
+          <div className="min-w-[180px] overflow-hidden rounded-xl border border-white/10 bg-gtp-dark-teal/95 p-1.5 shadow-xl backdrop-blur-xl">
           {items.map(({ label: itemLabel, href }) => (
             <Link
               key={href}
@@ -106,6 +112,7 @@ function DesktopDropdown({
               {itemLabel}
             </Link>
           ))}
+          </div>
         </div>
       )}
     </div>
@@ -172,6 +179,7 @@ export function GtpNavbar() {
               <DesktopDropdown
                 key={item.label}
                 label={item.label}
+                parentHref={item.parentHref}
                 items={item.dropdown}
                 isActive={isDropdownActive(item.dropdown)}
               />
