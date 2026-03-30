@@ -40,7 +40,7 @@ export function StaggerReveal({
       variants={containerVariants}
       initial="initial"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.01, margin: "0px 0px -10% 0px" }}
+      viewport={{ once: true, amount: 0.3 }}
       className={cn(className)}
     >
       {Array.isArray(children)

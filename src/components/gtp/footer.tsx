@@ -17,11 +17,10 @@ const quickLinks = [
 ];
 
 const importantDates = [
-  { label: "Abstract Submission Opens", date: "TBC" },
-  { label: "Abstract Submission Deadline", date: "TBC" },
+  { label: "Action Workshop Submission Deadline", date: "27 April 2026" },
+  { label: "Abstract Submission Deadline", date: "15 May 2026" },
   { label: "Registration Opens", date: "TBC" },
-  { label: "Early Bird Deadline", date: "TBC" },
-  { label: "Conference Dates", date: "12–15 October 2026" },
+  { label: "Early Bird Registration", date: "TBC" },
 ];
 
 const socialLinks = [
@@ -45,16 +44,23 @@ export function GtpFooter() {
               alt="Global Tipping Points 2026"
               width={220}
               height={48}
-              className="h-8 w-auto object-contain brightness-0 invert sm:h-10 md:h-14"
+              className="h-9 w-auto object-contain brightness-0 invert sm:h-11 md:h-16"
             />
           </Link>
+          <Image
+            src="/images/gtp/logos/exeter-gsi.png"
+            alt="University of Exeter — Global Systems Institute"
+            width={180}
+            height={60}
+            className="h-9 w-auto object-contain brightness-0 invert sm:h-11 md:h-16"
+          />
           <Link href="/" className="shrink-0">
             <Image
-              src="/images/gtp/logos/scph.png"
+              src="/images/gtp/logos/scph-white.png"
               alt="Sunway Centre for Planetary Health"
               width={180}
               height={60}
-              className="h-8 w-auto object-contain sm:h-10 md:h-14"
+              className="h-9 w-auto object-contain sm:h-11 md:h-16"
             />
           </Link>
           <Image
@@ -62,7 +68,7 @@ export function GtpFooter() {
             alt="Sunway University"
             width={180}
             height={60}
-            className="h-8 w-auto object-contain sm:h-10 md:h-14"
+            className="h-9 w-auto object-contain sm:h-11 md:h-16"
           />
         </div>
 
@@ -122,7 +128,7 @@ export function GtpFooter() {
               </li>
               <li className="flex items-start gap-2 text-sm text-white/70">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
-                <span>Kuala Lumpur, Malaysia</span>
+                <span>Sunway University, Malaysia</span>
               </li>
             </ul>
 

@@ -19,7 +19,7 @@ interface ScrollRevealProps {
 export function ScrollReveal({
   children,
   className,
-  margin = "0px 0px -10% 0px",
+  margin,
 }: ScrollRevealProps) {
   const prefersReducedMotion = useReducedMotion();
   const variants = prefersReducedMotion ? scrollRevealReduced : scrollReveal;
@@ -30,7 +30,7 @@ export function ScrollReveal({
       whileInView={variants.whileInView}
       viewport={{
         once: true,
-        amount: 0.01,
+        amount: 0.3,
         margin: prefersReducedMotion ? undefined : margin,
       }}
       transition={variants.transition}

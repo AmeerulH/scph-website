@@ -44,20 +44,9 @@ const navItems: NavItem[] = [
         label: "Partnership",
         href: "/events/gtp-2026/get-involved#partnership",
       },
-      {
-        label: "Collaboration",
-        href: "/events/gtp-2026/get-involved#collaboration",
-      },
     ],
   },
-  {
-    label: "Submissions",
-    parentHref: "/events/gtp-2026/submissions",
-    dropdown: [
-      { label: "Abstract", href: "/events/gtp-2026/submissions#abstract" },
-      { label: "Proposal", href: "/events/gtp-2026/submissions#proposal" },
-    ],
-  },
+  { label: "Submissions", href: "/events/gtp-2026/submissions" },
 ];
 
 // ─── Desktop dropdown ─────────────────────────────────────────────────────────

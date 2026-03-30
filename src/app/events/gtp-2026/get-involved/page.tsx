@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ContactForm } from "./contact-form";
 
@@ -112,58 +112,6 @@ function PartnershipSection() {
   );
 }
 
-// ─── Collaboration ────────────────────────────────────────────────────────────
-
-function CollaborationSection() {
-  return (
-    <SectionWrapper
-      title="Collaborate for Change"
-      subtitle="Collaboration"
-      theme="gtp"
-      background="default"
-      id="collaboration"
-    >
-      <div className="mx-auto max-w-3xl">
-        <div className="rounded-2xl border-2 border-gtp-teal/20 bg-gtp-teal/5 px-8 py-10 text-center ring-1 ring-gtp-dark-teal/5 md:px-12 md:py-14">
-          <p className="text-xl font-medium leading-relaxed text-gtp-dark-teal md:text-2xl">
-            We believe change accelerates when the right mix of leadership,
-            investment and public confidence comes together.
-          </p>
-          <p className="mt-4 text-lg font-semibold text-gtp-teal md:text-xl">
-            If you&apos;re a researcher, practitioner, artist, or advocate
-            working on tipping points—we want to hear from you.
-          </p>
-          <p className="mt-6 text-lg leading-relaxed text-gray-600 md:text-xl">
-            Collaboration can take many forms: contributing to the programme,
-            sharing your work through abstracts and proposals, or joining the
-            conversation at the conference.
-          </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Button
-              variant="gtpSecondary"
-              size="lg"
-              className="text-base"
-              asChild
-            >
-              <Link href="/events/gtp-2026/submissions">Submit an Abstract</Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-2 border-gtp-teal text-base font-semibold text-gtp-teal hover:bg-gtp-teal/10"
-              asChild
-            >
-              <Link href="/events/gtp-2026/submissions#proposal">
-                Submit a Proposal
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </SectionWrapper>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function GtpGetInvolvedPage() {
@@ -172,7 +120,6 @@ export default function GtpGetInvolvedPage() {
       <GetInvolvedHero />
       <ContactUsSection />
       <PartnershipSection />
-      <CollaborationSection />
     </>
   );
 }

@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -10,6 +13,10 @@ import {
   Download,
   Quote,
   UserCircle2,
+  X,
+  Plus,
+  CalendarDays,
+  Presentation,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
@@ -163,7 +170,7 @@ const themes = [
     num: "01",
     icon: TrendingDown,
     title: "Understanding the Shift",
-    body: "We begin by clarifying what is changing in the world today — climate risks, social pressures, and economic shifts that affect health, food security and stability.",
+    body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
     iconBg: "bg-gtp-dark-teal/10",
     iconColour: "text-gtp-dark-teal",
   },
@@ -171,7 +178,7 @@ const themes = [
     num: "02",
     icon: Lightbulb,
     title: "Igniting Imagination",
-    body: "Facts alone do not move societies. This part explores how culture, faith, creativity and moral leadership help people and institutions let go of the old ways.",
+    body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
     iconBg: "bg-gtp-teal/10",
     iconColour: "text-gtp-teal",
   },
@@ -179,7 +186,7 @@ const themes = [
     num: "03",
     icon: Zap,
     title: "Accelerating Action",
-    body: "What policies, investments and partnerships can reinforce each other and create lasting momentum toward positive tipping points?",
+    body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
     iconBg: "bg-gtp-green/15",
     iconColour: "text-gtp-dark-green",
   },
@@ -225,6 +232,301 @@ function ThemesSection() {
         they are not alone, and credible pathways forward.
       </p>
     </SectionWrapper>
+  );
+}
+
+// ─── Speaker Highlights ───────────────────────────────────────────────────────
+
+type Speaker = {
+  name: string;
+  role: string;
+  organisation: string;
+  bio: string;
+  session: string;
+  sessionDate: string;
+  photoSrc?: string;
+};
+
+const speakers: Speaker[] = [
+  {
+    name: "Prof. Jeffrey Sachs",
+    role: "Honorary Distinguished Jeffrey Cheah Professor",
+    organisation: "Sunway University",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+  {
+    name: "H.E. Dato' Astanah Abdul Aziz",
+    role: "Deputy Secretary-General (DSG) of ASEAN for Political-Security Community",
+    organisation: "ASEAN",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+  {
+    name: "Jaya Shreedhar",
+    role: "Senior Health Media Advisor",
+    organisation: "Internews",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+  {
+    name: "Shweta Narayan",
+    role: "Global Climate Health Alliance",
+    organisation: "Global Climate Health and Alliance",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+  {
+    name: "Cornelia C. Walther",
+    role: "Senior Fellow",
+    organisation: "Sunway Centre for Planetary Health",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+  {
+    name: "Kirsten Dunlop",
+    role: "Chief Executive Officer",
+    organisation: "EIT Climate-KIC",
+    bio: "Bio to be provided.",
+    session: "Session to be announced",
+    sessionDate: "Date & time to be announced",
+  },
+];
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter((w) => w.length > 1 && !/^(H\.E\.|Prof\.|Dr\.|Dato')$/.test(w))
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
+
+
+function SpeakerModal({
+  speaker,
+  onClose,
+}: {
+  speaker: Speaker;
+  onClose: () => void;
+}) {
+  const handleKey = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose],
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, [handleKey]);
+
+  return createPortal(
+    <div
+      style={{ position: "fixed", inset: 0, zIndex: 9999 }}
+      className="flex items-center justify-center p-4 sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-label={speaker.name}
+    >
+      {/* Backdrop */}
+      <motion.div
+        style={{ position: "absolute", inset: 0 }}
+        className="bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+      />
+
+      {/* Modal panel */}
+      <motion.div
+        className="relative flex w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl"
+        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 16 }}
+        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+      >
+        {/* Close button — top-right of entire modal */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* Left — photo panel */}
+        <div className="relative hidden w-52 shrink-0 flex-col items-center justify-end overflow-hidden bg-gtp-dark-teal/8 sm:flex lg:w-64">
+          <div className="absolute bottom-0 left-1/2 h-56 w-56 -translate-x-1/2 translate-y-10 rounded-full bg-gtp-teal/15" />
+          {speaker.photoSrc ? (
+            <div className="relative mb-0 h-52 w-44 overflow-hidden rounded-t-full lg:h-60 lg:w-52">
+              <Image
+                src={speaker.photoSrc}
+                alt={speaker.name}
+                fill
+                className="object-cover object-top"
+                sizes="208px"
+              />
+            </div>
+          ) : (
+            <div className="relative mb-8 flex h-36 w-36 items-center justify-center rounded-full bg-gtp-dark-teal/15 text-4xl ring-4 ring-white/60 lg:h-44 lg:w-44 lg:text-5xl">
+              <span className="font-heading font-bold text-gtp-dark-teal">
+                {getInitials(speaker.name)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Right — content */}
+        <div className="flex min-w-0 flex-1 flex-col justify-between p-7 lg:p-10">
+          <div className="mb-5 pr-10">
+            <p className="font-heading text-2xl font-bold leading-tight text-gtp-dark-teal lg:text-3xl">
+              {speaker.name}
+            </p>
+            <p className="mt-1.5 text-sm font-semibold text-gtp-teal">
+              {speaker.role}
+            </p>
+            <p className="mt-0.5 text-xs text-gray-400">{speaker.organisation}</p>
+          </div>
+
+          {/* Session & date */}
+          <div className="mb-5 grid grid-cols-1 gap-3 rounded-xl bg-gtp-dark-teal/5 p-4 sm:grid-cols-2">
+            <div className="flex items-start gap-2.5">
+              <Presentation className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+                  Session
+                </p>
+                <p className="mt-0.5 text-sm font-medium text-gtp-dark-teal">
+                  {speaker.session}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+                  Date &amp; Time
+                </p>
+                <p className="mt-0.5 text-sm font-medium text-gtp-dark-teal">
+                  {speaker.sessionDate}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Bio */}
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
+              Bio
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+              {speaker.bio}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </div>,
+    document.body,
+  );
+}
+
+function SpeakerCard({
+  speaker,
+  onClick,
+}: {
+  speaker: Speaker;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="group relative flex w-full min-h-[260px] flex-col overflow-hidden rounded-2xl bg-gtp-dark-teal/6 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal"
+    >
+      {/* Top — name, role, + button */}
+      <div className="flex items-start justify-between gap-2 p-5 pb-3">
+        <div className="min-w-0 flex-1">
+          <p className="font-heading text-sm font-bold leading-snug text-gtp-dark-teal">
+            {speaker.name}
+          </p>
+          <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-gtp-teal">
+            {speaker.role}
+          </p>
+          <p className="mt-0.5 text-[11px] text-gray-400">{speaker.organisation}</p>
+        </div>
+        {/* + → × on hover */}
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gtp-teal text-white transition-all duration-300 group-hover:bg-gtp-dark-teal">
+          <Plus
+            className="h-5 w-5 transition-transform duration-300 group-hover:rotate-45"
+            strokeWidth={2.5}
+          />
+        </div>
+      </div>
+
+      {/* Bottom — avatar */}
+      <div className="flex flex-1 items-end justify-center px-6 pb-0 pt-2">
+        {speaker.photoSrc ? (
+          <div className="relative h-40 w-full overflow-hidden rounded-t-2xl">
+            <Image
+              src={speaker.photoSrc}
+              alt={speaker.name}
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 640px) 50vw, 25vw"
+            />
+          </div>
+        ) : (
+          <div className="mb-5 flex h-28 w-28 items-center justify-center rounded-full bg-gtp-dark-teal/12 text-3xl ring-4 ring-white/70">
+            <span className="font-heading font-bold text-gtp-dark-teal">
+              {getInitials(speaker.name)}
+            </span>
+          </div>
+        )}
+      </div>
+    </button>
+  );
+}
+
+function SpeakersSection() {
+  const [selected, setSelected] = useState<Speaker | null>(null);
+
+  return (
+    <>
+      <SectionWrapper
+        title="Speakers Highlights"
+        subtitle="Our Speakers"
+        theme="gtp"
+        background="default"
+      >
+        <StaggerReveal className="grid grid-cols-2 gap-4 [grid-auto-rows:1fr] md:gap-5 lg:grid-cols-4">
+          {speakers.map((speaker) => (
+            <SpeakerCard
+              key={speaker.name}
+              speaker={speaker}
+              onClick={() => setSelected(speaker)}
+            />
+          ))}
+        </StaggerReveal>
+      </SectionWrapper>
+
+      <AnimatePresence>
+        {selected && (
+          <SpeakerModal speaker={selected} onClose={() => setSelected(null)} />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -326,19 +628,19 @@ const coChairQuotes = [
   {
     name: "Tim Lenton",
     designation: "Co-Chair · Founding Director, Global Systems Institute, University of Exeter",
-    quote: "TBC — Quote by Tim Lenton will be provided separately.",
+    quote: "The Global Tipping Points Conference 2026 is a great opportunity for a bunch of us to come together as businesses, as thinkers, as policymakers, both to wrestle down the incredible risks we're running in crossing tipping points in the Earth system—our life support system—but also how can we together seize the positive tipping point opportunities to accelerate us out of trouble and into a healthier, happier, flourishing future together.",
     hasPhoto: false,
   },
   {
     name: "Johan Rockström",
     designation: "Co-Chair · Director, Potsdam Institute for Climate Impact Research",
-    quote: "TBC — Quote by Johan Rockström will be provided separately.",
+    quote: "Scientifically, we know we are moving towards profound challenges and risks at the planetary scale, with an increasing risk of tipping points in the Earth system. Against this backdrop, the Malaysian Global Tipping Point Conference offers a crucial forum to examine how positive societal tipping points can help build more equitable, stable and resilient societies.",
     hasPhoto: false,
   },
   {
     name: "Jemilah Mahmood",
     designation: "Co-Chair · Executive Director, Sunway Centre for Planetary Health, Sunway University",
-    quote: "TBC — Quote by Jemilah Mahmood will be provided separately.",
+    quote: "This year, the Sunway Centre for Planetary Health will proudly host the Global Tipping Points Conference at Sunway University, the first in Asia. Together, scientists, policymakers, business leaders, civil society, Indigenous voices, artists, and youth will unite to spotlight South and Southeast Asia's lived realities and accelerate the positive tipping points we need for a healthier planet and future. Join us in Sunway this October and we will see you there! Follow us on @sunwaycph to find out more!",
     hasPhoto: true,
     photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
   },
@@ -410,6 +712,7 @@ export default function GtpAboutPage() {
       <WhatIsGtpSection />
       <WhyItMattersSection />
       <ThemesSection />
+      <SpeakersSection />
       <SponsorsSection />
       <GallerySection />
       <QuoteSection />
