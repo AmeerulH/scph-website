@@ -510,7 +510,7 @@ function SpeakersSection() {
         theme="gtp"
         background="default"
       >
-        <StaggerReveal className="grid grid-cols-2 gap-4 [grid-auto-rows:1fr] md:gap-5 lg:grid-cols-4">
+        <StaggerReveal className="grid grid-cols-1 gap-4 [grid-auto-rows:1fr] sm:grid-cols-2 md:gap-5 lg:grid-cols-4">
           {speakers.map((speaker) => (
             <SpeakerCard
               key={speaker.name}

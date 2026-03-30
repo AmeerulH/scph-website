@@ -10,6 +10,8 @@ interface ScrollRevealProps {
   className?: string;
   /** Custom viewport margin */
   margin?: string;
+  /** Fraction of element that must be visible to trigger (0–1). Default 0.1 */
+  amount?: number;
 }
 
 /**
@@ -20,6 +22,7 @@ export function ScrollReveal({
   children,
   className,
   margin,
+  amount = 0.1,
 }: ScrollRevealProps) {
   const prefersReducedMotion = useReducedMotion();
   const variants = prefersReducedMotion ? scrollRevealReduced : scrollReveal;
@@ -30,7 +33,7 @@ export function ScrollReveal({
       whileInView={variants.whileInView}
       viewport={{
         once: true,
-        amount: 0.3,
+        amount,
         margin: prefersReducedMotion ? undefined : margin,
       }}
       transition={variants.transition}

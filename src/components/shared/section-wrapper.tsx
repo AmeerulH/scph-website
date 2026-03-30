@@ -110,7 +110,7 @@ export function SectionWrapper({
     >
       <div className={cn("mx-auto max-w-7xl", contentClassName)}>
         {scrollReveal ? (
-          <ScrollReveal>{content}</ScrollReveal>
+          <ScrollReveal amount={0.05}>{content}</ScrollReveal>
         ) : (
           content
         )}
