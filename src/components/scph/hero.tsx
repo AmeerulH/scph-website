@@ -88,28 +88,40 @@ export function ScphHero() {
           delay: prefersReducedMotion ? 0 : 0.8,
         }}
       >
-        <div className="mx-auto flex max-w-7xl items-stretch overflow-x-auto px-6 [&::-webkit-scrollbar]:hidden md:px-12 lg:px-20">
-          <div className="shrink-0 flex items-center border-r border-white/15 pr-5 mr-5 py-4">
-            <span className="text-shimmer text-xs font-semibold uppercase tracking-[0.15em] whitespace-nowrap">
+        <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-20">
+          {/* Label — full width row on mobile, inline on md+ */}
+          <div className="flex items-center gap-3 border-b border-white/10 py-3 md:hidden">
+            <span className="text-shimmer text-xs font-semibold uppercase tracking-[0.15em]">
               Highlighted Events
             </span>
           </div>
-          {highlightedEvents.map((event) => (
-            <Link
-              key={event.id}
-              href={event.href}
-              className="group flex shrink-0 items-center gap-4 py-4 pr-6 transition-opacity hover:opacity-80"
-            >
-              <div>
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-scph-green">
-                  {event.label}
-                </span>
-                <p className="text-sm font-semibold text-white">{event.title}</p>
-                <p className="text-xs text-white/50">{event.subtitle}</p>
-              </div>
-              <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
-            </Link>
-          ))}
+
+          {/* Events row — scrollable on mobile, flex on desktop */}
+          <div className="flex items-stretch overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden md:items-center">
+            {/* Label — desktop only */}
+            <div className="hidden md:flex shrink-0 items-center border-r border-white/15 pr-5 mr-5 py-4">
+              <span className="text-shimmer text-xs font-semibold uppercase tracking-[0.15em] whitespace-nowrap">
+                Highlighted Events
+              </span>
+            </div>
+
+            {highlightedEvents.map((event) => (
+              <Link
+                key={event.id}
+                href={event.href}
+                className="group flex shrink-0 snap-start items-center gap-4 py-4 pr-6 transition-opacity hover:opacity-80"
+              >
+                <div>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-scph-green">
+                    {event.label}
+                  </span>
+                  <p className="text-sm font-semibold text-white">{event.title}</p>
+                  <p className="text-xs text-white/50">{event.subtitle}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
+              </Link>
+            ))}
+          </div>
         </div>
       </motion.div>
 

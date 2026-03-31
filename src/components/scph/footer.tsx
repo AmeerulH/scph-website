@@ -124,7 +124,7 @@ export function ScphFooter() {
           <Separator className="my-10 bg-white/10" />
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
             {/* Quick Links */}
             <div>
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
@@ -195,7 +195,7 @@ export function ScphFooter() {
             </div>
 
             {/* Contact Us */}
-            <div>
+            <div className="min-w-0">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
                 Contact Us
               </h3>
@@ -204,7 +204,7 @@ export function ScphFooter() {
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                   <a
                     href="mailto:scph@sunway.edu.my"
-                    className="transition-colors hover:text-white"
+                    className="break-all transition-colors hover:text-white"
                   >
                     scph@sunway.edu.my
                   </a>
@@ -235,7 +235,7 @@ export function ScphFooter() {
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                 <a
                   href="mailto:scphcareer@sunway.edu.my"
-                  className="transition-colors hover:text-white"
+                  className="break-all transition-colors hover:text-white"
                 >
                   scphcareer@sunway.edu.my
                 </a>

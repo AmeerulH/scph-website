@@ -13,9 +13,7 @@ import {
   Radio,
   Leaf,
   Activity,
-  ExternalLink,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
@@ -180,7 +178,7 @@ const eightThemes = [
 function EightThemesSection() {
   return (
     <SectionWrapper theme="gtp" background="muted">
-      <StaggerReveal className="grid grid-cols-2 gap-4 [grid-auto-rows:1fr] md:gap-6 lg:grid-cols-4">
+      <StaggerReveal className="grid grid-cols-1 gap-4 [grid-auto-rows:1fr] md:grid-cols-2 md:gap-6 lg:grid-cols-4">
         {eightThemes.map(({ icon: Icon, title, body, iconBg, iconColour }) => (
           <div
             key={title}
@@ -202,48 +200,55 @@ function EightThemesSection() {
 
 // ─── CTA Section ──────────────────────────────────────────────────────────────
 
+const abstractFormEmbedUrl =
+  "https://docs.google.com/forms/d/1ZSe8110g8FWBiqGpF5AQNEtBqgmWes5ebNG8eSLmLPc/prefill?embedded=true";
+const actionWorkshopFormEmbedUrl =
+  "https://docs.google.com/forms/d/19YpOKfMRKrgxq2Yh4WiidFYvfuvHBJ053MUGpNmLGvA/prefill?embedded=true";
+
 function CtaSection() {
   return (
     <SectionWrapper theme="gtp" background="dark">
-      <div className="mx-auto max-w-3xl text-center">
+      <div className="mx-auto max-w-7xl text-center">
         <h2 className="font-heading text-2xl font-bold text-white md:text-3xl">
           Ready to Submit?
         </h2>
         <p className="mt-4 text-base leading-relaxed text-white/70">
-          Links to the submission forms will be provided when they open. Use the buttons below to submit your abstract or action workshop proposal.
+          Complete the form below for your abstract or action workshop proposal.
         </p>
 
-        <div className="mt-10 flex flex-col items-center justify-center gap-6 sm:flex-row sm:items-start">
-          {/* Abstract */}
-          <div className="flex w-full flex-col items-center gap-3 sm:w-auto">
-            <Button
-              variant="gtpCta"
-              size="lg"
-              className="w-full text-sm sm:w-auto"
-              disabled
-            >
-              <ExternalLink className="mr-2 h-4 w-4" />
-              Click here to submit an abstract for your research
-            </Button>
-            <p className="text-xs text-white/50">
-              Deadline: <span className="font-semibold text-white/80">15 May 2026</span>
-            </p>
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-white/20">
+            <div className="border-b border-gray-200 bg-gray-50 p-4 text-left">
+              <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
+                Abstract Submission
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Deadline: <span className="font-semibold text-gray-700">15 May 2026</span>
+              </p>
+            </div>
+            <iframe
+              title="GTP 2026 Abstract Submission Form"
+              src={abstractFormEmbedUrl}
+              className="h-[960px] w-full border-0"
+              loading="lazy"
+            />
           </div>
 
-          {/* Proposal */}
-          <div className="flex w-full flex-col items-center gap-3 sm:w-auto">
-            <Button
-              variant="gtpSecondary"
-              size="lg"
-              className="w-full text-sm sm:w-auto"
-              disabled
-            >
-              <ExternalLink className="mr-2 h-4 w-4" />
-              Click here to submit a proposal to convene an action workshop
-            </Button>
-            <p className="text-xs text-white/50">
-              Deadline: <span className="font-semibold text-white/80">27 April 2026</span>
-            </p>
+          <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-white/20">
+            <div className="border-b border-gray-200 bg-gray-50 p-4 text-left">
+              <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
+                Action Workshop Submission
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Deadline: <span className="font-semibold text-gray-700">27 April 2026</span>
+              </p>
+            </div>
+            <iframe
+              title="GTP 2026 Action Workshop Submission Form"
+              src={actionWorkshopFormEmbedUrl}
+              className="h-[960px] w-full border-0"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
