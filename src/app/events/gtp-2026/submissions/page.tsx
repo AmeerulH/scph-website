@@ -87,7 +87,7 @@ function PillarsSection() {
       theme="gtp"
       background="default"
     >
-      <p className="mx-auto mb-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
+      <p className="mb-10 max-w-3xl text-left text-base leading-relaxed text-gray-600">
         As research demonstrates that systems can shift rapidly when leadership,
         investment, and public confidence converge, GTP 2026 focuses on three
         pillars:
@@ -123,10 +123,6 @@ function PillarsSection() {
         We invite researchers and practitioners to submit abstracts for oral and
         poster presentations, and contribute to the programme agenda by
         proposing to convene action workshops.
-      </p>
-      <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-gray-500">
-        We especially encourage submissions highlighting scalable solutions
-        emerging from Asia across the conference&apos;s eight critical domains:
       </p>
     </SectionWrapper>
   );
@@ -196,6 +192,10 @@ const eightThemes = [
 function EightThemesSection() {
   return (
     <SectionWrapper title="8 Critical Domains" theme="gtp" background="muted">
+      <p className="mb-8 max-w-3xl text-left text-base leading-relaxed text-gray-600">
+        We especially encourage submissions highlighting scalable solutions
+        emerging from Asia across the conference&apos;s eight critical domains:
+      </p>
       <StaggerReveal className="grid grid-cols-1 gap-4 [grid-auto-rows:1fr] md:grid-cols-2 md:gap-6 lg:grid-cols-4">
         {eightThemes.map(({ icon: Icon, title, body, iconBg, iconColour }) => (
           <div

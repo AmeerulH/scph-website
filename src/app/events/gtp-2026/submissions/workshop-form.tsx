@@ -90,7 +90,11 @@ function TextareaField({
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </label>
-      {helper && <p className="mb-1.5 text-xs text-gray-400">{helper}</p>}
+      {helper && (
+        <p className="mb-2 whitespace-pre-line text-xs leading-relaxed text-gray-500">
+          {helper}
+        </p>
+      )}
       <textarea
         id={id}
         name={name}
@@ -679,7 +683,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="expectedOutcomes"
           name="expectedOutcomes"
           label="Expected Outcomes"
-          placeholder="Include specific connection to Asian contexts, evidence of acceleration potential, regional partnerships and scalability…"
+          helper="Include specific connection to Asian contexts, evidence of acceleration potential, regional partnerships and scalability…"
           required
           rows={4}
         />
@@ -688,7 +692,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="sessionDetails"
           name="sessionDetails"
           label="Session Details"
-          placeholder={`Provide details covering:\n1. Session Format — describe the structure & format\n2. Session Overview — state a brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
+          helper={`Provide details covering:\n1. Session Format — describe the structure & format\n2. Session Overview — state a brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
           required
           rows={6}
         />
@@ -697,7 +701,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="speakerList"
           name="speakerList"
           label="Proposed Speaker / Facilitator / Moderator List (max 5 individuals)"
-          placeholder={`Format:\n1. Lead Facilitator: Professor John Doe (Sunway University, Malaysia)\n2. Facilitator: Assoc. Prof. Jane Doe (Sunway Centre for Planetary Health, Malaysia)\n3. …`}
+          helper={`Format:\n1. Lead Facilitator: Professor John Doe (Sunway University, Malaysia)\n2. Facilitator: Assoc. Prof. Jane Doe (Sunway Centre for Planetary Health, Malaysia)\n3. …`}
           required
           rows={5}
         />
@@ -711,7 +715,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="resourceRequirements"
           name="resourceRequirements"
           label="Technical, Venue &amp; Special Requirements"
-          placeholder={`Please describe:\n• Technical needs (equipment, technology or technical support)\n• Venue requirements (room setup or space needs)\n• Special requirements (interpretation, accessibility, etc.)\n• Any other related resource requirements`}
+          helper={`Please describe:\n• Technical needs (equipment, technology or technical support)\n• Venue requirements (room setup or space needs)\n• Special requirements (interpretation, accessibility, etc.)\n• Any other related resource requirements`}
           required
           rows={5}
         />

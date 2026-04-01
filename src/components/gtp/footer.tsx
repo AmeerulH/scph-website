@@ -12,12 +12,13 @@ const quickLinks = [
   { label: "Programme", href: "/events/gtp-2026/programmes" },
   { label: "Business Forum", href: "/events/gtp-2026/biz-forum" },
   { label: "Media", href: "/events/gtp-2026/media" },
+  { label: "FAQ", href: "/events/gtp-2026/faq" },
   { label: "Get Involved", href: "/events/gtp-2026/get-involved" },
   { label: "Submissions", href: "/events/gtp-2026/submissions" },
 ];
 
 const importantDates = [
-  { label: "Action Workshop Submission Deadline", date: "27 April 2026" },
+  { label: "Action Workshop Submission Deadline", date: "8 May 2026" },
   { label: "Abstract Submission Deadline", date: "15 May 2026" },
   { label: "Registration Opens", date: "TBC" },
   { label: "Early Bird Registration", date: "TBC" },
