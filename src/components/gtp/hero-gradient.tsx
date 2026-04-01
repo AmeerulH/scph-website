@@ -18,20 +18,7 @@ export function GtpHeroGradient() {
   const itemVariants = prefersReducedMotion ? heroStaggerItemReduced : heroStaggerItem;
 
   return (
-    <div className="relative w-full overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
-      {/* Dot grid decoration */}
-      <div
-        className="absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, white 1.5px, transparent 1.5px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-      {/* Radial glow — left (teal) */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(0,156,180,0.28),transparent_55%)]" />
-      {/* Radial glow — right (green accent) */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_85%_65%,rgba(134,188,37,0.12),transparent_50%)]" />
+    <div className="relative w-full">
 
       <motion.div
         className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start gap-8 px-6 pb-8 pt-28 md:flex-row md:items-center md:gap-16 md:pb-10 md:pt-32 lg:px-12"

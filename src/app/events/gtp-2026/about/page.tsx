@@ -807,9 +807,23 @@ function QuoteSection() {
 export default function GtpAboutPage() {
   return (
     <>
-      <GtpHeroGradient />
-      <GtpCountdown />
-      <GtpEventsPreviewCarousel />
+      {/* Single gradient wrapper — hero, countdown and carousel share one continuous background */}
+      <div className="relative overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
+        {/* Shared dot grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.055]"
+          style={{
+            backgroundImage: "radial-gradient(circle, white 1.5px, transparent 1.5px)",
+            backgroundSize: "32px 32px",
+          }}
+        />
+        {/* Shared radial glows */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_30%,rgba(0,156,180,0.30),transparent_50%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_60%,rgba(134,188,37,0.13),transparent_48%)]" />
+        <GtpHeroGradient />
+        <GtpCountdown />
+        <GtpEventsPreviewCarousel />
+      </div>
       <WhatIsGtpSection />
       <WhyItMattersSection />
       <ThemesSection />

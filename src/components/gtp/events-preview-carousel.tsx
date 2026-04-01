@@ -183,7 +183,7 @@ export function GtpEventsPreviewCarousel() {
   }, [emblaApi, onSelect]);
 
   return (
-    <section className="w-full bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal pt-6 pb-8">
+    <section className="relative w-full pt-6 pb-8">
       {/* Section header */}
       <div className="mb-4 flex items-center justify-between px-4 sm:px-6 lg:px-10">
         <div>

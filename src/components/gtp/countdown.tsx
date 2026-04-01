@@ -43,18 +43,7 @@ export function GtpCountdown() {
   }, []);
 
   return (
-    <div
-      className="relative w-full bg-gtp-dark-teal py-5 text-center"
-      style={{
-        backgroundImage: `repeating-linear-gradient(
-          -45deg,
-          rgba(255,255,255,0.035) 0px,
-          rgba(255,255,255,0.035) 10px,
-          transparent 10px,
-          transparent 22px
-        )`,
-      }}
-    >
+    <div className="relative w-full border-y border-white/10 bg-white/8 py-5 text-center backdrop-blur-md">
       {/* Label */}
       <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">
         — Conference Starts In —

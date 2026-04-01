@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import { Clock, MapPin, UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Session } from "./types";
@@ -17,6 +20,7 @@ export function SessionCard({
 }) {
   const meta = TYPE_META[session.type];
   const MetaIcon = meta.Icon;
+  const cardRef = React.useRef<HTMLDivElement>(null);
 
   const namedSpeakers = session.speakers ?? [];
   const placeholderCount =
@@ -28,8 +32,19 @@ export function SessionCard({
     !!highlightSession &&
     session.title.toLowerCase() === highlightSession.toLowerCase();
 
+  // Scroll this card into view when it is the highlighted target
+  React.useEffect(() => {
+    if (!isSessionHighlighted || !cardRef.current) return;
+    // Small delay so the tab switch + render completes before scrolling
+    const id = setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300);
+    return () => clearTimeout(id);
+  }, [isSessionHighlighted]);
+
   return (
     <div
+      ref={cardRef}
       className={cn(
         "rounded-2xl border bg-white shadow-sm transition-all duration-500",
         isSessionHighlighted
