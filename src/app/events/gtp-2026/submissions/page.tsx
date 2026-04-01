@@ -177,7 +177,7 @@ const eightThemes = [
 
 function EightThemesSection() {
   return (
-    <SectionWrapper theme="gtp" background="muted">
+    <SectionWrapper title="8 Critical Domains" theme="gtp" background="muted">
       <StaggerReveal className="grid grid-cols-1 gap-4 [grid-auto-rows:1fr] md:grid-cols-2 md:gap-6 lg:grid-cols-4">
         {eightThemes.map(({ icon: Icon, title, body, iconBg, iconColour }) => (
           <div

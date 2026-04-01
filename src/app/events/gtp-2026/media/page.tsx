@@ -167,7 +167,7 @@ function MediaHero() {
   );
 }
 
-// ─── Filter chip ──────────────────────────────────────────────────────────────
+// ─── Mobile filter chip (horizontal strips) ───────────────────────────────────
 
 function FilterChip({
   active,
@@ -193,6 +193,32 @@ function FilterChip({
   );
 }
 
+// ─── Desktop sidebar filter row ────────────────────────────────────────────────
+
+function SidebarRow({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150",
+        active
+          ? "bg-gtp-teal text-white shadow-sm"
+          : "text-white/70 hover:bg-white/10 hover:text-white",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 // ─── Media grid section ────────────────────────────────────────────────────────
 
 function MediaGridSection() {
@@ -200,8 +226,20 @@ function MediaGridSection() {
   const [theme, setTheme] = React.useState<ThemeId>("all");
   const [type, setType] = React.useState<MediaTypeId>("all");
   const [filtersOpen, setFiltersOpen] = React.useState(false);
+  const anchorRef = React.useRef<HTMLDivElement>(null);
 
   const hasActiveFilter = day !== "all" || theme !== "all" || type !== "all";
+
+  function scrollToAnchor() {
+    if (anchorRef.current) {
+      const top = anchorRef.current.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  }
+
+  function handleDayChange(id: DayId) { setDay(id); scrollToAnchor(); }
+  function handleThemeChange(id: ThemeId) { setTheme(id); scrollToAnchor(); }
+  function handleTypeChange(id: MediaTypeId) { setType(id); scrollToAnchor(); }
 
   const filtered = React.useMemo(() => {
     return MEDIA_ITEMS.filter((item) => {
@@ -235,54 +273,32 @@ function MediaGridSection() {
     { id: "exhibition", label: "Exhibition" },
   ];
 
-  const filterPanel = (
-    <div className="flex flex-col gap-4 px-4 py-4 md:px-6">
-      {/* Day filter */}
+  // Shared mobile filter panel content
+  const mobileFilterPanel = (
+      <div className="flex flex-col gap-4 px-4 py-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-gtp-dark-teal/60">
-          Date
-        </span>
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/60">Date</span>
         <div className="flex flex-wrap gap-1">
           {DAY_OPTIONS.map(({ id, label }) => (
-            <FilterChip key={id} active={day === id} onClick={() => setDay(id)}>
-              {label}
-            </FilterChip>
+            <FilterChip key={id} active={day === id} onClick={() => handleDayChange(id)}>{label}</FilterChip>
           ))}
         </div>
       </div>
-      <div className="h-px bg-gtp-dark-teal/20" />
-      {/* Theme filter */}
+      <div className="h-px bg-white/10" />
       <div className="flex flex-wrap items-center gap-2">
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-gtp-dark-teal/60">
-          Theme
-        </span>
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/60">Theme</span>
         <div className="flex flex-wrap gap-1">
           {THEME_OPTIONS.map(({ id, label }) => (
-            <FilterChip
-              key={id}
-              active={theme === id}
-              onClick={() => setTheme(id)}
-            >
-              {label}
-            </FilterChip>
+            <FilterChip key={id} active={theme === id} onClick={() => handleThemeChange(id)}>{label}</FilterChip>
           ))}
         </div>
       </div>
-      <div className="h-px bg-gtp-dark-teal/20" />
-      {/* Type filter */}
+      <div className="h-px bg-white/10" />
       <div className="flex flex-wrap items-center gap-2">
-        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-gtp-dark-teal/60">
-          Type
-        </span>
+        <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/60">Type</span>
         <div className="flex flex-wrap gap-1">
           {TYPE_OPTIONS.map(({ id, label }) => (
-            <FilterChip
-              key={id}
-              active={type === id}
-              onClick={() => setType(id)}
-            >
-              {label}
-            </FilterChip>
+            <FilterChip key={id} active={type === id} onClick={() => handleTypeChange(id)}>{label}</FilterChip>
           ))}
         </div>
       </div>
@@ -291,8 +307,8 @@ function MediaGridSection() {
 
   return (
     <>
-      {/* Floating filter button — mobile only */}
-      <div className="fixed left-4 right-4 top-[72px] z-40 md:hidden">
+      {/* ── Mobile: floating sticky filter button (hidden on desktop) ── */}
+      <div className="fixed left-4 right-4 top-[72px] z-40 lg:hidden">
         <div className="flex justify-end">
           <button
             onClick={() => setFiltersOpen((v) => !v)}
@@ -322,14 +338,14 @@ function MediaGridSection() {
               style={{ transformOrigin: "top" }}
               className="mt-2 w-full overflow-hidden rounded-2xl border border-white/10 bg-gtp-dark-teal/95 shadow-xl backdrop-blur-xl"
             >
-              {filterPanel}
+              {mobileFilterPanel}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Spacer so content isn't hidden behind fixed button — mobile only */}
-      <div className="h-16 md:hidden" aria-hidden />
+      {/* Spacer so content isn't hidden behind fixed button on mobile */}
+      <div className="h-16 lg:hidden" aria-hidden />
 
       <SectionWrapper
         title="Gallery"
@@ -337,68 +353,109 @@ function MediaGridSection() {
         theme="gtp"
         background="muted"
       >
-        {/* Desktop: inline filter bar */}
-        <div className="mb-10 hidden flex-col gap-4 rounded-2xl border border-white/10 bg-gtp-dark-teal/50 px-4 py-4 shadow-lg backdrop-blur-xl md:flex md:px-6">
-          {filterPanel}
-        </div>
+        {/* Scroll anchor — sits just above the grid, below the heading */}
+        <div ref={anchorRef} />
 
-        {/* Photo grid */}
-      {filtered.length > 0 ? (
-        <StaggerReveal
-          variant="long"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {filtered.map((item) => (
-            <article
-              key={item.id}
-              className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gtp-dark-teal/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-                    {item.day in DAY_LABELS ? DAY_LABELS[item.day as keyof typeof DAY_LABELS] : ""}
-                  </span>
+        <div className="flex gap-8">
+
+          {/* ── Desktop sticky sidebar ── */}
+          <aside className="hidden lg:block w-52 shrink-0">
+            <div className="sticky top-[88px] max-h-[calc(100vh-104px)] overflow-y-auto rounded-2xl [&::-webkit-scrollbar]:hidden">
+              <div className="rounded-2xl border border-white/10 bg-gtp-dark-teal/40 p-4 shadow-lg backdrop-blur-sm">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/70">
+                  Filters
+                </p>
+
+                {/* Date */}
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">Date</p>
+                <div className="flex flex-col gap-0.5">
+                  {DAY_OPTIONS.map(({ id, label }) => (
+                    <SidebarRow key={id} active={day === id} onClick={() => handleDayChange(id)}>{label}</SidebarRow>
+                  ))}
+                </div>
+
+                <div className="my-4 h-px bg-white/10" />
+
+                {/* Theme */}
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">Theme</p>
+                <div className="flex flex-col gap-0.5">
+                  {THEME_OPTIONS.map(({ id, label }) => (
+                    <SidebarRow key={id} active={theme === id} onClick={() => handleThemeChange(id)}>{label}</SidebarRow>
+                  ))}
+                </div>
+
+                <div className="my-4 h-px bg-white/10" />
+
+                {/* Type */}
+                <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">Type</p>
+                <div className="flex flex-col gap-0.5">
+                  {TYPE_OPTIONS.map(({ id, label }) => (
+                    <SidebarRow key={id} active={type === id} onClick={() => handleTypeChange(id)}>{label}</SidebarRow>
+                  ))}
                 </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-heading text-base font-bold text-gtp-dark-teal">
-                  {item.title}
-                </h3>
-                <p className="mt-1 text-xs text-gray-500">
-                  {item.theme in THEME_LABELS ? THEME_LABELS[item.theme as keyof typeof THEME_LABELS] : ""} · {item.type in TYPE_LABELS ? TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] : ""}
+            </div>
+          </aside>
+
+          {/* ── Main content ── */}
+          <div className="min-w-0 flex-1">
+            {filtered.length > 0 ? (
+              <StaggerReveal
+                key={`${day}-${theme}-${type}`}
+                variant="long"
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+              >
+                {filtered.map((item, idx) => (
+                  <article
+                    key={item.id}
+                    className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <Image
+                        src={item.src}
+                        alt={item.alt}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority={idx === 0}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gtp-dark-teal/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+                          {item.day in DAY_LABELS ? DAY_LABELS[item.day as keyof typeof DAY_LABELS] : ""}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-heading text-base font-bold text-gtp-dark-teal">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-xs text-gray-500">
+                        {item.theme in THEME_LABELS ? THEME_LABELS[item.theme as keyof typeof THEME_LABELS] : ""} · {item.type in TYPE_LABELS ? TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] : ""}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </StaggerReveal>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-24 text-center">
+                <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+                  No photos match this filter
                 </p>
+                <p className="mt-2 text-sm text-gray-400">
+                  Try selecting different date, theme, or type filters.
+                </p>
+                <button
+                  onClick={() => { setDay("all"); setTheme("all"); setType("all"); scrollToAnchor(); }}
+                  className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
+                >
+                  Clear filters
+                </button>
               </div>
-            </article>
-          ))}
-        </StaggerReveal>
-      ) : (
-        <div className="flex flex-col items-center justify-center py-24 text-center">
-          <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
-            No photos match this filter
-          </p>
-          <p className="mt-2 text-sm text-gray-400">
-            Try selecting different date, theme, or type filters.
-          </p>
-          <button
-            onClick={() => {
-              setDay("all");
-              setTheme("all");
-              setType("all");
-            }}
-            className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
-          >
-            Clear filters
-          </button>
+            )}
+          </div>
+
         </div>
-      )}
       </SectionWrapper>
     </>
   );
