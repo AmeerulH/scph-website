@@ -1,8 +1,9 @@
 import { Clock, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { Session } from "./types";
 import { WorkshopSubCard } from "./workshop-sub-card";
 
-export function ConcurrentBlock({ session }: { session: Session }) {
+export function ConcurrentBlock({ session, onClick }: { session: Session; onClick?: () => void }) {
   const workshopSessions =
     session.workshops?.filter((w) => w.title.startsWith("Workshop Session:")) ?? [];
   const researchSessions =
@@ -11,7 +12,13 @@ export function ConcurrentBlock({ session }: { session: Session }) {
   const hasBothTypes = workshopSessions.length > 0 && researchSessions.length > 0;
 
   return (
-    <div className="rounded-2xl border border-gtp-teal/20 bg-white shadow-sm">
+    <div
+      className={cn(
+        "rounded-2xl border border-gtp-teal/20 bg-white shadow-sm",
+        onClick && "cursor-pointer transition-shadow duration-200 hover:shadow-md hover:border-gtp-teal/50",
+      )}
+      onClick={onClick}
+    >
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3 rounded-t-2xl border-b border-gtp-teal/15 bg-gtp-teal/8 px-6 py-4">
         <div className="flex items-center gap-2 text-gtp-teal/70">

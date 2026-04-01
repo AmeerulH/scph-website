@@ -4,7 +4,15 @@ import type { Session } from "./types";
 import { TYPE_META } from "./data";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 
-export function SessionCard({ session, highlightSpeaker }: { session: Session; highlightSpeaker?: string }) {
+export function SessionCard({
+  session,
+  highlightSpeaker,
+  onClick,
+}: {
+  session: Session;
+  highlightSpeaker?: string;
+  onClick?: () => void;
+}) {
   const meta = TYPE_META[session.type];
   const MetaIcon = meta.Icon;
 
@@ -15,7 +23,13 @@ export function SessionCard({ session, highlightSpeaker }: { session: Session; h
       : 0;
 
   return (
-    <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
+    <div
+      className={cn(
+        "rounded-2xl border border-gray-100 bg-white shadow-sm",
+        onClick && "cursor-pointer transition-shadow duration-200 hover:shadow-md hover:border-gtp-teal/30",
+      )}
+      onClick={onClick}
+    >
       {/* Card header strip */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-gray-100 px-6 py-4">
         <div className="flex items-center gap-2 text-gtp-dark-teal/60">

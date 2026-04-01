@@ -550,6 +550,8 @@ export default function ProgrammesPage() {
   const currentSessions =
     activeTab !== "pre" ? filterSessions(dayMap[activeTab], selectedType, selectedSpeaker) : [];
 
+  const currentDayLabel = TABS.find((t) => t.id === activeTab)?.label;
+
   return (
     <>
       <ProgrammesHero />
@@ -651,7 +653,11 @@ export default function ProgrammesPage() {
               {activeTab === "pre" && <PreConferencePlaceholder />}
 
               {activeTab !== "pre" && currentSessions.length > 0 && (
-                <DayAgenda sessions={currentSessions} highlightSpeaker={selectedSpeaker ?? undefined} />
+                <DayAgenda
+                  sessions={currentSessions}
+                  highlightSpeaker={selectedSpeaker ?? undefined}
+                  dayLabel={currentDayLabel}
+                />
               )}
 
               {activeTab !== "pre" && currentSessions.length === 0 && (
