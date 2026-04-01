@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
 
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 
@@ -546,7 +547,80 @@ const teamGroups: TeamGroup[] = [
   },
 ];
 
-function MeetTheTeamSection() {
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((n) => n[0].toUpperCase())
+    .join("");
+}
+
+const SANITY_GROUP_CONFIG = [
+  {value: "leadership",                   label: undefined},
+  {value: "policy-and-strategic-advocacy", label: "Policy & Strategic Advocacy"},
+  {value: "knowledge-and-learning",        label: "Knowledge & Learning"},
+  {value: "programmes",                   label: "Programmes"},
+  {value: "communications",               label: "Communications"},
+  {value: "other",                        label: "Other Team Members"},
+];
+
+function SanityMemberRow({ member, isLast }: { member: SanityTeamMember; isLast: boolean }) {
+  const bioParagraphs = member.bio ? member.bio.split(/\n\n+/) : [];
+  return (
+    <div
+      className={`flex flex-col gap-8 md:flex-row md:gap-10 md:items-start ${
+        !isLast ? "border-b border-gray-100 pb-10 mb-10" : ""
+      }`}
+    >
+      <div className="flex shrink-0 justify-center md:justify-start">
+        <div className="relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/8 ring-1 ring-scph-blue/15 md:h-44 md:w-44">
+          {member.imageUrl ? (
+            <Image
+              src={member.imageUrl}
+              alt={member.name}
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 768px) 144px, 176px"
+            />
+          ) : (
+            <span className="font-heading text-2xl font-bold text-scph-blue">
+              {getInitials(member.name)}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="flex-1">
+        <h4 className="font-heading text-xl font-bold text-scph-blue">{member.name}</h4>
+        <p className="mt-1 text-sm font-semibold text-scph-dark-green">{member.title}</p>
+        {member.email && (
+          <a
+            href={`mailto:${member.email}`}
+            className="mt-0.5 block text-xs text-gray-400 transition-colors hover:text-scph-blue"
+          >
+            {member.email}
+          </a>
+        )}
+        {bioParagraphs.length > 0 && (
+          <div className="mt-3 space-y-3">
+            {bioParagraphs.map((para, i) => (
+              <p key={i} className="text-sm leading-relaxed text-gray-600">{para}</p>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember[] }) {
+  const hasSanityData = sanityMembers.length > 0;
+
+  const sanityGroups = SANITY_GROUP_CONFIG.map(({value, label}) => ({
+    label,
+    members: sanityMembers.filter((m) => m.group === value),
+  })).filter((g) => g.members.length > 0);
+
   return (
     <SectionWrapper
       title="Meet the Team"
@@ -557,76 +631,92 @@ function MeetTheTeamSection() {
       {/* Anchor for navbar dropdown */}
       <div id="team" className="-mt-24 pt-24" />
 
-      <div className="space-y-16">
-        {teamGroups.map((group, groupIdx) => (
-          <div key={groupIdx}>
-            {group.groupLabel && (
-              <div className="mb-8 flex items-center gap-4">
-                <h3 className="font-heading text-lg font-bold text-scph-dark-green">
-                  {group.groupLabel}
-                </h3>
-                <div className="h-px flex-1 bg-scph-green/20" />
-              </div>
-            )}
-
-            <div className="space-y-0">
-              {group.members.map((member, memberIdx) => (
-                <div
-                  key={member.name}
-                  className={`flex flex-col gap-8 md:flex-row md:gap-10 md:items-start ${
-                    memberIdx < group.members.length - 1
-                      ? "border-b border-gray-100 pb-10 mb-10"
-                      : ""
-                  }`}
-                >
-                  {/* Avatar */}
-                  <div className="flex shrink-0 justify-center md:justify-start">
-                    <div className="relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/8 ring-1 ring-scph-blue/15 md:h-44 md:w-44">
-                      {member.image ? (
-                        <Image
-                          src={member.image}
-                          alt={member.name}
-                          fill
-                          className="object-cover object-top"
-                        />
-                      ) : (
-                        <span className="font-heading text-2xl font-bold text-scph-blue">
-                          {member.initials}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Bio */}
-                  <div className="flex-1">
-                    <h4 className="font-heading text-xl font-bold text-scph-blue">
-                      {member.name}
-                    </h4>
-                    <p className="mt-1 text-sm font-semibold text-scph-dark-green">
-                      {member.role}
-                    </p>
-                    {member.email && (
-                      <a
-                        href={`mailto:${member.email}`}
-                        className="mt-0.5 block text-xs text-gray-400 transition-colors hover:text-scph-blue"
-                      >
-                        {member.email}
-                      </a>
-                    )}
-                    <div className="mt-3 space-y-3">
-                      {member.bio.map((paragraph, i) => (
-                        <p key={i} className="text-sm leading-relaxed text-gray-600">
-                          {paragraph}
-                        </p>
-                      ))}
-                    </div>
-                  </div>
+      {hasSanityData ? (
+        <div className="space-y-16">
+          {sanityGroups.map(({label, members}) => (
+            <div key={label ?? "leadership"}>
+              {label && (
+                <div className="mb-8 flex items-center gap-4">
+                  <h3 className="font-heading text-lg font-bold text-scph-dark-green">{label}</h3>
+                  <div className="h-px flex-1 bg-scph-green/20" />
                 </div>
-              ))}
+              )}
+              <div>
+                {members.map((member, i) => (
+                  <SanityMemberRow key={member._id} member={member} isLast={i === members.length - 1} />
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-16">
+          {teamGroups.map((group, groupIdx) => (
+            <div key={groupIdx}>
+              {group.groupLabel && (
+                <div className="mb-8 flex items-center gap-4">
+                  <h3 className="font-heading text-lg font-bold text-scph-dark-green">
+                    {group.groupLabel}
+                  </h3>
+                  <div className="h-px flex-1 bg-scph-green/20" />
+                </div>
+              )}
+              <div className="space-y-0">
+                {group.members.map((member, memberIdx) => (
+                  <div
+                    key={member.name}
+                    className={`flex flex-col gap-8 md:flex-row md:gap-10 md:items-start ${
+                      memberIdx < group.members.length - 1
+                        ? "border-b border-gray-100 pb-10 mb-10"
+                        : ""
+                    }`}
+                  >
+                    <div className="flex shrink-0 justify-center md:justify-start">
+                      <div className="relative flex h-36 w-36 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/8 ring-1 ring-scph-blue/15 md:h-44 md:w-44">
+                        {member.image ? (
+                          <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            className="object-cover object-top"
+                          />
+                        ) : (
+                          <span className="font-heading text-2xl font-bold text-scph-blue">
+                            {member.initials}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-heading text-xl font-bold text-scph-blue">
+                        {member.name}
+                      </h4>
+                      <p className="mt-1 text-sm font-semibold text-scph-dark-green">
+                        {member.role}
+                      </p>
+                      {member.email && (
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="mt-0.5 block text-xs text-gray-400 transition-colors hover:text-scph-blue"
+                        >
+                          {member.email}
+                        </a>
+                      )}
+                      <div className="mt-3 space-y-3">
+                        {member.bio.map((paragraph, i) => (
+                          <p key={i} className="text-sm leading-relaxed text-gray-600">
+                            {paragraph}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-14 text-center">
         <MagneticButton>
@@ -643,14 +733,16 @@ function MeetTheTeamSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function AboutUsPage() {
+export default async function AboutUsPage() {
+  const sanityMembers = await getTeamMembers().catch(() => []);
+
   return (
     <>
       <AboutHero />
       <OurFoundationSection />
       <OurStrategySection />
       <OurJourneySection />
-      <MeetTheTeamSection />
+      <MeetTheTeamSection sanityMembers={sanityMembers} />
     </>
   );
 }
