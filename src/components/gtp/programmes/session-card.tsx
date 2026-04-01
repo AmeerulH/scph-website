@@ -7,10 +7,12 @@ import { SpeakerPlaceholder } from "./speaker-placeholder";
 export function SessionCard({
   session,
   highlightSpeaker,
+  highlightSession,
   onClick,
 }: {
   session: Session;
   highlightSpeaker?: string;
+  highlightSession?: string;
   onClick?: () => void;
 }) {
   const meta = TYPE_META[session.type];
@@ -22,11 +24,18 @@ export function SessionCard({
       ? session.speakerCount
       : 0;
 
+  const isSessionHighlighted =
+    !!highlightSession &&
+    session.title.toLowerCase() === highlightSession.toLowerCase();
+
   return (
     <div
       className={cn(
-        "rounded-2xl border border-gray-100 bg-white shadow-sm",
-        onClick && "cursor-pointer transition-shadow duration-200 hover:shadow-md hover:border-gtp-teal/30",
+        "rounded-2xl border bg-white shadow-sm transition-all duration-500",
+        isSessionHighlighted
+          ? "border-gtp-teal ring-2 ring-gtp-teal/30 shadow-md"
+          : "border-gray-100",
+        onClick && "cursor-pointer hover:shadow-md hover:border-gtp-teal/30",
       )}
       onClick={onClick}
     >

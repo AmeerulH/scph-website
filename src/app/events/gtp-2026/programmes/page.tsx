@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -494,17 +496,30 @@ function filterSessions(
   return filtered;
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Page inner (uses useSearchParams — must be inside Suspense) ──────────────
 
-export default function ProgrammesPage() {
-  const [activeTab, setActiveTab] = React.useState<TabId>("pre");
+function ProgrammesPageInner() {
+  const searchParams = useSearchParams();
+
+  const initialTab = (searchParams.get("tab") as TabId) ?? "pre";
+  const initialSession = searchParams.get("session");
+
+  const [activeTab, setActiveTab] = React.useState<TabId>(initialTab);
   const [selectedType, setSelectedType] = React.useState<SessionType | "all">("all");
   const [selectedTheme, setSelectedTheme] = React.useState<ThemeId>("all");
   const [selectedSpeaker, setSelectedSpeaker] = React.useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
+  const [highlightSession, setHighlightSession] = React.useState<string | null>(initialSession);
 
   const tabStripRef = React.useRef<HTMLDivElement>(null);
   const anchorRef = React.useRef<HTMLDivElement>(null);
+
+  // Auto-clear session highlight after 4 seconds
+  React.useEffect(() => {
+    if (!highlightSession) return;
+    const id = setTimeout(() => setHighlightSession(null), 4000);
+    return () => clearTimeout(id);
+  }, [highlightSession]);
 
   const hasActiveFilter = selectedType !== "all" || selectedTheme !== "all" || selectedSpeaker !== null;
 
@@ -656,6 +671,7 @@ export default function ProgrammesPage() {
                 <DayAgenda
                   sessions={currentSessions}
                   highlightSpeaker={selectedSpeaker ?? undefined}
+                  highlightSession={highlightSession ?? undefined}
                   dayLabel={currentDayLabel}
                 />
               )}
@@ -685,5 +701,15 @@ export default function ProgrammesPage() {
         </div>
       </div>
     </>
+  );
+}
+
+// ─── Page export — Suspense required for useSearchParams ─────────────────────
+
+export default function ProgrammesPage() {
+  return (
+    <Suspense>
+      <ProgrammesPageInner />
+    </Suspense>
   );
 }

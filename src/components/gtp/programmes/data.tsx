@@ -39,6 +39,20 @@ export const TYPE_META: Record<
   break:       { label: "Break",                badgeClass: "bg-gray-100 text-gray-400",               Icon: Coffee },
 };
 
+// ─── Type-specific gradient banners (shared with modal & carousel) ────────────
+
+export const TYPE_GRADIENTS: Record<string, string> = {
+  opening:     "from-[#0D4D5E] via-[#009CB4] to-[#0D4D5E]",
+  plenary:     "from-[#009CB4] via-[#0D4D5E] to-[#007d90]",
+  lightning:   "from-[#DB5D00] via-[#0D4D5E] to-[#009CB4]",
+  fireside:    "from-[#5C8119] via-[#0D4D5E] to-[#009CB4]",
+  concurrent:  "from-[#009CB4] via-[#0D4D5E] to-[#5C8119]",
+  special:     "from-[#86BC25] via-[#0D4D5E] to-[#009CB4]",
+  closing:     "from-[#0D4D5E] via-[#007d90] to-[#009CB4]",
+  reconvening: "from-[#4b6070] via-[#2d4450] to-[#0D4D5E]",
+  break:       "from-[#6b7280] via-[#4b5563] to-[#374151]",
+};
+
 // ─── Agenda Data ──────────────────────────────────────────────────────────────
 
 export const day1: Session[] = [

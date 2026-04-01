@@ -21,7 +21,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
-import { GtpHeroCarousel } from "@/components/gtp/hero-carousel";
+import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
+import { GtpCountdown } from "@/components/gtp/countdown";
+import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
 
@@ -805,7 +807,9 @@ function QuoteSection() {
 export default function GtpAboutPage() {
   return (
     <>
-      <GtpHeroCarousel />
+      <GtpHeroGradient />
+      <GtpCountdown />
+      <GtpEventsPreviewCarousel />
       <WhatIsGtpSection />
       <WhyItMattersSection />
       <ThemesSection />
