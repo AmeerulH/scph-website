@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import {
   TrendingDown,
@@ -13,9 +14,12 @@ import {
   Radio,
   Leaf,
   Activity,
+  ArrowUp,
 } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { AbstractForm } from "./abstract-form";
+import { WorkshopForm } from "./workshop-form";
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
@@ -39,7 +43,8 @@ function SubmissionsHero() {
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gtp-teal" />
         <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
-          Submit scalable solutions emerging from Asia across the conference&apos;s critical domains
+          Submit scalable solutions emerging from Asia across the
+          conference&apos;s critical domains
         </p>
       </div>
     </div>
@@ -83,7 +88,9 @@ function PillarsSection() {
       background="default"
     >
       <p className="mx-auto mb-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
-        As research demonstrates that systems can shift rapidly when leadership, investment, and public confidence converge, GTP 2026 focuses on three pillars:
+        As research demonstrates that systems can shift rapidly when leadership,
+        investment, and public confidence converge, GTP 2026 focuses on three
+        pillars:
       </p>
 
       <StaggerReveal className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0">
@@ -93,22 +100,33 @@ function PillarsSection() {
             className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[280px] flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
           >
             <div className="mb-5 flex items-center gap-3">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}>
+              <div
+                className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}
+              >
                 <Icon className={`h-6 w-6 ${iconColour}`} />
               </div>
-              <span className="font-heading text-sm font-bold text-gray-300">{num}</span>
+              <span className="font-heading text-sm font-bold text-gray-300">
+                {num}
+              </span>
             </div>
-            <h3 className="font-heading text-xl font-bold text-gtp-dark-teal">{title}</h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">{body}</p>
+            <h3 className="font-heading text-xl font-bold text-gtp-dark-teal">
+              {title}
+            </h3>
+            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
+              {body}
+            </p>
           </div>
         ))}
       </StaggerReveal>
 
       <p className="mx-auto mt-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
-        We invite researchers and practitioners to submit abstracts for oral and poster presentations, and contribute to the programme agenda by proposing to convene action workshops.
+        We invite researchers and practitioners to submit abstracts for oral and
+        poster presentations, and contribute to the programme agenda by
+        proposing to convene action workshops.
       </p>
       <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-gray-500">
-        We especially encourage submissions highlighting scalable solutions emerging from Asia across the conference&apos;s eight critical domains:
+        We especially encourage submissions highlighting scalable solutions
+        emerging from Asia across the conference&apos;s eight critical domains:
       </p>
     </SectionWrapper>
   );
@@ -184,13 +202,17 @@ function EightThemesSection() {
             key={title}
             className="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
           >
-            <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${iconBg}`}>
+            <div
+              className={`mb-4 flex h-11 w-11 items-center justify-center rounded-full ${iconBg}`}
+            >
               <Icon className={`h-5 w-5 ${iconColour}`} />
             </div>
             <h3 className="font-heading text-sm font-bold leading-snug text-gtp-dark-teal">
               {title}
             </h3>
-            <p className="mt-2 flex-1 text-xs leading-relaxed text-gray-500">{body}</p>
+            <p className="mt-2 flex-1 text-xs leading-relaxed text-gray-500">
+              {body}
+            </p>
           </div>
         ))}
       </StaggerReveal>
@@ -200,55 +222,93 @@ function EightThemesSection() {
 
 // ─── CTA Section ──────────────────────────────────────────────────────────────
 
-const abstractFormEmbedUrl =
-  "https://docs.google.com/forms/d/1ZSe8110g8FWBiqGpF5AQNEtBqgmWes5ebNG8eSLmLPc/prefill?embedded=true";
-const actionWorkshopFormEmbedUrl =
-  "https://docs.google.com/forms/d/19YpOKfMRKrgxq2Yh4WiidFYvfuvHBJ053MUGpNmLGvA/prefill?embedded=true";
+const TABS = [
+  { id: "abstract", label: "Abstract Submission", deadline: "15 May 2026" },
+  { id: "workshop", label: "Action Workshop", deadline: "8 May 2026" },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
 
 function CtaSection() {
+  const [activeTab, setActiveTab] = useState<TabId>("abstract");
+
   return (
     <SectionWrapper theme="gtp" background="dark">
-      <div className="mx-auto max-w-7xl text-center">
+      <div className="mx-auto max-w-4xl text-center">
         <h2 className="font-heading text-2xl font-bold text-white md:text-3xl">
           Ready to Submit?
         </h2>
         <p className="mt-4 text-base leading-relaxed text-white/70">
-          Complete the form below for your abstract or action workshop proposal.
+          Select a submission type below and complete the form.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-white/20">
-            <div className="border-b border-gray-200 bg-gray-50 p-4 text-left">
+        {/* Tab bar */}
+        <div
+          id="submissions-tabs"
+          className="mt-8 inline-flex w-full overflow-hidden rounded-xl bg-white/10 p-1 backdrop-blur-sm sm:w-auto"
+        >
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all duration-200 sm:flex-none ${
+                activeTab === tab.id
+                  ? "bg-white text-gtp-dark-teal shadow"
+                  : "text-white/70 hover:text-white"
+              }`}
+            >
+              {tab.label}
+              <span
+                className={`ml-2 hidden rounded-full px-2 py-0.5 text-xs sm:inline-block ${
+                  activeTab === tab.id
+                    ? "bg-gtp-teal/10 text-gtp-teal"
+                    : "bg-white/10 text-white/50"
+                }`}
+              >
+                {tab.deadline}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Form container */}
+        <div className="relative mt-6">
+          <div className="rounded-2xl bg-white shadow-xl ring-1 ring-white/20 text-left overflow-hidden">
+            <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
               <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
-                Abstract Submission
+                {TABS.find((t) => t.id === activeTab)?.label}
               </h3>
               <p className="mt-1 text-sm text-gray-500">
-                Deadline: <span className="font-semibold text-gray-700">15 May 2026</span>
+                Deadline:{" "}
+                <span className="font-semibold text-gray-700">
+                  {TABS.find((t) => t.id === activeTab)?.deadline}
+                </span>
               </p>
             </div>
-            <iframe
-              title="GTP 2026 Abstract Submission Form"
-              src={abstractFormEmbedUrl}
-              className="h-[960px] w-full border-0"
-              loading="lazy"
-            />
+            <div className="p-6 sm:p-8">
+              {activeTab === "abstract" ? <AbstractForm /> : <WorkshopForm />}
+            </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-white/20">
-            <div className="border-b border-gray-200 bg-gray-50 p-4 text-left">
-              <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
-                Action Workshop Submission
-              </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Deadline: <span className="font-semibold text-gray-700">27 April 2026</span>
-              </p>
-            </div>
-            <iframe
-              title="GTP 2026 Action Workshop Submission Form"
-              src={actionWorkshopFormEmbedUrl}
-              className="h-[960px] w-full border-0"
-              loading="lazy"
-            />
+          {/* Floating back-to-top — sits outside the white card at the bottom-right corner */}
+          <div className="absolute -bottom-8 -right-8 z-10">
+            <button
+              type="button"
+              onClick={() =>
+                document
+                  .getElementById("submissions-tabs")
+                  ?.scrollIntoView({ behavior: "smooth", block: "center" })
+              }
+              className="flex flex-col items-center gap-1 transition-all duration-200 hover:scale-110 active:scale-95"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gtp-teal text-white shadow-lg">
+                <ArrowUp className="h-5 w-5" />
+              </span>
+              <span className="text-xs font-semibold text-white/80">
+                Back to top
+              </span>
+            </button>
           </div>
         </div>
       </div>

@@ -42,3 +42,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Google service account credentials — never commit
+nodal-episode-484712-m8-2778260f58b0.json
+*-service-account*.json
