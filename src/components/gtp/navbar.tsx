@@ -27,7 +27,7 @@ type DropdownLink = {
 type NavItem = SimpleLink | DropdownLink;
 
 const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: "/events/gtp-2026/about" },
   {
     label: "Organising Committee",
     href: "/events/gtp-2026/organising-committee",

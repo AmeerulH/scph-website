@@ -53,7 +53,12 @@ export const day1: Session[] = [
     durationMins: 90,
     type: "plenary",
     title: "Opening Plenary: The Science of Global Tipping Points",
-    speakerCount: 4,
+    speakers: [
+      { name: "Dr. Sarah Chen",      designation: "Marine Biologist, IUCN" },
+      { name: "Prof. James Okafor",  designation: "Climate Economist, University of Lagos" },
+      { name: "Dr. Amara Diallo",    designation: "Systems Ecologist, UNEP" },
+      { name: "Prof. Lena Fischer",  designation: "Environmental Law, Heidelberg University" },
+    ],
   },
   {
     time: "11:00 – 11:30",
@@ -68,14 +73,21 @@ export const day1: Session[] = [
     durationMins: 10,
     type: "lightning",
     title: "Lightning Talk: Frontline Realities of Tipping Points in Malaysia",
-    speakerCount: 1,
+    speakers: [
+      { name: "Dr. Nurul Ain Mohd",  designation: "Forest Researcher, UPM" },
+    ],
   },
   {
     time: "11:40 – 12:40",
     durationMins: 60,
     type: "plenary",
     title: "Plenary 2: Global Context and ASEAN Pathways",
-    speakerCount: 4,
+    speakers: [
+      { name: "Prof. Raj Patel",     designation: "Sustainability, UC Berkeley" },
+      { name: "Dr. Maya Sharma",     designation: "Urban Climate Planner, WRI" },
+      { name: "Dr. Carlos Mendoza",  designation: "Energy Systems, IRENA" },
+      { name: "Dr. Yuki Tanaka",     designation: "Technology & Policy, OECD" },
+    ],
   },
   {
     time: "12:40 – 14:00",
@@ -118,7 +130,9 @@ export const day1: Session[] = [
     durationMins: 30,
     type: "fireside",
     title: "Fireside Chat: [Insert Topic]",
-    speakerCount: 1,
+    speakers: [
+      { name: "Dr. Fatima Al-Rashid", designation: "Climate Justice Advocate, Climate Action Network" },
+    ],
   },
   {
     time: "16:30 – 17:00",
@@ -140,14 +154,21 @@ export const day2: Session[] = [
     durationMins: 10,
     type: "lightning",
     title: "Lightning Talk: Who Really Pays for Environmental Damage?",
-    speakerCount: 1,
+    speakers: [
+      { name: "Prof. David Kurniawan", designation: "Environmental Economics, UI Jakarta" },
+    ],
   },
   {
     time: "09:10 – 10:40",
     durationMins: 90,
     type: "plenary",
     title: "Plenary 3: Flipping the Script",
-    speakerCount: 4,
+    speakers: [
+      { name: "Dr. Sarah Chen",        designation: "Marine Biologist, IUCN" },
+      { name: "Dr. Aiko Watanabe",     designation: "Behavioural Science, Tokyo University" },
+      { name: "Prof. Kwame Asante",    designation: "Political Ecology, University of Ghana" },
+      { name: "Dr. Elena Vasquez",     designation: "Media & Climate Communication, Reuters" },
+    ],
   },
   {
     time: "10:40 – 11:10",
@@ -162,7 +183,12 @@ export const day2: Session[] = [
     durationMins: 90,
     type: "plenary",
     title: "Plenary 4: Values and Cultural Tipping Points",
-    speakerCount: 4,
+    speakers: [
+      { name: "Prof. James Okafor",    designation: "Climate Economist, University of Lagos" },
+      { name: "Dr. Priya Nair",        designation: "Cultural Anthropology, JNU New Delhi" },
+      { name: "Dr. Lars Eriksson",     designation: "Philosophy of Science, Uppsala University" },
+      { name: "Dr. Amara Diallo",      designation: "Systems Ecologist, UNEP" },
+    ],
   },
   {
     time: "12:40 – 14:00",
@@ -205,7 +231,9 @@ export const day2: Session[] = [
     durationMins: 30,
     type: "fireside",
     title: "Fireside Chat: Leadership That Tips Energy Systems",
-    speakerCount: 1,
+    speakers: [
+      { name: "Dr. Carlos Mendoza",   designation: "Energy Systems, IRENA" },
+    ],
   },
   {
     time: "16:30 – 17:00",
@@ -233,14 +261,24 @@ export const day3: Session[] = [
     durationMins: 60,
     type: "plenary",
     title: "Plenary 5: Finance for Positive Tipping Points",
-    speakerCount: 4,
+    speakers: [
+      { name: "Dr. Yuki Tanaka",       designation: "Technology & Policy, OECD" },
+      { name: "Dr. Sofia Andersen",    designation: "Green Finance, Nordic Investment Bank" },
+      { name: "Prof. Raj Patel",       designation: "Sustainability, UC Berkeley" },
+      { name: "Dr. Fatima Al-Rashid",  designation: "Climate Justice Advocate, Climate Action Network" },
+    ],
   },
   {
     time: "10:00 – 11:30",
     durationMins: 90,
     type: "plenary",
     title: "Plenary 6: From Courtrooms to System Change",
-    speakerCount: 4,
+    speakers: [
+      { name: "Prof. Lena Fischer",    designation: "Environmental Law, Heidelberg University" },
+      { name: "Dr. Ngozi Adeyemi",     designation: "International Climate Law, African Union" },
+      { name: "Dr. Marcus Webb",       designation: "Strategic Litigation, ClientEarth" },
+      { name: "Dr. Maya Sharma",       designation: "Urban Climate Planner, WRI" },
+    ],
   },
   {
     time: "11:30 – 12:00",
@@ -255,7 +293,12 @@ export const day3: Session[] = [
     durationMins: 60,
     type: "plenary",
     title: "Plenary 7: Change is Possible – Cities as Tipping Points",
-    speakerCount: 4,
+    speakers: [
+      { name: "Dr. Elena Vasquez",     designation: "Media & Climate Communication, Reuters" },
+      { name: "Prof. Kwame Asante",    designation: "Political Ecology, University of Ghana" },
+      { name: "Dr. Aiko Watanabe",     designation: "Behavioural Science, Tokyo University" },
+      { name: "Dr. Lars Eriksson",     designation: "Philosophy of Science, Uppsala University" },
+    ],
   },
   {
     time: "13:00 – 14:00",
@@ -298,7 +341,9 @@ export const day3: Session[] = [
     durationMins: 30,
     type: "fireside",
     title: "Fireside Chat: Peace Dividends and Health Security",
-    speakerCount: 1,
+    speakers: [
+      { name: "Dr. Priya Nair",        designation: "Cultural Anthropology, JNU New Delhi" },
+    ],
   },
   {
     time: "16:30 – 17:00",
@@ -314,7 +359,12 @@ export const day4: Session[] = [
     durationMins: 90,
     type: "plenary",
     title: "Plenary 8: Bringing It All Together and Road to COP31",
-    speakerCount: 4,
+    speakers: [
+      { name: "Dr. Sarah Chen",        designation: "Marine Biologist, IUCN" },
+      { name: "Prof. James Okafor",    designation: "Climate Economist, University of Lagos" },
+      { name: "Dr. Sofia Andersen",    designation: "Green Finance, Nordic Investment Bank" },
+      { name: "Dr. Marcus Webb",       designation: "Strategic Litigation, ClientEarth" },
+    ],
   },
   {
     time: "10:30 – 11:00",

@@ -1,12 +1,18 @@
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Session } from "./types";
 import { TYPE_META } from "./data";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 
-export function SessionCard({ session }: { session: Session }) {
+export function SessionCard({ session, highlightSpeaker }: { session: Session; highlightSpeaker?: string }) {
   const meta = TYPE_META[session.type];
   const MetaIcon = meta.Icon;
+
+  const namedSpeakers = session.speakers ?? [];
+  const placeholderCount =
+    namedSpeakers.length === 0 && session.speakerCount
+      ? session.speakerCount
+      : 0;
 
   return (
     <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
@@ -44,9 +50,52 @@ export function SessionCard({ session }: { session: Session }) {
           {session.title}
         </h3>
 
-        {session.speakerCount && session.speakerCount > 0 && (
+        {/* Named speakers */}
+        {namedSpeakers.length > 0 && (
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {Array.from({ length: session.speakerCount }).map((_, i) => (
+            {namedSpeakers.map((sp) => {
+              const isHighlighted =
+                highlightSpeaker &&
+                sp.name.toLowerCase().includes(highlightSpeaker.toLowerCase());
+              return (
+                <div
+                  key={sp.name}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
+                    isHighlighted
+                      ? "border-gtp-teal/40 bg-gtp-teal/5 ring-1 ring-gtp-teal/30"
+                      : "border-gray-100 bg-gray-50",
+                  )}
+                >
+                  <UserCircle2
+                    className={cn(
+                      "h-8 w-8 shrink-0",
+                      isHighlighted ? "text-gtp-teal/60" : "text-gray-300",
+                    )}
+                  />
+                  <div className="min-w-0">
+                    <p
+                      className={cn(
+                        "truncate text-xs font-semibold",
+                        isHighlighted ? "text-gtp-dark-teal" : "text-gray-500",
+                      )}
+                    >
+                      {sp.name}
+                    </p>
+                    {sp.designation && (
+                      <p className="truncate text-xs text-gray-400">{sp.designation}</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Fallback placeholders when no names confirmed yet */}
+        {placeholderCount > 0 && (
+          <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {Array.from({ length: placeholderCount }).map((_, i) => (
               <SpeakerPlaceholder key={i} />
             ))}
           </div>
