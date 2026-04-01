@@ -56,7 +56,7 @@ export function GtpFooter() {
           />
           <Link href="/" className="shrink-0">
             <Image
-              src="/images/gtp/logos/scph-white.png"
+              src="/images/scph/logo-mixcolor.png"
               alt="Sunway Centre for Planetary Health"
               width={180}
               height={60}

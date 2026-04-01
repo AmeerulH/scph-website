@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   ExternalLink,
@@ -79,9 +80,18 @@ function AboutSection() {
           </MagneticButton>
         </div>
 
-        {/* Right — visual placeholder until group photo is available */}
+        {/* Right — group photo */}
         <div className="hidden items-center justify-center lg:flex">
-          <div className="relative h-80 w-full overflow-hidden rounded-3xl bg-scph-blue/8 ring-1 ring-scph-blue/10" />
+          <div className="relative h-80 w-full overflow-hidden rounded-3xl shadow-md">
+            <Image
+              src="/images/scph/group-photo-2.png"
+              alt="SCPH Group Photo"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 0px, 50vw"
+              priority
+            />
+          </div>
         </div>
       </div>
     </SectionWrapper>
@@ -268,11 +278,11 @@ function PartnersSection() {
       background="default"
     >
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <div className="mb-4 flex animate-marquee will-change-transform">
+        <div className="mb-4 flex w-max animate-marquee will-change-transform">
           {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r1a-${n}`} n={n} />)}
           {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r1b-${n}`} n={n} />)}
         </div>
-        <div className="flex animate-marquee-reverse will-change-transform">
+        <div className="flex w-max animate-marquee-reverse will-change-transform">
           {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r2a-${n}`} n={n} />)}
           {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r2b-${n}`} n={n} />)}
         </div>

@@ -551,7 +551,7 @@ function SponsorsSection() {
       background="default"
     >
       <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <div className="mb-4 flex animate-marquee will-change-transform">
+        <div className="mb-4 flex w-max animate-marquee will-change-transform">
           {partnerPlaceholders.map((n) => (
             <SponsorLogoItem key={`r1a-${n}`} />
           ))}
@@ -559,7 +559,7 @@ function SponsorsSection() {
             <SponsorLogoItem key={`r1b-${n}`} />
           ))}
         </div>
-        <div className="flex animate-marquee-reverse will-change-transform">
+        <div className="flex w-max animate-marquee-reverse will-change-transform">
           {partnerPlaceholders.map((n) => (
             <SponsorLogoItem key={`r2a-${n}`} />
           ))}
@@ -584,6 +584,118 @@ function SponsorsSection() {
 
 // ─── Gallery ──────────────────────────────────────────────────────────────────
 
+// Each bento group is a fixed-height flex item; groups vary in width & layout.
+// Height anchor: h-72 (288 px).
+// The strip renders two identical copies wrapped in their own shrink-0 flex
+// containers so the browser measures each copy as one concrete element.
+// translateX(-50%) then equals EXACTLY one copy's width → seamless loop.
+
+function GalleryImg({ src, alt, sizes }: { src: string; alt: string; sizes: string }) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover transition-transform duration-500 hover:scale-105"
+      sizes={sizes}
+    />
+  );
+}
+
+function BentoGroups() {
+  return (
+    // Each group has mr-3 so the gap at the seam after each loop iteration
+    // matches the gap between groups within a copy.
+    <div className="flex h-72 shrink-0">
+      {/* 1 — Main Photo: wide single */}
+      <div className="relative mr-3 h-72 w-120 shrink-0 overflow-hidden rounded-2xl">
+        <GalleryImg src="/images/gtp/gtp-2025/main-photo.avif" alt="GTP 2025 — Group Photo" sizes="480px" />
+      </div>
+
+      {/* 2 — tall-left + 2 stacked-right */}
+      <div className="mr-3 flex h-72 w-85 shrink-0 gap-2">
+        <div className="relative flex-1 overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/preview-004.avif" alt="GTP 2025 session" sizes="168px" />
+        </div>
+        <div className="flex w-40 flex-col gap-2">
+          <div className="relative flex-1 overflow-hidden rounded-2xl">
+            <GalleryImg src="/images/gtp/gtp-2025/networking.avif" alt="Networking" sizes="160px" />
+          </div>
+          <div className="relative flex-1 overflow-hidden rounded-2xl">
+            <GalleryImg src="/images/gtp/gtp-2025/conf-7.avif" alt="Conference session" sizes="160px" />
+          </div>
+        </div>
+      </div>
+
+      {/* 3 — wide single */}
+      <div className="relative mr-3 h-72 w-105 shrink-0 overflow-hidden rounded-2xl">
+        <GalleryImg src="/images/gtp/gtp-2025/games-on-lawn.avif" alt="Outdoor activities" sizes="420px" />
+      </div>
+
+      {/* 4 — 2×2 grid */}
+      <div className="mr-3 grid h-72 w-85 shrink-0 grid-cols-2 grid-rows-2 gap-2">
+        <div className="relative overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/conf-4.avif" alt="Conference session" sizes="168px" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/preview-117.avif" alt="GTP 2025 preview" sizes="168px" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/conf-15.jpg" alt="Conference session" sizes="168px" />
+        </div>
+        <div className="relative overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/conf-9.avif" alt="Conference session" sizes="168px" />
+        </div>
+      </div>
+
+      {/* 5 — tall-left + 2 stacked-right */}
+      <div className="mr-3 flex h-72 w-85 shrink-0 gap-2">
+        <div className="relative flex-1 overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/workshop.avif" alt="Workshop" sizes="168px" />
+        </div>
+        <div className="flex w-40 flex-col gap-2">
+          <div className="relative flex-1 overflow-hidden rounded-2xl">
+            <GalleryImg src="/images/gtp/gtp-2025/conf-18.jpg" alt="Conference session" sizes="160px" />
+          </div>
+          <div className="relative flex-1 overflow-hidden rounded-2xl">
+            <GalleryImg src="/images/gtp/gtp-2025/conf-5.avif" alt="Conference session" sizes="160px" />
+          </div>
+        </div>
+      </div>
+
+      {/* 6 — wide single */}
+      <div className="relative mr-3 h-72 w-105 shrink-0 overflow-hidden rounded-2xl">
+        <GalleryImg src="/images/gtp/gtp-2025/preview-092.avif" alt="GTP 2025 preview" sizes="420px" />
+      </div>
+
+      {/* 7 — side-by-side equal */}
+      <div className="mr-3 flex h-72 w-95 shrink-0 gap-2">
+        <div className="relative flex-1 overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/preview-106.avif" alt="GTP 2025 preview" sizes="188px" />
+        </div>
+        <div className="relative flex-1 overflow-hidden rounded-2xl">
+          <GalleryImg src="/images/gtp/gtp-2025/conf-12.avif" alt="Conference session" sizes="188px" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GalleryBentoStrip() {
+  return (
+    // overflow-hidden clips the scrolling strip; the fade mask softens edges.
+    // The animated div holds TWO BentoGroups wrappers of equal width W.
+    // translateX(-50%) = translateX(-W), snapping back to translateX(0) which
+    // looks identical → perfectly seamless infinite loop.
+    <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+      <div className="flex w-max animate-marquee will-change-transform">
+        <BentoGroups />
+        <BentoGroups />
+      </div>
+    </div>
+  );
+}
+
 function GallerySection() {
   return (
     <SectionWrapper
@@ -592,25 +704,10 @@ function GallerySection() {
       theme="gtp"
       background="muted"
     >
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-        <div className="col-span-2 aspect-[16/7] rounded-2xl bg-gtp-dark-teal/8 ring-1 ring-gtp-dark-teal/15 flex items-center justify-center md:col-span-2">
-          <span className="text-xs font-medium text-gtp-dark-teal/30">
-            Photos coming soon
-          </span>
-        </div>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div
-            key={i}
-            className="aspect-[4/3] rounded-2xl bg-gtp-dark-teal/8 ring-1 ring-gtp-dark-teal/15 flex items-center justify-center"
-          >
-            <span className="text-xs font-medium text-gtp-dark-teal/30">
-              Photo
-            </span>
-          </div>
-        ))}
-      </div>
+      <GalleryBentoStrip />
+
       <p className="mt-6 text-center text-sm text-gray-400">
-        Photos from the conference will be added here.{" "}
+        Photos from GTP 2025.{" "}
         <Link
           href="/events/gtp-2026/media"
           className="font-semibold text-gtp-dark-teal hover:underline"
