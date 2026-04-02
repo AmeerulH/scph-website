@@ -174,8 +174,10 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                       {session.type === "plenary" || session.type === "opening" || session.type === "closing"
                         ? "Public Session"
                         : session.type === "concurrent"
-                          ? "Breakout Session"
-                          : session.type === "fireside"
+                          ? "Action workshop"
+                          : session.type === "research"
+                            ? "Research session"
+                            : session.type === "fireside"
                             ? "Fireside Chat"
                             : session.type === "lightning"
                               ? "Lightning Talk"
@@ -198,9 +200,11 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                         As a plenary session, all conference participants are invited and encouraged to attend. Session details, including confirmed speakers and a detailed agenda, will be published closer to the event.
                       </p>
                     )}
-                    {session.type === "concurrent" && (
+                    {(session.type === "concurrent" || session.type === "research") && (
                       <p>
-                        This concurrent block features multiple sessions running simultaneously. Participants may choose the session most relevant to their interests. Capacity may be limited for individual sessions.
+                        {session.type === "research"
+                          ? "These research sessions run in parallel with action workshops. Participants may choose the track most relevant to their interests. Capacity may be limited for individual sessions."
+                          : "These action workshops run simultaneously. Participants may choose the session most relevant to their interests. Capacity may be limited for individual sessions."}
                       </p>
                     )}
                   </div>

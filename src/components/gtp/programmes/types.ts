@@ -5,6 +5,7 @@ export type SessionType =
   | "fireside"
   | "reconvening"
   | "concurrent"
+  | "research"
   | "special"
   | "closing"
   | "break";

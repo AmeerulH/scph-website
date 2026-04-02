@@ -27,7 +27,7 @@ export function DayAgenda({
           if (session.type === "break") {
             return <BreakStrip key={i} session={session} />;
           }
-          if (session.type === "concurrent") {
+          if (session.type === "concurrent" || session.type === "research") {
             return (
               <ConcurrentBlock
                 key={i}

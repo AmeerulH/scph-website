@@ -33,8 +33,8 @@ const FILTERABLE_TYPES: (SessionType | "all")[] = [
   "lightning",
   "fireside",
   "concurrent",
+  "research",
   "special",
-  "closing",
 ];
 
 const THEMES = [
@@ -97,6 +97,16 @@ function FilterBar({
   return (
     <div className="flex justify-center px-4 pb-3">
       <div className="w-full max-w-4xl space-y-2 rounded-2xl border border-white/10 bg-gtp-dark-teal/50 px-4 py-3 shadow-lg backdrop-blur-xl">
+        {/* Speaker search — first (feedback Phase 5) */}
+        <div className="flex items-center gap-3">
+          <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/50">
+            Speaker
+          </span>
+          <SpeakerSearch value={selectedSpeaker} onChange={onSpeakerChange} variant="mobile" />
+        </div>
+
+        <div className="h-px bg-white/10" />
+
         {/* Type filters */}
         <div className="flex items-center gap-3">
           <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -119,7 +129,6 @@ function FilterBar({
           </div>
         </div>
 
-        {/* Divider */}
         <div className="h-px bg-white/10" />
 
         {/* Theme filters */}
@@ -139,20 +148,6 @@ function FilterBar({
               </FilterChip>
             ))}
           </div>
-          <span className="shrink-0 text-xs italic text-white/30">
-            coming soon
-          </span>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-white/10" />
-
-        {/* Speaker search */}
-        <div className="flex items-center gap-3">
-          <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/50">
-            Speaker
-          </span>
-          <SpeakerSearch value={selectedSpeaker} onChange={onSpeakerChange} variant="mobile" />
         </div>
       </div>
     </div>
@@ -311,15 +306,15 @@ function SpeakerSearch({
         )}
       </div>
 
-      {/* Dropdown list — opens upward so it clears the sidebar's overflow container */}
+      {/* Dropdown opens below the field (matches mobile filter bar) */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
+            exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.12 }}
-            className="absolute bottom-full left-0 right-0 z-50 mb-1.5 overflow-hidden rounded-xl border border-white/10 bg-gtp-dark-teal/95 shadow-2xl backdrop-blur-xl"
+            className="absolute left-0 right-0 top-full z-50 mt-1.5 overflow-hidden rounded-xl border border-white/10 bg-gtp-dark-teal/95 shadow-2xl backdrop-blur-xl"
           >
             <div className="max-h-52 overflow-y-auto py-1 [&::-webkit-scrollbar]:hidden">
               {filtered.length === 0 ? (
@@ -400,6 +395,14 @@ function FilterSidebar({
         Filters
       </p>
 
+      {/* Speaker — first (feedback Phase 5) */}
+      <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+        Speaker
+      </p>
+      <SpeakerSearch value={selectedSpeaker} onChange={onSpeakerChange} variant="sidebar" />
+
+      <div className="my-4 h-px bg-white/10" />
+
       {/* Type section */}
       <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
         Type
@@ -420,7 +423,6 @@ function FilterSidebar({
         })}
       </div>
 
-      {/* Divider */}
       <div className="my-4 h-px bg-white/10" />
 
       {/* Theme section */}
@@ -439,16 +441,6 @@ function FilterSidebar({
           </SidebarFilterRow>
         ))}
       </div>
-      <p className="mt-2 text-[10px] italic text-white/50">More themes coming soon</p>
-
-      {/* Divider */}
-      <div className="my-4 h-px bg-white/10" />
-
-      {/* Speaker search */}
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-white/60">
-        Speaker
-      </p>
-      <SpeakerSearch value={selectedSpeaker} onChange={onSpeakerChange} variant="sidebar" />
     </div>
   );
 }

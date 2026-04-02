@@ -4,6 +4,8 @@ import type { Session } from "./types";
 import { WorkshopSubCard } from "./workshop-sub-card";
 
 export function ConcurrentBlock({ session, onClick }: { session: Session; onClick?: () => void }) {
+  const isResearch = session.type === "research";
+
   const workshopSessions =
     session.workshops?.filter((w) => w.title.startsWith("Workshop Session:")) ?? [];
   const researchSessions =
@@ -14,18 +16,41 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
   return (
     <div
       className={cn(
-        "rounded-2xl border border-gtp-teal/20 bg-white shadow-sm",
-        onClick && "cursor-pointer transition-shadow duration-200 hover:shadow-md hover:border-gtp-teal/50",
+        "rounded-2xl border bg-white shadow-sm",
+        isResearch
+          ? "border-gtp-orange/25"
+          : "border-gtp-teal/20",
+        onClick &&
+          (isResearch
+            ? "cursor-pointer transition-shadow duration-200 hover:border-gtp-orange/45 hover:shadow-md"
+            : "cursor-pointer transition-shadow duration-200 hover:border-gtp-teal/50 hover:shadow-md"),
       )}
       onClick={onClick}
     >
       {/* Header */}
-      <div className="flex flex-wrap items-center gap-3 rounded-t-2xl border-b border-gtp-teal/15 bg-gtp-teal/8 px-6 py-4">
-        <div className="flex items-center gap-2 text-gtp-teal/70">
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-3 rounded-t-2xl border-b px-6 py-4",
+          isResearch
+            ? "border-gtp-orange/20 bg-gtp-orange/8"
+            : "border-gtp-teal/15 bg-gtp-teal/8",
+        )}
+      >
+        <div
+          className={cn(
+            "flex items-center gap-2",
+            isResearch ? "text-gtp-orange/80" : "text-gtp-teal/70",
+          )}
+        >
           <Clock className="h-4 w-4" />
           <span className="text-sm font-semibold">{session.time}</span>
           {session.durationMins && (
-            <span className="rounded-full bg-gtp-teal/15 px-2 py-0.5 text-xs">
+            <span
+              className={cn(
+                "rounded-full px-2 py-0.5 text-xs",
+                isResearch ? "bg-gtp-orange/15" : "bg-gtp-teal/15",
+              )}
+            >
               {session.durationMins} mins
             </span>
           )}
@@ -34,8 +59,15 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
           <MapPin className="h-3.5 w-3.5" />
           <span className="text-xs italic">Location TBC</span>
         </div>
-        <span className="ml-auto rounded-full bg-gtp-teal/15 px-3 py-1 text-xs font-semibold text-gtp-dark-teal">
-          Sessions Running Simultaneously
+        <span
+          className={cn(
+            "ml-auto rounded-full px-3 py-1 text-xs font-semibold",
+            isResearch
+              ? "bg-gtp-orange/15 text-gtp-orange-dark"
+              : "bg-gtp-teal/15 text-gtp-dark-teal",
+          )}
+        >
+          {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
         </span>
       </div>
 

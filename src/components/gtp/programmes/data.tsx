@@ -7,6 +7,7 @@ import {
   Star,
   Film,
   Users,
+  BookOpen,
 } from "lucide-react";
 import type { Session, SessionType } from "./types";
 
@@ -33,7 +34,8 @@ export const TYPE_META: Record<
   lightning:   { label: "Lightning Talk",       badgeClass: "bg-gtp-orange/10 text-gtp-orange",        Icon: Zap },
   fireside:    { label: "Fireside Chat",        badgeClass: "bg-gtp-green/15 text-gtp-dark-green",     Icon: MessageSquare },
   reconvening: { label: "Reconvening",          badgeClass: "bg-gray-100 text-gray-500",               Icon: RefreshCw },
-  concurrent:  { label: "Concurrent Sessions",  badgeClass: "bg-gtp-teal/10 text-gtp-dark-teal",      Icon: Users },
+  concurrent:  { label: "Action Workshops",     badgeClass: "bg-gtp-teal/10 text-gtp-dark-teal",      Icon: Users },
+  research:    { label: "Research Sessions",    badgeClass: "bg-gtp-orange/10 text-gtp-orange",        Icon: BookOpen },
   special:     { label: "Special Event",        badgeClass: "bg-gtp-green/10 text-gtp-dark-green",     Icon: Film },
   closing:     { label: "Closing",              badgeClass: "bg-gtp-dark-teal/10 text-gtp-dark-teal",  Icon: Star },
   break:       { label: "Break",                badgeClass: "bg-gray-100 text-gray-400",               Icon: Coffee },
@@ -47,6 +49,7 @@ export const TYPE_GRADIENTS: Record<string, string> = {
   lightning:   "from-[#DB5D00] via-[#0D4D5E] to-[#009CB4]",
   fireside:    "from-[#5C8119] via-[#0D4D5E] to-[#009CB4]",
   concurrent:  "from-[#009CB4] via-[#0D4D5E] to-[#5C8119]",
+  research:    "from-[#DB5D00] via-[#0D4D5E] to-[#009CB4]",
   special:     "from-[#86BC25] via-[#0D4D5E] to-[#009CB4]",
   closing:     "from-[#0D4D5E] via-[#007d90] to-[#009CB4]",
   reconvening: "from-[#4b6070] via-[#2d4450] to-[#0D4D5E]",
@@ -115,7 +118,7 @@ export const day1: Session[] = [
     time: "14:00 – 15:30",
     durationMins: 90,
     type: "concurrent",
-    title: "Deep Dive Sessions",
+    title: "Action Workshops",
     workshops: [
       { number: "1",  title: "Workshop Session: Regional Perspectives Deep Dive" },
       { number: "2",  title: "Workshop Session: Storytelling and Public Relations" },
@@ -127,6 +130,14 @@ export const day1: Session[] = [
       { number: "8",  title: "Workshop Session: [Title – Topic from Open Proposals]" },
       { number: "9",  title: "Workshop Session: [Title – Topic from Open Proposals]" },
       { number: "10", title: "Workshop Session: [Title – Topic from Open Proposals]" },
+    ],
+  },
+  {
+    time: "14:00 – 15:30",
+    durationMins: 90,
+    type: "research",
+    title: "Research Sessions",
+    workshops: [
       { number: "11", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
       { number: "12", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
     ],
@@ -216,7 +227,7 @@ export const day2: Session[] = [
     time: "14:00 – 15:30",
     durationMins: 90,
     type: "concurrent",
-    title: "Breakout Sessions",
+    title: "Action Workshops",
     workshops: [
       { number: "1",  title: "Workshop Session: Legal Frameworks and Litigation" },
       { number: "2",  title: "Workshop Session: Return on Values (ROV) – Doing Business Differently, Session One" },
@@ -228,6 +239,14 @@ export const day2: Session[] = [
       { number: "8",  title: "Workshop Session: [Title – Topic from Open Proposals]" },
       { number: "9",  title: "Workshop Session: [Title – Topic from Open Proposals]" },
       { number: "10", title: "Workshop Session: [Title – Topic from Open Proposals]" },
+    ],
+  },
+  {
+    time: "14:00 – 15:30",
+    durationMins: 90,
+    type: "research",
+    title: "Research Sessions",
+    workshops: [
       { number: "11", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
       { number: "12", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
     ],
@@ -326,7 +345,7 @@ export const day3: Session[] = [
     time: "14:00 – 15:30",
     durationMins: 90,
     type: "concurrent",
-    title: "Deep Dive Sessions",
+    title: "Action Workshops",
     workshops: [
       { number: "1",  title: "Workshop Session: AI and Technology for Systems Transition" },
       { number: "2",  title: "Workshop Session: Nature-Based Solutions at Scale" },
@@ -338,6 +357,14 @@ export const day3: Session[] = [
       { number: "8",  title: "Workshop Session: Cleantech Systems Change" },
       { number: "9",  title: "Workshop Session: [Title – Topic from Open Proposals]" },
       { number: "10", title: "Workshop Session: [Title – Topic from Open Proposals]" },
+    ],
+  },
+  {
+    time: "14:00 – 15:30",
+    durationMins: 90,
+    type: "research",
+    title: "Research Sessions",
+    workshops: [
       { number: "11", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
       { number: "12", title: "Research Session: [Title – Topic from Open Abstract Calls]" },
     ],
