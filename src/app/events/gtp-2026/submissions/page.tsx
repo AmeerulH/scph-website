@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   TrendingDown,
   Lightbulb,
@@ -38,8 +39,8 @@ function SubmissionsHero() {
         <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           GTP 2026
         </span>
-        <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-          Submissions
+        <h1 className="mt-6 font-heading text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
+          Call for Abstract and Action Workshop Proposal Submissions
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gtp-teal" />
         <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
@@ -59,24 +60,36 @@ const pillars = [
     icon: TrendingDown,
     title: "Understanding the Shift",
     body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-    iconBg: "bg-gtp-dark-teal/10",
-    iconColour: "text-gtp-dark-teal",
+    cardClass: "bg-gtp-dark-teal text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
   {
     num: "02",
     icon: Lightbulb,
     title: "Igniting Imagination",
     body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-    iconBg: "bg-gtp-teal/10",
-    iconColour: "text-gtp-teal",
+    cardClass: "bg-gtp-teal text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
   {
     num: "03",
     icon: Zap,
     title: "Accelerating Action",
     body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    iconBg: "bg-gtp-green/15",
-    iconColour: "text-gtp-dark-green",
+    cardClass: "bg-gtp-dark-green text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
 ];
 
@@ -87,42 +100,76 @@ function PillarsSection() {
       theme="gtp"
       background="default"
     >
-      <p className="mb-10 max-w-3xl text-left text-base leading-relaxed text-gray-600">
-        As research demonstrates that systems can shift rapidly when leadership,
-        investment, and public confidence converge, GTP 2026 focuses on three
-        pillars:
+      <p className="mb-8 max-w-3xl text-left text-base leading-relaxed text-gray-600">
+        GTP 2026 is organised around three pillars that shape the programme and
+        submissions.
       </p>
 
-      <StaggerReveal className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0">
-        {pillars.map(({ num, icon: Icon, title, body, iconBg, iconColour }) => (
-          <div
-            key={num}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[280px] flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
-          >
-            <div className="mb-5 flex items-center gap-3">
-              <div
-                className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}
-              >
-                <Icon className={`h-6 w-6 ${iconColour}`} />
+      <StaggerReveal
+        className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3"
+        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%] md:transition-[flex-grow] md:duration-500 md:ease-in-out md:hover:flex-grow-[1.45]"
+      >
+        {pillars.map(
+          ({
+            num,
+            icon: Icon,
+            title,
+            body,
+            cardClass,
+            iconWrap,
+            iconColour,
+            bodyClass,
+            numClass,
+            titleClass,
+          }) => (
+            <div
+              key={num}
+              className={`flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 shadow-md ring-1 md:min-h-[320px] ${cardClass}`}
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconWrap}`}
+                >
+                  <Icon className={`h-6 w-6 ${iconColour}`} />
+                </div>
+                <span className={`font-heading text-sm font-bold ${numClass}`}>
+                  {num}
+                </span>
               </div>
-              <span className="font-heading text-sm font-bold text-gray-300">
-                {num}
-              </span>
+              <h3 className={`font-heading text-xl font-bold ${titleClass}`}>
+                {title}
+              </h3>
+              <p className={`mt-3 flex-1 text-sm leading-relaxed ${bodyClass}`}>
+                {body}
+              </p>
             </div>
-            <h3 className="font-heading text-xl font-bold text-gtp-dark-teal">
-              {title}
-            </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
-              {body}
-            </p>
-          </div>
-        ))}
+          ),
+        )}
       </StaggerReveal>
 
-      <p className="mx-auto mt-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
+      <p className="mx-auto mt-10 max-w-3xl text-center text-base font-bold leading-relaxed text-gtp-dark-teal md:text-lg">
         We invite researchers and practitioners to submit abstracts for oral and
         poster presentations, and contribute to the programme agenda by
         proposing to convene action workshops.
+      </p>
+      <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-gray-600 md:text-base">
+        As research demonstrates that systems can shift rapidly when leadership,
+        investment, and public confidence converge, GTP 2026 focuses on these three
+        pillars.
+      </p>
+      <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-gray-600">
+        <Link
+          href="https://global-tipping-points.org/download/1418/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold text-gtp-teal underline underline-offset-2 hover:text-gtp-dark-teal"
+        >
+          Download the Global Tipping Points Report 2025
+        </Link>
+        <span className="text-gray-400"> — </span>
+        <span className="text-gray-500">
+          background reading for submitters (opens global-tipping-points.org)
+        </span>
       </p>
     </SectionWrapper>
   );
@@ -223,8 +270,16 @@ function EightThemesSection() {
 // ─── CTA Section ──────────────────────────────────────────────────────────────
 
 const TABS = [
-  { id: "abstract", label: "Abstract Submission", deadline: "15 May 2026" },
-  { id: "workshop", label: "Action Workshop", deadline: "8 May 2026" },
+  {
+    id: "abstract",
+    label: "Abstract Submission",
+    deadline: "15 May 2026, 23:59 (GMT+8)",
+  },
+  {
+    id: "workshop",
+    label: "Action Workshop Proposal Submission",
+    deadline: "8 May 2026, 23:59 (GMT+8)",
+  },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -252,22 +307,13 @@ function CtaSection() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all duration-200 sm:flex-none ${
+              className={`flex-1 rounded-lg px-3 py-2.5 text-center text-xs font-semibold leading-snug transition-all duration-200 sm:flex-none sm:px-5 sm:text-sm ${
                 activeTab === tab.id
                   ? "bg-white text-gtp-dark-teal shadow"
                   : "text-white/70 hover:text-white"
               }`}
             >
               {tab.label}
-              <span
-                className={`ml-2 hidden rounded-full px-2 py-0.5 text-xs sm:inline-block ${
-                  activeTab === tab.id
-                    ? "bg-gtp-teal/10 text-gtp-teal"
-                    : "bg-white/10 text-white/50"
-                }`}
-              >
-                {tab.deadline}
-              </span>
             </button>
           ))}
         </div>

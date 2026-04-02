@@ -1,6 +1,13 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -173,6 +180,7 @@ interface RadioGroupProps {
   options: string[];
   required?: boolean;
   columns?: 1 | 2;
+  onValueChange?: (value: string) => void;
 }
 
 function RadioGroup({
@@ -181,6 +189,7 @@ function RadioGroup({
   options,
   required,
   columns = 1,
+  onValueChange,
 }: RadioGroupProps) {
   return (
     <fieldset>
@@ -202,6 +211,7 @@ function RadioGroup({
               value={opt}
               required={required}
               className="accent-gtp-teal"
+              onChange={() => onValueChange?.(opt)}
             />
             {opt}
           </label>
@@ -309,7 +319,7 @@ function RequirementsPanel() {
             </p>
             <p className="mt-1 text-xs">
               Session conveners are expected to produce a short return summary
-              of their session, for which a template will be proided in advance.
+              of their session, for which a template will be provided in advance.
               Sessions should aim and report on tangible outcomes or identify:
             </p>
             <ul className="mt-1 space-y-0.5 pl-3 text-xs">
@@ -506,11 +516,18 @@ const THEMES = [
   "Health",
 ];
 
-function SecondaryThemesField() {
-  const [selected, setSelected] = useState<string[]>([]);
-
+function SecondaryThemesField({
+  primaryTheme,
+  selected,
+  onSelectedChange,
+}: {
+  primaryTheme: string;
+  selected: string[];
+  onSelectedChange: Dispatch<SetStateAction<string[]>>;
+}) {
   function toggle(theme: string) {
-    setSelected((prev) => {
+    if (theme === primaryTheme) return;
+    onSelectedChange((prev) => {
       if (prev.includes(theme)) return prev.filter((t) => t !== theme);
       if (prev.length >= 2) return prev;
       return [...prev, theme];
@@ -522,22 +539,26 @@ function SecondaryThemesField() {
       <legend className="mb-2 text-sm font-medium text-gtp-dark-teal">
         Secondary Thematic Area(s){" "}
         <span className="font-normal text-gray-400">
-          (optional — select up to 2)
+          (optional — select up to 2, must differ from primary)
         </span>
       </legend>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {THEMES.map((theme) => {
+          const isPrimary = Boolean(primaryTheme && theme === primaryTheme);
           const isSelected = selected.includes(theme);
-          const isDisabled = !isSelected && selected.length >= 2;
+          const atCap = !isSelected && selected.length >= 2;
+          const isDisabled = isPrimary || atCap;
           return (
             <label
               key={theme}
               className={`flex cursor-pointer items-center gap-2.5 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
-                isSelected
-                  ? "border-gtp-teal bg-gtp-teal/5 text-gtp-dark-teal"
-                  : isDisabled
-                    ? "cursor-not-allowed border-gray-100 bg-gray-50 text-gray-400"
-                    : "border-gray-200 text-gray-700 hover:border-gtp-teal/40"
+                isPrimary
+                  ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400"
+                  : isSelected
+                    ? "border-gtp-teal bg-gtp-teal/5 text-gtp-dark-teal"
+                    : isDisabled
+                      ? "cursor-not-allowed border-gray-100 bg-gray-50 text-gray-400"
+                      : "border-gray-200 text-gray-700 hover:border-gtp-teal/40"
               }`}
             >
               <input
@@ -550,6 +571,11 @@ function SecondaryThemesField() {
                 className="accent-gtp-teal"
               />
               {theme}
+              {isPrimary ? (
+                <span className="ml-auto text-[10px] font-medium uppercase tracking-wide text-gray-400">
+                  Primary
+                </span>
+              ) : null}
             </label>
           );
         })}
@@ -570,6 +596,8 @@ function SecondaryThemesField() {
 function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
   const [state, formAction] = useActionState(sendWorkshopSubmission, null);
   const [conflictValue, setConflictValue] = useState("");
+  const [primaryTheme, setPrimaryTheme] = useState("");
+  const [secondaryThemes, setSecondaryThemes] = useState<string[]>([]);
   const formRef = useRef<HTMLFormElement>(null);
   const [isValid, setIsValid] = useState(false);
 
@@ -661,9 +689,17 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           options={THEMES}
           required
           columns={2}
+          onValueChange={(value) => {
+            setPrimaryTheme(value);
+            setSecondaryThemes((prev) => prev.filter((t) => t !== value));
+          }}
         />
 
-        <SecondaryThemesField />
+        <SecondaryThemesField
+          primaryTheme={primaryTheme}
+          selected={secondaryThemes}
+          onSelectedChange={setSecondaryThemes}
+        />
       </div>
 
       {/* Section 3 — Session Outline */}

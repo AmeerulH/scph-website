@@ -4,6 +4,19 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+/**
+ * GTP 2026 enquiry inbox (Get Involved + embedded forms on GTP About & SCPH home).
+ * Set `GTP_CONTACT_EMAIL` in `.env.local` (e.g. scph_gtpc2026@sunway.edu.my).
+ * Falls back to `CONTACT_EMAIL` if unset.
+ */
+function getGtpContactRecipient(): string | undefined {
+  return (
+    process.env.GTP_CONTACT_EMAIL?.trim() ||
+    process.env.CONTACT_EMAIL?.trim() ||
+    undefined
+  );
+}
+
 export type ContactFormState = { error?: string; success?: boolean } | null;
 
 export async function sendContactEmail(
@@ -18,9 +31,11 @@ export async function sendContactEmail(
     return { error: "Please fill in all fields." };
   }
 
-  const recipient = process.env.CONTACT_EMAIL;
+  const recipient = getGtpContactRecipient();
   if (!recipient) {
-    console.error("CONTACT_EMAIL is not set in environment variables");
+    console.error(
+      "GTP_CONTACT_EMAIL or CONTACT_EMAIL is not set in environment variables",
+    );
     return { error: "Contact form is not configured. Please try again later." };
   }
 
