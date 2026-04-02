@@ -46,12 +46,13 @@ export function GtpFooter() {
               className="h-9 w-auto object-contain brightness-0 invert sm:h-11 md:h-16"
             />
           </Link>
+          {/* Lockup has opaque black in file; lighten blends black to footer so it doesn’t read as a box */}
           <Image
-            src="/images/gtp/logos/exeter-gsi.png"
+            src="/images/gtp/logos/exeter-gsi-lockup.png"
             alt="University of Exeter — Global Systems Institute"
-            width={180}
-            height={60}
-            className="h-9 w-auto object-contain brightness-0 invert sm:h-11 md:h-16"
+            width={260}
+            height={72}
+            className="h-9 w-auto max-w-[min(100%,300px)] object-contain mix-blend-lighten sm:h-11 md:h-16"
           />
           <Link href="/" className="shrink-0">
             <Image
@@ -62,13 +63,16 @@ export function GtpFooter() {
               className="h-9 w-auto object-contain sm:h-11 md:h-16"
             />
           </Link>
-          <Image
-            src="/images/gtp/logos/sunway-uni-white.png"
-            alt="Sunway University"
-            width={180}
-            height={60}
-            className="h-9 w-auto object-contain sm:h-11 md:h-16"
-          />
+          {/* File has opaque black + wide margins; lighten blends black to footer; scale compensates padding */}
+          <span className="inline-flex shrink-0 items-center overflow-visible py-1">
+            <Image
+              src="/images/gtp/logos/sunway-uni-white.png"
+              alt="Sunway University"
+              width={360}
+              height={120}
+              className="h-12 w-auto max-w-[min(92vw,22rem)] origin-center scale-[1.42] object-contain mix-blend-lighten sm:h-14 md:h-16 md:scale-[1.38] lg:scale-[1.32]"
+            />
+          </span>
         </div>
 
         <Separator className="my-8 bg-white/10" />

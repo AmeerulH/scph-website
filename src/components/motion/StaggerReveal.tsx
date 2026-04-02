@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 interface StaggerRevealProps {
   children: React.ReactNode;
   className?: string;
+  /** Applied to each child wrapper `motion.div` (direct flex/grid children). Use for flex-grow hover rows where the inner node must not be the flex item. */
+  itemClassName?: string;
   /** Use "long" for 7+ items (e.g. pillars), "default" for 3-4 items */
   variant?: "default" | "long";
   /** Fraction of element that must be visible to trigger (0–1). Default 0.15 */
@@ -27,6 +29,7 @@ interface StaggerRevealProps {
 export function StaggerReveal({
   children,
   className,
+  itemClassName,
   variant = "default",
   amount = 0.1,
 }: StaggerRevealProps) {
@@ -48,12 +51,20 @@ export function StaggerReveal({
     >
       {Array.isArray(children)
         ? children.map((child, i) => (
-            <motion.div key={i} variants={itemVariants}>
+            <motion.div
+              key={i}
+              variants={itemVariants}
+              className={cn(itemClassName)}
+            >
               {child}
             </motion.div>
           ))
         : React.Children.map(children, (child, i) => (
-            <motion.div key={i} variants={itemVariants}>
+            <motion.div
+              key={i}
+              variants={itemVariants}
+              className={cn(itemClassName)}
+            >
               {child}
             </motion.div>
           ))}

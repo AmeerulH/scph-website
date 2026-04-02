@@ -146,9 +146,10 @@ export function GtpHeroCarousel() {
         {/* Subheading */}
         <motion.p
           variants={itemVariants}
-          className="mt-6 max-w-xl text-base font-light text-white/80 sm:text-lg md:text-2xl"
+          className="mt-6 max-w-3xl px-2 text-base font-light leading-snug text-white/85 sm:text-lg md:text-2xl"
         >
-          The moment to tip the future
+          From Understanding to Imagination to Action: Crossing Thresholds for a
+          Thriving Planet
         </motion.p>
 
         {/* CTAs */}

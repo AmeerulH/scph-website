@@ -44,9 +44,10 @@ export function GtpHeroGradient() {
 
           <motion.p
             variants={itemVariants}
-            className="mt-4 max-w-lg text-lg font-light text-white/75 md:text-xl"
+            className="mt-4 max-w-2xl text-base font-light leading-snug text-white/85 sm:text-lg md:text-xl"
           >
-            The moment to tip the future
+            From Understanding to Imagination to Action: Crossing Thresholds
+            for a Thriving Planet
           </motion.p>
         </div>
 

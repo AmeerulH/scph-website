@@ -24,8 +24,89 @@ import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
 import { GtpCountdown } from "@/components/gtp/countdown";
 import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
+import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
+import { cn } from "@/lib/utils";
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
+
+const gtpSiteExploreCards = [
+  {
+    title: "Governance",
+    body: "We urgently need new types of governance to cope with the threat posed by Earth system tipping points.",
+    href: "https://global-tipping-points.org/governance/",
+    cardClass: "bg-gtp-dark-teal",
+    illustration: "governance" as const,
+  },
+  {
+    title: "Earth System Tipping Points",
+    body: "Earth system tipping points pose profound risks to national security, food security, health and wellbeing.",
+    href: "https://global-tipping-points.org/earth-system-tipping-points/",
+    cardClass: "bg-gtp-teal",
+    illustration: "earth" as const,
+  },
+  {
+    title: "Positive tipping points",
+    body: "We need to identify and trigger positive tipping points to accelerate to net zero.",
+    href: "https://global-tipping-points.org/positive-tipping-points/",
+    cardClass: "bg-gtp-green",
+    illustration: "positive" as const,
+  },
+] as const;
+
+/** Governance: equal-size icon wells + edge-to-edge baseline (–mx-6 vs card p-6). */
+function GtpGovernanceCardFooterArt() {
+  const iconWell =
+    "relative size-[4.75rem] shrink-0 overflow-hidden rounded-full bg-transparent sm:size-20";
+  const iconFit =
+    "object-contain object-center p-[7%] sm:p-[6%]";
+
+  return (
+    <div className="mt-auto w-full shrink-0 pt-6">
+      <div className="relative">
+        <div className="relative z-10 mb-[-11px] flex w-full justify-end gap-0 pr-5 sm:mb-[-12px] sm:pr-7">
+          <div className={`${iconWell} z-[1]`}>
+            <Image
+              src="/images/gtp/cards/teal-1.svg"
+              alt=""
+              fill
+              unoptimized
+              sizes="80px"
+              className={iconFit}
+              aria-hidden
+            />
+          </div>
+          <div className={`${iconWell} -ml-2.5 z-0 sm:-ml-3`}>
+            <Image
+              src="/images/gtp/cards/teal-2.svg"
+              alt=""
+              fill
+              unoptimized
+              sizes="80px"
+              className={`${iconFit} object-[56%_38%] sm:object-[58%_36%]`}
+              aria-hidden
+            />
+          </div>
+        </div>
+        <div className="relative z-20 -mx-6">
+          <div className="h-2.5 w-full bg-white sm:h-3" aria-hidden />
+          <div className="h-3" aria-hidden />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GtpExploreCardIllustration({
+  variant,
+}: {
+  variant: (typeof gtpSiteExploreCards)[number]["illustration"];
+}) {
+  if (variant !== "governance") {
+    return <div className="mt-auto shrink-0 pt-6" aria-hidden />;
+  }
+
+  return <GtpGovernanceCardFooterArt />;
+}
 
 function WhatIsGtpSection() {
   return (
@@ -37,21 +118,23 @@ function WhatIsGtpSection() {
       id="about"
     >
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
-        {/* Left — text */}
         <div>
           <p className="text-lg leading-relaxed text-gray-600">
-            The world is approaching a set of unavoidable decisions that will
-            shape lives, economies and ecosystems for generations. Climate
-            change is no longer a distant risk. Its impacts are already visible
-            in food systems, health, cities and financial stability.
+            The Global Tipping Points initiative, led by Prof. Tim Lenton, is a
+            global research and policy effort focused on understanding critical
+            thresholds in the Earth system where small changes can trigger
+            large, irreversible shifts in climate, ecosystems, and human
+            societies.
           </p>
-          <p className="mt-4 text-base leading-relaxed text-gray-500">
-            What is less widely understood is that the future is not fixed.
-            Research on tipping points shows that when the right mix of
-            leadership, investment and public confidence comes together, change
-            can accelerate very quickly.
+          <p className="mt-4 text-base leading-relaxed text-gray-600">
+            It identifies both dangerous and positive tipping points that could
+            rapidly accelerate solutions like clean energy adoption or ecosystem
+            restoration. The initiative aims to translate cutting-edge science
+            into actionable pathways for governments, finance, and society to
+            trigger rapid transformations toward a stable climate and a
+            healthier planet.
           </p>
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-gray-500">
             To learn more about Global Tipping Points, visit{" "}
             <a
               href="https://global-tipping-points.org/"
@@ -63,7 +146,6 @@ function WhatIsGtpSection() {
             </a>
           </p>
 
-          {/* Pull quote */}
           <blockquote className="mt-8 rounded-2xl bg-gtp-teal/10 p-6 ring-1 ring-gtp-teal/20">
             <Quote className="mb-3 h-6 w-6 text-gtp-teal/50" />
             <p className="font-heading text-lg font-semibold italic leading-snug text-gtp-dark-teal">
@@ -73,7 +155,6 @@ function WhatIsGtpSection() {
           </blockquote>
         </div>
 
-        {/* Right — GTP 2025 Report Cover + download */}
         <div className="flex flex-col items-center gap-5">
           <div className="mx-auto w-full max-w-[200px] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gtp-dark-teal/10">
             <Image
@@ -96,6 +177,33 @@ function WhatIsGtpSection() {
           </Button>
         </div>
       </div>
+
+      <div className="mt-14">
+        <p className="mb-6 text-center font-heading text-sm font-semibold uppercase tracking-[0.12em] text-gtp-dark-teal/70">
+          Explore on global-tipping-points.org
+        </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3">
+          {gtpSiteExploreCards.map(({ title, body, href, cardClass, illustration }) => (
+            <a
+              key={href}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group flex min-h-[380px] w-full flex-col overflow-hidden rounded-2xl p-6 shadow-lg ring-1 ring-white/15 transition-[flex-grow] duration-1000 ease-in-out md:min-h-[400px] md:min-w-0 md:flex-[1_1_0%] md:hover:flex-grow-[1.45] ${cardClass}`}
+              aria-label={`${title} — opens global-tipping-points.org in a new tab`}
+            >
+              <h3 className="font-heading text-left text-sm font-bold uppercase tracking-[0.08em] text-white">
+                {title}
+              </h3>
+              <div className="mt-3 h-px w-12 bg-white/90" />
+              <p className="mt-4 flex-1 text-left text-sm leading-relaxed text-white/95">
+                {body}
+              </p>
+              <GtpExploreCardIllustration variant={illustration} />
+            </a>
+          ))}
+        </div>
+      </div>
     </SectionWrapper>
   );
 }
@@ -105,23 +213,30 @@ function WhatIsGtpSection() {
 function WhyItMattersSection() {
   return (
     <SectionWrapper
-      title="The Idea behind Global Tipping Points 2026"
+      title="The Idea behind Global Tipping Points Conference 2026"
       subtitle="Why This Meeting Matters"
       theme="gtp"
       background="dark"
     >
       <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
-        {/* Left — text */}
         <div>
           <p className="text-lg leading-relaxed text-white/80">
-            The Global Tipping Points 2026 meeting is not about repeating
-            warnings. It is about identifying where progress can move fastest,
-            and how leaders can help unlock that momentum.
+            The world is approaching decisions that will shape lives, economies
+            and ecosystems for generations. Climate change is no longer a
+            distant risk; its impacts are already visible in food systems,
+            health, cities and financial stability.
           </p>
-          <p className="mt-4 text-base leading-relaxed text-white/60">
-            Hosted in Asia, the meeting brings together science, finance,
-            culture and policy from a region already shaping the next phase of
-            global growth.
+          <p className="mt-4 text-base leading-relaxed text-white/75">
+            Yet the future is not fixed. Research on tipping points shows that
+            when leadership, investment and public confidence align, change can
+            accelerate rapidly and systems that once seemed immovable can shift.
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-white/70">
+            Global Tipping Points Conference 2026 (GTP 2026) focuses on where
+            that momentum can be unlocked. Hosted in Asia for the first time,
+            the meeting brings together leaders from science, finance, culture
+            and policy in a region where climate risks are intensifying but
+            where many of the solutions are already emerging at scale.
           </p>
           <Button variant="gtpSecondary" size="lg" className="mt-8" asChild>
             <Link href="/events/gtp-2026/programmes">
@@ -173,24 +288,36 @@ const themes = [
     icon: TrendingDown,
     title: "Understanding the Shift",
     body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-    iconBg: "bg-gtp-dark-teal/10",
-    iconColour: "text-gtp-dark-teal",
+    cardClass: "bg-gtp-dark-teal text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
   {
     num: "02",
     icon: Lightbulb,
     title: "Igniting Imagination",
     body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-    iconBg: "bg-gtp-teal/10",
-    iconColour: "text-gtp-teal",
+    cardClass: "bg-gtp-teal text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
   {
     num: "03",
     icon: Zap,
     title: "Accelerating Action",
     body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    iconBg: "bg-gtp-green/15",
-    iconColour: "text-gtp-dark-green",
+    cardClass: "bg-gtp-dark-green text-white ring-white/10",
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
   },
 ];
 
@@ -203,31 +330,51 @@ function ThemesSection() {
       background="muted"
     >
       <StaggerReveal
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0"
+        className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3"
+        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%] md:transition-[flex-grow] md:duration-500 md:ease-in-out md:hover:flex-grow-[1.45]"
       >
-        {themes.map(({ num, icon: Icon, title, body, iconBg, iconColour }) => (
-          <div
-            key={num}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
-          >
-            <div className="mb-5 flex items-center gap-3">
-              <div
-                className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}
-              >
-                <Icon className={`h-6 w-6 ${iconColour}`} />
+        {themes.map(
+          ({
+            num,
+            icon: Icon,
+            title,
+            body,
+            cardClass,
+            iconWrap,
+            iconColour,
+            bodyClass,
+            numClass,
+            titleClass,
+          }) => (
+            <div
+              key={num}
+              className={`flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 shadow-md ring-1 md:min-h-[320px] ${cardClass}`}
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconWrap}`}
+                >
+                  <Icon className={`h-6 w-6 ${iconColour}`} />
+                </div>
+                <span
+                  className={`font-heading text-sm font-bold ${numClass}`}
+                >
+                  {num}
+                </span>
               </div>
-              <span className="font-heading text-sm font-bold text-gray-300">
-                {num}
-              </span>
+              <h3
+                className={`font-heading text-xl font-bold ${titleClass}`}
+              >
+                {title}
+              </h3>
+              <p
+                className={`mt-3 flex-1 text-sm leading-relaxed ${bodyClass}`}
+              >
+                {body}
+              </p>
             </div>
-            <h3 className="font-heading text-xl font-bold text-gtp-dark-teal">
-              {title}
-            </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
-              {body}
-            </p>
-          </div>
-        ))}
+          ),
+        )}
       </StaggerReveal>
       <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
         The conference is designed for leaders who want clarity, confidence that
@@ -454,48 +601,41 @@ function SpeakerCard({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="group relative flex w-full min-h-[260px] flex-col overflow-hidden rounded-2xl bg-gtp-dark-teal/6 text-left transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal"
+      className="group relative flex w-full flex-col overflow-hidden rounded-2xl text-left shadow-md ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal"
     >
-      {/* Top — name, role, + button */}
-      <div className="flex items-start justify-between gap-2 p-5 pb-3">
-        <div className="min-w-0 flex-1">
-          <p className="font-heading text-sm font-bold leading-snug text-gtp-dark-teal">
-            {speaker.name}
-          </p>
-          <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-gtp-teal">
-            {speaker.role}
-          </p>
-          <p className="mt-0.5 text-[11px] text-gray-400">{speaker.organisation}</p>
-        </div>
-        {/* + → × on hover */}
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gtp-teal text-white transition-all duration-300 group-hover:bg-gtp-dark-teal">
-          <Plus
-            className="h-5 w-5 transition-transform duration-300 group-hover:rotate-45"
-            strokeWidth={2.5}
-          />
-        </div>
-      </div>
-
-      {/* Bottom — avatar */}
-      <div className="flex flex-1 items-end justify-center px-6 pb-0 pt-2">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-gtp-dark-teal">
         {speaker.photoSrc ? (
-          <div className="relative h-40 w-full overflow-hidden rounded-t-2xl">
-            <Image
-              src={speaker.photoSrc}
-              alt={speaker.name}
-              fill
-              className="object-cover object-top"
-              sizes="(max-width: 640px) 50vw, 25vw"
-            />
-          </div>
+          <Image
+            src={speaker.photoSrc}
+            alt={speaker.name}
+            fill
+            className="object-cover object-top"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          />
         ) : (
-          <div className="mb-5 flex h-28 w-28 items-center justify-center rounded-full bg-gtp-dark-teal/12 text-3xl ring-4 ring-white/70">
-            <span className="font-heading font-bold text-gtp-dark-teal">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
+            <span className="font-heading text-5xl font-bold text-white/20 sm:text-6xl">
               {getInitials(speaker.name)}
             </span>
           </div>
         )}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
+        <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-gtp-dark-teal shadow-md ring-1 ring-black/5 transition-transform group-hover:scale-110">
+          <Plus className="h-4 w-4" strokeWidth={2.5} />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 p-4 pt-16 text-left">
+          <p className="font-heading text-base font-bold leading-snug text-white drop-shadow md:text-lg">
+            {speaker.name}
+          </p>
+          <p className="mt-1 line-clamp-2 text-[11px] font-medium leading-snug text-white/90">
+            {speaker.role}
+          </p>
+          <p className="mt-0.5 line-clamp-2 text-[10px] text-white/65">
+            {speaker.organisation}
+          </p>
+        </div>
       </div>
     </button>
   );
@@ -512,7 +652,7 @@ function SpeakersSection() {
         theme="gtp"
         background="default"
       >
-        <StaggerReveal className="grid grid-cols-1 gap-4 [grid-auto-rows:1fr] sm:grid-cols-2 md:gap-5 lg:grid-cols-4">
+        <StaggerReveal className="grid grid-cols-1 gap-5 [grid-auto-rows:1fr] sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {speakers.map((speaker) => (
             <SpeakerCard
               key={speaker.name}
@@ -532,17 +672,62 @@ function SpeakersSection() {
   );
 }
 
+// ─── Event inquiry (above sponsors) ───────────────────────────────────────────
+
+function EventInquirySection() {
+  return (
+    <SectionWrapper
+      title="Questions about the event?"
+      subtitle="Get in touch"
+      theme="gtp"
+      background="default"
+      id="event-inquiry"
+    >
+      <div className="mx-auto max-w-xl rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-sm md:p-8">
+        <p className="mb-6 text-center text-sm leading-relaxed text-gray-600">
+          Send us a message about registration, programme details, or general
+          enquiries. We&apos;ll respond as soon as we can.
+        </p>
+        <ContactForm />
+      </div>
+    </SectionWrapper>
+  );
+}
+
 // ─── Sponsors & Partners ──────────────────────────────────────────────────────
 
-const partnerPlaceholders = Array.from({ length: 8 }, (_, i) => i + 1);
-
-function SponsorLogoItem() {
+function SponsorLogoPlaceholder() {
   return (
-    <div className="flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 mr-4">
+    <div className="mr-4 flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
       <span className="text-xs font-medium text-gray-400">Partner Logo</span>
     </div>
   );
 }
+
+function PikPartnerLogo() {
+  return (
+    <a
+      href="https://www.pik-potsdam.de/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="mr-4 flex h-20 w-44 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-white px-3 py-2 shadow-sm transition-opacity hover:opacity-90"
+      aria-label="Potsdam Institute for Climate Impact Research (opens in new tab)"
+    >
+      <Image
+        src="/images/gtp/logos/pik-logo.png"
+        alt="Potsdam Institute for Climate Impact Research (PIK)"
+        width={160}
+        height={56}
+        className="h-11 w-auto max-w-[10rem] object-contain"
+      />
+    </a>
+  );
+}
+
+const sponsorRowSlots = [
+  "pik",
+  ...Array.from({ length: 7 }, (_, i) => `ph-${i}`),
+] as const;
 
 function SponsorsSection() {
   return (
@@ -552,22 +737,41 @@ function SponsorsSection() {
       theme="gtp"
       background="default"
     >
-      <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <div className="mb-4 flex w-max animate-marquee will-change-transform">
-          {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r1a-${n}`} />
-          ))}
-          {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r1b-${n}`} />
-          ))}
+      {/*
+        Vertical padding so card shadows aren’t clipped by overflow-hidden (needed for horizontal mask).
+      */}
+      <div className="overflow-hidden px-1 py-3 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] sm:py-4">
+        <div className="mb-5 flex w-max animate-marquee will-change-transform">
+          {sponsorRowSlots.map((id) =>
+            id === "pik" ? (
+              <PikPartnerLogo key={`r1a-${id}`} />
+            ) : (
+              <SponsorLogoPlaceholder key={`r1a-${id}`} />
+            ),
+          )}
+          {sponsorRowSlots.map((id) =>
+            id === "pik" ? (
+              <PikPartnerLogo key={`r1b-${id}`} />
+            ) : (
+              <SponsorLogoPlaceholder key={`r1b-${id}`} />
+            ),
+          )}
         </div>
         <div className="flex w-max animate-marquee-reverse will-change-transform">
-          {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r2a-${n}`} />
-          ))}
-          {partnerPlaceholders.map((n) => (
-            <SponsorLogoItem key={`r2b-${n}`} />
-          ))}
+          {sponsorRowSlots.map((id) =>
+            id === "pik" ? (
+              <PikPartnerLogo key={`r2a-${id}`} />
+            ) : (
+              <SponsorLogoPlaceholder key={`r2a-${id}`} />
+            ),
+          )}
+          {sponsorRowSlots.map((id) =>
+            id === "pik" ? (
+              <PikPartnerLogo key={`r2b-${id}`} />
+            ) : (
+              <SponsorLogoPlaceholder key={`r2b-${id}`} />
+            ),
+          )}
         </div>
       </div>
 
@@ -728,13 +932,17 @@ const coChairQuotes = [
     name: "Tim Lenton",
     designation: "Co-Chair · Founding Director, Global Systems Institute, University of Exeter",
     quote: "The Global Tipping Points Conference 2026 is a great opportunity for a bunch of us to come together as businesses, as thinkers, as policymakers, both to wrestle down the incredible risks we're running in crossing tipping points in the Earth system—our life support system—but also how can we together seize the positive tipping point opportunities to accelerate us out of trouble and into a healthier, happier, flourishing future together.",
-    hasPhoto: false,
+    hasPhoto: true,
+    photoSrc: "/images/gtp/co-chairs/tim-lenton.jpg",
+    /** Fine-tune face in circular crop (object-fit: cover) */
+    avatarObjectClass: "object-[56%_44%]",
   },
   {
     name: "Johan Rockström",
     designation: "Co-Chair · Director, Potsdam Institute for Climate Impact Research",
     quote: "Scientifically, we know we are moving towards profound challenges and risks at the planetary scale, with an increasing risk of tipping points in the Earth system. Against this backdrop, the Malaysian Global Tipping Point Conference offers a crucial forum to examine how positive societal tipping points can help build more equitable, stable and resilient societies.",
-    hasPhoto: false,
+    hasPhoto: true,
+    photoSrc: "/images/gtp/co-chairs/johan-rockstrom.jpg",
   },
   {
     name: "Jemilah Mahmood",
@@ -742,6 +950,7 @@ const coChairQuotes = [
     quote: "This year, the Sunway Centre for Planetary Health will proudly host the Global Tipping Points Conference at Sunway University, the first in Asia. Together, scientists, policymakers, business leaders, civil society, Indigenous voices, artists, and youth will unite to spotlight South and Southeast Asia's lived realities and accelerate the positive tipping points we need for a healthier planet and future. Join us in Sunway this October and we will see you there! Follow us on @sunwaycph to find out more!",
     hasPhoto: true,
     photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
+    avatarObjectClass: "object-[50%_32%]",
   },
 ];
 
@@ -756,7 +965,8 @@ function QuoteSection() {
       <StaggerReveal
         className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0"
       >
-        {coChairQuotes.map(({ name, designation, quote, hasPhoto, photoSrc }) => (
+        {coChairQuotes.map(
+          ({ name, designation, quote, hasPhoto, photoSrc, avatarObjectClass }) => (
           <div
             key={name}
             className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm md:w-auto md:max-w-none"
@@ -777,7 +987,10 @@ function QuoteSection() {
                     src={photoSrc}
                     alt={name}
                     fill
-                    className="object-cover"
+                    className={cn(
+                      "object-cover",
+                      avatarObjectClass ?? "object-center",
+                    )}
                     sizes="56px"
                   />
                 </div>
@@ -828,9 +1041,10 @@ export default function GtpAboutPage() {
       <WhyItMattersSection />
       <ThemesSection />
       <SpeakersSection />
-      <SponsorsSection />
-      <GallerySection />
       <QuoteSection />
+      <GallerySection />
+      <EventInquirySection />
+      <SponsorsSection />
     </>
   );
 }

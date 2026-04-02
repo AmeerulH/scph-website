@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { UserCircle2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 // ─── Hero Band ────────────────────────────────────────────────────────────────
 
@@ -42,6 +43,8 @@ type CoChair = {
   role: string;
   designation: string;
   photoSrc?: string;
+  /** Tailwind object-position utilities for face-centring */
+  imageObjectClass?: string;
 };
 
 const cochairs: CoChair[] = [
@@ -50,12 +53,15 @@ const cochairs: CoChair[] = [
     role: "Co-Chair",
     designation:
       "Founding Director of the Global Systems Institute,\nUniversity of Exeter",
+    photoSrc: "/images/gtp/co-chairs/tim-lenton.jpg",
+    imageObjectClass: "object-[56%_44%]",
   },
   {
     name: "Johan Rockström",
     role: "Co-Chair",
     designation:
       "Director of the Potsdam Institute for Climate Impact Research",
+    photoSrc: "/images/gtp/co-chairs/johan-rockstrom.jpg",
   },
   {
     name: "Jemilah Mahmood",
@@ -63,10 +69,19 @@ const cochairs: CoChair[] = [
     designation:
       "Executive Director of the Sunway Centre for Planetary Health, Sunway University",
     photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
+    imageObjectClass: "object-[50%_32%]",
   },
 ];
 
-function CoChairPhoto({ name, photoSrc }: { name: string; photoSrc?: string }) {
+function CoChairPhoto({
+  name,
+  photoSrc,
+  imageObjectClass,
+}: {
+  name: string;
+  photoSrc?: string;
+  imageObjectClass?: string;
+}) {
   if (photoSrc) {
     return (
       <div className="relative h-48 w-48 overflow-hidden rounded-2xl ring-2 ring-gtp-teal/20 md:h-56 md:w-56">
@@ -74,7 +89,10 @@ function CoChairPhoto({ name, photoSrc }: { name: string; photoSrc?: string }) {
           src={photoSrc}
           alt={name}
           fill
-          className="object-cover object-top"
+          className={cn(
+            "object-cover",
+            imageObjectClass ?? "object-top",
+          )}
           sizes="(max-width: 768px) 192px, 224px"
         />
       </div>
@@ -96,9 +114,13 @@ function CochairsSection() {
       background="default"
     >
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-        {cochairs.map(({ name, role, designation, photoSrc }) => (
+        {cochairs.map(({ name, role, designation, photoSrc, imageObjectClass }) => (
           <div key={name} className="flex flex-col items-center text-center">
-            <CoChairPhoto name={name} photoSrc={photoSrc} />
+            <CoChairPhoto
+              name={name}
+              photoSrc={photoSrc}
+              imageObjectClass={imageObjectClass}
+            />
             <h3 className="mt-5 font-heading text-xl font-bold text-gtp-dark-teal">
               {name}
             </h3>
