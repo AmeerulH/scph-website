@@ -154,8 +154,8 @@ function PillarsSection() {
       </p>
       <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-gray-600 md:text-base">
         As research demonstrates that systems can shift rapidly when leadership,
-        investment, and public confidence converge, GTP 2026 focuses on these three
-        pillars.
+        investment, and public confidence converge, GTP 2026 focuses on these
+        three pillars.
       </p>
       <p className="mx-auto mt-8 max-w-3xl text-center text-sm text-gray-600">
         <Link
@@ -337,8 +337,8 @@ function CtaSection() {
             </div>
           </div>
 
-          {/* Floating back-to-top — sits outside the white card at the bottom-right corner */}
-          <div className="absolute -bottom-8 -right-8 z-10">
+          {/* Floating back-to-top — md+ peeks past card; mobile stays inside column to avoid viewport overflow */}
+          <div className="absolute z-10 max-md:-bottom-10 max-md:right-2 md:-bottom-8 md:-right-8">
             <button
               type="button"
               onClick={() =>
@@ -351,7 +351,7 @@ function CtaSection() {
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gtp-teal text-white shadow-lg">
                 <ArrowUp className="h-5 w-5" />
               </span>
-              <span className="text-xs font-semibold text-white/80">
+              <span className="whitespace-nowrap text-center text-xs font-semibold text-white/80">
                 Back to top
               </span>
             </button>

@@ -4,9 +4,24 @@ import { google } from "googleapis";
 
 // ─── Google Sheets client ─────────────────────────────────────────────────────
 
+/** Env copy-paste: use the `private_key` value only — no JSON `"` quotes. Literal `\n` → real newlines. */
+function normalizeGooglePrivateKey(
+  raw: string | undefined,
+): string | undefined {
+  if (!raw) return undefined;
+  let k = raw.trim();
+  if (
+    (k.startsWith('"') && k.endsWith('"')) ||
+    (k.startsWith("'") && k.endsWith("'"))
+  ) {
+    k = k.slice(1, -1);
+  }
+  return k.replace(/\\n/g, "\n");
+}
+
 function getSheetsClient() {
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+  const privateKey = normalizeGooglePrivateKey(process.env.GOOGLE_PRIVATE_KEY);
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL?.trim();
 
   if (!privateKey || !clientEmail) {
     throw new Error("Google Sheets credentials are not configured.");
@@ -30,7 +45,7 @@ export type SubmissionFormState = { error?: string; success?: boolean } | null;
 
 export async function sendAbstractSubmission(
   _prevState: SubmissionFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SubmissionFormState> {
   const fields = {
     email: formData.get("email") as string,
@@ -47,9 +62,17 @@ export async function sendAbstractSubmission(
   };
 
   const requiredFields = [
-    "email", "fullName", "institution", "designation", "country",
-    "earlyCareer", "primaryTheme", "presentationPreference",
-    "abstractTitle", "abstract", "authorList",
+    "email",
+    "fullName",
+    "institution",
+    "designation",
+    "country",
+    "earlyCareer",
+    "primaryTheme",
+    "presentationPreference",
+    "abstractTitle",
+    "abstract",
+    "authorList",
   ] as const;
 
   for (const key of requiredFields) {
@@ -60,7 +83,9 @@ export async function sendAbstractSubmission(
 
   if (!SHEET_ID) {
     console.error("GOOGLE_SHEET_ID is not set");
-    return { error: "Submission service is not configured. Please try again later." };
+    return {
+      error: "Submission service is not configured. Please try again later.",
+    };
   }
 
   try {
@@ -71,20 +96,24 @@ export async function sendAbstractSubmission(
       range: "Abstract Submissions!A:L",
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[
-          new Date().toLocaleString("en-GB", { timeZone: "Asia/Kuala_Lumpur" }),
-          fields.email,
-          fields.fullName,
-          fields.institution,
-          fields.designation,
-          fields.country,
-          fields.earlyCareer,
-          fields.primaryTheme,
-          fields.presentationPreference,
-          fields.abstractTitle,
-          fields.abstract,
-          fields.authorList,
-        ]],
+        values: [
+          [
+            new Date().toLocaleString("en-GB", {
+              timeZone: "Asia/Kuala_Lumpur",
+            }),
+            fields.email,
+            fields.fullName,
+            fields.institution,
+            fields.designation,
+            fields.country,
+            fields.earlyCareer,
+            fields.primaryTheme,
+            fields.presentationPreference,
+            fields.abstractTitle,
+            fields.abstract,
+            fields.authorList,
+          ],
+        ],
       },
     });
 
@@ -99,7 +128,7 @@ export async function sendAbstractSubmission(
 
 export async function sendWorkshopSubmission(
   _prevState: SubmissionFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SubmissionFormState> {
   const fields = {
     email: formData.get("email") as string,
@@ -123,11 +152,22 @@ export async function sendWorkshopSubmission(
   };
 
   const requiredFields = [
-    "email", "fullName", "institution", "designation", "country",
-    "sessionTitle", "primaryPillar", "primaryTheme",
-    "sessionObjectives", "expectedOutcomes", "sessionDetails", "speakerList",
-    "resourceRequirements", "financialResources",
-    "diversityStatement", "conflictOfInterest",
+    "email",
+    "fullName",
+    "institution",
+    "designation",
+    "country",
+    "sessionTitle",
+    "primaryPillar",
+    "primaryTheme",
+    "sessionObjectives",
+    "expectedOutcomes",
+    "sessionDetails",
+    "speakerList",
+    "resourceRequirements",
+    "financialResources",
+    "diversityStatement",
+    "conflictOfInterest",
   ] as const;
 
   for (const key of requiredFields) {
@@ -136,13 +176,18 @@ export async function sendWorkshopSubmission(
     }
   }
 
-  if (fields.conflictOfInterest === "No, I have conflicts" && !fields.conflictDetails?.trim()) {
+  if (
+    fields.conflictOfInterest === "No, I have conflicts" &&
+    !fields.conflictDetails?.trim()
+  ) {
     return { error: "Please specify your conflicts of interest." };
   }
 
   if (!SHEET_ID) {
     console.error("GOOGLE_SHEET_ID is not set");
-    return { error: "Submission service is not configured. Please try again later." };
+    return {
+      error: "Submission service is not configured. Please try again later.",
+    };
   }
 
   try {
@@ -153,27 +198,31 @@ export async function sendWorkshopSubmission(
       range: "Workshop Submissions!A:S",
       valueInputOption: "USER_ENTERED",
       requestBody: {
-        values: [[
-          new Date().toLocaleString("en-GB", { timeZone: "Asia/Kuala_Lumpur" }),
-          fields.email,
-          fields.fullName,
-          fields.institution,
-          fields.designation,
-          fields.country,
-          fields.sessionTitle,
-          fields.primaryPillar,
-          fields.primaryTheme,
-          fields.secondaryThemes.join(", ") || "None",
-          fields.sessionObjectives,
-          fields.expectedOutcomes,
-          fields.sessionDetails,
-          fields.speakerList,
-          fields.resourceRequirements,
-          fields.financialResources,
-          fields.diversityStatement,
-          fields.conflictOfInterest,
-          fields.conflictDetails || "",
-        ]],
+        values: [
+          [
+            new Date().toLocaleString("en-GB", {
+              timeZone: "Asia/Kuala_Lumpur",
+            }),
+            fields.email,
+            fields.fullName,
+            fields.institution,
+            fields.designation,
+            fields.country,
+            fields.sessionTitle,
+            fields.primaryPillar,
+            fields.primaryTheme,
+            fields.secondaryThemes.join(", ") || "None",
+            fields.sessionObjectives,
+            fields.expectedOutcomes,
+            fields.sessionDetails,
+            fields.speakerList,
+            fields.resourceRequirements,
+            fields.financialResources,
+            fields.diversityStatement,
+            fields.conflictOfInterest,
+            fields.conflictDetails || "",
+          ],
+        ],
       },
     });
 

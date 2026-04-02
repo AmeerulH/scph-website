@@ -33,46 +33,69 @@ const socialLinks = [
 
 export function GtpFooter() {
   return (
-    <footer className="bg-gtp-dark-teal text-white">
-      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-        {/* Top — Logo row (no separators) */}
-        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 lg:gap-14">
-          <Link href="/events/gtp-2026/about" className="shrink-0">
-            <Image
-              src="/images/gtp/logo-blue-wide.svg"
-              alt="Global Tipping Points 2026"
-              width={220}
-              height={48}
-              className="h-9 w-auto object-contain brightness-0 invert sm:h-11 md:h-16"
-            />
-          </Link>
-          {/* Lockup has opaque black in file; lighten blends black to footer so it doesn’t read as a box */}
-          <Image
-            src="/images/gtp/logos/exeter-gsi-lockup.png"
-            alt="University of Exeter — Global Systems Institute"
-            width={260}
-            height={72}
-            className="h-9 w-auto max-w-[min(100%,300px)] object-contain mix-blend-lighten sm:h-11 md:h-16"
-          />
-          <Link href="/" className="shrink-0">
-            <Image
-              src="/images/scph/logo-mixcolor.png"
-              alt="Sunway Centre for Planetary Health"
-              width={180}
-              height={60}
-              className="h-9 w-auto object-contain sm:h-11 md:h-16"
-            />
-          </Link>
-          {/* File has opaque black + wide margins; lighten blends black to footer; scale compensates padding */}
-          <span className="inline-flex shrink-0 items-center overflow-visible py-1">
-            <Image
-              src="/images/gtp/logos/sunway-uni-white.png"
-              alt="Sunway University"
-              width={360}
-              height={120}
-              className="h-12 w-auto max-w-[min(92vw,22rem)] origin-center scale-[1.42] object-contain mix-blend-lighten sm:h-14 md:h-16 md:scale-[1.38] lg:scale-[1.32]"
-            />
-          </span>
+    <footer className="relative overflow-hidden bg-gtp-dark-teal text-white">
+      {/* Cropped GTP mark: clip ≈50% of footer height; SVG oversized so only top-left of art shows */}
+      <div
+        className="pointer-events-none absolute bottom-0 right-0 z-0 aspect-square h-1/2 min-h-36 max-h-128 overflow-hidden"
+        aria-hidden
+      >
+        <Image
+          src="/images/gtp/footer-gtp-mark.svg"
+          alt=""
+          width={1417}
+          height={1347}
+          unoptimized
+          className="absolute left-0 top-0 h-[240%] w-auto max-w-none select-none opacity-[0.22]"
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto min-w-0 max-w-7xl px-6 pt-16 pb-0 lg:px-8">
+        {/* Top — mobile: wrap, no horizontal scroll; md+: single centered row with scroll only if needed */}
+        <div className="w-full min-w-0 overflow-x-visible pb-1 md:overflow-x-auto md:[-ms-overflow-style:none] md:[scrollbar-width:none] md:[&::-webkit-scrollbar]:hidden px-0.5 sm:px-1">
+          <div className="mx-auto flex w-full max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-5 sm:gap-x-2.5 md:w-max md:max-w-none md:flex-nowrap md:gap-x-3 md:gap-y-0 lg:gap-x-4">
+            <Link
+              href="/events/gtp-2026/about"
+              className="flex h-14 shrink-0 items-center max-md:basis-full max-md:justify-center sm:h-18 md:h-20"
+            >
+              <Image
+                src="/images/gtp/logo-blue-wide.svg"
+                alt="Global Tipping Points 2026"
+                width={288}
+                height={38}
+                className="h-[76%] w-auto max-h-full max-w-[min(92vw,18rem)] object-contain object-center brightness-0 invert sm:h-[78%] sm:max-w-[min(48vw,13.5rem)] md:h-[80%] md:max-w-56 lg:max-w-60 xl:max-w-64"
+              />
+            </Link>
+            <span className="inline-flex h-14 shrink-0 items-center justify-center overflow-visible rounded-sm bg-gtp-dark-teal px-4 py-1.5 max-md:basis-[calc(50%-0.25rem)] max-md:min-w-0 sm:h-18 sm:px-7 sm:py-2 md:h-20 md:basis-auto md:px-9 md:py-2.5">
+              <Image
+                src="/images/gtp/logos/exeter-gsi-lockup.png"
+                alt="University of Exeter — Global Systems Institute"
+                width={1024}
+                height={602}
+                className="h-[85%] w-auto max-w-full object-contain object-center mix-blend-screen sm:max-w-[min(38vw,13rem)] md:h-[88%] md:max-w-[min(36vw,15rem)] lg:max-w-68"
+              />
+            </span>
+            <Link
+              href="/"
+              className="flex h-14 shrink-0 items-center max-md:basis-[calc(50%-0.25rem)] max-md:min-w-0 max-md:justify-center sm:h-18 md:h-20 md:basis-auto"
+            >
+              <Image
+                src="/images/scph/logo-mixcolor.png"
+                alt="Sunway Centre for Planetary Health"
+                width={180}
+                height={60}
+                className="h-full w-auto max-h-full max-w-full object-contain object-center sm:max-w-40 md:max-w-none"
+              />
+            </Link>
+            <span className="inline-flex h-14 shrink-0 items-center justify-center overflow-visible rounded-sm bg-gtp-dark-teal px-4 py-1.5 max-md:basis-full max-md:justify-center sm:h-18 sm:px-7 sm:py-2 md:h-20 md:basis-auto md:px-9 md:py-2.5">
+              <Image
+                src="/images/gtp/logos/sunway-uni-white.png"
+                alt="Sunway University"
+                width={360}
+                height={120}
+                className="h-[85%] w-auto max-w-[min(88vw,20rem)] object-contain mix-blend-screen sm:max-w-[min(38vw,12rem)] md:h-[88%] md:max-w-[min(36vw,14rem)] lg:max-w-68"
+              />
+            </span>
+          </div>
         </div>
 
         <Separator className="my-8 bg-white/10" />
@@ -157,41 +180,43 @@ export function GtpFooter() {
           </div>
         </div>
 
-        <Separator className="my-10 bg-white/10" />
-
-        {/* Bottom bar — GTP brand mark bottom-right on larger screens */}
-        <div className="flex flex-col gap-6 text-xs text-white/40 md:flex-row md:items-center md:justify-between md:gap-8">
-          <p className="text-center md:text-left">
-            © 2026 Global Tipping Points Conference. All rights reserved.
-          </p>
-          <p className="text-center md:text-left">
-            Hosted by{" "}
-            <a
-              href="https://sunwayuniversity.edu.my/research/planetaryhealth"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 transition-colors hover:text-white/70"
-            >
-              Sunway Centre for Planetary Health
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </p>
+        {/* Bottom bar */}
+        <div className="-mx-6 mt-10 flex flex-col gap-6 border-t border-white/10 pt-8 pl-6 pr-0 text-xs text-white/40 lg:-mx-8 lg:pl-8 md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-x-6 md:gap-y-2">
+          <div className="flex flex-col gap-4 text-center md:flex-row md:flex-wrap md:items-center md:gap-x-8 md:gap-y-2 md:text-left lg:gap-x-10">
+            <p>© 2026 Global Tipping Points Conference. All rights reserved.</p>
+            <p>
+              Hosted by{" "}
+              <a
+                href="https://sunwayuniversity.edu.my/research/planetaryhealth"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 transition-colors hover:text-white/70"
+              >
+                Sunway Centre for Planetary Health
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </p>
+          </div>
           <a
             href="https://global-tipping-points.org/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex shrink-0 justify-center md:ml-auto md:justify-end"
+            className="m-0 flex shrink-0 justify-center p-0 leading-0 md:justify-end"
             aria-label="Global Tipping Points (opens in a new tab)"
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/images/gtp/logo-blue-wide.svg"
               alt=""
-              width={160}
-              height={36}
-              className="h-7 w-auto object-contain brightness-0 invert opacity-90 transition-opacity hover:opacity-100"
+              width={288}
+              height={38}
+              decoding="async"
+              className="m-0 block h-7 w-auto max-w-none brightness-0 invert opacity-90 transition-opacity hover:opacity-100"
             />
           </a>
         </div>
+
+        <div className="h-4 lg:h-5" aria-hidden />
       </div>
     </footer>
   );
