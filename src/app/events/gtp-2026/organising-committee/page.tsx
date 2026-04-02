@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -43,8 +44,10 @@ type CoChair = {
   role: string;
   designation: string;
   photoSrc?: string;
-  /** Tailwind object-position utilities for face-centring */
+  /** `object-position` — tune per portrait so the face sits near the visual centre */
   imageObjectClass?: string;
+  /** Zoom (scale) + origin for full-body or distant shots, e.g. Johan */
+  imageScaleClass?: string;
 };
 
 const cochairs: CoChair[] = [
@@ -54,7 +57,7 @@ const cochairs: CoChair[] = [
     designation:
       "Founding Director of the Global Systems Institute,\nUniversity of Exeter",
     photoSrc: "/images/gtp/co-chairs/tim-lenton.jpg",
-    imageObjectClass: "object-[56%_44%]",
+    imageObjectClass: "object-[50%_38%]",
   },
   {
     name: "Johan Rockström",
@@ -62,6 +65,8 @@ const cochairs: CoChair[] = [
     designation:
       "Director of the Potsdam Institute for Climate Impact Research",
     photoSrc: "/images/gtp/co-chairs/johan-rockstrom.jpg",
+    imageObjectClass: "object-[50%_22%]",
+    imageScaleClass: "scale-[1.58] origin-[50%_28%]",
   },
   {
     name: "Jemilah Mahmood",
@@ -69,38 +74,49 @@ const cochairs: CoChair[] = [
     designation:
       "Executive Director of the Sunway Centre for Planetary Health, Sunway University",
     photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
-    imageObjectClass: "object-[50%_32%]",
+    imageObjectClass: "object-[50%_40%]",
   },
 ];
+
+const coChairPortraitFrame =
+  "relative aspect-[4/5] w-full max-w-[17.5rem] overflow-hidden rounded-3xl ring-2 ring-gtp-teal/20 sm:max-w-[19rem] md:max-w-[21rem]";
 
 function CoChairPhoto({
   name,
   photoSrc,
   imageObjectClass,
+  imageScaleClass,
 }: {
   name: string;
   photoSrc?: string;
   imageObjectClass?: string;
+  imageScaleClass?: string;
 }) {
   if (photoSrc) {
     return (
-      <div className="relative h-48 w-48 overflow-hidden rounded-2xl ring-2 ring-gtp-teal/20 md:h-56 md:w-56">
+      <div className={coChairPortraitFrame}>
         <Image
           src={photoSrc}
           alt={name}
           fill
           className={cn(
             "object-cover",
-            imageObjectClass ?? "object-top",
+            imageObjectClass ?? "object-[50%_40%]",
+            imageScaleClass,
           )}
-          sizes="(max-width: 768px) 192px, 224px"
+          sizes="(max-width: 640px) 280px, (max-width: 768px) 304px, 336px"
         />
       </div>
     );
   }
   return (
-    <div className="flex h-48 w-48 items-center justify-center rounded-2xl bg-gtp-dark-teal/10 ring-2 ring-gtp-teal/20 md:h-56 md:w-56">
-      <UserCircle2 className="h-24 w-24 text-gtp-teal/30 md:h-28 md:w-28" />
+    <div
+      className={cn(
+        coChairPortraitFrame,
+        "flex items-center justify-center bg-gtp-dark-teal/10",
+      )}
+    >
+      <UserCircle2 className="h-28 w-28 text-gtp-teal/30 sm:h-32 sm:w-32" />
     </div>
   );
 }
@@ -113,25 +129,38 @@ function CochairsSection() {
       theme="gtp"
       background="default"
     >
-      <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-        {cochairs.map(({ name, role, designation, photoSrc, imageObjectClass }) => (
-          <div key={name} className="flex flex-col items-center text-center">
-            <CoChairPhoto
-              name={name}
-              photoSrc={photoSrc}
-              imageObjectClass={imageObjectClass}
-            />
-            <h3 className="mt-5 font-heading text-xl font-bold text-gtp-dark-teal">
-              {name}
-            </h3>
-            <p className="mt-1 text-sm font-semibold italic text-gtp-teal">
-              {role}
-            </p>
-            <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-gray-500">
-              {designation}
-            </p>
-          </div>
-        ))}
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-8 lg:gap-12">
+        {cochairs.map(
+          ({
+            name,
+            role,
+            designation,
+            photoSrc,
+            imageObjectClass,
+            imageScaleClass,
+          }) => (
+            <div
+              key={name}
+              className="flex flex-col items-center text-center sm:px-1"
+            >
+              <CoChairPhoto
+                name={name}
+                photoSrc={photoSrc}
+                imageObjectClass={imageObjectClass}
+                imageScaleClass={imageScaleClass}
+              />
+              <h3 className="mt-6 font-heading text-2xl font-bold leading-tight text-gtp-dark-teal md:text-3xl">
+                {name}
+              </h3>
+              <p className="mt-2 text-base font-semibold italic text-gtp-teal md:text-lg">
+                {role}
+              </p>
+              <p className="mt-3 max-w-[22rem] whitespace-pre-line text-base leading-relaxed text-gray-600 md:text-lg">
+                {designation}
+              </p>
+            </div>
+          ),
+        )}
       </div>
     </SectionWrapper>
   );
@@ -144,6 +173,8 @@ type CommitteeMember = {
   role: string;
   organisation?: string;
   isPlaceholder?: boolean;
+  photoSrc?: string;
+  imageObjectClass?: string;
 };
 
 const planningCommittee: CommitteeMember[] = [
@@ -152,7 +183,12 @@ const planningCommittee: CommitteeMember[] = [
     role: "Co-Chair",
     organisation: "University of Exeter",
   },
-  { name: "Nazia Ahmad", role: "Co-Chair", organisation: "SCPH" },
+  {
+    name: "Nazia Ahmad",
+    role: "Co-Chair",
+    organisation: "SCPH",
+    photoSrc: "/images/scph/team/nazia-ahmad.jpg",
+  },
   { name: "TBC", role: "Media Strategy", isPlaceholder: true },
   { name: "TBC", role: "Logistics", isPlaceholder: true },
   { name: "TBC", role: "Breakout Coordinator", isPlaceholder: true },
@@ -162,11 +198,18 @@ const planningCommittee: CommitteeMember[] = [
 ];
 
 const programmeCommittee: CommitteeMember[] = [
-  { name: "Dr. Fatimah Ahamad", role: "Co-Chair", organisation: "SCPH" },
+  {
+    name: "Dr. Fatimah Ahamad",
+    role: "Co-Chair",
+    organisation: "SCPH",
+    photoSrc: "/images/scph/team/dr-fatimah-ahamad.jpg",
+  },
   {
     name: "Prof. Tim Lenton",
     role: "Co-Chair",
     organisation: "University of Exeter",
+    photoSrc: "/images/gtp/co-chairs/tim-lenton.jpg",
+    imageObjectClass: "object-[56%_44%]",
   },
   { name: "TBC", role: "Abstract Review", isPlaceholder: true },
   { name: "TBC", role: "Programme Agenda", isPlaceholder: true },
@@ -185,17 +228,56 @@ function CommitteeCard({ member }: { member: CommitteeMember }) {
     );
   }
   return (
-    <div className="flex flex-col rounded-2xl bg-white p-6 shadow-md ring-1 ring-gtp-dark-teal/8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-      <p className="font-heading text-base font-bold text-gtp-dark-teal">
-        {member.name}
-      </p>
-      <p className="mt-1 text-sm font-semibold italic text-gtp-teal">
-        {member.role}
-      </p>
-      {member.organisation && (
-        <p className="mt-1 text-xs text-gray-500">{member.organisation}</p>
-      )}
+    <div className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-gtp-dark-teal/8 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gtp-dark-teal/10">
+        {member.photoSrc ? (
+          <Image
+            src={member.photoSrc}
+            alt={member.name}
+            fill
+            className={cn(
+              "object-cover",
+              member.imageObjectClass ?? "object-top",
+            )}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
+          />
+        ) : (
+          <div className="flex h-full min-h-[9rem] items-center justify-center">
+            <UserCircle2 className="h-16 w-16 text-gtp-teal/25 sm:h-20 sm:w-20" />
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        <p className="font-heading text-base font-bold text-gtp-dark-teal">
+          {member.name}
+        </p>
+        <p className="mt-1 text-sm font-semibold italic text-gtp-teal">
+          {member.role}
+        </p>
+        {member.organisation && (
+          <p className="mt-1 text-xs text-gray-500">{member.organisation}</p>
+        )}
+      </div>
     </div>
+  );
+}
+
+function ConferenceSpeakersSection() {
+  return (
+    <SectionWrapper
+      title="Conference speakers"
+      subtitle="Speaking at GTP 2026"
+      theme="gtp"
+      background="default"
+      id="speakers"
+    >
+      <p className="mx-auto mb-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
+        Featured voices from the programme. Select a card to read their bio
+        and session information—the same highlights as on the GTP 2026 home
+        page.
+      </p>
+      <GtpSpeakersHighlightInner staggerVariant="long" />
+    </SectionWrapper>
   );
 }
 
@@ -261,6 +343,7 @@ export default function OrganisingCommitteePage() {
     <>
       <OrgCommitteeHero />
       <CochairsSection />
+      <ConferenceSpeakersSection />
       <CommitteeSection />
       <AnnouncementSection />
     </>
