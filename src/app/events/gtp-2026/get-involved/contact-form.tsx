@@ -5,11 +5,11 @@ import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { sendContactEmail } from "./actions";
 
-function SubmitButton() {
+function SubmitButton({ variant }: { variant: "gtpSecondary" | "scphSecondary" }) {
   const { pending } = useFormStatus();
   return (
     <Button
-      variant="gtpSecondary"
+      variant={variant}
       type="submit"
       className="w-full"
       disabled={pending}
@@ -19,57 +19,75 @@ function SubmitButton() {
   );
 }
 
-export function ContactForm() {
+const fieldFocusGtp =
+  "focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal";
+const fieldFocusScph =
+  "focus:border-scph-blue focus:outline-none focus:ring-1 focus:ring-scph-blue";
+
+export function ContactForm({
+  appearance = "gtp",
+}: {
+  /** Use `scph` when embedding on the main SCPH site (brand-aligned chrome). */
+  appearance?: "gtp" | "scph";
+}) {
   const [state, formAction] = useActionState(sendContactEmail, null);
+  const isScph = appearance === "scph";
+  const labelClass = isScph
+    ? "text-scph-blue"
+    : "text-gtp-dark-teal";
+  const fieldFocus = isScph ? fieldFocusScph : fieldFocusGtp;
+  const successClass = isScph
+    ? "text-scph-dark-green"
+    : "text-gtp-teal";
 
   return (
     <form action={formAction} className="space-y-4">
       <div>
         <label
-          htmlFor="name"
-          className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
+          htmlFor={isScph ? "scph-gtp-name" : "name"}
+          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
         >
           Name
         </label>
         <input
-          id="name"
+          id={isScph ? "scph-gtp-name" : "name"}
           name="name"
           type="text"
           placeholder="Your name"
           required
-          className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal"
+          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
         />
       </div>
       <div>
         <label
-          htmlFor="email"
-          className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
+          htmlFor={isScph ? "scph-gtp-email" : "email"}
+          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
         >
           Email
         </label>
         <input
-          id="email"
+          id={isScph ? "scph-gtp-email" : "email"}
           name="email"
           type="email"
           placeholder="you@example.com"
           required
-          className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal"
+          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
         />
       </div>
       <div>
         <label
-          htmlFor="message"
-          className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
+          htmlFor={isScph ? "scph-gtp-message" : "message"}
+          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
         >
           Message
         </label>
         <textarea
-          id="message"
+          id={isScph ? "scph-gtp-message" : "message"}
           name="message"
           rows={4}
           placeholder="How can we help?"
           required
-          className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal"
+          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
         />
       </div>
 
@@ -77,12 +95,12 @@ export function ContactForm() {
         <p className="text-sm text-red-600">{state.error}</p>
       )}
       {state?.success && (
-        <p className="text-sm font-medium text-gtp-teal">
+        <p className={`text-sm font-medium ${successClass}`}>
           Thank you! Your message has been sent.
         </p>
       )}
 
-      <SubmitButton />
+      <SubmitButton variant={isScph ? "scphSecondary" : "gtpSecondary"} />
     </form>
   );
 }

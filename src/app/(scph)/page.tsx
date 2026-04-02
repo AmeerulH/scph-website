@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,6 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphHero } from "@/components/scph/hero";
+import {
+  Gtp2026HomeSection,
+  Gtp2026HomeEventInquirySection,
+} from "@/components/scph/gtp-2026-home-sections";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
@@ -300,11 +305,26 @@ function PartnersSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+const homeDescription =
+  "Sunway Centre for Planetary Health is a Think-and-Do tank for planetary health research and advocacy in Malaysia—healthy cities, decarbonisation, and education. Host of Global Tipping Points Conference 2026 in Kuala Lumpur.";
+
+export const metadata: Metadata = {
+  title: "Sunway Centre for Planetary Health",
+  description: homeDescription,
+  openGraph: {
+    title: "Sunway Centre for Planetary Health",
+    description: homeDescription,
+    type: "website",
+  },
+};
+
 export default function HomePage() {
   return (
     <>
       <ScphHero />
       <StatsBand />
+      <Gtp2026HomeSection />
+      <Gtp2026HomeEventInquirySection />
       <AboutSection />
       <PriorityAreasSection />
       <RoadmapSection />

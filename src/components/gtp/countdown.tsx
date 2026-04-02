@@ -34,10 +34,14 @@ const UNITS = [
   { key: "seconds" as const, label: "Seconds" },
 ];
 
+const ZERO_TIME: TimeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+
 export function GtpCountdown() {
-  const [time, setTime] = React.useState<TimeLeft>(calcTimeLeft);
+  // Stable SSR + first client paint — Date.now() differs between server and browser, so never use it in useState initialiser.
+  const [time, setTime] = React.useState<TimeLeft>(ZERO_TIME);
 
   React.useEffect(() => {
+    setTime(calcTimeLeft());
     const id = setInterval(() => setTime(calcTimeLeft()), 1000);
     return () => clearInterval(id);
   }, []);

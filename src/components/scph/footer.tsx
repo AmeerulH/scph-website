@@ -248,15 +248,17 @@ export function ScphFooter() {
           {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/40 md:flex-row">
             <p>© 2026 Sunway Centre for Planetary Health. All rights reserved.</p>
-            <div className="flex items-center gap-3">
-              <span>Part of</span>
-              <Image
-                src="/images/scph/sunway-uni-logo-white.png"
-                alt="Sunway University"
-                width={100}
-                height={30}
-                className="h-6 w-auto object-contain opacity-60"
-              />
+            <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
+              <span className="shrink-0">Part of</span>
+              <span className="inline-flex shrink-0 items-center overflow-visible py-0.5">
+                <Image
+                  src="/images/gtp/logos/sunway-uni-white.png"
+                  alt="Sunway University"
+                  width={360}
+                  height={120}
+                  className="h-12 w-auto max-w-[min(90vw,22rem)] object-contain mix-blend-lighten sm:h-14 md:h-16"
+                />
+              </span>
             </div>
           </div>
         </div>

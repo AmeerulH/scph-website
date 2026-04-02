@@ -25,88 +25,10 @@ import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
 import { GtpCountdown } from "@/components/gtp/countdown";
 import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
+import { GtpSiteExploreCardsGrid } from "@/components/gtp/gtp-site-explore-cards";
 import { cn } from "@/lib/utils";
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
-
-const gtpSiteExploreCards = [
-  {
-    title: "Governance",
-    body: "We urgently need new types of governance to cope with the threat posed by Earth system tipping points.",
-    href: "https://global-tipping-points.org/governance/",
-    cardClass: "bg-gtp-dark-teal",
-    illustration: "governance" as const,
-  },
-  {
-    title: "Earth System Tipping Points",
-    body: "Earth system tipping points pose profound risks to national security, food security, health and wellbeing.",
-    href: "https://global-tipping-points.org/earth-system-tipping-points/",
-    cardClass: "bg-gtp-teal",
-    illustration: "earth" as const,
-  },
-  {
-    title: "Positive tipping points",
-    body: "We need to identify and trigger positive tipping points to accelerate to net zero.",
-    href: "https://global-tipping-points.org/positive-tipping-points/",
-    cardClass: "bg-gtp-green",
-    illustration: "positive" as const,
-  },
-] as const;
-
-/** Governance: equal-size icon wells + edge-to-edge baseline (–mx-6 vs card p-6). */
-function GtpGovernanceCardFooterArt() {
-  const iconWell =
-    "relative size-[4.75rem] shrink-0 overflow-hidden rounded-full bg-transparent sm:size-20";
-  const iconFit =
-    "object-contain object-center p-[7%] sm:p-[6%]";
-
-  return (
-    <div className="mt-auto w-full shrink-0 pt-6">
-      <div className="relative">
-        <div className="relative z-10 mb-[-11px] flex w-full justify-end gap-0 pr-5 sm:mb-[-12px] sm:pr-7">
-          <div className={`${iconWell} z-[1]`}>
-            <Image
-              src="/images/gtp/cards/teal-1.svg"
-              alt=""
-              fill
-              unoptimized
-              sizes="80px"
-              className={iconFit}
-              aria-hidden
-            />
-          </div>
-          <div className={`${iconWell} -ml-2.5 z-0 sm:-ml-3`}>
-            <Image
-              src="/images/gtp/cards/teal-2.svg"
-              alt=""
-              fill
-              unoptimized
-              sizes="80px"
-              className={`${iconFit} object-[56%_38%] sm:object-[58%_36%]`}
-              aria-hidden
-            />
-          </div>
-        </div>
-        <div className="relative z-20 -mx-6">
-          <div className="h-2.5 w-full bg-white sm:h-3" aria-hidden />
-          <div className="h-3" aria-hidden />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function GtpExploreCardIllustration({
-  variant,
-}: {
-  variant: (typeof gtpSiteExploreCards)[number]["illustration"];
-}) {
-  if (variant !== "governance") {
-    return <div className="mt-auto shrink-0 pt-6" aria-hidden />;
-  }
-
-  return <GtpGovernanceCardFooterArt />;
-}
 
 function WhatIsGtpSection() {
   return (
@@ -178,32 +100,7 @@ function WhatIsGtpSection() {
         </div>
       </div>
 
-      <div className="mt-14">
-        <p className="mb-6 text-center font-heading text-sm font-semibold uppercase tracking-[0.12em] text-gtp-dark-teal/70">
-          Explore on global-tipping-points.org
-        </p>
-        <div className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3">
-          {gtpSiteExploreCards.map(({ title, body, href, cardClass, illustration }) => (
-            <a
-              key={href}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group flex min-h-[380px] w-full flex-col overflow-hidden rounded-2xl p-6 shadow-lg ring-1 ring-white/15 transition-[flex-grow] duration-1000 ease-in-out md:min-h-[400px] md:min-w-0 md:flex-[1_1_0%] md:hover:flex-grow-[1.45] ${cardClass}`}
-              aria-label={`${title} — opens global-tipping-points.org in a new tab`}
-            >
-              <h3 className="font-heading text-left text-sm font-bold uppercase tracking-[0.08em] text-white">
-                {title}
-              </h3>
-              <div className="mt-3 h-px w-12 bg-white/90" />
-              <p className="mt-4 flex-1 text-left text-sm leading-relaxed text-white/95">
-                {body}
-              </p>
-              <GtpExploreCardIllustration variant={illustration} />
-            </a>
-          ))}
-        </div>
-      </div>
+      <GtpSiteExploreCardsGrid />
     </SectionWrapper>
   );
 }

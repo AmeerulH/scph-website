@@ -12,12 +12,25 @@ import {
 
 // ─── Events carousel data ────────────────────────────────────────────────────
 
-const highlightedEvents = [
+type HighlightedEventStripItem = {
+  id: string;
+  label: string;
+  title: string;
+  subtitle: string;
+  href: string;
+  external: boolean;
+  /** Optional line aligned with GTP Home “Why This Meeting Matters” (Phase 3). */
+  teaser?: string;
+};
+
+const highlightedEvents: HighlightedEventStripItem[] = [
   {
     id: "gtp-2026",
     label: "Upcoming · 2026",
     title: "Global Tipping Points 2026",
     subtitle: "Kuala Lumpur, Malaysia",
+    teaser:
+      "Decisions that will shape generations—science, finance, culture & policy in Asia for the first time.",
     href: "/events/gtp-2026",
     external: false,
   },
@@ -111,12 +124,17 @@ export function ScphHero() {
                 href={event.href}
                 className="group flex shrink-0 snap-start items-center gap-4 py-4 pr-6 transition-opacity hover:opacity-80"
               >
-                <div>
+                <div className="min-w-0">
                   <span className="text-[10px] font-semibold uppercase tracking-wider text-scph-green">
                     {event.label}
                   </span>
                   <p className="text-sm font-semibold text-white">{event.title}</p>
                   <p className="text-xs text-white/50">{event.subtitle}</p>
+                  {event.teaser ? (
+                    <p className="mt-1.5 max-w-[18rem] text-[11px] leading-snug text-white/45 md:max-w-[22rem]">
+                      {event.teaser}
+                    </p>
+                  ) : null}
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1" />
               </Link>
