@@ -100,6 +100,12 @@ function PillarsSection() {
       theme="gtp"
       background="default"
     >
+      <p className="mb-8 max-w-3xl text-left text-base font-bold leading-relaxed text-gtp-dark-teal md:text-lg">
+        We invite researchers and practitioners to submit abstracts for oral and
+        poster presentations, and contribute to the programme agenda by
+        proposing to convene action workshops.
+      </p>
+
       <p className="mb-8 max-w-3xl text-left text-base leading-relaxed text-gray-600">
         GTP 2026 is organised around three pillars that shape the programme and
         submissions.
@@ -147,12 +153,7 @@ function PillarsSection() {
         )}
       </StaggerReveal>
 
-      <p className="mx-auto mt-10 max-w-3xl text-center text-base font-bold leading-relaxed text-gtp-dark-teal md:text-lg">
-        We invite researchers and practitioners to submit abstracts for oral and
-        poster presentations, and contribute to the programme agenda by
-        proposing to convene action workshops.
-      </p>
-      <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-gray-600 md:text-base">
+      <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-gray-600 md:text-base">
         As research demonstrates that systems can shift rapidly when leadership,
         investment, and public confidence converge, GTP 2026 focuses on these
         three pillars.
