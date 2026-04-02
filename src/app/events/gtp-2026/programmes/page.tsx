@@ -635,7 +635,7 @@ function ProgrammesPageInner() {
       </div>
 
       {/* Tab content */}
-      <div className="bg-gtp-dark-teal/5 min-h-screen">
+      <div className="min-h-screen bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 lg:px-8">
           <div className="flex gap-8">
 

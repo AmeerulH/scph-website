@@ -265,7 +265,7 @@ function ThemesSection() {
           ),
         )}
       </StaggerReveal>
-      <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gray-500">
+      <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gtp-teal">
         The conference is designed for leaders who want clarity, confidence that
         they are not alone, and credible pathways forward.
       </p>
@@ -524,15 +524,15 @@ function GallerySection() {
       title="Moments That Matter"
       subtitle="Our Gallery"
       theme="gtp"
-      background="muted"
+      background="dark"
     >
       <GalleryBentoStrip />
 
-      <p className="mt-6 text-center text-sm text-gray-400">
+      <p className="mt-6 text-center text-sm text-white/60">
         Photos from GTP 2025.{" "}
         <Link
           href="/events/gtp-2026/media"
-          className="font-semibold text-gtp-dark-teal hover:underline"
+          className="font-semibold text-gtp-teal hover:text-white hover:underline"
         >
           See more →
         </Link>
@@ -648,7 +648,7 @@ export default function GtpAboutPage() {
   return (
     <>
       {/* Single gradient wrapper — hero, countdown and carousel share one continuous background */}
-      <div className="relative overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
+      <div className="relative min-h-[min(88svh,1000px)] overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
         {/* Shared dot grid */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.055]"

@@ -17,6 +17,17 @@ function getGtpContactRecipient(): string | undefined {
   );
 }
 
+/**
+ * Resend "from" address. Must be from a domain you verified in Resend.
+ * Default `onboarding@resend.dev` only allows sending TO your Resend account email —
+ * use RESEND_FROM + a verified domain to deliver to any inbox (e.g. team@sunway.edu.my).
+ */
+function getResendFrom(): string {
+  const configured = process.env.RESEND_FROM?.trim();
+  if (configured) return configured;
+  return "GTP 2026 Contact <onboarding@resend.dev>";
+}
+
 export type ContactFormState = { error?: string; success?: boolean } | null;
 
 export async function sendContactEmail(
@@ -46,7 +57,7 @@ export async function sendContactEmail(
 
   try {
     const { error } = await resend.emails.send({
-      from: "GTP 2026 Contact <onboarding@resend.dev>",
+      from: getResendFrom(),
       to: recipient,
       replyTo: email,
       subject: `GTP 2026 Contact: ${name}`,

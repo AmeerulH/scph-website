@@ -28,7 +28,7 @@ export default function EventsPage() {
                 positive change.
               </p>
               <Button variant="gtpCta" size="sm" className="mt-5" asChild>
-                <Link href="/events/gtp-2026">
+                <Link href="/events/gtp-2026/about" prefetch={false}>
                   Learn More <ArrowRight />
                 </Link>
               </Button>

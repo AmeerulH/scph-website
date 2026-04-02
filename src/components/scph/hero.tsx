@@ -31,7 +31,7 @@ const highlightedEvents: HighlightedEventStripItem[] = [
     subtitle: "Kuala Lumpur, Malaysia",
     teaser:
       "Decisions that will shape generations—science, finance, culture & policy in Asia for the first time.",
-    href: "/events/gtp-2026",
+    href: "/events/gtp-2026/about",
     external: false,
   },
 ];
@@ -122,6 +122,7 @@ export function ScphHero() {
               <Link
                 key={event.id}
                 href={event.href}
+                prefetch={event.external ? undefined : false}
                 className="group flex shrink-0 snap-start items-center gap-4 py-4 pr-6 transition-opacity hover:opacity-80"
               >
                 <div className="min-w-0">

@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
 import { Button } from "@/components/ui/button";
 import { sendContactEmail } from "./actions";
 
@@ -30,7 +31,7 @@ export function ContactForm({
   /** Use `scph` when embedding on the main SCPH site (brand-aligned chrome). */
   appearance?: "gtp" | "scph";
 }) {
-  const [state, formAction] = useActionState(sendContactEmail, null);
+  const [state, formAction, isPending] = useActionState(sendContactEmail, null);
   const isScph = appearance === "scph";
   const labelClass = isScph
     ? "text-scph-blue"
@@ -42,6 +43,12 @@ export function ContactForm({
 
   return (
     <form action={formAction} className="space-y-4">
+      {isPending ? (
+        <FullPageLoadingOverlay
+          variant={isScph ? "scph" : "gtp"}
+          label="Sending your message"
+        />
+      ) : null}
       <div>
         <label
           htmlFor={isScph ? "scph-gtp-name" : "name"}

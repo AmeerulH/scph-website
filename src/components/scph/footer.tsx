@@ -74,7 +74,7 @@ const communityLinks = [
 ];
 
 const conferenceLinks = [
-  { label: "GTP 2026", href: "/events/gtp-2026", external: false },
+  { label: "GTP 2026", href: "/events/gtp-2026/about", external: false },
   { label: "PHAM 2024", href: "https://www.pham2024.com/", external: true },
 ];
 
@@ -184,6 +184,7 @@ export function ScphFooter() {
                     ) : (
                       <Link
                         href={href}
+                        prefetch={false}
                         className="text-sm text-white/70 transition-colors hover:text-white"
                       >
                         {label}

@@ -8,6 +8,11 @@ import { cn } from "@/lib/utils";
 interface AtmosphericRevealProps {
   children: React.ReactNode;
   className?: string;
+  /**
+   * Skip opacity/blur entrance. Use under GTP layout so <main> is not invisible while
+   * the footer (outside <main>) stays visible — avoids a “footer only” frame and CLS.
+   */
+  disableEntrance?: boolean;
 }
 
 /**
@@ -18,13 +23,14 @@ interface AtmosphericRevealProps {
 export function AtmosphericReveal({
   children,
   className,
+  disableEntrance = false,
 }: AtmosphericRevealProps) {
   const prefersReducedMotion = useReducedMotion();
   const variants = prefersReducedMotion ? atmosphericFadeReduced : atmosphericFade;
 
   return (
     <motion.div
-      initial={variants.initial}
+      initial={disableEntrance ? false : variants.initial}
       animate={variants.animate}
       transition={variants.transition}
       className={cn("contain-[layout_paint]", className)}

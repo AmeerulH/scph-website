@@ -34,7 +34,9 @@ const subtitleClasses: Record<Theme, string> = {
 
 const mutedBgClasses: Record<Theme, string> = {
   scph: "bg-scph-blue/5",
-  gtp: "bg-gtp-dark-teal/5",
+  // Opaque surface: transparent /5 tints disappear on GTP layout’s dark-teal <main>,
+  // which made dark-teal headings effectively invisible.
+  gtp: "bg-slate-100",
 };
 
 const darkBgClasses: Record<Theme, string> = {

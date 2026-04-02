@@ -17,6 +17,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
 import { sendWorkshopSubmission } from "./actions";
 import { CountrySelect } from "./country-select";
 import { Snackbar } from "./snackbar";
@@ -594,7 +595,10 @@ function SecondaryThemesField({
 // ─── Inner form (remounted on success to reset all state) ────────────────────
 
 function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
-  const [state, formAction] = useActionState(sendWorkshopSubmission, null);
+  const [state, formAction, isPending] = useActionState(
+    sendWorkshopSubmission,
+    null,
+  );
   const [conflictValue, setConflictValue] = useState("");
   const [primaryTheme, setPrimaryTheme] = useState("");
   const [secondaryThemes, setSecondaryThemes] = useState<string[]>([]);
@@ -621,6 +625,12 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
       onChange={handleChange}
       className="space-y-6"
     >
+      {isPending ? (
+        <FullPageLoadingOverlay
+          variant="gtp"
+          label="Submitting workshop proposal"
+        />
+      ) : null}
       <WorkshopFormHeader />
 
       {/* Section 1 — Convener Details */}

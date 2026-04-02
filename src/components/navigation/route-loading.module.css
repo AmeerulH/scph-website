@@ -1,0 +1,44 @@
+/* Morphing shape loader — colour themes via custom properties */
+
+.scph {
+  --loader-c1: #1b4384;
+  --loader-c2: #50b58b;
+  --loader-c3: #03745b;
+}
+
+.gtp {
+  --loader-c1: #009cb4;
+  --loader-c2: #0d4d5e;
+  --loader-c3: #db5d00;
+}
+
+.loader {
+  width: 40px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--loader-c1);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  animation: routeLoaderMorph 2s infinite cubic-bezier(0.3, 1, 0, 1);
+}
+
+@keyframes routeLoaderMorph {
+  33% {
+    border-radius: 0;
+    background: var(--loader-c2);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  66% {
+    border-radius: 0;
+    background: var(--loader-c3);
+    clip-path: polygon(50% 0, 50% 0, 100% 100%, 0 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation: none;
+    border-radius: 50%;
+    background: var(--loader-c2);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}

@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CalendarDays, Info } from "lucide-react";
+import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
 import { sendAbstractSubmission } from "./actions";
 import { CountrySelect } from "./country-select";
 import { Snackbar } from "./snackbar";
@@ -256,7 +257,10 @@ function Field({
 // ─── Inner form (remounted on success to reset all state) ────────────────────
 
 function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
-  const [state, formAction] = useActionState(sendAbstractSubmission, null);
+  const [state, formAction, isPending] = useActionState(
+    sendAbstractSubmission,
+    null,
+  );
   const formRef = useRef<HTMLFormElement>(null);
   const [isValid, setIsValid] = useState(false);
 
@@ -271,6 +275,9 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <form ref={formRef} action={formAction} onChange={handleChange} className="space-y-6">
+      {isPending ? (
+        <FullPageLoadingOverlay variant="gtp" label="Submitting abstract" />
+      ) : null}
       <AbstractFormHeader />
 
       {/* Section 1 — Presenter Details */}

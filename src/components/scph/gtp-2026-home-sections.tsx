@@ -38,7 +38,7 @@ export function Gtp2026HomeSection() {
         </p>
         <MagneticButton className="mt-8">
           <Button variant="scph" size="lg" asChild>
-            <Link href="/events/gtp-2026/about">
+            <Link href="/events/gtp-2026/about" prefetch={false}>
               GTP 2026 conference site <ArrowRight />
             </Link>
           </Button>

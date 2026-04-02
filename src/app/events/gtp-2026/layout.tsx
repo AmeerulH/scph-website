@@ -22,8 +22,15 @@ export default function GtpLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <GtpNavbar />
-      <main>
-        <AtmosphericReveal>{children}</AtmosphericReveal>
+      {/*
+        Footer is outside <main>. Reserve minimum height so the footer does not sit
+        directly under the nav while the route streams in (CLS). Use GTP base colour so
+        this area is not a blank white band before the hero paints.
+      */}
+      <main className="min-h-[52dvh] bg-gtp-dark-teal">
+        <AtmosphericReveal disableEntrance>
+          {children}
+        </AtmosphericReveal>
       </main>
       <GtpFooter />
     </>
