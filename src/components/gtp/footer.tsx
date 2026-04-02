@@ -10,8 +10,6 @@ const quickLinks = [
     href: "/events/gtp-2026/organising-committee",
   },
   { label: "Programme", href: "/events/gtp-2026/programmes" },
-  { label: "Business Forum", href: "/events/gtp-2026/biz-forum" },
-  { label: "Media", href: "/events/gtp-2026/media" },
   { label: "FAQ", href: "/events/gtp-2026/faq" },
   { label: "Get Involved", href: "/events/gtp-2026/get-involved" },
   { label: "Submissions", href: "/events/gtp-2026/submissions" },
@@ -157,10 +155,12 @@ export function GtpFooter() {
 
         <Separator className="my-10 bg-white/10" />
 
-        {/* Bottom bar */}
-        <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/40 md:flex-row">
-          <p>© 2026 Global Tipping Points Conference. All rights reserved.</p>
-          <p>
+        {/* Bottom bar — GTP brand mark bottom-right on larger screens */}
+        <div className="flex flex-col gap-6 text-xs text-white/40 md:flex-row md:items-center md:justify-between md:gap-8">
+          <p className="text-center md:text-left">
+            © 2026 Global Tipping Points Conference. All rights reserved.
+          </p>
+          <p className="text-center md:text-left">
             Hosted by{" "}
             <a
               href="https://sunwayuniversity.edu.my/research/planetaryhealth"
@@ -172,6 +172,21 @@ export function GtpFooter() {
               <ExternalLink className="h-3 w-3" />
             </a>
           </p>
+          <a
+            href="https://global-tipping-points.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex shrink-0 justify-center md:ml-auto md:justify-end"
+            aria-label="Global Tipping Points (opens in a new tab)"
+          >
+            <Image
+              src="/images/gtp/logo-blue-wide.svg"
+              alt=""
+              width={160}
+              height={36}
+              className="h-7 w-auto object-contain brightness-0 invert opacity-90 transition-opacity hover:opacity-100"
+            />
+          </a>
         </div>
       </div>
     </footer>

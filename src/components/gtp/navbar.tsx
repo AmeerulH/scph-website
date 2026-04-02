@@ -33,8 +33,6 @@ const navItems: NavItem[] = [
     href: "/events/gtp-2026/organising-committee",
   },
   { label: "Programme", href: "/events/gtp-2026/programmes" },
-  { label: "Business Forum", href: "/events/gtp-2026/biz-forum" },
-  { label: "Media", href: "/events/gtp-2026/media" },
   {
     label: "Get Involved",
     parentHref: "/events/gtp-2026/get-involved",
@@ -147,19 +145,21 @@ export function GtpNavbar() {
             : "bg-gtp-dark-teal/75 shadow-lg backdrop-blur-xl",
         )}
       >
-        {/* GTP logo */}
-        <Link
-          href="/events/gtp-2026/about"
+        {/* GTP logo — links to global initiative site */}
+        <a
+          href="https://global-tipping-points.org/"
+          target="_blank"
+          rel="noopener noreferrer"
           className="shrink-0 transition-opacity hover:opacity-80"
-          aria-label="GTP 2026 Home"
+          aria-label="Global Tipping Points (opens in a new tab)"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/images/gtp/logo-blue-wide.svg"
-            alt="Global Tipping Points 2026"
+            alt="Global Tipping Points"
             className="h-6 w-auto object-contain brightness-0 invert"
           />
-        </Link>
+        </a>
 
         {/* Desktop nav links */}
         <div className="hidden items-center gap-0.5 lg:flex">
