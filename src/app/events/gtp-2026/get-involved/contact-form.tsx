@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useSyncExternalStore } from "react";
 import { useFormStatus } from "react-dom";
 import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,13 @@ const fieldFocusGtp =
 const fieldFocusScph =
   "focus:border-scph-blue focus:outline-none focus:ring-1 focus:ring-scph-blue";
 
+const noopSubscribe = () => () => {};
+
+/** True in the browser after hydration; false on server — avoids extension-injected DOM vs SSR mismatches. */
+function useClientFieldsReady() {
+  return useSyncExternalStore(noopSubscribe, () => true, () => false);
+}
+
 export function ContactForm({
   appearance = "gtp",
 }: {
@@ -32,6 +39,8 @@ export function ContactForm({
   appearance?: "gtp" | "scph";
 }) {
   const [state, formAction, isPending] = useActionState(sendContactEmail, null);
+  const fieldsMounted = useClientFieldsReady();
+
   const isScph = appearance === "scph";
   const labelClass = isScph
     ? "text-scph-blue"
@@ -49,65 +58,85 @@ export function ContactForm({
           label="Sending your message"
         />
       ) : null}
-      <div>
-        <label
-          htmlFor={isScph ? "scph-gtp-name" : "name"}
-          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
-        >
-          Name
-        </label>
-        <input
-          id={isScph ? "scph-gtp-name" : "name"}
-          name="name"
-          type="text"
-          placeholder="Your name"
-          required
-          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
-        />
-      </div>
-      <div>
-        <label
-          htmlFor={isScph ? "scph-gtp-email" : "email"}
-          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
-        >
-          Email
-        </label>
-        <input
-          id={isScph ? "scph-gtp-email" : "email"}
-          name="email"
-          type="email"
-          placeholder="you@example.com"
-          required
-          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
-        />
-      </div>
-      <div>
-        <label
-          htmlFor={isScph ? "scph-gtp-message" : "message"}
-          className={`mb-1.5 block text-sm font-medium ${labelClass}`}
-        >
-          Message
-        </label>
-        <textarea
-          id={isScph ? "scph-gtp-message" : "message"}
-          name="message"
-          rows={4}
-          placeholder="How can we help?"
-          required
-          className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
-        />
-      </div>
+      {!fieldsMounted ? (
+        <div className="space-y-4" aria-hidden>
+          <div>
+            <div className="mb-1.5 h-4 w-14 rounded bg-gray-200/80" />
+            <div className="h-10 w-full rounded-lg bg-gray-100" />
+          </div>
+          <div>
+            <div className="mb-1.5 h-4 w-12 rounded bg-gray-200/80" />
+            <div className="h-10 w-full rounded-lg bg-gray-100" />
+          </div>
+          <div>
+            <div className="mb-1.5 h-4 w-16 rounded bg-gray-200/80" />
+            <div className="h-24 w-full rounded-lg bg-gray-100" />
+          </div>
+          <div className="h-10 w-full rounded-lg bg-gray-200/70" />
+        </div>
+      ) : (
+        <>
+          <div>
+            <label
+              htmlFor={isScph ? "scph-gtp-name" : "name"}
+              className={`mb-1.5 block text-sm font-medium ${labelClass}`}
+            >
+              Name
+            </label>
+            <input
+              id={isScph ? "scph-gtp-name" : "name"}
+              name="name"
+              type="text"
+              placeholder="Your name"
+              required
+              className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor={isScph ? "scph-gtp-email" : "email"}
+              className={`mb-1.5 block text-sm font-medium ${labelClass}`}
+            >
+              Email
+            </label>
+            <input
+              id={isScph ? "scph-gtp-email" : "email"}
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              required
+              className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
+            />
+          </div>
+          <div>
+            <label
+              htmlFor={isScph ? "scph-gtp-message" : "message"}
+              className={`mb-1.5 block text-sm font-medium ${labelClass}`}
+            >
+              Message
+            </label>
+            <textarea
+              id={isScph ? "scph-gtp-message" : "message"}
+              name="message"
+              rows={4}
+              placeholder="How can we help?"
+              required
+              className={`w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm transition-colors ${fieldFocus}`}
+            />
+          </div>
 
-      {state?.error && (
-        <p className="text-sm text-red-600">{state.error}</p>
-      )}
-      {state?.success && (
-        <p className={`text-sm font-medium ${successClass}`}>
-          Thank you! Your message has been sent.
-        </p>
-      )}
+          {state?.error && (
+            <p className="text-sm text-red-600">{state.error}</p>
+          )}
+          {state?.success && (
+            <p className={`text-sm font-medium ${successClass}`}>
+              Thank you! Your message has been sent.
+            </p>
+          )}
 
-      <SubmitButton variant={isScph ? "scphSecondary" : "gtpSecondary"} />
+          <SubmitButton variant={isScph ? "scphSecondary" : "gtpSecondary"} />
+        </>
+      )}
     </form>
   );
 }

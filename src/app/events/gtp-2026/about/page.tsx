@@ -201,7 +201,7 @@ const themes = [
     icon: Zap,
     title: "Accelerating Action",
     body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    cardClass: "bg-gtp-dark-green text-white ring-white/10",
+    cardClass: "bg-gtp-green text-white ring-white/10",
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",

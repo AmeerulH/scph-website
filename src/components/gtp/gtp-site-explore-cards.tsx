@@ -78,21 +78,114 @@ function GtpExploreCardFooterArt({
 function GtpEarthCardFooterCurve() {
   return (
     <div className="mt-auto w-full shrink-0 pt-6">
-      <div className="-mx-6">
+      <div className="relative z-20 -mx-6">
         <svg
-          className="block aspect-[400/120] w-full"
-          viewBox="0 0 400 120"
+          className="block aspect-[400/134] w-full overflow-visible sm:mb-[-4px]"
+          viewBox="0 -8 400 134"
           preserveAspectRatio="xMidYMax meet"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden
         >
+          <foreignObject x="175" y="-55" width="76" height="76">
+            <div
+              className="relative size-full rounded-full bg-transparent"
+              xmlns="http://www.w3.org/1999/xhtml"
+            >
+              <Image
+                src="/images/gtp/cards/light-teal-1.svg"
+                alt=""
+                fill
+                unoptimized
+                sizes="76px"
+                className="object-contain object-center p-[10%]"
+                aria-hidden
+              />
+            </div>
+          </foreignObject>
+          <foreignObject x="218" y="-20" width="76" height="76">
+            <div
+              className="relative size-full rounded-full bg-transparent"
+              xmlns="http://www.w3.org/1999/xhtml"
+            >
+              <Image
+                src="/images/gtp/cards/light-teal-2.svg"
+                alt=""
+                fill
+                unoptimized
+                sizes="76px"
+                className="object-contain object-center p-[10%]"
+                aria-hidden
+              />
+            </div>
+          </foreignObject>
           <path
-            d="M 0 100 L 80 100 C 128 100 178 38 200 20 C 278 22 352 94 400 100"
+            d="M 0 117 L 100 117 C 155 117 155 9 200 9 C 245 9 245 117 300 117 L 400 117"
             stroke="white"
-            strokeWidth="10"
             strokeLinecap="round"
             strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            className="stroke-[0.625rem] sm:stroke-[0.75rem]"
+          />
+        </svg>
+        <div className="h-3" aria-hidden />
+      </div>
+    </div>
+  );
+}
+
+/** Positive card: hill shifted right; icons on the left ascent (trees lower, turbines higher). */
+function GtpPositiveCardFooterCurve() {
+  return (
+    <div className="mt-auto w-full shrink-0 pt-6">
+      <div className="relative z-20 -mx-6">
+        <svg
+          className="block aspect-[400/134] w-full overflow-visible sm:mb-[-4px]"
+          viewBox="0 -8 400 134"
+          preserveAspectRatio="xMidYMax meet"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden
+        >
+          <foreignObject x="124" y="42" width="76" height="76">
+            <div
+              className="relative size-full rounded-full bg-transparent"
+              xmlns="http://www.w3.org/1999/xhtml"
+            >
+              <Image
+                src="/images/gtp/cards/green-1.svg"
+                alt=""
+                fill
+                unoptimized
+                sizes="76px"
+                className="object-contain object-center p-[10%]"
+                aria-hidden
+              />
+            </div>
+          </foreignObject>
+          <foreignObject x="174" y="-44" width="76" height="76">
+            <div
+              className="relative size-full rounded-full bg-transparent"
+              xmlns="http://www.w3.org/1999/xhtml"
+            >
+              <Image
+                src="/images/gtp/cards/green-2.svg"
+                alt=""
+                fill
+                unoptimized
+                sizes="76px"
+                className="object-contain object-center p-[10%]"
+                aria-hidden
+              />
+            </div>
+          </foreignObject>
+          <path
+            d="M 0 117 L 155 117 C 210 117 210 9 255 9 C 300 9 300 117 355 117 L 400 117"
+            stroke="white"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+            className="stroke-[0.625rem] sm:stroke-[0.75rem]"
           />
         </svg>
         <div className="h-3" aria-hidden />
@@ -118,6 +211,10 @@ function GtpExploreCardIllustration({
 
   if (variant === "earth") {
     return <GtpEarthCardFooterCurve />;
+  }
+
+  if (variant === "positive") {
+    return <GtpPositiveCardFooterCurve />;
   }
 
   return <div className="mt-auto shrink-0 pt-6" aria-hidden />;
