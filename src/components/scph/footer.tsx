@@ -3,62 +3,38 @@ import Link from "next/link";
 import { Mail, MapPin, Phone, ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
-// Social icon components for platforms not in lucide-react
-function FacebookIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-    </svg>
-  );
-}
-function TikTokIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-    </svg>
-  );
-}
-function InstagramIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-    </svg>
-  );
-}
-function LinkedinIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-      <rect width="4" height="12" x="2" y="9" />
-      <circle cx="4" cy="4" r="2" />
-    </svg>
-  );
-}
-function XIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-function YoutubeIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white" />
-    </svg>
-  );
-}
-
+/** Same PNG icons and profile URLs as `src/components/gtp/footer.tsx`. */
 const socialLinks = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram" },
-  { Icon: TikTokIcon, href: "#", label: "TikTok" },
-  { Icon: XIcon, href: "#", label: "X (Twitter)" },
-  { Icon: LinkedinIcon, href: "#", label: "LinkedIn" },
-  { Icon: YoutubeIcon, href: "#", label: "YouTube" },
+  {
+    icon: "/images/gtp/social/fb.png",
+    href: "https://www.facebook.com/SunwayCPH",
+    label: "Facebook",
+  },
+  {
+    icon: "/images/gtp/social/ig.png",
+    href: "https://www.instagram.com/sunwaycph/",
+    label: "Instagram",
+  },
+  {
+    icon: "/images/gtp/social/li.png",
+    href: "https://my.linkedin.com/showcase/sunway-centre-for-planetary-health/",
+    label: "LinkedIn",
+  },
+  {
+    icon: "/images/gtp/social/tt.png",
+    href: "https://www.tiktok.com/@sunwaycph?is_from_webapp=1&sender_device=pc",
+    label: "TikTok",
+  },
+  {
+    icon: "/images/gtp/social/x.png",
+    href: "https://x.com/SunwayCPH",
+    label: "X / Twitter",
+  },
+  {
+    icon: "/images/gtp/social/yt.png",
+    href: "https://www.youtube.com/@sunwaycentreforplanetaryhe8898",
+    label: "YouTube",
+  },
 ];
 
 const quickLinks = [
@@ -106,16 +82,24 @@ export function ScphFooter() {
               </p>
             </div>
 
-            {/* Social icons — square with rounded corners */}
-            <div className="flex flex-wrap gap-2">
-              {socialLinks.map(({ Icon, href, label }) => (
+            {/* Social icons — same PNGs + styling as GTP footer */}
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map(({ icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
-                  aria-label={label}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/20 text-white/70 transition-all duration-200 hover:border-white/60 hover:bg-white/10 hover:text-white"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${label} (opens in a new tab)`}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all duration-200 hover:border-white/60 hover:opacity-100"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Image
+                    src={icon}
+                    alt=""
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 object-contain brightness-0 invert opacity-80"
+                  />
                 </a>
               ))}
             </div>

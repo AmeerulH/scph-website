@@ -22,44 +22,46 @@ export function Gtp2026HomeSection() {
         background="muted"
         id="gtp-2026"
       >
-        <div className="max-w-3xl">
-          <p className="text-lg leading-relaxed text-gray-600">
-            The Global Tipping Points initiative, led by Prof. Tim Lenton, is a
-            global research and policy effort focused on understanding critical
-            thresholds in the Earth system where small changes can trigger
-            large, irreversible shifts in climate, ecosystems, and human
-            societies.
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-gray-600">
-            It identifies both dangerous and positive tipping points that could
-            rapidly accelerate solutions like clean energy adoption or ecosystem
-            restoration. The initiative aims to translate cutting-edge science
-            into actionable pathways for governments, finance, and society to
-            trigger rapid transformations toward a stable climate and a
-            healthier planet.
-          </p>
-          <p className="mt-4 text-sm text-gray-500">
-            To learn more about Global Tipping Points, visit{" "}
-            <a
-              href="https://global-tipping-points.org/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-scph-blue hover:underline"
-            >
-              global-tipping-points.org
-            </a>
-          </p>
-
-          <blockquote className="mt-8 rounded-2xl bg-scph-blue/10 p-6 ring-1 ring-scph-blue/20">
-            <Quote className="mb-3 h-6 w-6 text-scph-blue/50" />
-            <p className="font-heading text-lg font-semibold italic leading-snug text-scph-blue">
-              &ldquo;Systems that once seemed immovable can suddenly
-              shift.&rdquo;
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2 lg:gap-12">
+          <div className="min-w-0">
+            <p className="text-lg leading-relaxed text-gray-600">
+              The Global Tipping Points initiative, led by Prof. Tim Lenton, is a
+              global research and policy effort focused on understanding critical
+              thresholds in the Earth system where small changes can trigger
+              large, irreversible shifts in climate, ecosystems, and human
+              societies.
             </p>
-          </blockquote>
+            <p className="mt-4 text-base leading-relaxed text-gray-600">
+              It identifies both dangerous and positive tipping points that could
+              rapidly accelerate solutions like clean energy adoption or ecosystem
+              restoration. The initiative aims to translate cutting-edge science
+              into actionable pathways for governments, finance, and society to
+              trigger rapid transformations toward a stable climate and a
+              healthier planet.
+            </p>
+            <p className="mt-4 text-sm text-gray-500">
+              To learn more about Global Tipping Points, visit{" "}
+              <a
+                href="https://global-tipping-points.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-scph-blue hover:underline"
+              >
+                global-tipping-points.org
+              </a>
+            </p>
 
-          <div className="mt-8 flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-            <div className="w-full max-w-50 shrink-0 overflow-hidden rounded-2xl shadow-lg ring-1 ring-scph-blue/10">
+            <blockquote className="mt-8 rounded-2xl bg-scph-blue/10 p-6 ring-1 ring-scph-blue/20">
+              <Quote className="mb-3 h-6 w-6 text-scph-blue/50" />
+              <p className="font-heading text-lg font-semibold italic leading-snug text-scph-blue">
+                &ldquo;Systems that once seemed immovable can suddenly
+                shift.&rdquo;
+              </p>
+            </blockquote>
+          </div>
+
+          <div className="flex flex-col items-center gap-5">
+            <div className="mx-auto w-full max-w-50 overflow-hidden rounded-2xl shadow-lg ring-1 ring-scph-blue/10">
               <Image
                 src="/images/gtp/report-cover.avif"
                 alt="Global Tipping Points 2025 Report Cover"
