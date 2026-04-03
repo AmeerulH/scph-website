@@ -89,8 +89,13 @@ export function GtpSpeakerModal({
                 src={speaker.photoSrc}
                 alt={speaker.name}
                 fill
-                className="object-cover object-top"
-                sizes="208px"
+                className={cn(
+                  "object-cover object-top",
+                  speaker.photoClassName,
+                )}
+                sizes="(max-width: 1024px) 176px, 208px"
+                unoptimized={speaker.photoUnoptimized}
+                quality={speaker.photoUnoptimized ? undefined : 92}
               />
             </div>
           ) : (
@@ -107,10 +112,16 @@ export function GtpSpeakerModal({
             <p className="font-heading text-2xl font-bold leading-tight text-gtp-dark-teal lg:text-3xl">
               {speaker.name}
             </p>
-            <p className="mt-1.5 text-sm font-semibold text-gtp-teal">
-              {speaker.role}
-            </p>
-            <p className="mt-0.5 text-xs text-gray-400">{speaker.organisation}</p>
+            {speaker.role.trim() ? (
+              <p className="mt-1.5 text-sm font-semibold text-gtp-teal">
+                {speaker.role}
+              </p>
+            ) : null}
+            {speaker.organisation.trim() ? (
+              <p className="mt-0.5 text-xs text-gray-400">
+                {speaker.organisation}
+              </p>
+            ) : null}
           </div>
 
           <div className="mb-5 space-y-3">
@@ -184,8 +195,13 @@ export function GtpSpeakerCard({
             src={speaker.photoSrc}
             alt={speaker.name}
             fill
-            className="object-cover object-top"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className={cn(
+              "object-cover object-top",
+              speaker.photoClassName,
+            )}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 320px"
+            unoptimized={speaker.photoUnoptimized}
+            quality={speaker.photoUnoptimized ? undefined : 92}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
@@ -202,12 +218,16 @@ export function GtpSpeakerCard({
           <p className="font-heading text-base font-bold leading-snug text-white drop-shadow md:text-lg">
             {speaker.name}
           </p>
-          <p className="mt-1 line-clamp-2 text-[11px] font-medium leading-snug text-white/90">
-            {speaker.role}
-          </p>
-          <p className="mt-0.5 line-clamp-2 text-[10px] text-white/65">
-            {speaker.organisation}
-          </p>
+          {speaker.role.trim() ? (
+            <p className="mt-1 line-clamp-2 text-[11px] font-medium leading-snug text-white/90">
+              {speaker.role}
+            </p>
+          ) : null}
+          {speaker.organisation.trim() ? (
+            <p className="mt-0.5 line-clamp-2 text-[10px] text-white/65">
+              {speaker.organisation}
+            </p>
+          ) : null}
         </div>
       </div>
     </button>

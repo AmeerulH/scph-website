@@ -33,7 +33,10 @@ export function AtmosphericReveal({
       initial={disableEntrance ? false : variants.initial}
       animate={variants.animate}
       transition={variants.transition}
-      className={cn("contain-[layout_paint]", className)}
+      className={cn(
+        disableEntrance ? undefined : "contain-[layout_paint]",
+        className,
+      )}
     >
       {children}
     </motion.div>

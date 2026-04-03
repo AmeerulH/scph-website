@@ -6,6 +6,7 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
+import { cn } from "@/lib/utils";
 
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 
@@ -225,6 +226,8 @@ interface TeamMember {
   role: string;
   bio: string[];
   image?: string;
+  /** Optional `object-*` / scale classes for portrait crops (default `object-top`). */
+  imageClassName?: string;
   email?: string;
 }
 
@@ -241,7 +244,9 @@ const teamGroups: TeamGroup[] = [
         name: "Tan Sri Prof. Dr. Jemilah Mahmood",
         initials: "TJ",
         role: "Executive Director",
-        image: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
+        image: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.png",
+        imageClassName:
+          "object-[50%_22%] scale-[1.48] origin-[50%_6%]",
         email: "jemilah@sunway.edu.my",
         bio: [
           "Dr. Mahmood is a Professor of Planetary Health at Sunway University. A medical professional with more than two decades of experience managing health crises in disasters and conflict settings, her previous appointments include: Under Secretary General for Partnerships at the International Federation of Red Cross and Red Crescent Societies (IFRC); Chief of the World Humanitarian Summit secretariat at the United Nations; and Chief of the Humanitarian Response Branch at the United Nations Population Fund (UNFPA).",
@@ -678,7 +683,10 @@ function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember
                             src={member.image}
                             alt={member.name}
                             fill
-                            className="object-cover object-top"
+                            className={cn(
+                              "object-cover",
+                              member.imageClassName ?? "object-top",
+                            )}
                           />
                         ) : (
                           <span className="font-heading text-2xl font-bold text-scph-blue">

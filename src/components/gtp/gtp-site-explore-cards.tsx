@@ -25,6 +25,13 @@ export const GTP_SITE_EXPLORE_CARDS = [
   },
 ] as const;
 
+/** Same `bg-*` utilities as the explore cards — use for theme pillars and other three-column GTP verticals. */
+export const GTP_EXPLORE_VERTICAL_BG_CLASSNAMES = [
+  GTP_SITE_EXPLORE_CARDS[0].cardClass,
+  GTP_SITE_EXPLORE_CARDS[1].cardClass,
+  GTP_SITE_EXPLORE_CARDS[2].cardClass,
+] as const;
+
 /** Explore cards: icon pair + full-bleed white baseline (same layout as global-tipping-points.org). */
 function GtpExploreCardFooterArt({
   leftSrc,
@@ -88,10 +95,7 @@ function GtpEarthCardFooterCurve() {
           aria-hidden
         >
           <foreignObject x="175" y="-55" width="76" height="76">
-            <div
-              className="relative size-full rounded-full bg-transparent"
-              xmlns="http://www.w3.org/1999/xhtml"
-            >
+            <div className="relative size-full rounded-full bg-transparent">
               <Image
                 src="/images/gtp/cards/light-teal-1.svg"
                 alt=""
@@ -104,10 +108,7 @@ function GtpEarthCardFooterCurve() {
             </div>
           </foreignObject>
           <foreignObject x="218" y="-20" width="76" height="76">
-            <div
-              className="relative size-full rounded-full bg-transparent"
-              xmlns="http://www.w3.org/1999/xhtml"
-            >
+            <div className="relative size-full rounded-full bg-transparent">
               <Image
                 src="/images/gtp/cards/light-teal-2.svg"
                 alt=""
@@ -148,10 +149,7 @@ function GtpPositiveCardFooterCurve() {
           aria-hidden
         >
           <foreignObject x="124" y="42" width="76" height="76">
-            <div
-              className="relative size-full rounded-full bg-transparent"
-              xmlns="http://www.w3.org/1999/xhtml"
-            >
+            <div className="relative size-full rounded-full bg-transparent">
               <Image
                 src="/images/gtp/cards/green-1.svg"
                 alt=""
@@ -164,10 +162,7 @@ function GtpPositiveCardFooterCurve() {
             </div>
           </foreignObject>
           <foreignObject x="174" y="-44" width="76" height="76">
-            <div
-              className="relative size-full rounded-full bg-transparent"
-              xmlns="http://www.w3.org/1999/xhtml"
-            >
+            <div className="relative size-full rounded-full bg-transparent">
               <Image
                 src="/images/gtp/cards/green-2.svg"
                 alt=""

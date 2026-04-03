@@ -73,8 +73,9 @@ const cochairs: CoChair[] = [
     role: "Co-Chair",
     designation:
       "Executive Director of the Sunway Centre for Planetary Health, Sunway University",
-    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
-    imageObjectClass: "object-[50%_40%]",
+    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.png",
+    imageObjectClass: "object-[50%_22%]",
+    imageScaleClass: "scale-[1.48] origin-[50%_6%]",
   },
 ];
 

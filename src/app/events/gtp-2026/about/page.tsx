@@ -16,7 +16,10 @@ import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
 import { GtpCountdown } from "@/components/gtp/countdown";
 import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
-import { GtpSiteExploreCardsGrid } from "@/components/gtp/gtp-site-explore-cards";
+import {
+  GtpSiteExploreCardsGrid,
+  GTP_EXPLORE_VERTICAL_BG_CLASSNAMES,
+} from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { cn } from "@/lib/utils";
 
@@ -177,7 +180,7 @@ const themes = [
     icon: TrendingDown,
     title: "Understanding the Shift",
     body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-    cardClass: "bg-gtp-dark-teal text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[0],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -189,7 +192,7 @@ const themes = [
     icon: Lightbulb,
     title: "Igniting Imagination",
     body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-    cardClass: "bg-gtp-teal text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[1],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -201,7 +204,7 @@ const themes = [
     icon: Zap,
     title: "Accelerating Action",
     body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    cardClass: "bg-gtp-green text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[2],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -220,7 +223,7 @@ function ThemesSection() {
     >
       <StaggerReveal
         className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3"
-        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%] md:transition-[flex-grow] md:duration-500 md:ease-in-out md:hover:flex-grow-[1.45]"
+        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%]"
       >
         {themes.map(
           ({
@@ -228,7 +231,7 @@ function ThemesSection() {
             icon: Icon,
             title,
             body,
-            cardClass,
+            bgClass,
             iconWrap,
             iconColour,
             bodyClass,
@@ -237,7 +240,10 @@ function ThemesSection() {
           }) => (
             <div
               key={num}
-              className={`flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 shadow-md ring-1 md:min-h-[320px] ${cardClass}`}
+              className={cn(
+                "flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 text-white shadow-md ring-1 ring-white/15 transition-shadow duration-300 md:min-h-[320px] md:hover:shadow-xl",
+                bgClass,
+              )}
             >
               <div className="mb-5 flex items-center gap-3">
                 <div
@@ -278,7 +284,7 @@ function ThemesSection() {
 function SpeakersSection() {
   return (
     <SectionWrapper
-      title="Speakers Highlights"
+      title="Speaker Highlights"
       subtitle="Our Speakers"
       theme="gtp"
       background="default"
@@ -567,8 +573,9 @@ const coChairQuotes = [
     designation: "Co-Chair · Executive Director, Sunway Centre for Planetary Health, Sunway University",
     quote: "This year, the Sunway Centre for Planetary Health will proudly host the Global Tipping Points Conference at Sunway University, the first in Asia. Together, scientists, policymakers, business leaders, civil society, Indigenous voices, artists, and youth will unite to spotlight South and Southeast Asia's lived realities and accelerate the positive tipping points we need for a healthier planet and future. Join us in Sunway this October and we will see you there! Follow us on @sunwaycph to find out more!",
     hasPhoto: true,
-    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.jpg",
-    avatarObjectClass: "object-[50%_40%]",
+    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.png",
+    avatarObjectClass: "object-[50%_22%]",
+    avatarScaleClass: "scale-[1.48] origin-[50%_6%]",
   },
 ];
 
