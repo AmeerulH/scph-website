@@ -110,7 +110,12 @@ export function SectionWrapper({
       id={id}
       className={cn("py-20 px-4 md:px-6 lg:px-8 md:py-28", bgClass, className)}
     >
-      <div className={cn("mx-auto max-w-7xl", contentClassName)}>
+      <div
+        className={cn(
+          "mx-auto max-w-7xl overflow-visible",
+          contentClassName,
+        )}
+      >
         {scrollReveal ? (
           <ScrollReveal amount={0.05}>{content}</ScrollReveal>
         ) : (

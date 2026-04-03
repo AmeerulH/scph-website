@@ -448,7 +448,7 @@ function WorkshopFormHeader() {
         </p>
         <div className="grid grid-cols-2 gap-1 text-sm text-gray-600">
           {[
-            "Earth Systems Science",
+            "Earth System Science",
             "Technology and AI",
             "Governance",
             "Finance and Business",
@@ -507,7 +507,7 @@ function WorkshopFormHeader() {
 // ─── Secondary Themes Checkbox Group ─────────────────────────────────────────
 
 const THEMES = [
-  "Earth Systems Science",
+  "Earth System Science",
   "Technology and AI",
   "Governance",
   "Finance and Business",

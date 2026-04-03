@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { GTP_EXPLORE_VERTICAL_BG_CLASSNAMES } from "@/components/gtp/gtp-site-explore-cards";
+import { cn } from "@/lib/utils";
 import { AbstractForm } from "./abstract-form";
 import { WorkshopForm } from "./workshop-form";
 
@@ -44,8 +46,8 @@ function SubmissionsHero() {
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gtp-teal" />
         <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
-          Submit scalable solutions emerging from Asia across the
-          conference&apos;s critical domains
+          Submit scalable solutions emerging across the conference&apos;s
+          critical domains
         </p>
       </div>
     </div>
@@ -60,7 +62,7 @@ const pillars = [
     icon: TrendingDown,
     title: "Understanding the Shift",
     body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-    cardClass: "bg-gtp-dark-teal text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[0],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -72,7 +74,7 @@ const pillars = [
     icon: Lightbulb,
     title: "Igniting Imagination",
     body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-    cardClass: "bg-gtp-teal text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[1],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -84,7 +86,7 @@ const pillars = [
     icon: Zap,
     title: "Accelerating Action",
     body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    cardClass: "bg-gtp-green text-white ring-white/10",
+    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[2],
     iconWrap: "bg-white/15",
     iconColour: "text-white",
     bodyClass: "text-white/85",
@@ -95,11 +97,7 @@ const pillars = [
 
 function PillarsSection() {
   return (
-    <SectionWrapper
-      title="Submit your research and proposal"
-      theme="gtp"
-      background="default"
-    >
+    <SectionWrapper theme="gtp" background="default">
       <p className="mb-8 max-w-3xl text-left text-base font-bold leading-relaxed text-gtp-dark-teal md:text-lg">
         We invite researchers and practitioners to submit abstracts for oral and
         poster presentations, and contribute to the programme agenda by
@@ -112,8 +110,8 @@ function PillarsSection() {
       </p>
 
       <StaggerReveal
-        className="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3"
-        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%] md:transition-[flex-grow] md:duration-500 md:ease-in-out md:hover:flex-grow-[1.45]"
+        className="flex flex-col gap-4 pb-2 md:flex-row md:items-stretch md:gap-3"
+        itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%]"
       >
         {pillars.map(
           ({
@@ -121,7 +119,7 @@ function PillarsSection() {
             icon: Icon,
             title,
             body,
-            cardClass,
+            bgClass,
             iconWrap,
             iconColour,
             bodyClass,
@@ -130,7 +128,10 @@ function PillarsSection() {
           }) => (
             <div
               key={num}
-              className={`flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 shadow-md ring-1 md:min-h-[320px] ${cardClass}`}
+              className={cn(
+                "flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 text-white shadow-md ring-1 ring-white/15 transition-shadow duration-300 md:min-h-[320px] md:hover:shadow-xl",
+                bgClass,
+              )}
             >
               <div className="mb-5 flex items-center gap-3">
                 <div
@@ -169,7 +170,15 @@ function PillarsSection() {
         </Link>
         <span className="text-gray-400"> — </span>
         <span className="text-gray-500">
-          background reading for submitters (opens global-tipping-points.org)
+          optional background reading on{" "}
+          <Link
+            href="https://global-tipping-points.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-gtp-teal underline underline-offset-2 hover:text-gtp-dark-teal"
+          >
+            global-tipping-points.org
+          </Link>
         </span>
       </p>
     </SectionWrapper>
@@ -331,6 +340,11 @@ function CtaSection() {
                 <span className="font-semibold text-gray-700">
                   {TABS.find((t) => t.id === activeTab)?.deadline}
                 </span>
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                {activeTab === "abstract"
+                  ? "Complete all required fields. The presenting author must submit this form."
+                  : "Complete all required fields. The proposed lead facilitator should submit this form."}
               </p>
             </div>
             <div className="p-6 sm:p-8">

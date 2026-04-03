@@ -165,7 +165,7 @@ function AbstractFormHeader() {
 
       <p className="text-sm leading-relaxed text-gray-600">
         We invite submissions advancing scientific understanding across Earth
-        Systems Science, Technology and AI, Governance, Finance and Business,
+        System Science, Technology and AI, Governance, Finance and Business,
         Faith and Culture, Communications, Nature-based Solutions, and Health.
         Topics focusing on Asian contexts where solutions are emerging at scale
         are particularly encouraged.
@@ -217,7 +217,7 @@ function AbstractFormHeader() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const THEMES = [
-  "Earth Systems Science",
+  "Earth System Science",
   "Technology and AI",
   "Governance",
   "Finance and Business",

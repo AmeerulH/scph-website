@@ -37,7 +37,7 @@ export function ScrollReveal({
         margin: prefersReducedMotion ? undefined : margin,
       }}
       transition={variants.transition}
-      className={cn(className)}
+      className={cn("overflow-visible", className)}
     >
       {children}
     </motion.div>

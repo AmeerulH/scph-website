@@ -47,14 +47,14 @@ export function StaggerReveal({
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount }}
-      className={cn(className)}
+      className={cn("overflow-visible", className)}
     >
       {Array.isArray(children)
         ? children.map((child, i) => (
             <motion.div
               key={i}
               variants={itemVariants}
-              className={cn(itemClassName)}
+              className={cn("overflow-visible", itemClassName)}
             >
               {child}
             </motion.div>
@@ -63,7 +63,7 @@ export function StaggerReveal({
             <motion.div
               key={i}
               variants={itemVariants}
-              className={cn(itemClassName)}
+              className={cn("overflow-visible", itemClassName)}
             >
               {child}
             </motion.div>
