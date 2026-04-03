@@ -25,6 +25,9 @@ export function ProgrammesHero() {
         <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
           12–15 October 2026 · Kuala Lumpur, Malaysia
         </p>
+        <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/55 md:text-base">
+          Programme structure and timings are indicative. Speaker line-ups will be confirmed closer to the conference.
+        </p>
       </div>
     </div>
   );

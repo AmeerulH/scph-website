@@ -9,12 +9,10 @@ import { SpeakerPlaceholder } from "./speaker-placeholder";
 
 export function SessionCard({
   session,
-  highlightSpeaker,
   highlightSession,
   onClick,
 }: {
   session: Session;
-  highlightSpeaker?: string;
   highlightSession?: string;
   onClick?: () => void;
 }) {
@@ -91,42 +89,22 @@ export function SessionCard({
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {namedSpeakers.map((sp) => {
-              const isHighlighted =
-                highlightSpeaker &&
-                sp.name.toLowerCase().includes(highlightSpeaker.toLowerCase());
-              return (
-                <div
-                  key={sp.name}
-                  className={cn(
-                    "flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors",
-                    isHighlighted
-                      ? "border-gtp-teal/40 bg-gtp-teal/5 ring-1 ring-gtp-teal/30"
-                      : "border-gray-100 bg-gray-50",
+            {namedSpeakers.map((sp) => (
+              <div
+                key={sp.name}
+                className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
+              >
+                <UserCircle2 className="h-8 w-8 shrink-0 text-gray-300" />
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-gray-500">
+                    {sp.name}
+                  </p>
+                  {sp.designation && (
+                    <p className="truncate text-xs text-gray-400">{sp.designation}</p>
                   )}
-                >
-                  <UserCircle2
-                    className={cn(
-                      "h-8 w-8 shrink-0",
-                      isHighlighted ? "text-gtp-teal/60" : "text-gray-300",
-                    )}
-                  />
-                  <div className="min-w-0">
-                    <p
-                      className={cn(
-                        "truncate text-xs font-semibold",
-                        isHighlighted ? "text-gtp-dark-teal" : "text-gray-500",
-                      )}
-                    >
-                      {sp.name}
-                    </p>
-                    {sp.designation && (
-                      <p className="truncate text-xs text-gray-400">{sp.designation}</p>
-                    )}
-                  </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         )}
 

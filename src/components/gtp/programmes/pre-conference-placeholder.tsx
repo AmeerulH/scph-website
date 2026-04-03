@@ -7,9 +7,9 @@ export function PreConferencePlaceholder() {
       <h3 className="mt-6 font-heading text-2xl font-bold text-gtp-dark-teal">
         Pre-Conference Programme
       </h3>
-      <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-gray-400">
-        More details coming soon. Check back for updates on pre-conference
-        workshops, site visits, and networking events.
+      <p className="mx-auto mt-4 max-w-md text-base leading-relaxed text-gray-500">
+        The pre-conference programme is still being finalised. Check back for workshops, site
+        visits, and networking events — details will be announced when confirmed.
       </p>
     </div>
   );

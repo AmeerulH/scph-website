@@ -9,12 +9,10 @@ import { SessionModal } from "./session-modal";
 
 export function DayAgenda({
   sessions,
-  highlightSpeaker,
   highlightSession,
   dayLabel,
 }: {
   sessions: Session[];
-  highlightSpeaker?: string;
   highlightSession?: string;
   dayLabel?: string;
 }) {
@@ -40,7 +38,6 @@ export function DayAgenda({
             <SessionCard
               key={i}
               session={session}
-              highlightSpeaker={highlightSpeaker}
               highlightSession={highlightSession}
               onClick={() => setSelectedSession(session)}
             />

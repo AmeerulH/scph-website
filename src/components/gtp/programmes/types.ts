@@ -1,3 +1,6 @@
+/** Three conference pathways — used for programme theme filters */
+export type ConferenceThemeId = "shift" | "imagination" | "action";
+
 export type SessionType =
   | "opening"
   | "plenary"
@@ -29,6 +32,8 @@ export interface Session {
   speakers?: Speaker[];
   /** Fallback when speaker names aren't confirmed yet */
   speakerCount?: number;
+  /** Conference pathway — theme filter on the programme page */
+  theme?: ConferenceThemeId;
   workshops?: Workshop[];
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";

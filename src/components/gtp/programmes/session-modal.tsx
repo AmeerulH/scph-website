@@ -37,6 +37,16 @@ interface SessionModalProps {
   onClose: () => void;
 }
 
+function sessionExpectsSpeakerList(type: Session["type"]) {
+  return (
+    type === "opening" ||
+    type === "plenary" ||
+    type === "lightning" ||
+    type === "fireside" ||
+    type === "closing"
+  );
+}
+
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
 export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) {
@@ -190,10 +200,10 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                   {/* Description */}
                   <div className="mt-5 border-t border-gray-100 pt-5 space-y-3 text-sm text-gray-600 leading-relaxed">
                     <p className="italic text-gray-500">
-                      This session is part of the Global Tipping Points 2026 Conference hosted by Sunway Centre for Planetary Health in Kuala Lumpur, Malaysia.
+                      This session is part of the Global Tipping Points 2026 Conference hosted by Sunway Centre for Planetary Health in Kuala Lumpur, Malaysia. The published programme is indicative and may change.
                     </p>
                     <p>
-                      The Global Tipping Points 2026 Conference brings together scientists, policymakers, business leaders, and civil society to address the most critical tipping points facing our planet. This session will explore strategies, insights, and actionable pathways for driving systemic change.
+                      The conference brings together scientists, policymakers, business leaders, and civil society to address critical tipping points. Session formats and themes are confirmed; named speakers and detailed agendas will be published closer to the event where not yet listed.
                     </p>
                     {session.type === "plenary" && (
                       <p>
@@ -328,7 +338,7 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                         </div>
                       </div>
 
-                      {/* Speakers */}
+                      {/* Speakers (named) or TBC */}
                       {session.speakers && session.speakers.length > 0 && (
                         <div className="space-y-4">
                           {session.type === "fireside" ? (
@@ -360,6 +370,31 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                           )}
                         </div>
                       )}
+                      {sessionExpectsSpeakerList(session.type) &&
+                        (!session.speakers || session.speakers.length === 0) && (
+                          <div>
+                            <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
+                            <p className="text-sm leading-relaxed text-gray-600">
+                              {(session.speakerCount ?? 0) > 0 ? (
+                                <>
+                                  Speakers to be confirmed. This session is planned with
+                                  approximately{" "}
+                                  <span className="font-semibold text-gray-800">
+                                    {session.speakerCount}
+                                  </span>{" "}
+                                  speaker
+                                  {session.speakerCount !== 1 ? "s" : ""}; names and bios will be
+                                  published closer to the event.
+                                </>
+                              ) : (
+                                <>
+                                  Speakers to be confirmed. Further details will be published
+                                  closer to the event.
+                                </>
+                              )}
+                            </p>
+                          </div>
+                        )}
 
                       {/* Concurrent workshops list */}
                       {session.workshops && session.workshops.length > 0 && (

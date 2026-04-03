@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +28,8 @@ function OrgCommitteeHero() {
         </h1>
         <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gtp-teal" />
         <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
-          Join the conversation with global experts shaping the future of
-          planetary health and positive tipping points.
+          Co-chairs and committees bringing together science, policy, and
+          partners for Global Tipping Points Conference 2026 in Kuala Lumpur.
         </p>
       </div>
     </div>
@@ -187,7 +186,7 @@ const planningCommittee: CommitteeMember[] = [
   {
     name: "Nazia Ahmad",
     role: "Co-Chair",
-    organisation: "SCPH",
+    organisation: "Sunway Centre for Planetary Health, Sunway University",
     photoSrc: "/images/scph/team/nazia-ahmad.jpg",
   },
   { name: "TBC", role: "Media Strategy", isPlaceholder: true },
@@ -202,7 +201,7 @@ const programmeCommittee: CommitteeMember[] = [
   {
     name: "Dr. Fatimah Ahamad",
     role: "Co-Chair",
-    organisation: "SCPH",
+    organisation: "Sunway Centre for Planetary Health, Sunway University",
     photoSrc: "/images/scph/team/dr-fatimah-ahamad.jpg",
   },
   {
@@ -260,25 +259,6 @@ function CommitteeCard({ member }: { member: CommitteeMember }) {
         )}
       </div>
     </div>
-  );
-}
-
-function ConferenceSpeakersSection() {
-  return (
-    <SectionWrapper
-      title="Conference speakers"
-      subtitle="Speaking at GTP 2026"
-      theme="gtp"
-      background="default"
-      id="speakers"
-    >
-      <p className="mx-auto mb-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
-        Featured voices from the programme. Select a card to read their bio
-        and session information—the same highlights as on the GTP 2026 home
-        page.
-      </p>
-      <GtpSpeakersHighlightInner staggerVariant="long" />
-    </SectionWrapper>
   );
 }
 
@@ -344,7 +324,6 @@ export default function OrganisingCommitteePage() {
     <>
       <OrgCommitteeHero />
       <CochairsSection />
-      <ConferenceSpeakersSection />
       <CommitteeSection />
       <AnnouncementSection />
     </>
