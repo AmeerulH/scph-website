@@ -168,18 +168,6 @@ function PillarsSection() {
         >
           Download the Global Tipping Points Report 2025
         </Link>
-        <span className="text-gray-400"> — </span>
-        <span className="text-gray-500">
-          optional background reading on{" "}
-          <Link
-            href="https://global-tipping-points.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-gtp-teal underline underline-offset-2 hover:text-gtp-dark-teal"
-          >
-            global-tipping-points.org
-          </Link>
-        </span>
       </p>
     </SectionWrapper>
   );
