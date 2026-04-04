@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProgrammesHero } from "@/components/gtp/programmes/programmes-hero";
-import { GTP_PROGRAMME_REVALIDATE_SECONDS } from "@/lib/gtp-programme-revalidate";
 import { getGtp2026Programme } from "@/sanity/queries";
 import { ProgrammesPageClient } from "./programmes-page-client";
 
@@ -24,7 +23,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = GTP_PROGRAMME_REVALIDATE_SECONDS;
+/** ISR seconds — must be a literal (Next.js segment config); keep in sync with `gtp-programme-revalidate.ts`. */
+export const revalidate = 900;
 
 /** Keeps the dark hero band visually continuous if the client shell is still loading. */
 function ProgrammeClientFallback() {
