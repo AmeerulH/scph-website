@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink, ArrowRight } from "lucide-react";
 import { PlaceholderPage } from "@/components/shared/placeholder-page";
@@ -5,6 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+
+export const metadata: Metadata = {
+  title: "Events",
+  description:
+    "Events and highlights from Sunway Centre for Planetary Health—including Global Tipping Points Conference 2026 and related programmes.",
+  alternates: { canonical: "/events" },
+  openGraph: {
+    title: "Events | Sunway Centre for Planetary Health",
+    description:
+      "What’s on at SCPH: conferences, convenings, and planetary health events.",
+    url: "/events",
+  },
+};
 
 export default function EventsPage() {
   return (

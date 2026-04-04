@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BookOpen, Target, Users } from "lucide-react";
@@ -7,6 +8,19 @@ import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Learn about Sunway Centre for Planetary Health—our mission, team, and how we advance planetary health through research and advocacy in Malaysia and the region.",
+  alternates: { canonical: "/about-us" },
+  openGraph: {
+    title: "About Us | Sunway Centre for Planetary Health",
+    description:
+      "Mission, leadership, and planetary health impact at Sunway Centre for Planetary Health.",
+    url: "/about-us",
+  },
+};
 
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 

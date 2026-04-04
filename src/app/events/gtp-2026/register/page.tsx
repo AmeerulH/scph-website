@@ -1,7 +1,27 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+
+const description =
+  "Register for Global Tipping Points Conference 2026, 12–15 October in Kuala Lumpur—join leaders in science, finance, culture, and policy.";
+
+export const metadata: Metadata = {
+  title: "Register",
+  description,
+  alternates: { canonical: "/events/gtp-2026/register" },
+  openGraph: {
+    title: "Register | GTP 2026",
+    description,
+    url: "/events/gtp-2026/register",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Register for GTP 2026",
+    description,
+  },
+};
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 

@@ -1,7 +1,27 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const description =
+  "Organising committee and leadership for Global Tipping Points Conference 2026—Sunway Centre for Planetary Health and partners.";
+
+export const metadata: Metadata = {
+  title: "Organising committee",
+  description,
+  alternates: { canonical: "/events/gtp-2026/organising-committee" },
+  openGraph: {
+    title: "Organising committee | GTP 2026",
+    description,
+    url: "/events/gtp-2026/organising-committee",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GTP 2026 organising committee",
+    description,
+  },
+};
 
 // ─── Hero Band ────────────────────────────────────────────────────────────────
 

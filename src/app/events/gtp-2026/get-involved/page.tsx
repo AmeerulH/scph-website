@@ -1,8 +1,28 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ContactForm } from "./contact-form";
+
+const description =
+  "Partner, sponsor, or volunteer for Global Tipping Points Conference 2026—get in touch with the Sunway Centre for Planetary Health team.";
+
+export const metadata: Metadata = {
+  title: "Get involved",
+  description,
+  alternates: { canonical: "/events/gtp-2026/get-involved" },
+  openGraph: {
+    title: "Get involved | GTP 2026",
+    description,
+    url: "/events/gtp-2026/get-involved",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Get involved with GTP 2026",
+    description,
+  },
+};
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 

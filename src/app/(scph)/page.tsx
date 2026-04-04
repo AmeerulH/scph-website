@@ -19,6 +19,7 @@ import {
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { getSiteUrlString } from "@/lib/site-url";
 
 // ─── Stats Band ──────────────────────────────────────────────────────────────
 
@@ -309,18 +310,64 @@ const homeDescription =
   "Sunway Centre for Planetary Health is a Think-and-Do tank for planetary health research and advocacy in Malaysia—healthy cities, decarbonisation, and education. Host of Global Tipping Points Conference 2026 in Kuala Lumpur.";
 
 export const metadata: Metadata = {
-  title: "Sunway Centre for Planetary Health",
+  title: {
+    absolute: "Sunway Centre for Planetary Health",
+  },
   description: homeDescription,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Sunway Centre for Planetary Health",
     description: homeDescription,
     type: "website",
+    url: "/",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sunway Centre for Planetary Health",
+    description: homeDescription,
+  },
+};
+
+const siteOrigin = getSiteUrlString();
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteOrigin}/#organization`,
+      name: "Sunway Centre for Planetary Health",
+      url: siteOrigin,
+      logo: `${siteOrigin}/images/scph/logo-mixcolor.png`,
+      sameAs: [
+        "https://www.facebook.com/SunwayCPH",
+        "https://www.instagram.com/sunwaycph/",
+        "https://my.linkedin.com/showcase/sunway-centre-for-planetary-health/",
+        "https://www.tiktok.com/@sunwaycph",
+        "https://x.com/SunwayCPH",
+        "https://www.youtube.com/@sunwaycentreforplanetaryhe8898",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteOrigin}/#website`,
+      url: siteOrigin,
+      name: "Sunway Centre for Planetary Health",
+      publisher: { "@id": `${siteOrigin}/#organization` },
+    },
+  ],
 };
 
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationJsonLd),
+        }}
+      />
       <ScphHero />
       <StatsBand />
       <Gtp2026HomeSection />

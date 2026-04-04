@@ -1,7 +1,21 @@
+import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+
+export const metadata: Metadata = {
+  title: "Media",
+  description:
+    "News, stories, and media resources from Sunway Centre for Planetary Health—planetary health updates from Malaysia and beyond.",
+  alternates: { canonical: "/media" },
+  openGraph: {
+    title: "Media | Sunway Centre for Planetary Health",
+    description:
+      "Latest updates and media from the Sunway Centre for Planetary Health.",
+    url: "/media",
+  },
+};
 
 // ─── Hero Band ───────────────────────────────────────────────────────────────
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   ArrowRight,
   ShieldAlert,
@@ -14,6 +15,19 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScrollProgressSection } from "@/components/motion/ScrollProgressSection";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+
+export const metadata: Metadata = {
+  title: "Research",
+  description:
+    "Planetary Health Roadmap and research at Sunway Centre for Planetary Health—policy, cities, food systems, and climate-health action in Malaysia.",
+  alternates: { canonical: "/research" },
+  openGraph: {
+    title: "Research | Sunway Centre for Planetary Health",
+    description:
+      "Explore our planetary health research themes and roadmap for real-world impact.",
+    url: "/research",
+  },
+};
 
 // ─── Hero Band ───────────────────────────────────────────────────────────────
 

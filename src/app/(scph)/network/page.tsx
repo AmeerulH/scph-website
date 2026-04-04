@@ -1,6 +1,20 @@
+import type { Metadata } from "next";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+
+export const metadata: Metadata = {
+  title: "Network",
+  description:
+    "Join the planetary health community—Sunway Centre for Planetary Health networks for media professionals and youth action in Malaysia.",
+  alternates: { canonical: "/network" },
+  openGraph: {
+    title: "Network | Sunway Centre for Planetary Health",
+    description:
+      "Connect with our Media Professional Network and Youth Action Network.",
+    url: "/network",
+  },
+};
 
 // ─── Hero Band ───────────────────────────────────────────────────────────────
 

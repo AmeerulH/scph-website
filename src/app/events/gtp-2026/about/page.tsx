@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -22,6 +23,63 @@ import {
 } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { cn } from "@/lib/utils";
+import { getSiteUrlString } from "@/lib/site-url";
+
+const aboutDescription =
+  "Global Tipping Points Conference 2026, 12–15 October in Kuala Lumpur—science, finance, culture and policy for positive tipping points, hosted by Sunway Centre for Planetary Health.";
+
+export const metadata: Metadata = {
+  title: "Global Tipping Points Conference 2026",
+  description: aboutDescription,
+  alternates: { canonical: "/events/gtp-2026/about" },
+  openGraph: {
+    title: "Global Tipping Points Conference 2026",
+    description: aboutDescription,
+    type: "website",
+    url: "/events/gtp-2026/about",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Global Tipping Points Conference 2026",
+    description: aboutDescription,
+  },
+};
+
+const gtpSite = getSiteUrlString();
+const eventJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "Global Tipping Points Conference 2026",
+  description: aboutDescription,
+  startDate: "2026-10-12",
+  endDate: "2026-10-15",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  eventStatus: "https://schema.org/EventScheduled",
+  location: {
+    "@type": "Place",
+    name: "Sunway University",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "5, Jalan Universiti",
+      addressLocality: "Bandar Sunway",
+      addressRegion: "Selangor",
+      postalCode: "47500",
+      addressCountry: "MY",
+    },
+  },
+  image: [`${gtpSite}/images/gtp/forest-bg.jpg`],
+  organizer: {
+    "@type": "Organization",
+    name: "Sunway Centre for Planetary Health",
+    url: gtpSite,
+  },
+  offers: {
+    "@type": "Offer",
+    url: `${gtpSite}/events/gtp-2026/register`,
+    availability: "https://schema.org/InStock",
+    validFrom: "2026-01-01",
+  },
+};
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
 
@@ -654,6 +712,10 @@ function QuoteSection() {
 export default function GtpAboutPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       {/* Single gradient wrapper — hero, countdown and carousel share one continuous background */}
       <div className="relative min-h-[min(88svh,1000px)] overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
         {/* Shared dot grid */}
