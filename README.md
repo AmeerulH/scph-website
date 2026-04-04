@@ -45,6 +45,6 @@ npm install
 npm run dev
 ```
 
-Use `npm run build` / `npm run deploy` from `studio/` when publishing the hosted Studio. Schema files are under `studio/schemaTypes/`.
+Use `npm run build` / `npm run deploy` from `studio/` when publishing the hosted Studio. After changing schemas, deploy to the Sanity content lake with `cd studio && npx sanity schema deploy`. Schema files are under `studio/schemaTypes/`.
 
 # scph-website
