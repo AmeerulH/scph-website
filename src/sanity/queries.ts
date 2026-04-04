@@ -1,5 +1,8 @@
 import { client } from "./client";
 
+export type { GtpProgrammePageData, GtpProgrammeTab } from "./gtp-programme";
+export { getGtp2026Programme } from "./gtp-programme";
+
 export interface SanityTeamMember {
   _id: string;
   name: string;

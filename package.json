@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import-gtp-programme": "npx tsx scripts/import-gtp-programme-to-sanity.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",

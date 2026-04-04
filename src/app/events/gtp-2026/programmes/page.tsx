@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProgrammesHero } from "@/components/gtp/programmes/programmes-hero";
+import { getGtp2026Programme } from "@/sanity/queries";
 import { ProgrammesPageClient } from "./programmes-page-client";
 
 const description =
@@ -33,12 +34,20 @@ function ProgrammeClientFallback() {
   );
 }
 
-export default function ProgrammesPage() {
+export default async function ProgrammesPage() {
+  const programme = await getGtp2026Programme();
+
   return (
     <>
       <ProgrammesHero />
       <Suspense fallback={<ProgrammeClientFallback />}>
-        <ProgrammesPageClient />
+        <ProgrammesPageClient
+          tabs={programme.tabs}
+          day1={programme.day1}
+          day2={programme.day2}
+          day3={programme.day3}
+          day4={programme.day4}
+        />
       </Suspense>
     </>
   );

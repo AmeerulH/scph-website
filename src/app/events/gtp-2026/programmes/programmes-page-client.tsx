@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { TABS, TabId, TYPE_META, day1, day2, day3, day4 } from "@/components/gtp/programmes/data";
+import { TabId, TYPE_META } from "@/components/gtp/programmes/data";
+import type { GtpProgrammeTab } from "@/sanity/queries";
 import { PreConferencePlaceholder } from "@/components/gtp/programmes/pre-conference-placeholder";
 import { DayAgenda } from "@/components/gtp/programmes/day-agenda";
 import type { Session, SessionType } from "@/components/gtp/programmes/types";
@@ -261,10 +262,25 @@ function filterSessions(
 
 // ─── Client body (useSearchParams — must be inside Suspense in parent) ───────
 
-export function ProgrammesPageClient() {
+export function ProgrammesPageClient({
+  tabs,
+  day1,
+  day2,
+  day3,
+  day4,
+}: {
+  tabs: GtpProgrammeTab[];
+  day1: Session[];
+  day2: Session[];
+  day3: Session[];
+  day4: Session[];
+}) {
   const searchParams = useSearchParams();
 
-  const initialTab = (searchParams.get("tab") as TabId) ?? "pre";
+  const tabIds = new Set(tabs.map((t) => t.id));
+  const tabParam = searchParams.get("tab");
+  const initialTab: TabId =
+    tabParam && tabIds.has(tabParam as TabId) ? (tabParam as TabId) : "pre";
   const initialSession = searchParams.get("session");
 
   const [activeTab, setActiveTab] = React.useState<TabId>(initialTab);
@@ -324,7 +340,7 @@ export function ProgrammesPageClient() {
       ? filterSessions(dayMap[activeTab], selectedType, selectedTheme)
       : [];
 
-  const currentDayLabel = TABS.find((t) => t.id === activeTab)?.label;
+  const currentDayLabel = tabs.find((t) => t.id === activeTab)?.label;
 
   return (
     <>
@@ -337,7 +353,7 @@ export function ProgrammesPageClient() {
         <div className="flex items-center justify-center gap-3 px-4 py-3">
           {/* Day tabs pill */}
           <div className="flex overflow-x-auto gap-1 rounded-full border border-white/10 bg-gtp-dark-teal/50 p-1.5 shadow-lg backdrop-blur-xl [&::-webkit-scrollbar]:hidden">
-            {TABS.map((tab) => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}

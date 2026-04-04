@@ -8,7 +8,7 @@ export default defineConfig({
   title: 'SCPH Sanity Studio',
 
   projectId: 'y0tkemxm',
-  dataset: 'production',
+  dataset: 'development',
 
   plugins: [structureTool(), visionTool()],
 

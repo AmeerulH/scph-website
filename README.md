@@ -47,4 +47,8 @@ npm run dev
 
 Use `npm run build` / `npm run deploy` from `studio/` when publishing the hosted Studio. After changing schemas, deploy to the Sanity content lake with `cd studio && npx sanity schema deploy`. Schema files are under `studio/schemaTypes/`.
 
+Seed the GTP 2026 programme document from [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx) (requires `SANITY_API_TOKEN` in `.env.local`): `npm run import-gtp-programme`. Uses **`SANITY_DATASET`** from `.env.local` (defaults to `production`). When `SANITY_DATASET=development` (or `GTP_APPEND_TEST_SESSION=1`), Day 1 gets an extra **23:59 test lightning session** so you can confirm the site reads Sanity. Preview payload: `DRY_RUN=1 npm run import-gtp-programme`. Then open Studio (**same dataset** as in `.env.local`) and **Publish** if needed.
+
+The Next.js app reads Sanity using [`src/sanity/client.ts`](src/sanity/client.ts). Set **`SANITY_DATASET`** in `.env.local` (e.g. `development`) to point the site at a non-production dataset locally; omit it to use `production`.
+
 # scph-website
