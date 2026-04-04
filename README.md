@@ -35,14 +35,16 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Sanity Studio (optional git submodule)
+## Sanity Studio
 
-SCPH content schemas live in a separate Sanity Studio repository. To work on the site and Studio in one tree, add that repo as a submodule at `sanity-studio/`:
+Content schemas live in [`studio/`](studio/) (same repository as the Next.js app).
 
 ```bash
-./scripts/add-sanity-studio-submodule.sh git@github.com:YOUR_USER/YOUR_STUDIO_REPO.git
+cd studio
+npm install
+npm run dev
 ```
 
-Clone with submodules: `git clone --recurse-submodules <url>`. Full workflow (publish Studio, bump pointer, CI): [docs/sanity-studio-submodule.md](docs/sanity-studio-submodule.md).
+Use `npm run build` / `npm run deploy` from `studio/` when publishing the hosted Studio. Schema files are under `studio/schemaTypes/`.
 
 # scph-website
