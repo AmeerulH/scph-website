@@ -34,13 +34,40 @@ const THEME_IDS = new Set<ConferenceThemeId>(["shift", "imagination", "action"])
 
 export type GtpProgrammeTab = { id: TabId; label: string };
 
+/** Conference days shown in the events preview carousel (not pre-conference). */
+export type GtpCarouselDayTab = "day1" | "day2" | "day3" | "day4";
+
+export type GtpCarouselMeta = Record<
+  GtpCarouselDayTab,
+  { dateLabel: string; dayNumber: string }
+>;
+
 export type GtpProgrammePageData = {
   tabs: GtpProgrammeTab[];
+  carouselMeta: GtpCarouselMeta;
   day1: Session[];
   day2: Session[];
   day3: Session[];
   day4: Session[];
 };
+
+/** Session row for `GtpEventsPreviewCarousel` (from CMS + carousel chip labels). */
+export type GtpFeaturedCarouselSession = Session & {
+  tabId: GtpCarouselDayTab;
+  dateLabel: string;
+  dayNumber: string;
+};
+
+const CAROUSEL_FALLBACK: GtpCarouselMeta = {
+  day1: { dateLabel: "12 Oct", dayNumber: "Day 1" },
+  day2: { dateLabel: "13 Oct", dayNumber: "Day 2" },
+  day3: { dateLabel: "14 Oct", dayNumber: "Day 3" },
+  day4: { dateLabel: "15 Oct", dayNumber: "Day 4" },
+};
+
+const CAROUSEL_TABS: GtpCarouselDayTab[] = ["day1", "day2", "day3", "day4"];
+
+const CAROUSEL_EXCLUDED_TYPES = new Set<SessionType>(["break", "reconvening"]);
 
 interface SanityWorkshopRow {
   number?: string;
@@ -105,11 +132,45 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
 function getStaticGtpProgramme(): GtpProgrammePageData {
   return {
     tabs: staticTabs.map((t) => ({ id: t.id, label: t.label })),
+    carouselMeta: {...CAROUSEL_FALLBACK},
     day1: staticDay1,
     day2: staticDay2,
     day3: staticDay3,
     day4: staticDay4,
   };
+}
+
+function buildCarouselMetaFromSanityDays(byTab: Map<string, SanityProgrammeDayRow>): GtpCarouselMeta {
+  const meta = {} as GtpCarouselMeta;
+  for (const tab of CAROUSEL_TABS) {
+    const row = byTab.get(tab);
+    const fb = CAROUSEL_FALLBACK[tab];
+    const dateLabel =
+      typeof row?.carouselDateLabel === "string" && row.carouselDateLabel.trim()
+        ? row.carouselDateLabel.trim()
+        : fb.dateLabel;
+    const dayNumber =
+      typeof row?.carouselDayLabel === "string" && row.carouselDayLabel.trim()
+        ? row.carouselDayLabel.trim()
+        : fb.dayNumber;
+    meta[tab] = { dateLabel, dayNumber };
+  }
+  return meta;
+}
+
+/**
+ * Flattens programme days into carousel cards (matches prior static filter: no break/reconvening).
+ */
+export function buildGtpCarouselSessions(data: GtpProgrammePageData): GtpFeaturedCarouselSession[] {
+  const out: GtpFeaturedCarouselSession[] = [];
+  for (const tab of CAROUSEL_TABS) {
+    const { dateLabel, dayNumber } = data.carouselMeta[tab];
+    for (const s of data[tab]) {
+      if (CAROUSEL_EXCLUDED_TYPES.has(s.type)) continue;
+      out.push({ ...s, tabId: tab, dateLabel, dayNumber });
+    }
+  }
+  return out;
 }
 
 function mapSpeaker(row: SanitySpeakerRow): Speaker | null {
@@ -226,6 +287,7 @@ function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpPro
 
   const data: GtpProgrammePageData = {
     tabs: buildTabsFromSanityDays(doc.days),
+    carouselMeta: buildCarouselMetaFromSanityDays(byTab),
     day1,
     day2,
     day3,

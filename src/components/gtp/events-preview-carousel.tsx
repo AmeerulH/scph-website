@@ -5,38 +5,12 @@ import Link from "next/link";
 import { Clock, UserCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { cn } from "@/lib/utils";
-import {
-  day1,
-  day2,
-  day3,
-  day4,
-  TYPE_META,
-  TYPE_GRADIENTS,
-} from "@/components/gtp/programmes/data";
-import type { Session } from "@/components/gtp/programmes/types";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface FeaturedSession extends Session {
-  tabId: string;
-  dateLabel: string;
-  dayNumber: string;
-}
-
-// ─── Build session list from programme data ───────────────────────────────────
-
-const EXCLUDED_TYPES = new Set(["break", "reconvening"]);
-
-const ALL_SESSIONS: FeaturedSession[] = [
-  ...day1.map((s) => ({ ...s, tabId: "day1", dateLabel: "12 Oct", dayNumber: "Day 1" })),
-  ...day2.map((s) => ({ ...s, tabId: "day2", dateLabel: "13 Oct", dayNumber: "Day 2" })),
-  ...day3.map((s) => ({ ...s, tabId: "day3", dateLabel: "14 Oct", dayNumber: "Day 3" })),
-  ...day4.map((s) => ({ ...s, tabId: "day4", dateLabel: "15 Oct", dayNumber: "Day 4" })),
-].filter((s) => !EXCLUDED_TYPES.has(s.type));
+import { TYPE_META, TYPE_GRADIENTS } from "@/components/gtp/programmes/data";
+import type { GtpFeaturedCarouselSession } from "@/sanity/queries";
 
 // ─── Individual event card ────────────────────────────────────────────────────
 
-function EventCard({ session }: { session: FeaturedSession }) {
+function EventCard({ session }: { session: GtpFeaturedCarouselSession }) {
   const meta = TYPE_META[session.type];
   const MetaIcon = meta.Icon;
   const gradient =
@@ -155,7 +129,11 @@ function NavButton({
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export function GtpEventsPreviewCarousel() {
+export function GtpEventsPreviewCarousel({
+  sessions,
+}: {
+  sessions: GtpFeaturedCarouselSession[];
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     dragFree: true,
@@ -215,8 +193,8 @@ export function GtpEventsPreviewCarousel() {
       */}
       <div className="-my-16 overflow-hidden py-16 px-4 sm:px-6 lg:px-10" ref={emblaRef}>
         <div className="flex gap-3 sm:gap-4">
-          {ALL_SESSIONS.map((session, i) => (
-            <EventCard key={`${session.tabId}-${i}`} session={session} />
+          {sessions.map((session, i) => (
+            <EventCard key={`${session.tabId}-${session.title}-${session.time}-${i}`} session={session} />
           ))}
         </div>
       </div>

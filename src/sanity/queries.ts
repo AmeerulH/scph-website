@@ -1,7 +1,12 @@
 import { client } from "./client";
 
-export type { GtpProgrammePageData, GtpProgrammeTab } from "./gtp-programme";
-export { getGtp2026Programme } from "./gtp-programme";
+export type {
+  GtpCarouselMeta,
+  GtpFeaturedCarouselSession,
+  GtpProgrammePageData,
+  GtpProgrammeTab,
+} from "./gtp-programme";
+export { buildGtpCarouselSessions, getGtp2026Programme } from "./gtp-programme";
 
 export interface SanityTeamMember {
   _id: string;

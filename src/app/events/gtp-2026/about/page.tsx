@@ -16,6 +16,7 @@ import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
 import { GtpCountdown } from "@/components/gtp/countdown";
 import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
+import { buildGtpCarouselSessions, getGtp2026Programme } from "@/sanity/queries";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
 import {
   GtpSiteExploreCardsGrid,
@@ -709,7 +710,10 @@ function QuoteSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function GtpAboutPage() {
+export default async function GtpAboutPage() {
+  const programme = await getGtp2026Programme();
+  const carouselSessions = buildGtpCarouselSessions(programme);
+
   return (
     <>
       <script
@@ -731,7 +735,7 @@ export default function GtpAboutPage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_60%,rgba(134,188,37,0.13),transparent_48%)]" />
         <GtpHeroGradient />
         <GtpCountdown />
-        <GtpEventsPreviewCarousel />
+        <GtpEventsPreviewCarousel sessions={carouselSessions} />
       </div>
       <WhatIsGtpSection />
       <WhyItMattersSection />
