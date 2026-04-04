@@ -43,7 +43,14 @@ interface WordCountInputProps {
 }
 
 function WordCountField({
-  id, name, label, helper, maxWords, required, multiline, placeholder,
+  id,
+  name,
+  label,
+  helper,
+  maxWords,
+  required,
+  multiline,
+  placeholder,
 }: WordCountInputProps) {
   const [value, setValue] = useState("");
   const wordCount = countWords(value);
@@ -52,7 +59,9 @@ function WordCountField({
   const sharedClass =
     "w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-900 bg-white transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal";
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
     const raw = e.target.value;
     const words = raw.trim() === "" ? [] : raw.trim().split(/\s+/);
     if (words.length > maxWords) {
@@ -66,7 +75,10 @@ function WordCountField({
 
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-gtp-dark-teal">
+      <label
+        htmlFor={id}
+        className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
+      >
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </label>
@@ -94,7 +106,9 @@ function WordCountField({
           className={sharedClass}
         />
       )}
-      <p className={`mt-1 text-right text-xs ${atLimit ? "font-medium text-red-500" : "text-gray-400"}`}>
+      <p
+        className={`mt-1 text-right text-xs ${atLimit ? "font-medium text-red-500" : "text-gray-400"}`}
+      >
         {wordCount} / {maxWords} words{atLimit ? " — limit reached" : ""}
       </p>
     </div>
@@ -109,20 +123,34 @@ interface RadioGroupProps {
   columns?: 1 | 2;
 }
 
-function RadioGroup({ name, label, options, required, columns = 1 }: RadioGroupProps) {
+function RadioGroup({
+  name,
+  label,
+  options,
+  required,
+  columns = 1,
+}: RadioGroupProps) {
   return (
     <fieldset>
       <legend className="mb-2 text-sm font-medium text-gtp-dark-teal">
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </legend>
-      <div className={`grid gap-2 ${columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+      <div
+        className={`grid gap-2 ${columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}
+      >
         {options.map((opt) => (
           <label
             key={opt}
             className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-gray-200 px-3 py-2.5 text-sm text-gray-700 transition-colors has-[:checked]:border-gtp-teal has-[:checked]:bg-gtp-teal/5 has-[:checked]:text-gtp-dark-teal"
           >
-            <input type="radio" name={name} value={opt} required={required} className="accent-gtp-teal" />
+            <input
+              type="radio"
+              name={name}
+              value={opt}
+              required={required}
+              className="accent-gtp-teal"
+            />
             {opt}
           </label>
         ))}
@@ -134,7 +162,9 @@ function RadioGroup({ name, label, options, required, columns = 1 }: RadioGroupP
 function SectionDivider({ title }: { title: string }) {
   return (
     <div className="pt-2">
-      <h3 className="font-heading text-base font-bold text-gtp-dark-teal">{title}</h3>
+      <h3 className="font-heading text-base font-bold text-gtp-dark-teal">
+        {title}
+      </h3>
       <div className="mt-1.5 h-px w-full bg-gray-200" />
     </div>
   );
@@ -175,12 +205,23 @@ function AbstractFormHeader() {
       <div className="rounded-xl border border-gtp-teal/20 bg-gtp-teal/5 p-4">
         <div className="mb-2 flex items-center gap-2">
           <Info className="h-4 w-4 flex-shrink-0 text-gtp-teal" />
-          <span className="text-sm font-semibold text-gtp-dark-teal">Submission Guidelines</span>
+          <span className="text-sm font-semibold text-gtp-dark-teal">
+            Submission Guidelines
+          </span>
         </div>
         <ul className="space-y-1 text-sm text-gray-600">
-          <li>• <strong>Abstract title:</strong> Maximum 25 words</li>
-          <li>• <strong>Abstract length:</strong> Maximum 300 words — not including title, author list and affiliation</li>
-          <li>• <strong>Submission limit:</strong> Every author can submit only two abstracts as the presenting author, but can participate in several abstracts as a co-author</li>
+          <li>
+            • <strong>Abstract title:</strong> Maximum 25 words
+          </li>
+          <li>
+            • <strong>Abstract length:</strong> Maximum 300 words — not
+            including title, author list and affiliation
+          </li>
+          <li>
+            • <strong>Submission limit:</strong> Every author can submit only
+            two abstracts as the presenting author, but can participate in
+            several abstracts as a co-author
+          </li>
         </ul>
       </div>
 
@@ -188,11 +229,17 @@ function AbstractFormHeader() {
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
         <div className="mb-2 flex items-center gap-2">
           <CalendarDays className="h-4 w-4 flex-shrink-0 text-amber-600" />
-          <span className="text-sm font-semibold text-amber-800">Important Dates</span>
+          <span className="text-sm font-semibold text-amber-800">
+            Important Dates
+          </span>
         </div>
         <ul className="space-y-1 text-sm text-amber-700">
-          <li>• <strong>Submission deadline:</strong> 15th May 2026, 23:59 (GMT+8)</li>
-          <li>• <strong>Decision notification:</strong> 15th June 2026</li>
+          <li>
+            • <strong>Submission deadline:</strong> 15th May 2026, 23:59 (GMT+8)
+          </li>
+          <li>
+            • <strong>Decision notification:</strong> 15th June 2026
+          </li>
         </ul>
       </div>
 
@@ -231,14 +278,26 @@ const inputClass =
   "w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-900 bg-white transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal";
 
 function Field({
-  id, name, label, type = "text", placeholder, required,
+  id,
+  name,
+  label,
+  type = "text",
+  placeholder,
+  required,
 }: {
-  id: string; name: string; label: string; type?: string;
-  placeholder?: string; required?: boolean;
+  id: string;
+  name: string;
+  label: string;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
 }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-gtp-dark-teal">
+      <label
+        htmlFor={id}
+        className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
+      >
         {label}
         {required && <span className="ml-1 text-red-500">*</span>}
       </label>
@@ -270,11 +329,16 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
 
   useEffect(() => {
     if (state?.success) onSuccess();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.success]);
 
   return (
-    <form ref={formRef} action={formAction} onChange={handleChange} className="space-y-6">
+    <form
+      ref={formRef}
+      action={formAction}
+      onChange={handleChange}
+      className="space-y-6"
+    >
       {isPending ? (
         <FullPageLoadingOverlay variant="gtp" label="Submitting abstract" />
       ) : null}
@@ -288,10 +352,15 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
         <Field
           id="fullName"
           name="fullName"
-          label="Title & Full Name (First Name, Last Name)"
+          label="Title and Full Name (First Name, Last Name)"
           required
         />
-        <Field id="institution" name="institution" label="Institution" required />
+        <Field
+          id="institution"
+          name="institution"
+          label="Institution"
+          required
+        />
         <Field
           id="designation"
           name="designation"
@@ -303,7 +372,11 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
           <label className="mb-1.5 block text-sm font-medium text-gtp-dark-teal">
             Country<span className="ml-1 text-red-500">*</span>
           </label>
-          <CountrySelect name="country" required onValidityChange={handleChange} />
+          <CountrySelect
+            name="country"
+            required
+            onValidityChange={handleChange}
+          />
         </div>
 
         <RadioGroup

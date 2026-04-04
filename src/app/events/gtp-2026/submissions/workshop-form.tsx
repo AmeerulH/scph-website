@@ -261,7 +261,7 @@ function RequirementsPanel() {
       >
         <span className="flex items-center gap-2">
           <Info className="h-4 w-4 text-gtp-teal" />
-          Action Workshop Requirements &amp; Evaluation Criteria
+          Action Workshop Requirements and Evaluation Criteria
         </span>
         {open ? (
           <ChevronUp className="h-4 w-4 text-gray-400" />
@@ -369,7 +369,7 @@ function RequirementsPanel() {
                   ],
                 },
                 {
-                  title: "Representation & Diversity",
+                  title: "Representation and Diversity",
                   items: [
                     "Geographical diversity, especially Asian representation",
                     "Disciplinary and sectoral diversity",
@@ -640,7 +640,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
         <Field
           id="w-fullName"
           name="fullName"
-          label="Title & Full Name (First Name, Last Name)"
+          label="Title and Full Name (First Name, Last Name)"
           required
         />
         <Field
@@ -738,7 +738,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="sessionDetails"
           name="sessionDetails"
           label="Session Details"
-          helper={`Provide details covering:\n1. Session Format — describe the structure & format\n2. Session Overview — state a brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
+          helper={`Provide details covering:\n1. Session Format — describe the structure and format\n2. Session Overview — state a brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
           required
           rows={6}
         />
@@ -760,7 +760,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
         <TextareaField
           id="resourceRequirements"
           name="resourceRequirements"
-          label="Technical, Venue &amp; Special Requirements"
+          label="Technical, Venue and Special Requirements"
           helper={`Please describe:\n• Technical needs (equipment, technology or technical support)\n• Venue requirements (room setup or space needs)\n• Special requirements (interpretation, accessibility, etc.)\n• Any other related resource requirements`}
           required
           rows={5}
