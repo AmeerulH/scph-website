@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Colocated Sanity Studio — separate package.json and eslint.config.mjs
+    "studio/**",
   ]),
 ]);
 
