@@ -51,4 +51,6 @@ Seed the GTP 2026 programme document from [`src/components/gtp/programmes/data.t
 
 The Next.js app reads Sanity using [`src/sanity/client.ts`](src/sanity/client.ts). Set **`SANITY_DATASET`** in `.env.local` (e.g. `development`) to point the site at a non-production dataset locally; omit it to use `production`.
 
+**Programme freshness (ISR + webhook):** [`/events/gtp-2026/programmes`](src/app/events/gtp-2026/programmes/page.tsx) and [`/events/gtp-2026/about`](src/app/events/gtp-2026/about/page.tsx) use time-based revalidation (default **900s**, see [`src/lib/gtp-programme-revalidate.ts`](src/lib/gtp-programme-revalidate.ts)). For near-instant updates after publish, add a GROQ webhook in [sanity.io/manage](https://www.sanity.io/manage) pointing to **`POST /api/revalidate/sanity`** on your deployed site, with filter `_type == "gtp2026Programme"` and the same **secret** as **`SANITY_REVALIDATE_SECRET`** in the deployment environment. The handler verifies the signature via [`next-sanity/webhook`](https://www.sanity.io/docs/nextjs) and only revalidates when the `sanity-document-id` header (or payload) matches the programme singleton and the **`sanity-dataset`** header matches **`SANITY_DATASET`** (default `production`).
+
 # scph-website
