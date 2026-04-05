@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
 };
 
-/** ISR seconds — must be a literal (Next.js segment config); keep in sync with `gtp-programme-revalidate.ts`. */
-export const revalidate = 900;
+/** Refetch programme from Sanity on every request (no ISR cache). */
+export const dynamic = "force-dynamic";
 
 const gtpSite = getSiteUrlString();
 const eventJsonLd = {
