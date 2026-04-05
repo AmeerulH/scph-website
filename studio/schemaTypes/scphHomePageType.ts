@@ -2,7 +2,7 @@ import {defineField, defineType} from 'sanity'
 import {sectionBlockMembers} from './objects'
 
 /**
- * Stage 1: singleton-style home overrides. Create one document of this type in Studio.
+ * Singleton-style home overrides. Create one document of this type in Studio.
  * The site uses the first (and should be only) `scphHomePage` document.
  */
 export const scphHomePageType = defineType({
@@ -31,6 +31,20 @@ export const scphHomePageType = defineType({
       of: [...sectionBlockMembers],
       description:
         'Optional blocks between the stats row and the GTP promo (e.g. rich text or CTA sections).',
+    }),
+    defineField({
+      name: 'roadmapSection',
+      title: 'Roadmap section',
+      type: 'sectionProseCta',
+      description:
+        'Optional. When set and visible, replaces the default “Planetary Health Roadmap” block after priorities.',
+    }),
+    defineField({
+      name: 'nphapSection',
+      title: 'NPHAP section',
+      type: 'sectionProseCta',
+      description:
+        'Optional. When set and visible, replaces the default NPHAP block before partners.',
     }),
   ],
   preview: {

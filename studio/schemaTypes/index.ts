@@ -1,6 +1,8 @@
 import {cmsSandboxPageType} from './cmsSandboxPageType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
 import {scphHomePageType} from './scphHomePageType'
+import {scphMeetTheTeamPageType} from './scphMeetTheTeamPageType'
+import {scphSectionPageTypes} from './scphSectionsPageTypes'
 import {sectionObjectTypes} from './objects'
 import {programmeDayType} from './programmeDayType'
 import {programmeSessionType} from './programmeSessionType'
@@ -18,4 +20,6 @@ export const schemaTypes = [
   ...sectionObjectTypes,
   cmsSandboxPageType,
   scphHomePageType,
+  scphMeetTheTeamPageType,
+  ...scphSectionPageTypes,
 ]

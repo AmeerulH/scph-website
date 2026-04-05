@@ -24,6 +24,19 @@ export const sectionCtaLinkType = defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'style',
+      title: 'Button style',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Primary (SCPH)', value: 'primary'},
+          {title: 'Outline', value: 'outline'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'primary',
+    }),
   ],
   preview: {
     select: {label: 'label', href: 'href'},
