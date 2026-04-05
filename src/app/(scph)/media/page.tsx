@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { ScphPageHero } from "@/components/sections/heroes";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -16,27 +17,6 @@ export const metadata: Metadata = {
     url: "/media",
   },
 };
-
-// ─── Hero Band ───────────────────────────────────────────────────────────────
-
-function MediaHero() {
-  return (
-    <div className="bg-scph-blue px-4 pb-24 pt-40 text-center">
-      <div className="mx-auto max-w-4xl">
-        <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
-          Media
-        </span>
-        <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-          News &amp; Articles
-        </h1>
-        <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-scph-green" />
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-white/70">
-          Perspectives from the planetary health community.
-        </p>
-      </div>
-    </div>
-  );
-}
 
 // ─── Articles ─────────────────────────────────────────────────────────────────
 
@@ -178,7 +158,11 @@ function ArticlesSection() {
 export default function MediaPage() {
   return (
     <>
-      <MediaHero />
+      <ScphPageHero
+        eyebrow="Media"
+        title={<>News &amp; Articles</>}
+        lede="Perspectives from the planetary health community."
+      />
       <ArticlesSection />
     </>
   );

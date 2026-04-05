@@ -15,6 +15,7 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScrollProgressSection } from "@/components/motion/ScrollProgressSection";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { ScphPageHero } from "@/components/sections/heroes";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -28,28 +29,6 @@ export const metadata: Metadata = {
     url: "/research",
   },
 };
-
-// ─── Hero Band ───────────────────────────────────────────────────────────────
-
-function ResearchHero() {
-  return (
-    <div className="bg-scph-blue px-4 pb-24 pt-40 text-center">
-      <div className="mx-auto max-w-4xl">
-        <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
-          Research
-        </span>
-        <h1 className="mt-6 font-heading text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-          Planetary Health Roadmap &amp; Action Plan
-        </h1>
-        <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-scph-green" />
-        <p className="mx-auto mt-6 max-w-2xl text-lg text-white/70">
-          Bridging Planetary Health discourse between academia and action via
-          policy, political, and civil society spaces.
-        </p>
-      </div>
-    </div>
-  );
-}
 
 // ─── Stats Row ────────────────────────────────────────────────────────────────
 
@@ -243,7 +222,11 @@ function PillarsSection() {
 export default function ResearchPage() {
   return (
     <>
-      <ResearchHero />
+      <ScphPageHero
+        eyebrow="Research"
+        title={<>Planetary Health Roadmap &amp; Action Plan</>}
+        lede="Bridging Planetary Health discourse between academia and action via policy, political, and civil society spaces."
+      />
       <ResearchStatsRow />
       <RoadmapIntroSection />
       <PillarsSection />

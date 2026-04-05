@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   TrendingDown,
@@ -23,36 +22,7 @@ import { GTP_EXPLORE_VERTICAL_BG_CLASSNAMES } from "@/components/gtp/gtp-site-ex
 import { cn } from "@/lib/utils";
 import { AbstractForm } from "./abstract-form";
 import { WorkshopForm } from "./workshop-form";
-
-// ─── Hero ─────────────────────────────────────────────────────────────────────
-
-function SubmissionsHero() {
-  return (
-    <div className="relative overflow-hidden px-4 pb-16 pt-40 text-center">
-      <Image
-        src="/images/gtp/forest-bg.jpg"
-        alt=""
-        fill
-        className="object-cover object-center"
-        priority
-      />
-      <div className="absolute inset-0 bg-gtp-dark-teal/75" />
-      <div className="relative mx-auto max-w-4xl">
-        <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
-          GTP 2026
-        </span>
-        <h1 className="mt-6 font-heading text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
-          Call for Abstract and Action Workshop Proposal Submissions
-        </h1>
-        <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gtp-teal" />
-        <p className="mx-auto mt-6 max-w-2xl text-base text-white/70 md:text-lg">
-          Submit scalable solutions emerging across the conference&apos;s
-          critical domains
-        </p>
-      </div>
-    </div>
-  );
-}
+import { GtpForestHero } from "@/components/sections/heroes";
 
 // ─── Three Pillars ────────────────────────────────────────────────────────────
 
@@ -370,7 +340,11 @@ function CtaSection() {
 export default function GtpSubmissionsPage() {
   return (
     <>
-      <SubmissionsHero />
+      <GtpForestHero
+        title="Call for Abstract and Action Workshop Proposal Submissions"
+        lede="Submit scalable solutions emerging across the conference's critical domains"
+        titleSize="compact"
+      />
       <PillarsSection />
       <EightThemesSection />
       <CtaSection />
