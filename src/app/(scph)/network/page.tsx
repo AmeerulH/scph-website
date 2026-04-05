@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphPageHero } from "@/components/sections/heroes";
+import { TwoColumnCopyBenefits } from "@/components/sections/two-column-copy-benefits";
 
 export const metadata: Metadata = {
   title: "Network",
@@ -30,55 +30,30 @@ const benefits = [
 function CommunitySection() {
   return (
     <SectionWrapper theme="scph" background="default">
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        {/* Left — Who Qualifies */}
-        <div>
-          <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
-            <span className="h-px w-8 bg-current opacity-60 shrink-0" />
-            <span className="text-xs font-semibold uppercase tracking-[0.15em]">
-              Who Qualifies
-            </span>
-          </div>
-          <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
-            Anyone Who Shares Our Vision
-          </h2>
-          <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
-          <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            Anyone who shares our vision for a world where the health of humans
-            and the planet thrive in harmony!
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-gray-500">
-            Whether you are a student, researcher, policymaker, or community
-            advocate — there is a place for you in the planetary health
-            movement.
-          </p>
-        </div>
-
-        {/* Right — Benefits */}
-        <div>
-          <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
-            <span className="h-px w-8 bg-current opacity-60 shrink-0" />
-            <span className="text-xs font-semibold uppercase tracking-[0.15em]">
-              What You Get
-            </span>
-          </div>
-          <h2 className="font-heading text-3xl font-bold leading-tight text-scph-blue">
-            Member Benefits
-          </h2>
-          <ul className="mt-6 space-y-4">
-            {benefits.map((benefit) => (
-              <li key={benefit} className="flex items-start gap-3">
-                <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-scph-green/15">
-                  <CheckCircle2 className="h-4 w-4 text-scph-dark-green" />
-                </div>
-                <p className="text-base leading-relaxed text-gray-600">
-                  {benefit}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <TwoColumnCopyBenefits
+        copy={{
+          eyebrow: "Who Qualifies",
+          title: "Anyone Who Shares Our Vision",
+          children: (
+            <>
+              <p className="mt-6 text-lg leading-relaxed text-gray-600">
+                Anyone who shares our vision for a world where the health of humans
+                and the planet thrive in harmony!
+              </p>
+              <p className="mt-4 text-base leading-relaxed text-gray-500">
+                Whether you are a student, researcher, policymaker, or community
+                advocate — there is a place for you in the planetary health
+                movement.
+              </p>
+            </>
+          ),
+        }}
+        benefits={{
+          eyebrow: "What You Get",
+          title: "Member Benefits",
+          items: benefits,
+        }}
+      />
     </SectionWrapper>
   );
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ContactForm } from "./contact-form";
 import { GtpForestHero } from "@/components/sections/heroes";
+import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 
 const description =
   "Partner, sponsor, or volunteer for Global Tipping Points Conference 2026—get in touch with the Sunway Centre for Planetary Health team.";
@@ -35,29 +36,34 @@ function ContactUsSection() {
       background="default"
       id="contact"
     >
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div>
-          <p className="text-base leading-relaxed text-gray-600">
-            Have questions about the Global Tipping Points Conference 2026?
-            Want to learn more about registration, submissions, or partnership
-            opportunities? We&apos;d love to hear from you.
-          </p>
-          <div className="mt-6 space-y-3">
-            <p className="text-sm font-semibold text-gtp-dark-teal">
-              Sunway Centre for Planetary Health
+      <TwoColumnTextImages
+        align="start"
+        text={
+          <>
+            <p className="text-base leading-relaxed text-gray-600">
+              Have questions about the Global Tipping Points Conference 2026?
+              Want to learn more about registration, submissions, or partnership
+              opportunities? We&apos;d love to hear from you.
             </p>
-            <p className="text-sm text-gray-500">
-              Sunway University, Kuala Lumpur, Malaysia
-            </p>
-            <p className="text-sm text-gray-500">
-              Conference: 12–15 October 2026
-            </p>
+            <div className="mt-6 space-y-3">
+              <p className="text-sm font-semibold text-gtp-dark-teal">
+                Sunway Centre for Planetary Health
+              </p>
+              <p className="text-sm text-gray-500">
+                Sunway University, Kuala Lumpur, Malaysia
+              </p>
+              <p className="text-sm text-gray-500">
+                Conference: 12–15 October 2026
+              </p>
+            </div>
+          </>
+        }
+        media={
+          <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6 shadow-sm">
+            <ContactForm />
           </div>
-        </div>
-        <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6 shadow-sm">
-          <ContactForm />
-        </div>
-      </div>
+        }
+      />
     </SectionWrapper>
   );
 }

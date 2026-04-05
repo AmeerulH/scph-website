@@ -20,6 +20,7 @@ import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
+import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { getSiteUrlString } from "@/lib/site-url";
 
 const homeStats = [
@@ -34,49 +35,51 @@ const homeStats = [
 function AboutSection() {
   return (
     <SectionWrapper theme="scph" background="default">
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-        {/* Left — text */}
-        <div>
-          <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
-            <span className="h-px w-8 bg-current opacity-60 shrink-0" />
-            <span className="text-sm font-semibold uppercase tracking-[0.15em]">
-              About Us
-            </span>
+      <TwoColumnTextImages
+        align="center"
+        text={
+          <>
+            <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
+              <span className="h-px w-8 shrink-0 bg-current opacity-60" />
+              <span className="text-sm font-semibold uppercase tracking-[0.15em]">
+                About Us
+              </span>
+            </div>
+            <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
+              Sunway Centre for Planetary Health
+            </h2>
+            <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
+            <p className="mt-6 text-lg leading-relaxed text-gray-600">
+              Sunway Centre for Planetary Health is a &ldquo;Think-and-Do&rdquo; tank,
+              committed to research and advocacy that advances planetary health
+              through three priority areas: healthy cities, health-centred
+              decarbonisation, and driving an education revolution. Established
+              in 2021.
+            </p>
+            <MagneticButton className="mt-8">
+              <Button variant="scph" size="lg" asChild>
+                <Link href="/about-us">
+                  Learn More <ArrowRight />
+                </Link>
+              </Button>
+            </MagneticButton>
+          </>
+        }
+        media={
+          <div className="hidden items-center justify-center lg:flex">
+            <div className="relative h-80 w-full overflow-hidden rounded-3xl shadow-md">
+              <Image
+                src="/images/scph/group-photo-2.png"
+                alt="SCPH Group Photo"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 0px, 50vw"
+                priority
+              />
+            </div>
           </div>
-          <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
-            Sunway Centre for Planetary Health
-          </h2>
-          <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
-          <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            Sunway Centre for Planetary Health is a &ldquo;Think-and-Do&rdquo; tank,
-            committed to research and advocacy that advances planetary health
-            through three priority areas: healthy cities, health-centred
-            decarbonisation, and driving an education revolution. Established
-            in 2021.
-          </p>
-          <MagneticButton className="mt-8">
-            <Button variant="scph" size="lg" asChild>
-              <Link href="/about-us">
-                Learn More <ArrowRight />
-              </Link>
-            </Button>
-          </MagneticButton>
-        </div>
-
-        {/* Right — group photo */}
-        <div className="hidden items-center justify-center lg:flex">
-          <div className="relative h-80 w-full overflow-hidden rounded-3xl shadow-md">
-            <Image
-              src="/images/scph/group-photo-2.png"
-              alt="SCPH Group Photo"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 0px, 50vw"
-              priority
-            />
-          </div>
-        </div>
-      </div>
+        }
+      />
     </SectionWrapper>
   );
 }

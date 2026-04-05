@@ -9,6 +9,7 @@ import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
+import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -33,61 +34,63 @@ function OurFoundationSection() {
     <SectionWrapper theme="scph" background="default">
       {/* Anchor for navbar dropdown */}
       <div id="foundation" className="-mt-24 pt-24" />
-      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-        <div>
-          <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
-            <span className="h-px w-8 bg-current opacity-60 shrink-0" />
-            <span className="text-xs font-semibold uppercase tracking-[0.15em]">
-              Our Foundation
-            </span>
+      <TwoColumnTextImages
+        align="center"
+        text={
+          <>
+            <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
+              <span className="h-px w-8 shrink-0 bg-current opacity-60" />
+              <span className="text-xs font-semibold uppercase tracking-[0.15em]">
+                Our Foundation
+              </span>
+            </div>
+            <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
+              What is Planetary Health?
+            </h2>
+            <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
+            <p className="mt-6 text-lg leading-relaxed text-gray-600">
+              A planetary health approach to human development recognises that
+              humankind has made significant progress in many ways with the
+              industrial, green and technological revolutions as examples. But
+              these development gains are now being offset by increasingly
+              obvious disruption to the health of the planet.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-gray-500">
+              We can see this in depleted biodiversity, changing land use and
+              cover, a massive increase in air pollution, shortages of natural
+              resources, and the resulting damage to our lived environment —
+              most clearly demonstrated through recent pandemic and disease
+              outbreaks and the climate emergency.
+            </p>
+          </>
+        }
+        media={
+          <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="relative flex aspect-square flex-1 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10">
+              <Image
+                src="/images/scph/ph-diagram.png"
+                alt="Planetary Health Diagram"
+                fill
+                className="object-contain p-4"
+              />
+              <span className="absolute bottom-2 text-xs font-medium text-gray-400">
+                PH Diagram
+              </span>
+            </div>
+            <div className="relative flex aspect-square flex-1 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10">
+              <Image
+                src="/images/scph/wedding-cake.png"
+                alt="Wedding Cake Diagram"
+                fill
+                className="object-contain p-4"
+              />
+              <span className="absolute bottom-2 text-xs font-medium text-gray-400">
+                Wedding Cake
+              </span>
+            </div>
           </div>
-          <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
-            What is Planetary Health?
-          </h2>
-          <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
-          <p className="mt-6 text-lg leading-relaxed text-gray-600">
-            A planetary health approach to human development recognises that
-            humankind has made significant progress in many ways with the
-            industrial, green and technological revolutions as examples. But
-            these development gains are now being offset by increasingly
-            obvious disruption to the health of the planet.
-          </p>
-          <p className="mt-4 text-base leading-relaxed text-gray-500">
-            We can see this in depleted biodiversity, changing land use and
-            cover, a massive increase in air pollution, shortages of natural
-            resources, and the resulting damage to our lived environment —
-            most clearly demonstrated through recent pandemic and disease
-            outbreaks and the climate emergency.
-          </p>
-        </div>
-
-        {/* Right — diagram placeholders */}
-        {/* Place ph-diagram.png and wedding-cake.png in public/images/scph/ */}
-        <div className="flex flex-col gap-4 lg:flex-row">
-          <div className="relative flex-1 overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10 aspect-square flex items-center justify-center">
-            <Image
-              src="/images/scph/ph-diagram.png"
-              alt="Planetary Health Diagram"
-              fill
-              className="object-contain p-4"
-            />
-            <span className="absolute bottom-2 text-xs text-gray-400 font-medium">
-              PH Diagram
-            </span>
-          </div>
-          <div className="relative flex-1 overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10 aspect-square flex items-center justify-center">
-            <Image
-              src="/images/scph/wedding-cake.png"
-              alt="Wedding Cake Diagram"
-              fill
-              className="object-contain p-4"
-            />
-            <span className="absolute bottom-2 text-xs text-gray-400 font-medium">
-              Wedding Cake
-            </span>
-          </div>
-        </div>
-      </div>
+        }
+      />
     </SectionWrapper>
   );
 }
