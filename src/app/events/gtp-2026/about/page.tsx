@@ -14,7 +14,16 @@ import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GtpAboutHeroStack } from "@/components/gtp/gtp-about-hero-stack";
+import {
+  getGtp2026AboutPage,
+  getGtp2026HighlightSpeakers,
+  gtpAboutCmsSectionsRender,
+  mapSanityHighlightToProps,
+} from "@/sanity/gtp-stage1";
 import { buildGtpCarouselSessions, getGtp2026Programme } from "@/sanity/queries";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
+import { gtpHighlightSpeakers } from "@/data/gtp-highlight-speakers";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
 import {
   GtpSiteExploreCardsGrid,
@@ -314,7 +323,7 @@ function ThemesSection() {
 
 // ─── Speaker Highlights ───────────────────────────────────────────────────────
 
-function SpeakersSection() {
+function SpeakersSection({ speakers }: { speakers: GtpHighlightSpeaker[] }) {
   return (
     <SectionWrapper
       title="Speaker Highlights"
@@ -322,7 +331,7 @@ function SpeakersSection() {
       theme="gtp"
       background="default"
     >
-      <GtpSpeakersHighlightInner staggerVariant="long" />
+      <GtpSpeakersHighlightInner staggerVariant="long" speakers={speakers} />
     </SectionWrapper>
   );
 }
@@ -658,8 +667,18 @@ function QuoteSection() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function GtpAboutPage() {
-  const programme = await getGtp2026Programme();
+  const [programme, aboutCms, highlightRows] = await Promise.all([
+    getGtp2026Programme(),
+    getGtp2026AboutPage().catch(() => null),
+    getGtp2026HighlightSpeakers().catch(() => []),
+  ]);
   const carouselSessions = buildGtpCarouselSessions(programme);
+  const aboutSections = aboutCms?.sections ?? null;
+  const showAboutCmsBands = gtpAboutCmsSectionsRender(aboutSections);
+  const speakersList =
+    highlightRows.length > 0
+      ? mapSanityHighlightToProps(highlightRows)
+      : gtpHighlightSpeakers;
 
   return (
     <>
@@ -668,10 +687,13 @@ export default async function GtpAboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
       <GtpAboutHeroStack carouselSessions={carouselSessions} />
+      {showAboutCmsBands ? (
+        <RenderSectionBlocks blocks={aboutSections ?? []} />
+      ) : null}
       <WhatIsGtpSection />
       <WhyItMattersSection />
       <ThemesSection />
-      <SpeakersSection />
+      <SpeakersSection speakers={speakersList} />
       <QuoteSection />
       <GallerySection />
       <EventInquirySection />

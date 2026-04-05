@@ -8,6 +8,12 @@ import {
 import { GtpForestHero } from "@/components/sections/heroes";
 import { UserCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  getGtp2026CommitteeMembers,
+  mapCommitteeToCoChairs,
+  mapCommitteeToGridMembers,
+  type CoChairProps,
+} from "@/sanity/gtp-stage1";
 
 const description =
   "Organising committee and leadership for Global Tipping Points Conference 2026—Sunway Centre for Planetary Health and partners.";
@@ -28,20 +34,12 @@ export const metadata: Metadata = {
   },
 };
 
+/** Refetch committee from Sanity on every request (no ISR cache). */
+export const dynamic = "force-dynamic";
+
 // ─── Co-chairs ────────────────────────────────────────────────────────────────
 
-type CoChair = {
-  name: string;
-  role: string;
-  designation: string;
-  photoSrc?: string;
-  /** `object-position` — tune per portrait so the face sits near the visual centre */
-  imageObjectClass?: string;
-  /** Zoom (scale) + origin for full-body or distant shots, e.g. Johan */
-  imageScaleClass?: string;
-};
-
-const cochairs: CoChair[] = [
+const staticCochairs: CoChairProps[] = [
   {
     name: "Tim Lenton",
     role: "Co-Chair",
@@ -113,7 +111,7 @@ function CoChairPhoto({
   );
 }
 
-function CochairsSection() {
+function CochairsSection({ cochairs }: { cochairs: CoChairProps[] }) {
   return (
     <SectionWrapper
       title="Meet the Co-Chairs"
@@ -160,7 +158,7 @@ function CochairsSection() {
 
 // ─── Committee Section ────────────────────────────────────────────────────────
 
-const planningCommittee: GtpCommitteeMember[] = [
+const staticPlanningCommittee: GtpCommitteeMember[] = [
   {
     name: "Andy Richards",
     role: "Co-Chair",
@@ -180,7 +178,7 @@ const planningCommittee: GtpCommitteeMember[] = [
   { name: "TBC", role: "Budget & Event Management", isPlaceholder: true },
 ];
 
-const programmeCommittee: GtpCommitteeMember[] = [
+const staticProgrammeCommittee: GtpCommitteeMember[] = [
   {
     name: "Dr. Fatimah Ahamad",
     role: "Co-Chair",
@@ -199,7 +197,13 @@ const programmeCommittee: GtpCommitteeMember[] = [
   { name: "TBC", role: "Outcome Report", isPlaceholder: true },
 ];
 
-function CommitteeSection() {
+function CommitteeSection({
+  planningCommittee,
+  programmeCommittee,
+}: {
+  planningCommittee: GtpCommitteeMember[];
+  programmeCommittee: GtpCommitteeMember[];
+}) {
   return (
     <SectionWrapper
       title="Meet the Team"
@@ -214,7 +218,10 @@ function CommitteeSection() {
         </h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {planningCommittee.map((member, i) => (
-            <GtpCommitteeMemberCard key={`planning-${i}`} member={member} />
+            <GtpCommitteeMemberCard
+              key={`${member.name}-planning-${i}`}
+              member={member}
+            />
           ))}
         </div>
       </div>
@@ -226,7 +233,10 @@ function CommitteeSection() {
         </h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
           {programmeCommittee.map((member, i) => (
-            <GtpCommitteeMemberCard key={`programme-${i}`} member={member} />
+            <GtpCommitteeMemberCard
+              key={`${member.name}-programme-${i}`}
+              member={member}
+            />
           ))}
         </div>
       </div>
@@ -256,7 +266,19 @@ function AnnouncementSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function OrganisingCommitteePage() {
+export default async function OrganisingCommitteePage() {
+  const rows = await getGtp2026CommitteeMembers().catch(() => []);
+  const cmsCoChairs = mapCommitteeToCoChairs(rows);
+  const cmsPlanning = mapCommitteeToGridMembers(rows, "planning");
+  const cmsProgramme = mapCommitteeToGridMembers(rows, "programme");
+
+  const cochairs =
+    cmsCoChairs.length >= 1 ? cmsCoChairs : staticCochairs;
+  const planningCommittee =
+    cmsPlanning.length >= 1 ? cmsPlanning : staticPlanningCommittee;
+  const programmeCommittee =
+    cmsProgramme.length >= 1 ? cmsProgramme : staticProgrammeCommittee;
+
   return (
     <>
       <GtpForestHero
@@ -264,8 +286,11 @@ export default function OrganisingCommitteePage() {
         lede="Co-chairs and committees bringing together science, policy, and partners for Global Tipping Points Conference 2026 in Kuala Lumpur."
         bottomSpacing="spacious"
       />
-      <CochairsSection />
-      <CommitteeSection />
+      <CochairsSection cochairs={cochairs} />
+      <CommitteeSection
+        planningCommittee={planningCommittee}
+        programmeCommittee={programmeCommittee}
+      />
       <AnnouncementSection />
     </>
   );

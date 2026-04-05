@@ -30,6 +30,10 @@ import {
   RenderSectionBlock,
   RenderSectionBlocks,
 } from "@/components/sections/render-section-block";
+import {
+  getGtp2026HighlightSpeakers,
+  mapSanityHighlightToProps,
+} from "@/sanity/gtp-stage1";
 import { getScphHomePage } from "@/sanity/queries";
 import type {
   SectionProseCtaBlock,
@@ -356,7 +360,12 @@ const organizationJsonLd = {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const homeDoc = await getScphHomePage().catch(() => null);
+  const [homeDoc, highlightRows] = await Promise.all([
+    getScphHomePage().catch(() => null),
+    getGtp2026HighlightSpeakers().catch(() => []),
+  ]);
+  const highlightSpeakersFromCms =
+    highlightRows.length > 0 ? mapSanityHighlightToProps(highlightRows) : undefined;
   const cmsStats = homeDoc?.statsRow;
   const introSections = homeDoc?.introSections ?? null;
   const cmsRoadmap = homeDoc?.roadmapSection;
@@ -383,7 +392,7 @@ export default async function HomePage() {
         <StatsRow items={homeStats} variant="blue-band" />
       )}
       <RenderSectionBlocks blocks={introSections ?? []} />
-      <Gtp2026HomeSection />
+      <Gtp2026HomeSection highlightSpeakers={highlightSpeakersFromCms} />
       <Gtp2026HomeEventInquirySection />
       <AboutSection />
       <PriorityAreasSection />

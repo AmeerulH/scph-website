@@ -6,6 +6,8 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { GtpSiteExploreCardsGrid } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
+import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
+import { gtpHighlightSpeakers } from "@/data/gtp-highlight-speakers";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
 import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
@@ -14,7 +16,14 @@ import { TwoColumnTextImages } from "@/components/sections/two-column-text-image
  * SCPH home GTP blocks — copy aligned with GTP microsite About:
  * `WhatIsGtpSection` + `WhyItMattersSection` (`about/page.tsx`), then explore cards + CTA.
  */
-export function Gtp2026HomeSection() {
+export function Gtp2026HomeSection({
+  highlightSpeakers,
+}: {
+  /** When set (e.g. from Sanity), replaces the static home speaker list. */
+  highlightSpeakers?: GtpHighlightSpeaker[];
+}) {
+  const speakers = highlightSpeakers ?? gtpHighlightSpeakers;
+
   return (
     <>
       <SectionWrapper
@@ -139,7 +148,7 @@ export function Gtp2026HomeSection() {
         background="muted"
         id="gtp-2026-speakers"
       >
-        <GtpSpeakersHighlightInner staggerVariant="long" />
+        <GtpSpeakersHighlightInner staggerVariant="long" speakers={speakers} />
       </SectionWrapper>
     </>
   );
