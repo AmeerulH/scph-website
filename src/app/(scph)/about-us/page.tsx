@@ -4,10 +4,10 @@ import Image from "next/image";
 import { ArrowRight, BookOpen, Target, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
 
 export const metadata: Metadata = {
@@ -96,6 +96,7 @@ function OurFoundationSection() {
 
 const strategyCards = [
   {
+    id: "vision-mission",
     icon: Target,
     title: "Vision & Mission",
     description:
@@ -103,6 +104,7 @@ const strategyCards = [
     href: "#",
   },
   {
+    id: "strategy-2025-27",
     icon: ArrowRight,
     title: "2025–27 Strategy",
     description:
@@ -110,6 +112,7 @@ const strategyCards = [
     href: "#",
   },
   {
+    id: "core-values",
     icon: BookOpen,
     title: "Core Values",
     description:
@@ -117,6 +120,7 @@ const strategyCards = [
     href: "#",
   },
   {
+    id: "strategic-pillars",
     icon: Users,
     title: "Strategic Pillars",
     description:
@@ -149,26 +153,11 @@ function OurStrategySection() {
         </p>
       </div>
 
-      <StaggerReveal className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" variant="default">
-        {strategyCards.map(({ icon: Icon, title, description, href }) => (
-          <div
-            key={title}
-            className="group flex flex-col min-h-[320px] rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-          >
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-scph-blue/10">
-              <Icon className="h-6 w-6 text-scph-blue" />
-            </div>
-            <h3 className="font-heading text-lg font-bold text-scph-blue">{title}</h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">{description}</p>
-            <Link
-              href={href}
-              className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-scph-blue transition-colors hover:text-scph-dark-green"
-            >
-              Learn More <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        ))}
-      </StaggerReveal>
+      <IconCardGrid
+        variant="scph-white-link"
+        gridClassName="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        items={strategyCards}
+      />
     </SectionWrapper>
   );
 }

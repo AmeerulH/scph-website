@@ -19,6 +19,7 @@ import {
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GTP_EXPLORE_VERTICAL_BG_CLASSNAMES } from "@/components/gtp/gtp-site-explore-cards";
+import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { cn } from "@/lib/utils";
 import { AbstractForm } from "./abstract-form";
 import { WorkshopForm } from "./workshop-form";
@@ -28,6 +29,7 @@ import { GtpForestHero } from "@/components/sections/heroes";
 
 const pillars = [
   {
+    id: "01",
     num: "01",
     icon: TrendingDown,
     title: "Understanding the Shift",
@@ -40,6 +42,7 @@ const pillars = [
     titleClass: "text-white",
   },
   {
+    id: "02",
     num: "02",
     icon: Lightbulb,
     title: "Igniting Imagination",
@@ -52,6 +55,7 @@ const pillars = [
     titleClass: "text-white",
   },
   {
+    id: "03",
     num: "03",
     icon: Zap,
     title: "Accelerating Action",
@@ -79,50 +83,12 @@ function PillarsSection() {
         submissions.
       </p>
 
-      <StaggerReveal
-        className="flex flex-col gap-4 pb-2 md:flex-row md:items-stretch md:gap-3"
+      <IconCardGrid
+        variant="gtp-gradient-pillar"
+        gridClassName="flex flex-col gap-4 pb-2 md:flex-row md:items-stretch md:gap-3"
         itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%]"
-      >
-        {pillars.map(
-          ({
-            num,
-            icon: Icon,
-            title,
-            body,
-            bgClass,
-            iconWrap,
-            iconColour,
-            bodyClass,
-            numClass,
-            titleClass,
-          }) => (
-            <div
-              key={num}
-              className={cn(
-                "flex h-full min-h-[280px] w-full flex-col rounded-2xl p-6 text-white shadow-md ring-1 ring-white/15 transition-shadow duration-300 md:min-h-[320px] md:hover:shadow-xl",
-                bgClass,
-              )}
-            >
-              <div className="mb-5 flex items-center gap-3">
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-xl ${iconWrap}`}
-                >
-                  <Icon className={`h-6 w-6 ${iconColour}`} />
-                </div>
-                <span className={`font-heading text-sm font-bold ${numClass}`}>
-                  {num}
-                </span>
-              </div>
-              <h3 className={`font-heading text-xl font-bold ${titleClass}`}>
-                {title}
-              </h3>
-              <p className={`mt-3 flex-1 text-sm leading-relaxed ${bodyClass}`}>
-                {body}
-              </p>
-            </div>
-          ),
-        )}
-      </StaggerReveal>
+        items={pillars}
+      />
 
       <p className="mx-auto mt-10 max-w-3xl text-center text-sm leading-relaxed text-gray-600 md:text-base">
         As research demonstrates that systems can shift rapidly when leadership,

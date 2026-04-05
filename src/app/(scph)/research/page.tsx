@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
@@ -107,6 +107,7 @@ function RoadmapIntroSection() {
 
 const pillars = [
   {
+    id: "01",
     num: "01",
     icon: ShieldAlert,
     title: "Preventing the Next Pandemic",
@@ -114,6 +115,7 @@ const pillars = [
       "Strengthening global health architecture to detect, prevent, and respond to infectious disease threats shaped by environmental disruption.",
   },
   {
+    id: "02",
     num: "02",
     icon: Thermometer,
     title: "Tackling the Climate Emergency",
@@ -121,6 +123,7 @@ const pillars = [
       "Integrating health at the centre of climate policy to accelerate decarbonisation while delivering co-benefits for human well-being.",
   },
   {
+    id: "03",
     num: "03",
     icon: Building2,
     title: "Creating Healthy Cities",
@@ -128,6 +131,7 @@ const pillars = [
       "Advancing urban design, green infrastructure, and city governance to build environments where people and the planet thrive.",
   },
   {
+    id: "04",
     num: "04",
     icon: Wheat,
     title: "Achieving Sustainable Food Systems",
@@ -135,6 +139,7 @@ const pillars = [
       "Transforming how food is produced, distributed, and consumed to nourish people while restoring natural ecosystems.",
   },
   {
+    id: "05",
     num: "05",
     icon: Megaphone,
     title: "Advancing Planetary Health Communications",
@@ -142,6 +147,7 @@ const pillars = [
       "Building public understanding, narrative, and civic engagement around the connections between human health and the health of the planet.",
   },
   {
+    id: "06",
     num: "06",
     icon: Landmark,
     title: "Encouraging Effective Planetary Health Governance",
@@ -149,6 +155,7 @@ const pillars = [
       "Designing political, institutional, and policy frameworks that enable coordinated intersectoral action on planetary health.",
   },
   {
+    id: "07",
     num: "07",
     icon: GraduationCap,
     title: "Creating A Planetary Health Education Revolution",
@@ -165,32 +172,12 @@ function PillarsSection() {
       theme="scph"
       background="muted"
     >
-      <StaggerReveal
-        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-        variant="long"
-      >
-        {pillars.map(({ num, icon: Icon, title, description }) => (
-          <div
-            key={num}
-            className="flex flex-col min-h-[320px] rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-scph-blue/10">
-                <Icon className="h-6 w-6 text-scph-blue" />
-              </div>
-              <span className="font-heading text-sm font-bold text-scph-dark-green/60">
-                {num}
-              </span>
-            </div>
-            <h3 className="font-heading text-lg font-bold leading-snug text-scph-blue">
-              {title}
-            </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
-              {description}
-            </p>
-          </div>
-        ))}
-      </StaggerReveal>
+      <IconCardGrid
+        variant="scph-white-pillar"
+        staggerVariant="long"
+        gridClassName="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+        items={pillars}
+      />
     </SectionWrapper>
   );
 }

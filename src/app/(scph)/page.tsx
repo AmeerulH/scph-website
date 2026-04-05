@@ -16,7 +16,7 @@ import {
   Gtp2026HomeSection,
   Gtp2026HomeEventInquirySection,
 } from "@/components/scph/gtp-2026-home-sections";
-import { StaggerReveal } from "@/components/motion/StaggerReveal";
+import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
@@ -85,31 +85,34 @@ function AboutSection() {
 
 const priorities = [
   {
+    id: "healthy-cities",
     icon: Building2,
     title: "Healthy Cities",
     description:
       "Advancing urban health through research, policy advocacy, and community engagement. We explore how city design, green spaces, and urban planning can drive healthier populations.",
-    colour: "text-scph-blue",
-    iconBg: "bg-scph-blue/10",
-    iconColour: "text-scph-blue",
+    titleClassName: "text-scph-blue",
+    iconBgClassName: "bg-scph-blue/10",
+    iconClassName: "text-scph-blue",
   },
   {
+    id: "decarbonisation",
     icon: Leaf,
     title: "Health-Centred Decarbonisation",
     description:
       "Integrating health considerations into climate action and decarbonisation strategies. Clean energy transitions can deliver significant co-benefits for human health.",
-    colour: "text-scph-dark-green",
-    iconBg: "bg-scph-green/15",
-    iconColour: "text-scph-dark-green",
+    titleClassName: "text-scph-dark-green",
+    iconBgClassName: "bg-scph-green/15",
+    iconClassName: "text-scph-dark-green",
   },
   {
+    id: "education-revolution",
     icon: GraduationCap,
     title: "Driving an Education Revolution",
     description:
       "Reimagining education systems to equip the next generation with the knowledge, values, and skills needed to protect and restore planetary health.",
-    colour: "text-scph-blue",
-    iconBg: "bg-scph-dark-green/10",
-    iconColour: "text-scph-dark-green",
+    titleClassName: "text-scph-blue",
+    iconBgClassName: "bg-scph-dark-green/10",
+    iconClassName: "text-scph-dark-green",
   },
 ];
 
@@ -121,35 +124,12 @@ function PriorityAreasSection() {
       theme="scph"
       background="muted"
     >
-      <StaggerReveal
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:py-0 md:pb-0"
-        variant="default"
-      >
-        {priorities.map(({ icon: Icon, title, description, colour, iconBg, iconColour }) => (
-          <div
-            key={title}
-            className="w-[85vw] max-w-[85vw] min-h-[320px] flex-shrink-0 snap-center group flex flex-col rounded-2xl bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:w-auto md:max-w-none"
-          >
-            <div
-              className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${iconBg}`}
-            >
-              <Icon className={`h-7 w-7 ${iconColour}`} />
-            </div>
-            <h3 className={`font-heading text-xl font-bold ${colour}`}>
-              {title}
-            </h3>
-            <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-500">
-              {description}
-            </p>
-            <Link
-              href="/programmes"
-              className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-scph-blue transition-colors hover:text-scph-dark-green"
-            >
-              Learn More <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        ))}
-      </StaggerReveal>
+      <IconCardGrid
+        variant="scph-priority"
+        gridClassName="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:py-0 md:pb-0"
+        items={priorities}
+        linkHref="/programmes"
+      />
     </SectionWrapper>
   );
 }
