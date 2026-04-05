@@ -64,3 +64,41 @@ export function isSectionBlock(value: unknown): value is SectionBlock {
     t === "sectionProseCta"
   );
 }
+
+/** True if at least one block would render non-null UI (mirrors RenderSectionBlock rules). */
+export function sectionBlocksMayRender(blocks: unknown): boolean {
+  if (!Array.isArray(blocks)) return false;
+  for (const raw of blocks) {
+    if (!isSectionBlock(raw) || raw.enabled === false) continue;
+    switch (raw._type) {
+      case "sectionStatsRow": {
+        const items = raw.items?.filter((i) => i.value && i.label) ?? [];
+        if (items.length > 0) return true;
+        break;
+      }
+      case "sectionRichText": {
+        if (
+          raw.eyebrow?.trim() ||
+          raw.heading?.trim() ||
+          raw.body?.trim()
+        ) {
+          return true;
+        }
+        break;
+      }
+      case "sectionProseCta": {
+        const hasCtas =
+          raw.ctas?.some((c) => c.label?.trim() && c.href?.trim()) ?? false;
+        if (
+          raw.title?.trim() ||
+          raw.body?.trim() ||
+          hasCtas
+        ) {
+          return true;
+        }
+        break;
+      }
+    }
+  }
+  return false;
+}

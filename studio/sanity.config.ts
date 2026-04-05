@@ -8,8 +8,8 @@ export default defineConfig({
   title: 'SCPH Sanity Studio',
 
   projectId: 'y0tkemxm',
-  /** Override with `SANITY_STUDIO_DATASET` in `studio/.env` (see `studio/.env.example`). */
-  dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
+  /** Override with `SANITY_DATASET` in `studio/.env` (see `studio/.env.example`). */
+  dataset: process.env.SANITY_DATASET ?? 'production',
 
   plugins: [structureTool(), visionTool()],
 

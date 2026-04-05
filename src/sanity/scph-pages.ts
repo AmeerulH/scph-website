@@ -18,6 +18,13 @@ export type ScphEventsPageData = {
   sections: SectionBlock[] | null;
 };
 
+/** Programmes / projects: placeholder fields + sections (Stage 4). */
+export type ScphPlaceholderOrSectionsPageData = {
+  pageTitle: string | null;
+  placeholderDescription: string | null;
+  sections: SectionBlock[] | null;
+};
+
 const sectionsProjection = `sections`;
 
 async function fetchSectionsPage(
@@ -63,5 +70,19 @@ export async function getScphMeetTheTeamPage(): Promise<ScphMeetTheTeamPageData 
       introBlurb,
       showGetInvolvedCta
     }`,
+  );
+}
+
+const programmesProjectsProjection = `pageTitle, placeholderDescription, sections`;
+
+export async function getScphProgrammesPage(): Promise<ScphPlaceholderOrSectionsPageData | null> {
+  return client.fetch<ScphPlaceholderOrSectionsPageData | null>(
+    `*[_type == "scphProgrammesPage"][0]{ ${programmesProjectsProjection} }`,
+  );
+}
+
+export async function getScphProjectsPage(): Promise<ScphPlaceholderOrSectionsPageData | null> {
+  return client.fetch<ScphPlaceholderOrSectionsPageData | null>(
+    `*[_type == "scphProjectsPage"][0]{ ${programmesProjectsProjection} }`,
   );
 }

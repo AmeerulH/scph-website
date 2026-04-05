@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { PlaceholderPage } from "@/components/shared/placeholder-page";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { getScphProgrammesPage } from "@/sanity/scph-pages";
+import { sectionBlocksMayRender } from "@/sanity/section-block-types";
 
 export const metadata: Metadata = {
   title: "Programmes",
@@ -14,11 +17,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProgrammesPage() {
+export const dynamic = "force-dynamic";
+
+const DEFAULT_PLACEHOLDER_DESCRIPTION =
+  "Our programmes and initiatives are currently being developed. Check back soon.";
+
+export default async function ProgrammesPage() {
+  const cms = await getScphProgrammesPage().catch(() => null);
+  const title = cms?.pageTitle?.trim() || "Programmes";
+  const sections = cms?.sections ?? null;
+
+  if (sectionBlocksMayRender(sections)) {
+    return (
+      <>
+        <div className="pt-24" />
+        <RenderSectionBlocks blocks={sections} />
+      </>
+    );
+  }
+
+  const description =
+    cms?.placeholderDescription?.trim() || DEFAULT_PLACEHOLDER_DESCRIPTION;
+
   return (
     <PlaceholderPage
-      title="Programmes"
-      description="Our programmes and initiatives are currently being developed. Check back soon."
+      title={title}
+      description={description}
       theme="scph"
     />
   );
