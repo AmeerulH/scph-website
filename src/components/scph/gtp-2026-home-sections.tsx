@@ -7,6 +7,7 @@ import { MagneticButton } from "@/components/motion/MagneticButton";
 import { GtpSiteExploreCardsGrid } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
+import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 
 /**
@@ -153,13 +154,13 @@ export function Gtp2026HomeEventInquirySection() {
       background="default"
       id="gtp-2026-inquiry"
     >
-      <div className="mx-auto max-w-xl rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-sm md:p-8">
+      <GtpEventInquiryPanel>
         <p className="mb-6 text-center text-sm leading-relaxed text-gray-600">
           Send us a message about registration, programme details, or general
           enquiries for GTP 2026. We&apos;ll respond as soon as we can.
         </p>
         <ContactForm appearance="scph" />
-      </div>
+      </GtpEventInquiryPanel>
     </SectionWrapper>
   );
 }

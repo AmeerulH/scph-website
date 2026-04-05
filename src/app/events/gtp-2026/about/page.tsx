@@ -13,9 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
-import { GtpHeroGradient } from "@/components/gtp/hero-gradient";
-import { GtpCountdown } from "@/components/gtp/countdown";
-import { GtpEventsPreviewCarousel } from "@/components/gtp/events-preview-carousel";
+import { GtpAboutHeroStack } from "@/components/gtp/gtp-about-hero-stack";
 import { buildGtpCarouselSessions, getGtp2026Programme } from "@/sanity/queries";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
 import {
@@ -29,6 +27,7 @@ import {
   PartnerMarquee,
 } from "@/components/sections/partner-marquee";
 import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
+import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { cn } from "@/lib/utils";
 import { getSiteUrlString } from "@/lib/site-url";
@@ -339,13 +338,13 @@ function EventInquirySection() {
       background="default"
       id="event-inquiry"
     >
-      <div className="mx-auto max-w-xl rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-sm md:p-8">
+      <GtpEventInquiryPanel>
         <p className="mb-6 text-center text-sm leading-relaxed text-gray-600">
           Send us a message about registration, programme details, or general
           enquiries. We&apos;ll respond as soon as we can.
         </p>
         <ContactForm />
-      </div>
+      </GtpEventInquiryPanel>
     </SectionWrapper>
   );
 }
@@ -668,23 +667,7 @@ export default async function GtpAboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
-      {/* Single gradient wrapper — hero, countdown and carousel share one continuous background */}
-      <div className="relative min-h-[min(88svh,1000px)] overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
-        {/* Shared dot grid */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.055]"
-          style={{
-            backgroundImage: "radial-gradient(circle, white 1.5px, transparent 1.5px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-        {/* Shared radial glows */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_30%,rgba(0,156,180,0.30),transparent_50%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_60%,rgba(134,188,37,0.13),transparent_48%)]" />
-        <GtpHeroGradient />
-        <GtpCountdown />
-        <GtpEventsPreviewCarousel sessions={carouselSessions} />
-      </div>
+      <GtpAboutHeroStack carouselSessions={carouselSessions} />
       <WhatIsGtpSection />
       <WhyItMattersSection />
       <ThemesSection />
