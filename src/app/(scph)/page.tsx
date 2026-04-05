@@ -31,7 +31,10 @@ import {
   RenderSectionBlocks,
 } from "@/components/sections/render-section-block";
 import { getScphHomePage } from "@/sanity/queries";
-import type { SectionStatsRowBlock } from "@/sanity/section-block-types";
+import type {
+  SectionProseCtaBlock,
+  SectionStatsRowBlock,
+} from "@/sanity/section-block-types";
 import { getSiteUrlString } from "@/lib/site-url";
 
 const homeStats = [
@@ -49,6 +52,18 @@ function cmsStatsRowIsUsable(
   }
   const items = row.items?.filter((i) => i.value && i.label) ?? [];
   return items.length > 0;
+}
+
+function cmsHomeProseCtaUsable(
+  block: SectionProseCtaBlock | null | undefined,
+): block is SectionProseCtaBlock {
+  if (!block || block.enabled === false) return false;
+  if (block._type != null && block._type !== "sectionProseCta") return false;
+  const hasTitle = Boolean(block.title?.trim());
+  const hasBody = Boolean(block.body?.trim());
+  const hasCtas =
+    block.ctas?.some((c) => c.label?.trim() && c.href?.trim()) ?? false;
+  return hasTitle || hasBody || hasCtas;
 }
 
 // ─── About Section ───────────────────────────────────────────────────────────
@@ -344,6 +359,8 @@ export default async function HomePage() {
   const homeDoc = await getScphHomePage().catch(() => null);
   const cmsStats = homeDoc?.statsRow;
   const introSections = homeDoc?.introSections ?? null;
+  const cmsRoadmap = homeDoc?.roadmapSection;
+  const cmsNphap = homeDoc?.nphapSection;
 
   return (
     <>
@@ -370,8 +387,28 @@ export default async function HomePage() {
       <Gtp2026HomeEventInquirySection />
       <AboutSection />
       <PriorityAreasSection />
-      <RoadmapSection />
-      <NphapSection />
+      {cmsHomeProseCtaUsable(cmsRoadmap) ? (
+        <RenderSectionBlock
+          block={{
+            ...cmsRoadmap,
+            _type: "sectionProseCta",
+            _key: cmsRoadmap._key ?? "home-roadmap",
+          }}
+        />
+      ) : (
+        <RoadmapSection />
+      )}
+      {cmsHomeProseCtaUsable(cmsNphap) ? (
+        <RenderSectionBlock
+          block={{
+            ...cmsNphap,
+            _type: "sectionProseCta",
+            _key: cmsNphap._key ?? "home-nphap",
+          }}
+        />
+      ) : (
+        <NphapSection />
+      )}
       <PartnersSection />
     </>
   );

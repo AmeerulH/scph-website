@@ -17,6 +17,8 @@ import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { getScphResearchPage } from "@/sanity/scph-pages";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -30,6 +32,8 @@ export const metadata: Metadata = {
     url: "/research",
   },
 };
+
+export const dynamic = "force-dynamic";
 
 const researchStats = [
   { value: "100+", label: "Experts" },
@@ -184,7 +188,9 @@ function PillarsSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ResearchPage() {
+export default async function ResearchPage() {
+  const researchCms = await getScphResearchPage().catch(() => null);
+
   return (
     <>
       <ScphPageHero
@@ -192,6 +198,7 @@ export default function ResearchPage() {
         title={<>Planetary Health Roadmap &amp; Action Plan</>}
         lede="Bridging Planetary Health discourse between academia and action via policy, political, and civil society spaces."
       />
+      <RenderSectionBlocks blocks={researchCms?.sections ?? []} />
       <StatsRow items={researchStats} variant="light-green" />
       <RoadmapIntroSection />
       <PillarsSection />

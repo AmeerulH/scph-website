@@ -3,6 +3,8 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ArticleCardGrid } from "@/components/sections/article-card-grid";
 import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { ScphPageHero } from "@/components/sections/heroes";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { getScphMediaPage } from "@/sanity/scph-pages";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -16,6 +18,8 @@ export const metadata: Metadata = {
     url: "/media",
   },
 };
+
+export const dynamic = "force-dynamic";
 
 // ─── Articles ─────────────────────────────────────────────────────────────────
 
@@ -128,7 +132,9 @@ function ArticlesSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function MediaPage() {
+export default async function MediaPage() {
+  const mediaCms = await getScphMediaPage().catch(() => null);
+
   return (
     <>
       <ScphPageHero
@@ -136,6 +142,7 @@ export default function MediaPage() {
         title={<>News &amp; Articles</>}
         lede="Perspectives from the planetary health community."
       />
+      <RenderSectionBlocks blocks={mediaCms?.sections ?? []} />
       <ArticlesSection />
     </>
   );

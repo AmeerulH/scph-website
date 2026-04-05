@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { MagneticButton } from "@/components/motion/MagneticButton";
+import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type {
   SectionBlock,
   SectionProseCtaBlock,
@@ -39,60 +43,90 @@ function SectionRichTextFromCms({ block }: { block: SectionRichTextBlock }) {
   );
 }
 
-function SectionProseCtaFromCms({ block }: { block: SectionProseCtaBlock }) {
+function proseBodyNodes(body: string, constrainProse: boolean) {
+  const parts = body
+    .split(/\n\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.length === 0) return null;
+  if (!constrainProse && parts.length === 1) {
+    return (
+      <p className="mb-10 max-w-3xl text-base leading-relaxed text-gray-600">
+        {parts[0]}
+      </p>
+    );
+  }
   return (
-    <section className="py-8">
-      {block.subtitle && (
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          {block.subtitle}
+    <>
+      {parts.map((text, i) => (
+        <p
+          key={i}
+          className={cn(
+            "text-base leading-relaxed text-gray-600",
+            i > 0 && "mt-4",
+          )}
+        >
+          {text}
         </p>
-      )}
-      {block.title && (
-        <h2 className="font-heading text-2xl font-bold text-gray-900">
-          {block.title}
-        </h2>
-      )}
-      {block.body && (
-        <p className="mt-4 whitespace-pre-wrap text-base leading-relaxed text-gray-600">
-          {block.body}
-        </p>
-      )}
-      {block.ctas && block.ctas.length > 0 && (
-        <ul className="mt-6 flex flex-wrap gap-4">
-          {block.ctas.map((cta) => {
-            if (!cta.label || !cta.href) return null;
-            const external = cta.openInNewTab || /^https?:\/\//i.test(cta.href);
-            return (
-              <li key={cta._key}>
-                {external ? (
-                  <a
-                    href={cta.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-scph-blue underline hover:text-scph-dark-green"
-                  >
-                    {cta.label}
-                  </a>
-                ) : (
-                  <Link
-                    href={cta.href}
-                    className="font-semibold text-scph-blue underline hover:text-scph-dark-green"
-                  >
-                    {cta.label}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
+      ))}
+    </>
+  );
+}
+
+function SectionProseCtaFromCms({ block }: { block: SectionProseCtaBlock }) {
+  const background = block.background === "muted" ? "muted" : "default";
+  const constrainProse = block.constrainProse !== false;
+  const actionsInsideProse = block.actionsInsideProse === true;
+  const proseNodes = block.body?.trim()
+    ? proseBodyNodes(block.body, constrainProse)
+    : null;
+
+  const actions =
+    block.ctas && block.ctas.length > 0 ? (
+      <>
+        {block.ctas.map((cta, i) => {
+          if (!cta.label || !cta.href) return null;
+          const external =
+            cta.openInNewTab || /^https?:\/\//i.test(cta.href);
+          const isOutline = cta.style === "outline";
+          const child = external ? (
+            <a href={cta.href} target="_blank" rel="noopener noreferrer">
+              {cta.label}
+            </a>
+          ) : (
+            <Link href={cta.href}>{cta.label}</Link>
+          );
+          const btn = (
+            <Button variant={isOutline ? "outline" : "scph"} asChild>
+              {child}
+            </Button>
+          );
+          const key = cta._key ?? `cta-${i}`;
+          if (!isOutline) {
+            return <MagneticButton key={key}>{btn}</MagneticButton>;
+          }
+          return <span key={key}>{btn}</span>;
+        })}
+      </>
+    ) : undefined;
+
+  return (
+    <SectionProseCta
+      title={block.title}
+      subtitle={block.subtitle}
+      theme="scph"
+      background={background}
+      constrainProse={constrainProse}
+      actionsInsideProse={actionsInsideProse}
+      prose={proseNodes ?? <></>}
+      actions={actions}
+    />
   );
 }
 
 /**
  * Maps one Sanity section object (`section*`) to UI. Skip when `enabled === false`.
- * Stage 0: wired for stats row + simple prose blocks; expand in later stages.
+ * Prose+CTA blocks use SectionProseCta (home-style layout options from CMS).
  */
 export function RenderSectionBlock({ block }: { block: SectionBlock }) {
   if (block.enabled === false) return null;

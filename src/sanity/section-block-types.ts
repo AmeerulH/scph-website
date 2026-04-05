@@ -33,6 +33,8 @@ export type SectionCtaLink = {
   label?: string;
   href?: string;
   openInNewTab?: boolean;
+  /** Default / missing: primary SCPH button with magnetic hover. */
+  style?: "primary" | "outline";
 };
 
 export type SectionProseCtaBlock = {
@@ -42,6 +44,9 @@ export type SectionProseCtaBlock = {
   title?: string;
   subtitle?: string;
   body?: string;
+  background?: "default" | "muted";
+  constrainProse?: boolean;
+  actionsInsideProse?: boolean;
   ctas?: SectionCtaLink[];
 };
 

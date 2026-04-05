@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink, ArrowRight } from "lucide-react";
-import { PlaceholderPage } from "@/components/shared/placeholder-page";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { getScphEventsPage } from "@/sanity/scph-pages";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -20,12 +21,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EventsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function EventsPage() {
+  const eventsCms = await getScphEventsPage().catch(() => null);
+  const pageTitle = eventsCms?.pageTitle?.trim() || "Events";
+  const pageSubtitle = eventsCms?.pageSubtitle?.trim() || "What's On";
+
   return (
     <>
       {/* Hero spacer for floating navbar */}
       <div className="pt-24" />
-      <SectionWrapper title="Events" subtitle="What's On" theme="scph">
+      <RenderSectionBlocks blocks={eventsCms?.sections ?? []} />
+      <SectionWrapper title={pageTitle} subtitle={pageSubtitle} theme="scph">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="overflow-hidden">
             <CardHeader>

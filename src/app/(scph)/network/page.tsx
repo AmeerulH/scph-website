@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphPageHero } from "@/components/sections/heroes";
 import { TwoColumnCopyBenefits } from "@/components/sections/two-column-copy-benefits";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { getScphNetworkPage } from "@/sanity/scph-pages";
 
 export const metadata: Metadata = {
   title: "Network",
@@ -16,6 +18,8 @@ export const metadata: Metadata = {
     url: "/network",
   },
 };
+
+export const dynamic = "force-dynamic";
 
 // ─── Who Qualifies + Benefits ─────────────────────────────────────────────────
 
@@ -190,7 +194,9 @@ function SignUpSection() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function NetworkPage() {
+export default async function NetworkPage() {
+  const networkCms = await getScphNetworkPage().catch(() => null);
+
   return (
     <>
       <ScphPageHero
@@ -198,6 +204,7 @@ export default function NetworkPage() {
         title="Join the Planetary Health Community"
         lede="The global planetary health community is a diverse group of people committed to contributing to a healthier future through policy reforms, research, innovative solutions, advocacy efforts, and more."
       />
+      <RenderSectionBlocks blocks={networkCms?.sections ?? []} />
       <CommunitySection />
       <SignUpSection />
     </>

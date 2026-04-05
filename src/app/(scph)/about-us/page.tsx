@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { getTeamMembers, type SanityTeamMember } from "@/sanity/queries";
+import {
+  getScphAboutPage,
+  getScphMeetTheTeamPage,
+  type ScphMeetTheTeamPageData,
+} from "@/sanity/scph-pages";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
 import { cn } from "@/lib/utils";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
@@ -593,7 +599,13 @@ function SanityMemberRow({ member, isLast }: { member: SanityTeamMember; isLast:
   );
 }
 
-function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember[] }) {
+function MeetTheTeamSection({
+  sanityMembers,
+  meetChrome,
+}: {
+  sanityMembers: SanityTeamMember[];
+  meetChrome: ScphMeetTheTeamPageData | null;
+}) {
   const hasSanityData = sanityMembers.length > 0;
 
   const sanityGroups = SANITY_GROUP_CONFIG.map(({value, label}) => ({
@@ -601,15 +613,28 @@ function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember
     members: sanityMembers.filter((m) => m.group === value),
   })).filter((g) => g.members.length > 0);
 
+  const sectionTitle =
+    meetChrome?.sectionTitle?.trim() || "Meet the Team";
+  const sectionSubtitle =
+    meetChrome?.sectionSubtitle?.trim() || "Our Team";
+  const introBlurb = meetChrome?.introBlurb?.trim();
+  const showGetInvolved = meetChrome?.showGetInvolvedCta !== false;
+
   return (
     <SectionWrapper
-      title="Meet the Team"
-      subtitle="Our Team"
+      title={sectionTitle}
+      subtitle={sectionSubtitle}
       theme="scph"
       background="default"
     >
       {/* Anchor for navbar dropdown */}
       <div id="team" className="-mt-24 pt-24" />
+
+      {introBlurb ? (
+        <p className="mx-auto mb-10 max-w-3xl text-center text-base leading-relaxed text-gray-600">
+          {introBlurb}
+        </p>
+      ) : null}
 
       {hasSanityData ? (
         <div className="space-y-16">
@@ -701,15 +726,17 @@ function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember
         </div>
       )}
 
-      <div className="mt-14 text-center">
-        <MagneticButton>
-          <Button variant="scphSecondary" size="lg" asChild>
-            <Link href="/network">
-              Get Involved <ArrowRight />
-            </Link>
-          </Button>
-        </MagneticButton>
-      </div>
+      {showGetInvolved ? (
+        <div className="mt-14 text-center">
+          <MagneticButton>
+            <Button variant="scphSecondary" size="lg" asChild>
+              <Link href="/network">
+                Get Involved <ArrowRight />
+              </Link>
+            </Button>
+          </MagneticButton>
+        </div>
+      ) : null}
     </SectionWrapper>
   );
 }
@@ -717,7 +744,11 @@ function MeetTheTeamSection({ sanityMembers }: { sanityMembers: SanityTeamMember
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AboutUsPage() {
-  const sanityMembers = await getTeamMembers().catch(() => []);
+  const [sanityMembers, aboutCms, meetCms] = await Promise.all([
+    getTeamMembers().catch(() => []),
+    getScphAboutPage().catch(() => null),
+    getScphMeetTheTeamPage().catch(() => null),
+  ]);
 
   return (
     <>
@@ -726,10 +757,14 @@ export default async function AboutUsPage() {
         eyebrow="About Us"
         title="About Sunway Centre for Planetary Health"
       />
+      <RenderSectionBlocks blocks={aboutCms?.sections ?? []} />
       <OurFoundationSection />
       <OurStrategySection />
       <OurJourneySection />
-      <MeetTheTeamSection sanityMembers={sanityMembers} />
+      <MeetTheTeamSection
+        sanityMembers={sanityMembers}
+        meetChrome={meetCms}
+      />
     </>
   );
 }
