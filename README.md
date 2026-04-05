@@ -1,43 +1,19 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# scph-website
+
+Next.js site for Sunway Centre for Planetary Health and GTP 2026 event pages, with content in [Sanity](https://www.sanity.io/).
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000). Production build: `npm run build`.
 
 ## Sanity Studio
 
-Content schemas live in [`studio/`](studio/) (same repository as the Next.js app).
+Schemas live in [`studio/`](studio/). Local Studio:
 
 ```bash
 cd studio
@@ -45,12 +21,81 @@ npm install
 npm run dev
 ```
 
-Use `npm run build` / `npm run deploy` from `studio/` when publishing the hosted Studio. After changing schemas, deploy to the Sanity content lake with `cd studio && npx sanity schema deploy`. Schema files are under `studio/schemaTypes/`.
+After schema changes, deploy the schema to your content lake:
 
-Seed the GTP 2026 programme document from [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx) (requires `SANITY_API_TOKEN` in `.env.local`): `npm run import-gtp-programme`. Uses **`SANITY_DATASET`** from `.env.local` (defaults to `production`). When `SANITY_DATASET=development` (or `GTP_APPEND_TEST_SESSION=1`), Day 1 gets an extra **23:59 test lightning session** so you can confirm the site reads Sanity. Preview payload: `DRY_RUN=1 npm run import-gtp-programme`. Then open Studio (**same dataset** as in `.env.local`) and **Publish** if needed.
+```bash
+cd studio && npx sanity schema deploy
+```
 
-The Next.js app reads Sanity using [`src/sanity/client.ts`](src/sanity/client.ts). Set **`SANITY_DATASET`** in `.env.local` (e.g. `development`) to point the site at a non-production dataset locally; omit it to use `production`.
+Hosted Studio: from `studio/`, use `npm run build` / `npm run deploy`. Point Studio at the same **project** and **dataset** as the Next app (see below).
 
-**Programme freshness:** [`/events/gtp-2026/programmes`](src/app/events/gtp-2026/programmes/page.tsx) and [`/events/gtp-2026/about`](src/app/events/gtp-2026/about/page.tsx) use **`dynamic = "force-dynamic"`** so each load refetches the programme from Sanity (published content only—**Publish** in Studio). Optional: a GROQ webhook to **`POST /api/revalidate/sanity`** is still available if you later switch back to cached routes; it uses **`SANITY_REVALIDATE_SECRET`** and matches the programme document id / dataset like before.
+### Environment variables
 
-# scph-website
+| Variable | Where | Purpose |
+| -------- | ----- | ------- |
+| `SANITY_DATASET` | Root `.env.local` | Dataset the **website** reads (`production` if unset). |
+| `SANITY_API_TOKEN` | Root `.env.local` | Write token for import scripts (e.g. `npm run import-gtp-programme`). |
+| `SANITY_REVALIDATE_SECRET` | Root `.env.local` | Shared secret for `POST /api/revalidate/sanity` (GROQ webhook). |
+| `SANITY_STUDIO_DATASET` | `studio/.env` | Dataset for **Studio + CLI** (`production` if unset). See `studio/.env.example`. |
+
+The Next client is configured in [`src/sanity/client.ts`](src/sanity/client.ts).
+
+### Publish vs draft
+
+The public site uses the **published** API. Edits in Studio must be **published** to appear on the site.
+
+### Static fallbacks
+
+Many pages **merge** Sanity fields with **defaults in code** (see `src/sanity/gtp-stage1.ts`, `gtp-stage2.ts`, and similar). That keeps the site usable before every document exists. When a route should rely only on CMS, populate Studio, publish, then narrow fallbacks in code as a deliberate change.
+
+### Editors (sections and singletons)
+
+- **Page singletons** (e.g. `scphHomePage`, `gtp2026AboutPage`) often have a **`sections`** array of blocks (`sectionStatsRow`, `sectionRichText`, `sectionProseCta`).
+- Toggle **`enabled`** on a block to hide it without deleting.
+- Reorder rows in **`sections`** to change on-page order.
+- **New layouts** need a developer: new object type in Studio, renderer in Next (see [`src/components/sections/render-section-block.tsx`](src/components/sections/render-section-block.tsx)), then schema deploy.
+
+### GROQ webhook (optional revalidation)
+
+Sanity-driven routes listed below already use **`export const dynamic = "force-dynamic"`**, so each request refetches content without a webhook. A webhook is still useful if you later switch routes to static/ISR, or to warm edge caches.
+
+Configure a webhook to **`POST /api/revalidate/sanity`** with:
+
+- **Secret** = `SANITY_REVALIDATE_SECRET` (same value in Vercel and Sanity webhook config).
+- **Dataset** must match the app’s `SANITY_DATASET` (header `sanity-dataset` is checked).
+
+[`src/app/api/revalidate/sanity/route.ts`](src/app/api/revalidate/sanity/route.ts) maps document **`_type`** to paths to `revalidatePath`. Covered types include:
+
+| Sanity `_type` | Revalidated paths |
+| -------------- | ----------------- |
+| `gtp2026Programme` | `/events/gtp-2026/programmes`, `/events/gtp-2026/about` |
+| `gtp2026HighlightSpeaker` | `/`, `/events/gtp-2026/about` |
+| `gtp2026AboutPage` | `/events/gtp-2026/about` |
+| `gtp2026CommitteeMember` | `/events/gtp-2026/organising-committee` |
+| `gtp2026FaqItem` | `/events/gtp-2026/faq` |
+| `gtp2026GetInvolvedPage` | `/events/gtp-2026/get-involved` |
+| `gtp2026RegisterPage` | `/events/gtp-2026/register` |
+| `gtp2026SubmissionsPage` | `/events/gtp-2026/submissions` |
+| `gtp2026MediaPage` | `/events/gtp-2026/media` |
+| `gtp2026BizForumPage` | `/events/gtp-2026/biz-forum` |
+| `scphHomePage` | `/` |
+| `scphAboutPage`, `scphMeetTheTeamPage`, `teamMember` | `/about-us` |
+| `scphResearchPage` | `/research` |
+| `scphMediaPage` | `/media` |
+| `scphNetworkPage` | `/network` |
+| `scphEventsPage` | `/events` |
+| `scphProgrammesPage` | `/programmes` |
+| `scphProjectsPage` | `/projects` |
+
+`cmsSandboxPage` and embedded **`section*`** object types are not listed: updates usually arrive as saves on the **parent document**, which should carry that document’s `_type`.
+
+### Import scripts
+
+- **GTP programme** (agenda): `npm run import-gtp-programme` — source [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx), script [`scripts/import-gtp-programme-to-sanity.ts`](scripts/import-gtp-programme-to-sanity.ts). Uses `SANITY_DATASET` from `.env.local`. `DRY_RUN=1` prints JSON only. With `SANITY_DATASET=development` or `GTP_APPEND_TEST_SESSION=1`, Day 1 gets an extra test session.
+- **Team roster**: [`scripts/import-team-to-sanity.js`](scripts/import-team-to-sanity.js) (see script header for usage).
+
+Bulk seeding of other page copy is **not** included here; add new `scripts/import-*.ts` as needed.
+
+### CMS sandbox
+
+[`cmsSandboxPage`](studio/schemaTypes/cmsSandboxPageType.ts) is for composing **`section*`** blocks in Studio without wiring a route. It is not read by the Next app.
