@@ -18,39 +18,15 @@ import {
 } from "@/components/scph/gtp-2026-home-sections";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
+import { StatsRow } from "@/components/sections/stats-row";
 import { getSiteUrlString } from "@/lib/site-url";
 
-// ─── Stats Band ──────────────────────────────────────────────────────────────
-
-const stats = [
+const homeStats = [
   { value: "3", label: "Priority Areas" },
   { value: "10+", label: "Research Projects" },
   { value: "50+", label: "Partners & Collaborators" },
   { value: "20+", label: "Publications" },
 ];
-
-function StatsBand() {
-  return (
-    <div className="bg-scph-blue py-12">
-      <ScrollReveal className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {stats.map((stat, i) => (
-            <div key={stat.label} className="relative text-center">
-              {i > 0 && (
-                <span className="absolute -left-4 top-1/2 hidden h-10 w-px -translate-y-1/2 bg-white/15 md:block" />
-              )}
-              <p className="font-heading text-4xl font-bold text-scph-green">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-sm text-white/70">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </ScrollReveal>
-    </div>
-  );
-}
 
 // ─── About Section ───────────────────────────────────────────────────────────
 
@@ -369,7 +345,7 @@ export default function HomePage() {
         }}
       />
       <ScphHero />
-      <StatsBand />
+      <StatsRow items={homeStats} variant="blue-band" />
       <Gtp2026HomeSection />
       <Gtp2026HomeEventInquirySection />
       <AboutSection />

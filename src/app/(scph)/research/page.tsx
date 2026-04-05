@@ -16,6 +16,7 @@ import { ScrollProgressSection } from "@/components/motion/ScrollProgressSection
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ScphPageHero } from "@/components/sections/heroes";
+import { StatsRow } from "@/components/sections/stats-row";
 
 export const metadata: Metadata = {
   title: "Research",
@@ -30,36 +31,12 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── Stats Row ────────────────────────────────────────────────────────────────
-
 const researchStats = [
   { value: "100+", label: "Experts" },
   { value: "4", label: "Working Groups" },
   { value: "7", label: "Action Areas" },
   { value: "2024", label: "Published" },
 ];
-
-function ResearchStatsRow() {
-  return (
-    <div className="bg-scph-green/10 py-12 px-4">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-          {researchStats.map((stat, i) => (
-            <div key={stat.label} className="relative text-center">
-              {i > 0 && (
-                <span className="absolute -left-4 top-1/2 hidden h-10 w-px -translate-y-1/2 bg-scph-blue/15 md:block" />
-              )}
-              <p className="font-heading text-4xl font-bold text-scph-blue">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-sm text-gray-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ─── Roadmap Intro ────────────────────────────────────────────────────────────
 
@@ -227,7 +204,7 @@ export default function ResearchPage() {
         title={<>Planetary Health Roadmap &amp; Action Plan</>}
         lede="Bridging Planetary Health discourse between academia and action via policy, political, and civil society spaces."
       />
-      <ResearchStatsRow />
+      <StatsRow items={researchStats} variant="light-green" />
       <RoadmapIntroSection />
       <PillarsSection />
     </>
