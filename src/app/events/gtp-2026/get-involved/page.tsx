@@ -5,6 +5,11 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ContactForm } from "./contact-form";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
+import type { GtpGetInvolvedResolvedCopy } from "@/sanity/gtp-stage2";
+import {
+  getGtp2026GetInvolvedPage,
+  mergeGtpGetInvolvedCopy,
+} from "@/sanity/gtp-stage2";
 
 const description =
   "Partner, sponsor, or volunteer for Global Tipping Points Conference 2026—get in touch with the Sunway Centre for Planetary Health team.";
@@ -25,13 +30,17 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── Contact Us ────────────────────────────────────────────────────────────────
+export const dynamic = "force-dynamic";
 
-function ContactUsSection() {
+function ContactUsSection({
+  contact,
+}: {
+  contact: GtpGetInvolvedResolvedCopy["contact"];
+}) {
   return (
     <SectionWrapper
-      title="Get in Touch"
-      subtitle="Contact Us"
+      title={contact.sectionTitle}
+      subtitle={contact.sectionSubtitle}
       theme="gtp"
       background="default"
       id="contact"
@@ -41,20 +50,14 @@ function ContactUsSection() {
         text={
           <>
             <p className="text-base leading-relaxed text-gray-600">
-              Have questions about the Global Tipping Points Conference 2026?
-              Want to learn more about registration, submissions, or partnership
-              opportunities? We&apos;d love to hear from you.
+              {contact.intro}
             </p>
             <div className="mt-6 space-y-3">
               <p className="text-sm font-semibold text-gtp-dark-teal">
-                Sunway Centre for Planetary Health
+                {contact.orgName}
               </p>
-              <p className="text-sm text-gray-500">
-                Sunway University, Kuala Lumpur, Malaysia
-              </p>
-              <p className="text-sm text-gray-500">
-                Conference: 12–15 October 2026
-              </p>
+              <p className="text-sm text-gray-500">{contact.orgAddress}</p>
+              <p className="text-sm text-gray-500">{contact.conferenceDates}</p>
             </div>
           </>
         }
@@ -68,13 +71,15 @@ function ContactUsSection() {
   );
 }
 
-// ─── Partnership ──────────────────────────────────────────────────────────────
-
-function PartnershipSection() {
+function PartnershipSection({
+  partnership,
+}: {
+  partnership: GtpGetInvolvedResolvedCopy["partnership"];
+}) {
   return (
     <SectionWrapper
-      title="Partner with Us"
-      subtitle="Partnership"
+      title={partnership.sectionTitle}
+      subtitle={partnership.sectionSubtitle}
       theme="gtp"
       background="muted"
       id="partnership"
@@ -82,16 +87,13 @@ function PartnershipSection() {
       <div className="mx-auto max-w-3xl">
         <div className="rounded-2xl border-2 border-gtp-teal/20 bg-white px-8 py-10 text-center shadow-lg ring-1 ring-gtp-dark-teal/5 md:px-12 md:py-14">
           <p className="text-xl font-medium leading-relaxed text-gtp-dark-teal md:text-2xl">
-            The Global Tipping Points Conference 2026 brings together science,
-            finance, culture and policy from across Asia and the world.
+            {partnership.lead}
           </p>
           <p className="mt-4 text-lg font-semibold text-gtp-teal md:text-xl">
-            We welcome organisations that share our commitment to positive
-            tipping points and planetary health.
+            {partnership.highlight}
           </p>
           <p className="mt-6 text-lg leading-relaxed text-gray-600 md:text-xl">
-            Partnership opportunities include sponsorship, co-hosting sessions,
-            exhibition space, and visibility in our communications.
+            {partnership.body}
           </p>
           <Button
             variant="gtpSecondary"
@@ -100,7 +102,7 @@ function PartnershipSection() {
             asChild
           >
             <Link href="/events/gtp-2026/get-involved#contact">
-              Inquire about Partnership
+              {partnership.ctaLabel}
             </Link>
           </Button>
         </div>
@@ -109,17 +111,15 @@ function PartnershipSection() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+export default async function GtpGetInvolvedPage() {
+  const cms = await getGtp2026GetInvolvedPage().catch(() => null);
+  const copy = mergeGtpGetInvolvedCopy(cms);
 
-export default function GtpGetInvolvedPage() {
   return (
     <>
-      <GtpForestHero
-        title="Get Involved"
-        lede="Connect with us. Partner with us. Collaborate for change."
-      />
-      <ContactUsSection />
-      <PartnershipSection />
+      <GtpForestHero title={copy.heroTitle} lede={copy.heroLede} />
+      <ContactUsSection contact={copy.contact} />
+      <PartnershipSection partnership={copy.partnership} />
     </>
   );
 }

@@ -3,6 +3,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { GtpForestHero } from "@/components/sections/heroes";
+import type { GtpRegisterResolvedCopy } from "@/sanity/gtp-stage2";
+import {
+  getGtp2026RegisterPage,
+  mergeGtpRegisterCopy,
+} from "@/sanity/gtp-stage2";
 
 const description =
   "Register for Global Tipping Points Conference 2026, 12–15 October in Kuala Lumpur—join leaders in science, finance, culture, and policy.";
@@ -23,34 +28,31 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── Registration Section ────────────────────────────────────────────────────
+export const dynamic = "force-dynamic";
 
-function RegistrationSection() {
+function RegistrationSection({ copy }: { copy: GtpRegisterResolvedCopy }) {
   return (
     <SectionWrapper
-      title="Join the Conference"
-      subtitle="Registration"
+      title={copy.sectionTitle}
+      subtitle={copy.sectionSubtitle}
       theme="gtp"
       background="default"
     >
       <div className="mx-auto max-w-3xl">
         <div className="rounded-2xl border-2 border-gtp-teal/20 bg-gtp-teal/5 px-8 py-10 text-center ring-1 ring-gtp-dark-teal/5 md:px-12 md:py-14">
           <p className="text-xl font-medium leading-relaxed text-gtp-dark-teal md:text-2xl">
-            Registration for the Global Tipping Points Conference 2026 will open
-            soon.
+            {copy.bodyLead}
           </p>
           <p className="mt-4 text-lg font-semibold text-gtp-teal md:text-xl">
-            Early bird rates will be available for a limited time.
+            {copy.bodyHighlight}
           </p>
           <p className="mt-6 text-lg leading-relaxed text-gray-600 md:text-xl">
-            Sign up below to be notified when registration opens, or get in touch
-            if you have questions about group bookings, scholarships, or
-            partnership opportunities.
+            {copy.bodyMore}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button variant="gtpSecondary" size="lg" className="text-base" asChild>
               <Link href="/events/gtp-2026/get-involved#contact">
-                Notify Me When Registration Opens
+                {copy.primaryCtaLabel}
               </Link>
             </Button>
             <Button
@@ -60,7 +62,7 @@ function RegistrationSection() {
               asChild
             >
               <Link href="/events/gtp-2026/get-involved#contact">
-                Contact Us
+                {copy.secondaryCtaLabel}
               </Link>
             </Button>
           </div>
@@ -70,13 +72,14 @@ function RegistrationSection() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+export default async function GtpRegisterPage() {
+  const cms = await getGtp2026RegisterPage().catch(() => null);
+  const copy = mergeGtpRegisterCopy(cms);
 
-export default function GtpRegisterPage() {
   return (
     <>
-      <GtpForestHero title="Register Now" lede="12–15 October 2026 · Kuala Lumpur, Malaysia" />
-      <RegistrationSection />
+      <GtpForestHero title={copy.heroTitle} lede={copy.heroLede} />
+      <RegistrationSection copy={copy} />
     </>
   );
 }
