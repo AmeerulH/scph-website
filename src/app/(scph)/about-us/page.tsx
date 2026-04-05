@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   },
 };
 
+/** Refetch team (and page) from Sanity on every request — avoids stale Meet the Team data. */
+export const dynamic = "force-dynamic";
+
 // ─── Hero Banner ─────────────────────────────────────────────────────────────
 
 // Forest background: add forest-bg.jpg to public/images/scph/ for custom image.
