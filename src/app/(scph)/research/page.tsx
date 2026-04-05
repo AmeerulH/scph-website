@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { ScrollProgressSection } from "@/components/motion/ScrollProgressSection";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ScphPageHero } from "@/components/sections/heroes";
+import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
 
 export const metadata: Metadata = {
@@ -38,18 +38,18 @@ const researchStats = [
   { value: "2024", label: "Published" },
 ];
 
-// ─── Roadmap Intro ────────────────────────────────────────────────────────────
+// ─── Roadmap intro ────────────────────────────────────────────────────────────
 
 function RoadmapIntroSection() {
   return (
-    <ScrollProgressSection>
-      <SectionWrapper
-        title="How Do We 'Do' Planetary Health?"
-        subtitle="The Roadmap"
-        theme="scph"
-        background="default"
-      >
-        <div className="max-w-3xl">
+    <SectionProseCta
+      scrollProgress
+      title="How Do We 'Do' Planetary Health?"
+      subtitle="The Roadmap"
+      theme="scph"
+      background="default"
+      prose={
+        <>
           <p className="text-lg leading-relaxed text-gray-600">
             The Planetary Health Roadmap and Action Plan was unveiled as the
             primary outcome of the 2024 Planetary Health Summit and 6th Annual
@@ -73,9 +73,10 @@ function RoadmapIntroSection() {
             response to the environmental challenges that threaten human health
             and biodiversity.
           </p>
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-4">
+        </>
+      }
+      actions={
+        <>
           <MagneticButton>
             <Button variant="scph" asChild>
               <a
@@ -87,18 +88,18 @@ function RoadmapIntroSection() {
               </a>
             </Button>
           </MagneticButton>
-        <Button variant="outline" asChild>
-          <a
-            href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <BookOpen className="mr-2 h-4 w-4" /> Download Briefing Note
-          </a>
-        </Button>
-      </div>
-    </SectionWrapper>
-    </ScrollProgressSection>
+          <Button variant="outline" asChild>
+            <a
+              href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BookOpen className="mr-2 h-4 w-4" /> Download Briefing Note
+            </a>
+          </Button>
+        </>
+      }
+    />
   );
 }
 

@@ -18,6 +18,7 @@ import {
 } from "@/components/scph/gtp-2026-home-sections";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
 import { getSiteUrlString } from "@/lib/site-url";
 
@@ -157,45 +158,48 @@ function PriorityAreasSection() {
 
 function RoadmapSection() {
   return (
-    <SectionWrapper
+    <SectionProseCta
       title="Planetary Health Roadmap and Action Plan"
       subtitle="How do we 'do' Planetary Health?"
       theme="scph"
       background="muted"
-    >
-      <p className="mb-10 max-w-3xl text-base leading-relaxed text-gray-600">
-        The Planetary Health Roadmap and Action Plan aims to bridge Planetary
-        Health discourse between academia and action via policy, political, and
-        civil society spaces, and to begin the process of pulling together an
-        impactful set of actions that address the interconnected issues of
-        human and environmental health. The Roadmap addresses the pressing
-        need for a coordinated global response to the environmental challenges
-        that threaten human health and biodiversity.
-      </p>
-
-      <div className="flex flex-wrap gap-4">
-        <MagneticButton>
-          <Button variant="scph" asChild>
+      constrainProse={false}
+      prose={
+        <p className="mb-10 max-w-3xl text-base leading-relaxed text-gray-600">
+          The Planetary Health Roadmap and Action Plan aims to bridge Planetary
+          Health discourse between academia and action via policy, political, and
+          civil society spaces, and to begin the process of pulling together an
+          impactful set of actions that address the interconnected issues of
+          human and environmental health. The Roadmap addresses the pressing
+          need for a coordinated global response to the environmental challenges
+          that threaten human health and biodiversity.
+        </p>
+      }
+      actions={
+        <>
+          <MagneticButton>
+            <Button variant="scph" asChild>
+              <a
+                href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read the Roadmap Action Plan <ArrowRight />
+              </a>
+            </Button>
+          </MagneticButton>
+          <Button variant="outline" asChild>
             <a
-              href="https://drive.google.com/file/d/1ZFUFo09NkJJRpOl5Y5cLmV_HoA_4msRe/view"
+              href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Read the Roadmap Action Plan <ArrowRight />
+              <BookOpen className="mr-2 h-4 w-4" /> Download Briefing Note
             </a>
           </Button>
-        </MagneticButton>
-        <Button variant="outline" asChild>
-          <a
-            href="https://files.visura.co/users/12837/babfa360f16e6c7f017963cd1ed79502.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <BookOpen className="mr-2 h-4 w-4" /> Download Briefing Note
-          </a>
-        </Button>
-      </div>
-    </SectionWrapper>
+        </>
+      }
+    />
   );
 }
 
@@ -203,39 +207,41 @@ function RoadmapSection() {
 
 function NphapSection() {
   return (
-    <SectionWrapper
+    <SectionProseCta
       title="The National Planetary Health Action Plan (NPHAP)"
       subtitle="Malaysia's First Action Plan"
       theme="scph"
       background="default"
-    >
-      <div className="max-w-3xl">
-        <p className="text-base leading-relaxed text-gray-600">
-          At the Planetary Health Annual Meeting 2025 in Rotterdam, Malaysia
-          was recognised as the first nation to develop a national-level
-          Planetary Health Action Plan, demonstrating leadership in protecting
-          people and the planet.
-        </p>
-        <p className="mt-4 text-base leading-relaxed text-gray-600">
-          Developed by the Academy of Sciences Malaysia, NPHAP charts a bold,
-          whole-of-nation framework to align Malaysia&apos;s development within
-          planetary boundaries.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-4">
-          <MagneticButton>
-            <Button variant="scph" asChild>
-              <a
-                href="https://www.akademisains.gov.my/nphap-full-report/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read the full NPHAP <ExternalLink className="ml-1 h-4 w-4" />
-              </a>
-            </Button>
-          </MagneticButton>
-        </div>
-      </div>
-    </SectionWrapper>
+      actionsInsideProse
+      prose={
+        <>
+          <p className="text-base leading-relaxed text-gray-600">
+            At the Planetary Health Annual Meeting 2025 in Rotterdam, Malaysia
+            was recognised as the first nation to develop a national-level
+            Planetary Health Action Plan, demonstrating leadership in protecting
+            people and the planet.
+          </p>
+          <p className="mt-4 text-base leading-relaxed text-gray-600">
+            Developed by the Academy of Sciences Malaysia, NPHAP charts a bold,
+            whole-of-nation framework to align Malaysia&apos;s development within
+            planetary boundaries.
+          </p>
+        </>
+      }
+      actions={
+        <MagneticButton>
+          <Button variant="scph" asChild>
+            <a
+              href="https://www.akademisains.gov.my/nphap-full-report/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read the full NPHAP <ExternalLink className="ml-1 h-4 w-4" />
+            </a>
+          </Button>
+        </MagneticButton>
+      }
+    />
   );
 }
 
