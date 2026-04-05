@@ -20,6 +20,11 @@ import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
+import {
+  PartnerLogoPlaceholder,
+  PartnerMarquee,
+} from "@/components/sections/partner-marquee";
+import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { getSiteUrlString } from "@/lib/site-url";
 
@@ -230,15 +235,7 @@ function NphapSection() {
 
 // ─── Partners ────────────────────────────────────────────────────────────────
 
-const partnerPlaceholders = Array.from({ length: 8 }, (_, i) => i + 1);
-
-function PartnerLogoItem({ n, extraClass }: { n: number; extraClass?: string }) {
-  return (
-    <div className={`flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 mr-4 ${extraClass ?? ""}`}>
-      <span className="text-xs font-medium text-gray-400">Partner Logo</span>
-    </div>
-  );
-}
+const partnerSlotIds = Array.from({ length: 8 }, (_, i) => i + 1);
 
 function PartnersSection() {
   return (
@@ -248,23 +245,23 @@ function PartnersSection() {
       theme="scph"
       background="default"
     >
-      <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-        <div className="mb-4 flex w-max animate-marquee will-change-transform">
-          {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r1a-${n}`} n={n} />)}
-          {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r1b-${n}`} n={n} />)}
-        </div>
-        <div className="flex w-max animate-marquee-reverse will-change-transform">
-          {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r2a-${n}`} n={n} />)}
-          {partnerPlaceholders.map((n) => <PartnerLogoItem key={`r2b-${n}`} n={n} />)}
-        </div>
-      </div>
+      <PartnerMarquee
+        maskClassName="[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+        renderRow={(slot) => (
+          <>
+            {partnerSlotIds.map((n) => (
+              <PartnerLogoPlaceholder key={`${slot}-${n}`} />
+            ))}
+          </>
+        )}
+      />
 
-      <p className="mt-8 text-center text-sm text-gray-400">
+      <PlaceholderNotice>
         Partner logos coming soon. Interested in partnering?{" "}
         <Link href="/network" className="font-semibold text-scph-blue hover:underline">
           Get in touch →
         </Link>
-      </p>
+      </PlaceholderNotice>
     </SectionWrapper>
   );
 }

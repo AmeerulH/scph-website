@@ -24,6 +24,11 @@ import {
 } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
+import {
+  PartnerLogoPlaceholder,
+  PartnerMarquee,
+} from "@/components/sections/partner-marquee";
+import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { cn } from "@/lib/utils";
 import { getSiteUrlString } from "@/lib/site-url";
@@ -347,14 +352,6 @@ function EventInquirySection() {
 
 // ─── Sponsors & Partners ──────────────────────────────────────────────────────
 
-function SponsorLogoPlaceholder() {
-  return (
-    <div className="mr-4 flex h-20 w-40 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
-      <span className="text-xs font-medium text-gray-400">Partner Logo</span>
-    </div>
-  );
-}
-
 function PikPartnerLogo() {
   return (
     <a
@@ -391,42 +388,23 @@ function SponsorsSection() {
       {/*
         Vertical padding so card shadows aren’t clipped by overflow-hidden (needed for horizontal mask).
       */}
-      <div className="overflow-hidden px-1 py-3 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] sm:py-4">
-        <div className="mb-5 flex w-max animate-marquee will-change-transform">
-          {sponsorRowSlots.map((id) =>
-            id === "pik" ? (
-              <PikPartnerLogo key={`r1a-${id}`} />
-            ) : (
-              <SponsorLogoPlaceholder key={`r1a-${id}`} />
-            ),
-          )}
-          {sponsorRowSlots.map((id) =>
-            id === "pik" ? (
-              <PikPartnerLogo key={`r1b-${id}`} />
-            ) : (
-              <SponsorLogoPlaceholder key={`r1b-${id}`} />
-            ),
-          )}
-        </div>
-        <div className="flex w-max animate-marquee-reverse will-change-transform">
-          {sponsorRowSlots.map((id) =>
-            id === "pik" ? (
-              <PikPartnerLogo key={`r2a-${id}`} />
-            ) : (
-              <SponsorLogoPlaceholder key={`r2a-${id}`} />
-            ),
-          )}
-          {sponsorRowSlots.map((id) =>
-            id === "pik" ? (
-              <PikPartnerLogo key={`r2b-${id}`} />
-            ) : (
-              <SponsorLogoPlaceholder key={`r2b-${id}`} />
-            ),
-          )}
-        </div>
-      </div>
+      <PartnerMarquee
+        maskClassName="px-1 py-3 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] sm:py-4"
+        forwardStripClassName="mb-5"
+        renderRow={(slot) => (
+          <>
+            {sponsorRowSlots.map((id) =>
+              id === "pik" ? (
+                <PikPartnerLogo key={`${slot}-${id}`} />
+              ) : (
+                <PartnerLogoPlaceholder key={`${slot}-${id}`} elevated />
+              ),
+            )}
+          </>
+        )}
+      />
 
-      <p className="mt-8 text-center text-sm text-gray-400">
+      <PlaceholderNotice>
         Partner and sponsor logos coming soon. Interested in partnering?{" "}
         <Link
           href="/events/gtp-2026/get-involved#partnership"
@@ -434,7 +412,7 @@ function SponsorsSection() {
         >
           Get in touch →
         </Link>
-      </p>
+      </PlaceholderNotice>
     </SectionWrapper>
   );
 }
