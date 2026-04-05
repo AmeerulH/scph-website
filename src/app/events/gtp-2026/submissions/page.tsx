@@ -115,7 +115,7 @@ const eightThemes = [
   {
     icon: Globe,
     title: "Earth System Science",
-    body: "Cutting-edge research on planetary boundaries, climate feedback loops, ecosystem thresholds, and Earth system modelling.",
+    body: "Cutting-edge research on planetary boundaries, climate feedback loops, ecosystem thresholds, and earth system modelling.",
     iconBg: "bg-sky-50",
     iconColour: "text-sky-600",
   },
@@ -268,7 +268,7 @@ function CtaSection() {
               <p className="mt-3 text-sm leading-relaxed text-gray-600">
                 {activeTab === "abstract"
                   ? "Complete all required fields. The presenting author must submit this form."
-                  : "Complete all required fields. The proposed lead facilitator should submit this form."}
+                  : "Complete all required fields. The proposed session lead should submit this form."}
               </p>
             </div>
             <div className="p-6 sm:p-8">
@@ -308,7 +308,7 @@ export default function GtpSubmissionsPage() {
     <>
       <GtpForestHero
         title="Call for Abstract and Action Workshop Proposal Submissions"
-        lede="Submit scalable solutions emerging across the conference's critical domains"
+        lede="Submit scalable solutions across the conference's critical domains"
         titleSize="compact"
       />
       <PillarsSection />

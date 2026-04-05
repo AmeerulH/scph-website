@@ -319,9 +319,10 @@ function RequirementsPanel() {
               Expected Outcomes
             </p>
             <p className="mt-1 text-xs">
-              Session conveners are expected to produce a short return summary
-              of their session, for which a template will be provided in advance.
-              Sessions should aim and report on tangible outcomes or identify:
+              Session conveners are expected to produce a short written summary
+              of their session, for which a template will be provided in
+              advance. Sessions should aim and report on tangible outcomes or
+              identify:
             </p>
             <ul className="mt-1 space-y-0.5 pl-3 text-xs">
               <li>• Policy levers, investment signals, or narrative shifts</li>
@@ -357,7 +358,7 @@ function RequirementsPanel() {
                   items: [
                     "Potential to inform policy decisions and investment signals",
                     "Capacity to generate narrative shifts",
-                    "Scalability across Asia and emerging economies",
+                    "Scalability, especially across Asia and emerging economies",
                   ],
                 },
                 {
@@ -380,7 +381,7 @@ function RequirementsPanel() {
                   title: "Practical Feasibility",
                   items: [
                     "Resource requirements and venue suitability",
-                    "Participant availability and commitment",
+                    "Convener availability and commitment",
                     "Compliance with conference timeline",
                   ],
                 },
@@ -729,7 +730,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="expectedOutcomes"
           name="expectedOutcomes"
           label="Expected Outcomes"
-          helper="Include specific connection to Asian contexts, evidence of acceleration potential, regional partnerships and scalability…"
+          helper="Include specific connection to Asian context (if any), evidence of acceleration potential, regional partnerships and scalability…"
           required
           rows={4}
         />
@@ -738,7 +739,7 @@ function WorkshopFormContent({ onSuccess }: { onSuccess: () => void }) {
           id="sessionDetails"
           name="sessionDetails"
           label="Session Details"
-          helper={`Provide details covering:\n1. Session Format — describe the structure and format\n2. Session Overview — state a brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
+          helper={`Provide details covering:\n1. Session Format — describe the structure and format\n2. Session Overview — state brief agenda\n3. Engagement Strategies — how will you ensure active participation?\n4. Interactive Elements — any specific activities or tools used?`}
           required
           rows={6}
         />
