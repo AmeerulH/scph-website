@@ -17,10 +17,12 @@
  */
 
 export const SECTION_BLOCK_TYPES = [
+  /** Stage 0 CMS object names (see `studio/schemaTypes/objects/`) */
+  "sectionStatsRow",
+  "sectionRichText",
+  "sectionProseCta",
   "scphPageHero",
   "gtpForestHero",
-  "statsRow",
-  "sectionProseCta",
   "iconCardGrid",
   "twoColumnTextImages",
   "twoColumnCopyBenefits",

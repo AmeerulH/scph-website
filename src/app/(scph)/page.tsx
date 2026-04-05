@@ -26,6 +26,12 @@ import {
 } from "@/components/sections/partner-marquee";
 import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
+import {
+  RenderSectionBlock,
+  RenderSectionBlocks,
+} from "@/components/sections/render-section-block";
+import { getScphHomePage } from "@/sanity/queries";
+import type { SectionStatsRowBlock } from "@/sanity/section-block-types";
 import { getSiteUrlString } from "@/lib/site-url";
 
 const homeStats = [
@@ -34,6 +40,16 @@ const homeStats = [
   { value: "50+", label: "Partners & Collaborators" },
   { value: "20+", label: "Publications" },
 ];
+
+function cmsStatsRowIsUsable(
+  row: SectionStatsRowBlock | null | undefined,
+): row is SectionStatsRowBlock {
+  if (!row || row._type !== "sectionStatsRow" || row.enabled === false) {
+    return false;
+  }
+  const items = row.items?.filter((i) => i.value && i.label) ?? [];
+  return items.length > 0;
+}
 
 // ─── About Section ───────────────────────────────────────────────────────────
 
@@ -321,7 +337,14 @@ const organizationJsonLd = {
   ],
 };
 
-export default function HomePage() {
+/** Refetch home CMS slices on each request so production edits show without redeploying. */
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const homeDoc = await getScphHomePage().catch(() => null);
+  const cmsStats = homeDoc?.statsRow;
+  const introSections = homeDoc?.introSections ?? null;
+
   return (
     <>
       <script
@@ -331,7 +354,18 @@ export default function HomePage() {
         }}
       />
       <ScphHero />
-      <StatsRow items={homeStats} variant="blue-band" />
+      {cmsStatsRowIsUsable(cmsStats) ? (
+        <RenderSectionBlock
+          block={{
+            ...cmsStats,
+            _type: "sectionStatsRow",
+            _key: cmsStats._key ?? "home-stats",
+          }}
+        />
+      ) : (
+        <StatsRow items={homeStats} variant="blue-band" />
+      )}
+      <RenderSectionBlocks blocks={introSections ?? []} />
       <Gtp2026HomeSection />
       <Gtp2026HomeEventInquirySection />
       <AboutSection />

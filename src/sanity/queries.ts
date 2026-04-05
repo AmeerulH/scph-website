@@ -1,4 +1,5 @@
 import { client } from "./client";
+import type { SectionBlock, SectionStatsRowBlock } from "./section-block-types";
 
 export type {
   GtpCarouselMeta,
@@ -36,4 +37,19 @@ const teamMembersQuery = `*[_type == "teamMember"] | order(order asc, name asc) 
 
 export async function getTeamMembers(): Promise<SanityTeamMember[]> {
   return client.fetch(teamMembersQuery);
+}
+
+export type ScphHomePageData = {
+  statsRow: SectionStatsRowBlock | null;
+  introSections: SectionBlock[] | null;
+};
+
+const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
+  statsRow,
+  introSections
+}`;
+
+/** First `scphHomePage` document, or `null` if none / fetch error callers should handle. */
+export async function getScphHomePage(): Promise<ScphHomePageData | null> {
+  return client.fetch<ScphHomePageData | null>(scphHomePageQuery);
 }
