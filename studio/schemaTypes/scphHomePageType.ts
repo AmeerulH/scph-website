@@ -18,6 +18,21 @@ export const scphHomePageType = defineType({
       initialValue: 'Home',
     }),
     defineField({
+      name: 'hero',
+      title: 'Hero',
+      type: 'scphHomeHero',
+      description:
+        'Main headline, tagline, and intro above the stats row. Leave empty to use built-in defaults.',
+    }),
+    defineField({
+      name: 'highlightedEvents',
+      title: 'Highlighted events (hero strip)',
+      type: 'array',
+      of: [{type: 'scphHomeHighlightedEvent'}],
+      description:
+        'Rows in the dark strip at the bottom of the hero. Add multiple for a scrollable row. Leave empty for built-in defaults.',
+    }),
+    defineField({
       name: 'statsRow',
       title: 'Stats row',
       type: 'sectionStatsRow',
@@ -45,6 +60,13 @@ export const scphHomePageType = defineType({
       type: 'sectionProseCta',
       description:
         'Optional. When set and visible, replaces the default NPHAP block before partners.',
+    }),
+    defineField({
+      name: 'partnersBand',
+      title: 'Partners band',
+      type: 'scphHomePartnersBand',
+      description:
+        'Partner logos marquee and footer notice. Reuses the same logo object type as GTP About sponsors.',
     }),
   ],
   preview: {

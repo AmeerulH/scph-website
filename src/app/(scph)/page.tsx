@@ -20,11 +20,6 @@ import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { SectionProseCta } from "@/components/sections/section-prose-cta";
 import { StatsRow } from "@/components/sections/stats-row";
-import {
-  PartnerLogoPlaceholder,
-  PartnerMarquee,
-} from "@/components/sections/partner-marquee";
-import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import {
   RenderSectionBlock,
@@ -35,6 +30,12 @@ import {
   mapSanityHighlightToProps,
 } from "@/sanity/gtp-stage1";
 import { getScphHomePage } from "@/sanity/queries";
+import {
+  resolveScphHomeHero,
+  resolveScphHomeHighlightedEvents,
+} from "@/sanity/scph-home-resolvers";
+import { mergeScphHomePartnersBand } from "@/sanity/scph-home-partners";
+import { ScphHomePartnersSection } from "@/components/scph/scph-home-partners-section";
 import type {
   SectionProseCtaBlock,
   SectionStatsRowBlock,
@@ -268,39 +269,6 @@ function NphapSection() {
   );
 }
 
-// ─── Partners ────────────────────────────────────────────────────────────────
-
-const partnerSlotIds = Array.from({ length: 8 }, (_, i) => i + 1);
-
-function PartnersSection() {
-  return (
-    <SectionWrapper
-      title="Building Coalitions for Change"
-      subtitle="Our Partners"
-      theme="scph"
-      background="default"
-    >
-      <PartnerMarquee
-        maskClassName="[mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-        renderRow={(slot) => (
-          <>
-            {partnerSlotIds.map((n) => (
-              <PartnerLogoPlaceholder key={`${slot}-${n}`} />
-            ))}
-          </>
-        )}
-      />
-
-      <PlaceholderNotice>
-        Partner logos coming soon. Interested in partnering?{" "}
-        <Link href="/network" className="font-semibold text-scph-blue hover:underline">
-          Get in touch →
-        </Link>
-      </PlaceholderNotice>
-    </SectionWrapper>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const homeDescription =
@@ -366,10 +334,15 @@ export default async function HomePage() {
   ]);
   const highlightSpeakersFromCms =
     highlightRows.length > 0 ? mapSanityHighlightToProps(highlightRows) : undefined;
+  const heroCopy = resolveScphHomeHero(homeDoc?.hero);
+  const highlightedEvents = resolveScphHomeHighlightedEvents(
+    homeDoc?.highlightedEvents,
+  );
   const cmsStats = homeDoc?.statsRow;
   const introSections = homeDoc?.introSections ?? null;
   const cmsRoadmap = homeDoc?.roadmapSection;
   const cmsNphap = homeDoc?.nphapSection;
+  const partnersBand = mergeScphHomePartnersBand(homeDoc?.partnersBand);
 
   return (
     <>
@@ -379,7 +352,7 @@ export default async function HomePage() {
           __html: JSON.stringify(organizationJsonLd),
         }}
       />
-      <ScphHero />
+      <ScphHero hero={heroCopy} highlightedEvents={highlightedEvents} />
       {cmsStatsRowIsUsable(cmsStats) ? (
         <RenderSectionBlock
           block={{
@@ -418,7 +391,7 @@ export default async function HomePage() {
       ) : (
         <NphapSection />
       )}
-      <PartnersSection />
+      <ScphHomePartnersSection band={partnersBand} />
     </>
   );
 }

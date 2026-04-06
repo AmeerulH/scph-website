@@ -4,6 +4,11 @@ import type {
   SectionProseCtaBlock,
   SectionStatsRowBlock,
 } from "./section-block-types";
+import type {
+  ScphHomeHeroSanity,
+  ScphHomeHighlightedEventSanity,
+} from "./scph-home-resolvers";
+import type { ScphHomePartnersBandRaw } from "./scph-home-partners";
 
 export type {
   GtpCarouselMeta,
@@ -44,17 +49,34 @@ export async function getTeamMembers(): Promise<SanityTeamMember[]> {
 }
 
 export type ScphHomePageData = {
+  hero: ScphHomeHeroSanity;
+  highlightedEvents: ScphHomeHighlightedEventSanity[] | null;
   statsRow: SectionStatsRowBlock | null;
   introSections: SectionBlock[] | null;
   roadmapSection: SectionProseCtaBlock | null;
   nphapSection: SectionProseCtaBlock | null;
+  partnersBand: ScphHomePartnersBandRaw;
 };
 
 const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
+  hero,
+  highlightedEvents,
   statsRow,
   introSections,
   roadmapSection,
-  nphapSection
+  nphapSection,
+  partnersBand {
+    title,
+    subtitle,
+    partners[] {
+      name,
+      href,
+      "logoUrl": logo.asset->url
+    },
+    noticeBeforeLink,
+    noticeLinkText,
+    noticeLinkHref
+  }
 }`;
 
 /** First `scphHomePage` document, or `null` if none / fetch error callers should handle. */

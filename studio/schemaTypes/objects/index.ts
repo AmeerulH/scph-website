@@ -1,3 +1,6 @@
+import {scphHomeHeroType} from './scphHomeHeroType'
+import {scphHomeHighlightedEventType} from './scphHomeHighlightedEventType'
+import {scphHomePartnersBandType} from './scphHomePartnersBandType'
 import {sectionCtaLinkType} from './sectionCtaLinkType'
 import {sectionProseCtaType} from './sectionProseCtaType'
 import {sectionRichTextType} from './sectionRichTextType'
@@ -14,6 +17,13 @@ export const sectionObjectTypes = [
   sectionStatsRowType,
   sectionRichTextType,
   sectionProseCtaType,
+]
+
+/** Embedded objects for `scphHomePage` hero + events strip + partners */
+export const scphHomeObjectTypes = [
+  scphHomeHeroType,
+  scphHomeHighlightedEventType,
+  scphHomePartnersBandType,
 ]
 
 /** For `of: [...]` on a sections field */
