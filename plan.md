@@ -115,13 +115,13 @@ Node/ts scripts under `scripts/` to seed or upsert hardcoded repo copy into Sani
 
 ---
 
-## Stage 5 — GTP FAQ (gap)
+## Stage 5 — GTP FAQ (done)
 
 **Reality:** [`src/app/events/gtp-2026/faq/page.tsx`](src/app/events/gtp-2026/faq/page.tsx) has **no** static FAQ array; empty CMS → placeholder.
 
-**Options:** (a) editors only in Studio; (b) add `scripts/data/gtp-faq-seed.json` + `scripts/seed-gtp-faq-items.ts` → `gtp2026FaqItem` ([`studio/schemaTypes/gtp2026FaqItemType.ts`](studio/schemaTypes/gtp2026FaqItemType.ts)).
+**Implemented:** [`scripts/data/gtp-faq-seed.json`](scripts/data/gtp-faq-seed.json) + [`scripts/seed-gtp-faq-items.ts`](scripts/seed-gtp-faq-items.ts) → `gtp2026FaqItem` ([`studio/schemaTypes/gtp2026FaqItemType.ts`](studio/schemaTypes/gtp2026FaqItemType.ts)). `npm run seed-gtp-faq-items`.
 
-**Verify:** `/events/gtp-2026/faq` shows accordions.
+**Verify:** `/events/gtp-2026/faq` shows accordions after seed + Publish in Studio.
 
 ---
 
