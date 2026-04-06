@@ -6,6 +6,8 @@ import {sectionProseCtaType} from './sectionProseCtaType'
 import {sectionRichTextType} from './sectionRichTextType'
 import {sectionStatsRowType} from './sectionStatsRowType'
 import {sectionStatItemType} from './sectionStatItemType'
+import {scphPageBandObjectTypes} from './scphPageBandsTypes'
+import {scphMediaPageObjectTypes} from './scphMediaPageTypes'
 
 /**
  * Object types used inside page `sections[]` arrays.
@@ -32,3 +34,9 @@ export const sectionBlockMembers = [
   {type: 'sectionRichText'},
   {type: 'sectionProseCta'},
 ] as const
+
+/** About / research / network page band objects (register before `scph*Page` documents). */
+export {scphPageBandObjectTypes}
+
+/** Media page article cards (register before `scphMediaPage`). */
+export {scphMediaPageObjectTypes}

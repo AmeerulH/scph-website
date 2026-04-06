@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { ArticleCardGrid } from "@/components/sections/article-card-grid";
+import {
+  ArticleCardGrid,
+  type ArticleCardItem,
+} from "@/components/sections/article-card-grid";
 import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { ScphPageHero } from "@/components/sections/heroes";
-import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import {
+  RenderSectionBlocks,
+} from "@/components/sections/render-section-block";
+import { sectionBlocksMayRender } from "@/sanity/section-block-types";
 import { getScphMediaPage } from "@/sanity/scph-pages";
+import { mergeScphMediaPage } from "@/sanity/scph-media-page-merge";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -21,129 +28,81 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// ─── Articles ─────────────────────────────────────────────────────────────────
-
-const articles = [
-  {
-    title: "'We are at War with Nature' – and We Urgently Need to Make Peace",
-    tag: "Biodiversity",
-    excerpt:
-      "Every single animal and plant we lose forever is another step towards the extinction of the human race.",
-  },
-  {
-    title: "Pathways Linking Climate Change and HIV/AIDS",
-    tag: "Climate & Health",
-    excerpt:
-      "The connection between climate change and HIV/AIDS is still yet to be recognized in research and practice.",
-  },
-  {
-    title:
-      "Beyond the Hippocratic Oath: A Planetary Health Pledge for the Malaysian Medical Community",
-    tag: "Policy",
-    excerpt:
-      "Without adequate levels of care for the larger planet, both human health and human development are compromised.",
-  },
-  {
-    title: "Safeguarding Human Health in the Anthropocene Epoch",
-    tag: "Research",
-    excerpt:
-      "Far-reaching changes to Earth's natural systems represent a growing threat to human health.",
-  },
-  {
-    title:
-      "Tackling the Politics of Intersectoral Action for the Health of People and Planet",
-    tag: "Governance",
-    excerpt:
-      "Unlocking the potential for intersectoral action requires thinking politically about its facilitators and barriers.",
-  },
-  {
-    title: "Plastics Are A Planetary Health Crisis – Can You Do Anything About It?",
-    tag: "Pollution",
-    excerpt:
-      "A UN Environment Assembly resolution calls for a plastics treaty to be negotiated.",
-  },
-  {
-    title: "The Future Belongs to the Youth, It's Time We Listen to Them",
-    tag: "Youth",
-    excerpt:
-      "Our country is poorly prepared for the larger planetary health crisis.",
-  },
-  {
-    title:
-      "Indonesia: Why Planetary Health Should Be on the Menu for the G20 Chair",
-    tag: "Governance",
-    excerpt:
-      "Indonesia's G20 chairmanship should focus on strengthening global health architecture.",
-  },
-  {
-    title: "Health of Our Planet Impacts Our Own Wellness",
-    tag: "Policy",
-    excerpt:
-      "The need to urgently think about how the health of our planet impacts individual wellness.",
-  },
-  {
-    title:
-      "Malaysia is Drowning in Uneaten Food – 6 Steps to Help Stop Food Waste",
-    tag: "Food Systems",
-    excerpt:
-      "Food waste is one of the issues that we have the most power to change by our individual behaviours.",
-  },
-  {
-    title: "Tackling Air Pollution in the Philippines",
-    tag: "Pollution",
-    excerpt:
-      "Three decades after the Clean Air Act, the Philippines is still far from comprehensive air pollution control.",
-  },
-  {
-    title: "Financing the Future of WHO",
-    tag: "Financing",
-    excerpt:
-      "WHO's resources have consistently lagged behind its constitutional mandate.",
-  },
-];
-
-const articlesIndexUrl =
-  "https://sunwayuniversity.edu.my/research/planetaryhealth/news";
-
-function ArticlesSection() {
+function ArticlesSection({
+  title,
+  subtitle,
+  items,
+  viewAllUrl,
+  viewAllLabel,
+  readLabel,
+  introNote,
+}: {
+  title: string;
+  subtitle: string;
+  items: ArticleCardItem[];
+  viewAllUrl: string;
+  viewAllLabel: string;
+  readLabel: string;
+  introNote: string;
+}) {
   return (
     <SectionWrapper
-      title="Latest Articles"
-      subtitle="From Our Community"
+      title={title}
+      subtitle={subtitle}
       theme="scph"
       background="default"
     >
-      <ArticleCardGrid items={articles} articleHref={articlesIndexUrl} />
+      <ArticleCardGrid
+        items={items}
+        articleHref={viewAllUrl}
+        readLabel={readLabel}
+      />
 
       <PlaceholderNotice className="mt-12">
-        Articles are published on the Sunway University website.{" "}
+        {introNote}{" "}
         <a
-          href={articlesIndexUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={viewAllUrl}
+          target={
+            /^https?:\/\//i.test(viewAllUrl) ? "_blank" : undefined
+          }
+          rel={
+            /^https?:\/\//i.test(viewAllUrl)
+              ? "noopener noreferrer"
+              : undefined
+          }
           className="font-semibold text-scph-blue hover:underline"
         >
-          View all articles →
+          {viewAllLabel}
         </a>
       </PlaceholderNotice>
     </SectionWrapper>
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default async function MediaPage() {
   const mediaCms = await getScphMediaPage().catch(() => null);
+  const page = mergeScphMediaPage(mediaCms);
+  const showIntroSections = sectionBlocksMayRender(page.sections);
 
   return (
     <>
       <ScphPageHero
-        eyebrow="Media"
-        title={<>News &amp; Articles</>}
-        lede="Perspectives from the planetary health community."
+        eyebrow={page.heroEyebrow}
+        title={page.heroTitle}
+        lede={page.heroLede}
       />
-      <RenderSectionBlocks blocks={mediaCms?.sections ?? []} />
-      <ArticlesSection />
+      {showIntroSections ? (
+        <RenderSectionBlocks blocks={page.sections} />
+      ) : null}
+      <ArticlesSection
+        title={page.articlesSectionTitle}
+        subtitle={page.articlesSectionSubtitle}
+        items={page.articles}
+        viewAllUrl={page.viewAllArticlesUrl}
+        viewAllLabel={page.viewAllArticlesLabel}
+        readLabel={page.readArticleLabel}
+        introNote={page.articlesIntroNote}
+      />
     </>
   );
 }

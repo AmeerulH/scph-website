@@ -25,7 +25,12 @@ import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
 import {scphHomePageType} from './scphHomePageType'
 import {scphMeetTheTeamPageType} from './scphMeetTheTeamPageType'
 import {scphSectionPageTypes} from './scphSectionsPageTypes'
-import {scphHomeObjectTypes, sectionObjectTypes} from './objects'
+import {
+  scphHomeObjectTypes,
+  sectionObjectTypes,
+  scphPageBandObjectTypes,
+  scphMediaPageObjectTypes,
+} from './objects'
 import {programmeDayType} from './programmeDayType'
 import {programmeSessionType} from './programmeSessionType'
 import {programmeSpeakerType} from './programmeSpeakerType'
@@ -59,6 +64,8 @@ export const schemaTypes = [
   teamMemberType,
   ...sectionObjectTypes,
   ...scphHomeObjectTypes,
+  ...scphPageBandObjectTypes,
+  ...scphMediaPageObjectTypes,
   cmsSandboxPageType,
   scphHomePageType,
   scphMeetTheTeamPageType,

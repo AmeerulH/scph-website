@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SCPH_PROJECTS_PLACEHOLDER_DESCRIPTION } from "@/data/scph-placeholder-pages-defaults";
 import { PlaceholderPage } from "@/components/shared/placeholder-page";
 import { RenderSectionBlocks } from "@/components/sections/render-section-block";
 import { getScphProjectsPage } from "@/sanity/scph-pages";
@@ -38,7 +39,7 @@ export default async function ProjectsPage() {
   return (
     <PlaceholderPage
       title={title}
-      description={customDesc || undefined}
+      description={customDesc || SCPH_PROJECTS_PLACEHOLDER_DESCRIPTION}
       theme="scph"
     />
   );

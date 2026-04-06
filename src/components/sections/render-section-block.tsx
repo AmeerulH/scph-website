@@ -11,7 +11,7 @@ import type {
   SectionStatsRowBlock,
 } from "@/sanity/section-block-types";
 
-function SectionStatsRowFromCms({ block }: { block: SectionStatsRowBlock }) {
+export function SectionStatsRowFromCms({ block }: { block: SectionStatsRowBlock }) {
   const variant = block.variant === "light-green" ? "light-green" : "blue-band";
   const items =
     block.items
@@ -73,7 +73,13 @@ function proseBodyNodes(body: string, constrainProse: boolean) {
   );
 }
 
-function SectionProseCtaFromCms({ block }: { block: SectionProseCtaBlock }) {
+export function SectionProseCtaFromCms({
+  block,
+  scrollProgress = false,
+}: {
+  block: SectionProseCtaBlock;
+  scrollProgress?: boolean;
+}) {
   const background = block.background === "muted" ? "muted" : "default";
   const constrainProse = block.constrainProse !== false;
   const actionsInsideProse = block.actionsInsideProse === true;
@@ -116,6 +122,7 @@ function SectionProseCtaFromCms({ block }: { block: SectionProseCtaBlock }) {
       subtitle={block.subtitle}
       theme="scph"
       background={background}
+      scrollProgress={scrollProgress}
       constrainProse={constrainProse}
       actionsInsideProse={actionsInsideProse}
       prose={proseNodes ?? <></>}

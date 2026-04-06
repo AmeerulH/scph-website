@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Target, Users } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { MagneticButton } from "@/components/motion/MagneticButton";
@@ -12,10 +12,19 @@ import {
   type ScphMeetTheTeamPageData,
 } from "@/sanity/scph-pages";
 import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { sectionBlocksMayRender } from "@/sanity/section-block-types";
 import { cn } from "@/lib/utils";
-import { IconCardGrid } from "@/components/sections/icon-card-grid";
+import {
+  IconCardGrid,
+  type ScphWhiteLinkCardItem,
+} from "@/components/sections/icon-card-grid";
 import { ScphPageHero } from "@/components/sections/heroes";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
+import {
+  mergeScphAboutPageBands,
+  splitParagraphs,
+  type MergedAboutFoundation,
+} from "@/sanity/scph-page-bands-merge";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -35,7 +44,42 @@ export const dynamic = "force-dynamic";
 
 // ─── Our Foundation ───────────────────────────────────────────────────────────
 
-function OurFoundationSection() {
+function FoundationDiagramSlot({
+  imageUrl,
+  alt,
+  caption,
+}: {
+  imageUrl: string | null;
+  alt: string;
+  caption: string;
+}) {
+  return (
+    <div className="relative flex aspect-square flex-1 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={alt}
+          fill
+          className="object-contain p-4"
+          sizes="(max-width: 1024px) 100vw, 40vw"
+        />
+      ) : (
+        <div
+          className="absolute inset-4 rounded-xl bg-scph-blue/[0.06] ring-1 ring-dashed ring-scph-blue/15"
+          aria-hidden
+        />
+      )}
+      {caption ? (
+        <span className="absolute bottom-2 text-xs font-medium text-gray-400">
+          {caption}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
+function OurFoundationSection({ data }: { data: MergedAboutFoundation }) {
+  const paragraphs = splitParagraphs(data.body);
   return (
     <SectionWrapper theme="scph" background="default">
       {/* Anchor for navbar dropdown */}
@@ -47,53 +91,39 @@ function OurFoundationSection() {
             <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
               <span className="h-px w-8 shrink-0 bg-current opacity-60" />
               <span className="text-xs font-semibold uppercase tracking-[0.15em]">
-                Our Foundation
+                {data.eyebrow}
               </span>
             </div>
             <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
-              What is Planetary Health?
+              {data.heading}
             </h2>
             <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
-            <p className="mt-6 text-lg leading-relaxed text-gray-600">
-              A planetary health approach to human development recognises that
-              humankind has made significant progress in many ways with the
-              industrial, green and technological revolutions as examples. But
-              these development gains are now being offset by increasingly
-              obvious disruption to the health of the planet.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-gray-500">
-              We can see this in depleted biodiversity, changing land use and
-              cover, a massive increase in air pollution, shortages of natural
-              resources, and the resulting damage to our lived environment —
-              most clearly demonstrated through recent pandemic and disease
-              outbreaks and the climate emergency.
-            </p>
+            {paragraphs.map((p, i) => (
+              <p
+                key={i}
+                className={cn(
+                  i === 0
+                    ? "mt-6 text-lg leading-relaxed text-gray-600"
+                    : "mt-4 text-base leading-relaxed text-gray-500",
+                )}
+              >
+                {p}
+              </p>
+            ))}
           </>
         }
         media={
           <div className="flex flex-col gap-4 lg:flex-row">
-            <div className="relative flex aspect-square flex-1 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10">
-              <Image
-                src="/images/scph/ph-diagram.png"
-                alt="Planetary Health Diagram"
-                fill
-                className="object-contain p-4"
-              />
-              <span className="absolute bottom-2 text-xs font-medium text-gray-400">
-                PH Diagram
-              </span>
-            </div>
-            <div className="relative flex aspect-square flex-1 items-center justify-center overflow-hidden rounded-2xl bg-scph-blue/5 ring-1 ring-scph-blue/10">
-              <Image
-                src="/images/scph/wedding-cake.png"
-                alt="Wedding Cake Diagram"
-                fill
-                className="object-contain p-4"
-              />
-              <span className="absolute bottom-2 text-xs font-medium text-gray-400">
-                Wedding Cake
-              </span>
-            </div>
+            <FoundationDiagramSlot
+              imageUrl={data.image1Url}
+              alt={data.image1Alt}
+              caption={data.image1Caption}
+            />
+            <FoundationDiagramSlot
+              imageUrl={data.image2Url}
+              alt={data.image2Alt}
+              caption={data.image2Caption}
+            />
           </div>
         }
       />
@@ -103,69 +133,46 @@ function OurFoundationSection() {
 
 // ─── Our Strategy ─────────────────────────────────────────────────────────────
 
-const strategyCards = [
-  {
-    id: "vision-mission",
-    icon: Target,
-    title: "Vision & Mission",
-    description:
-      "Our vision and mission set the direction for all our work, guiding how we advance planetary health across disciplines and borders.",
-    href: "#",
-  },
-  {
-    id: "strategy-2025-27",
-    icon: ArrowRight,
-    title: "2025–27 Strategy",
-    description:
-      "Our three-year strategy outlines the concrete steps we are taking to translate evidence into meaningful action for people and the planet.",
-    href: "#",
-  },
-  {
-    id: "core-values",
-    icon: BookOpen,
-    title: "Core Values",
-    description:
-      "We are guided by a set of core values that shape our culture, partnerships, and the way we engage with communities and institutions.",
-    href: "#",
-  },
-  {
-    id: "strategic-pillars",
-    icon: Users,
-    title: "Strategic Pillars",
-    description:
-      "Our strategic pillars organise our work into focused areas: healthy cities, health-centred decarbonisation, and an education revolution.",
-    href: "#",
-  },
-];
-
-function OurStrategySection() {
+function OurStrategySection({
+  sectionTitle,
+  sectionSubtitle,
+  introBody,
+  cards,
+}: {
+  sectionTitle: string;
+  sectionSubtitle: string;
+  introBody: string;
+  cards: ScphWhiteLinkCardItem[];
+}) {
+  const introParas = splitParagraphs(introBody);
   return (
     <SectionWrapper
-      title="Sunway Centre for Planetary Health"
-      subtitle="Our Vision & Mission"
+      title={sectionTitle}
+      subtitle={sectionSubtitle}
       theme="scph"
       background="muted"
     >
       {/* Anchor for navbar dropdown */}
       <div id="strategy" className="-mt-24 pt-24" />
       <div className="mb-10 max-w-3xl">
-        <p className="text-lg leading-relaxed text-gray-600">
-          Sunway Centre for Planetary Health is committed to research and
-          advocacy that advances planetary health through three priority areas:
-          healthy cities, health-centred decarbonisation, and driving an
-          education revolution.
-        </p>
-        <p className="mt-4 text-base leading-relaxed text-gray-500">
-          Anchored at Sunway University in Kuala Lumpur, we work across
-          disciplines and borders to translate evidence into meaningful action
-          for people and the planet.
-        </p>
+        {introParas.map((p, i) => (
+          <p
+            key={i}
+            className={cn(
+              i === 0
+                ? "text-lg leading-relaxed text-gray-600"
+                : "mt-4 text-base leading-relaxed text-gray-500",
+            )}
+          >
+            {p}
+          </p>
+        ))}
       </div>
 
       <IconCardGrid
         variant="scph-white-link"
         gridClassName="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        items={strategyCards}
+        items={cards}
       />
     </SectionWrapper>
   );
@@ -173,11 +180,21 @@ function OurStrategySection() {
 
 // ─── Our Journey ──────────────────────────────────────────────────────────────
 
-function OurJourneySection() {
+function OurJourneySection({
+  sectionTitle,
+  sectionSubtitle,
+  placeholderTitle,
+  placeholderBody,
+}: {
+  sectionTitle: string;
+  sectionSubtitle: string;
+  placeholderTitle: string;
+  placeholderBody: string;
+}) {
   return (
     <SectionWrapper
-      title="Milestone Reached and Future Aspiration"
-      subtitle="Our Journey"
+      title={sectionTitle}
+      subtitle={sectionSubtitle}
       theme="scph"
       background="default"
     >
@@ -187,12 +204,9 @@ function OurJourneySection() {
       <div className="flex min-h-[280px] items-center justify-center rounded-2xl border-2 border-dashed border-scph-blue/15 bg-scph-blue/3 p-10 text-center">
         <div>
           <p className="text-base font-medium text-scph-blue/60">
-            Journey timeline coming soon
+            {placeholderTitle}
           </p>
-          <p className="mt-2 text-sm text-gray-400">
-            This section will display SCPH&apos;s milestones and future aspirations
-            once the timeline assets are provided.
-          </p>
+          <p className="mt-2 text-sm text-gray-400">{placeholderBody}</p>
         </div>
       </div>
     </SectionWrapper>
@@ -750,6 +764,10 @@ export default async function AboutUsPage() {
     getScphMeetTheTeamPage().catch(() => null),
   ]);
 
+  const aboutBands = mergeScphAboutPageBands(aboutCms);
+  const aboutSections = aboutBands.sections;
+  const showOptionalAboutCms = sectionBlocksMayRender(aboutSections);
+
   return (
     <>
       <ScphPageHero
@@ -757,10 +775,22 @@ export default async function AboutUsPage() {
         eyebrow="About Us"
         title="About Sunway Centre for Planetary Health"
       />
-      <RenderSectionBlocks blocks={aboutCms?.sections ?? []} />
-      <OurFoundationSection />
-      <OurStrategySection />
-      <OurJourneySection />
+      <OurFoundationSection data={aboutBands.foundation} />
+      <OurStrategySection
+        sectionTitle={aboutBands.strategy.sectionTitle}
+        sectionSubtitle={aboutBands.strategy.sectionSubtitle}
+        introBody={aboutBands.strategy.introBody}
+        cards={aboutBands.strategy.cards}
+      />
+      <OurJourneySection
+        sectionTitle={aboutBands.journey.sectionTitle}
+        sectionSubtitle={aboutBands.journey.sectionSubtitle}
+        placeholderTitle={aboutBands.journey.placeholderTitle}
+        placeholderBody={aboutBands.journey.placeholderBody}
+      />
+      {showOptionalAboutCms ? (
+        <RenderSectionBlocks blocks={aboutSections} />
+      ) : null}
       <MeetTheTeamSection
         sanityMembers={sanityMembers}
         meetChrome={meetCms}

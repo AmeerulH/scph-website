@@ -4,7 +4,13 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphPageHero } from "@/components/sections/heroes";
 import { TwoColumnCopyBenefits } from "@/components/sections/two-column-copy-benefits";
 import { RenderSectionBlocks } from "@/components/sections/render-section-block";
+import { sectionBlocksMayRender } from "@/sanity/section-block-types";
 import { getScphNetworkPage } from "@/sanity/scph-pages";
+import {
+  mergeScphNetworkPageBands,
+  splitParagraphs,
+} from "@/sanity/scph-page-bands-merge";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Network",
@@ -21,41 +27,49 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-// ─── Who Qualifies + Benefits ─────────────────────────────────────────────────
-
-const benefits = [
-  "Opportunity to get your organisation, social enterprise, or project featured within SCPH's research themes",
-  "Opportunity to write for our Medium page",
-  "Exclusive access to SCPH's partners' events",
-  "Early-bird access to SCPH events",
-  "Access to an online community of like-minded individuals",
-];
-
-function CommunitySection() {
+function CommunitySection({
+  copyEyebrow,
+  copyTitle,
+  copyBody,
+  benefitsEyebrow,
+  benefitsTitle,
+  benefitItems,
+}: {
+  copyEyebrow: string;
+  copyTitle: string;
+  copyBody: string;
+  benefitsEyebrow: string;
+  benefitsTitle: string;
+  benefitItems: string[];
+}) {
+  const copyParas = splitParagraphs(copyBody);
   return (
     <SectionWrapper theme="scph" background="default">
       <TwoColumnCopyBenefits
         copy={{
-          eyebrow: "Who Qualifies",
-          title: "Anyone Who Shares Our Vision",
+          eyebrow: copyEyebrow,
+          title: copyTitle,
           children: (
             <>
-              <p className="mt-6 text-lg leading-relaxed text-gray-600">
-                Anyone who shares our vision for a world where the health of humans
-                and the planet thrive in harmony!
-              </p>
-              <p className="mt-4 text-base leading-relaxed text-gray-500">
-                Whether you are a student, researcher, policymaker, or community
-                advocate — there is a place for you in the planetary health
-                movement.
-              </p>
+              {copyParas.map((p, i) => (
+                <p
+                  key={i}
+                  className={cn(
+                    i === 0
+                      ? "mt-6 text-lg leading-relaxed text-gray-600"
+                      : "mt-4 text-base leading-relaxed text-gray-500",
+                  )}
+                >
+                  {p}
+                </p>
+              ))}
             </>
           ),
         }}
         benefits={{
-          eyebrow: "What You Get",
-          title: "Member Benefits",
-          items: benefits,
+          eyebrow: benefitsEyebrow,
+          title: benefitsTitle,
+          items: benefitItems,
         }}
       />
     </SectionWrapper>
@@ -196,6 +210,10 @@ function SignUpSection() {
 
 export default async function NetworkPage() {
   const networkCms = await getScphNetworkPage().catch(() => null);
+  const bands = mergeScphNetworkPageBands(networkCms);
+  const networkSections = bands.sections;
+  const showOptionalNetworkCms = sectionBlocksMayRender(networkSections);
+  const c = bands.community;
 
   return (
     <>
@@ -204,8 +222,17 @@ export default async function NetworkPage() {
         title="Join the Planetary Health Community"
         lede="The global planetary health community is a diverse group of people committed to contributing to a healthier future through policy reforms, research, innovative solutions, advocacy efforts, and more."
       />
-      <RenderSectionBlocks blocks={networkCms?.sections ?? []} />
-      <CommunitySection />
+      <CommunitySection
+        copyEyebrow={c.copyEyebrow}
+        copyTitle={c.copyTitle}
+        copyBody={c.copyBody}
+        benefitsEyebrow={c.benefitsEyebrow}
+        benefitsTitle={c.benefitsTitle}
+        benefitItems={c.benefitItems}
+      />
+      {showOptionalNetworkCms ? (
+        <RenderSectionBlocks blocks={networkSections} />
+      ) : null}
       <SignUpSection />
     </>
   );
