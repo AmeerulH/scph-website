@@ -10,7 +10,8 @@
     "import-gtp-programme": "npx tsx scripts/import-gtp-programme-to-sanity.ts",
     "seed-gtp-register-page": "npx tsx scripts/seed-gtp-register-page.ts",
     "seed-gtp-get-involved-page": "npx tsx scripts/seed-gtp-get-involved-page.ts",
-    "seed-gtp-submissions-page": "npx tsx scripts/seed-gtp-submissions-page.ts"
+    "seed-gtp-submissions-page": "npx tsx scripts/seed-gtp-submissions-page.ts",
+    "seed-gtp-highlight-speakers": "npx tsx scripts/seed-gtp-highlight-speakers.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",
