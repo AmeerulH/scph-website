@@ -13,7 +13,8 @@
     "seed-gtp-submissions-page": "npx tsx scripts/seed-gtp-submissions-page.ts",
     "seed-gtp-highlight-speakers": "npx tsx scripts/seed-gtp-highlight-speakers.ts",
     "seed-gtp-committee-members": "npx tsx scripts/seed-gtp-committee-members.ts",
-    "seed-gtp-faq-items": "npx tsx scripts/seed-gtp-faq-items.ts"
+    "seed-gtp-faq-items": "npx tsx scripts/seed-gtp-faq-items.ts",
+    "seed-gtp-media-bizforum-pages": "npx tsx scripts/seed-gtp-media-bizforum-pages.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",

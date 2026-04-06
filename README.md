@@ -97,6 +97,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 - **GTP highlight speakers**: `npm run seed-gtp-highlight-speakers` — source [`src/data/gtp-highlight-speakers.ts`](src/data/gtp-highlight-speakers.ts); upserts one `gtp2026HighlightSpeaker` per row with `_id` = `gtpHighlightSpeaker-<slug>`, `order` from array index, optional image upload from `public/`. `DRY_RUN=1` prints JSON only (image shown as placeholder note).
 - **GTP organising committee**: `npm run seed-gtp-committee-members` — source [`src/data/gtp-committee-static.ts`](src/data/gtp-committee-static.ts); upserts `gtp2026CommitteeMember` docs with `_id` = `gtpCommittee-<cochair|planning|programme>-<slug(name-role)>`, global `order` for sort, optional images. `DRY_RUN=1` prints JSON only.
 - **GTP FAQ**: `npm run seed-gtp-faq-items` — source [`scripts/data/gtp-faq-seed.json`](scripts/data/gtp-faq-seed.json); upserts `gtp2026FaqItem` docs with `_id` = `gtpFaqItem-<slug(question)>` (suffix if slug collides), `order` from array index. `DRY_RUN=1` prints JSON only.
+- **GTP Media + Business forum** (placeholder shell): `npm run seed-gtp-media-bizforum-pages` — upserts singletons `_id` = `gtp2026MediaPage` / `gtp2026BizForumPage` with titles, `heroLede`, `placeholderDescription`, empty `sections`. When editors add visible section blocks, the site shows hero + sections instead of the placeholder. `DRY_RUN=1` prints JSON only.
 - **Team roster**: [`scripts/import-team-to-sanity.js`](scripts/import-team-to-sanity.js) (see script header for usage).
 
 ### CMS sandbox

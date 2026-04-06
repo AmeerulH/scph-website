@@ -125,15 +125,15 @@ Node/ts scripts under `scripts/` to seed or upsert hardcoded repo copy into Sani
 
 ---
 
-## Stage 6 — GTP Media + Biz forum (optional skeleton)
+## Stage 6 — GTP Media + Biz forum (done)
 
-**Scope:** Minimal singletons; routes mostly placeholder until `sections` exist — [`src/app/events/gtp-2026/media/page.tsx`](src/app/events/gtp-2026/media/page.tsx), [`src/app/events/gtp-2026/biz-forum/page.tsx`](src/app/events/gtp-2026/biz-forum/page.tsx).
+**Scope:** Minimal singletons; routes show placeholder until `sections` have visible blocks — [`src/app/events/gtp-2026/media/page.tsx`](src/app/events/gtp-2026/media/page.tsx), [`src/app/events/gtp-2026/biz-forum/page.tsx`](src/app/events/gtp-2026/biz-forum/page.tsx).
 
 **Sanity `_type`:** `gtp2026MediaPage`, `gtp2026BizForumPage`.
 
-**Proposed script:** `scripts/seed-gtp-media-bizforum-pages.ts` (titles / optional `placeholderDescription`).
+**Implemented:** [`scripts/seed-gtp-media-bizforum-pages.ts`](scripts/seed-gtp-media-bizforum-pages.ts). `npm run seed-gtp-media-bizforum-pages`.
 
-**Verify:** `/events/gtp-2026/media`, `/events/gtp-2026/biz-forum` after adding real sections in Studio.
+**Verify:** Publish in Studio → `/events/gtp-2026/media` and `/events/gtp-2026/biz-forum` show seeded placeholder copy; add section blocks later for full layout.
 
 ---
 
