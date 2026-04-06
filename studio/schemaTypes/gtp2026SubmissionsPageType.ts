@@ -1,7 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
 /**
- * Marketing copy for /events/gtp-2026/submissions. Form fields and validation stay in React.
+ * Marketing copy for /events/gtp-2026/submissions, including in-form labels and help text.
+ * Form field `name` attributes and server actions stay in code.
  */
 export const gtp2026SubmissionsPageType = defineType({
   name: 'gtp2026SubmissionsPage',
@@ -136,6 +137,20 @@ export const gtp2026SubmissionsPageType = defineType({
       name: 'backToTopLabel',
       title: 'Back to top button label',
       type: 'string',
+    }),
+    defineField({
+      name: 'abstractForm',
+      title: 'Abstract form (in-tab content)',
+      type: 'gtp2026AbstractFormCopy',
+      description:
+        'Headings, guidelines, field labels, and button text for the abstract submission form.',
+    }),
+    defineField({
+      name: 'workshopForm',
+      title: 'Workshop form (in-tab content)',
+      type: 'gtp2026WorkshopFormCopy',
+      description:
+        'Headings, requirements panel, field labels, and button text for the workshop proposal form.',
     }),
   ],
   preview: {

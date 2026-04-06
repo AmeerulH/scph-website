@@ -215,7 +215,17 @@ function CtaSection({ copy }: { copy: GtpSubmissionsResolvedCopy }) {
               </p>
             </div>
             <div className="p-6 sm:p-8">
-              {activeTab === "abstract" ? <AbstractForm /> : <WorkshopForm />}
+              {activeTab === "abstract" ? (
+                <AbstractForm
+                  abstractForm={copy.abstractForm}
+                  themeTitles={copy.themes.map((t) => t.title)}
+                />
+              ) : (
+                <WorkshopForm
+                  workshopForm={copy.workshopForm}
+                  themeTitles={copy.themes.map((t) => t.title)}
+                />
+              )}
             </div>
           </div>
 

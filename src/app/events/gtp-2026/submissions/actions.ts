@@ -1,6 +1,7 @@
 "use server";
 
 import { google } from "googleapis";
+import { WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE } from "./form-value-constants";
 
 // ─── Google Sheets client ─────────────────────────────────────────────────────
 
@@ -177,7 +178,7 @@ export async function sendWorkshopSubmission(
   }
 
   if (
-    fields.conflictOfInterest === "No, I have conflicts" &&
+    fields.conflictOfInterest === WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE &&
     !fields.conflictDetails?.trim()
   ) {
     return { error: "Please specify your conflicts of interest." };

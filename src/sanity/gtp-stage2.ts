@@ -2,12 +2,28 @@ import { client } from "./client";
 import {
   DEFAULT_GET_INVOLVED,
   DEFAULT_REGISTER,
+  DEFAULT_SUBMISSIONS,
   type GtpGetInvolvedResolvedCopy,
   type GtpRegisterResolvedCopy,
+  type GtpSubmissionsPillarCopy,
+  type GtpSubmissionsResolvedCopy,
+  type GtpSubmissionsThemeCopy,
 } from "./gtp-marketing-defaults";
+import {
+  mergeAbstractFormCopy,
+  mergeWorkshopFormCopy,
+  type SanityAbstractFormRaw,
+  type SanityWorkshopFormRaw,
+} from "./gtp-submissions-form-merge";
 import type { SectionBlock } from "./section-block-types";
 
-export type { GtpGetInvolvedResolvedCopy, GtpRegisterResolvedCopy };
+export type {
+  GtpGetInvolvedResolvedCopy,
+  GtpRegisterResolvedCopy,
+  GtpSubmissionsPillarCopy,
+  GtpSubmissionsResolvedCopy,
+  GtpSubmissionsThemeCopy,
+};
 
 // ─── Get involved ────────────────────────────────────────────────────────────
 
@@ -133,136 +149,6 @@ export function mergeGtpRegisterCopy(
 
 // ─── Submissions ─────────────────────────────────────────────────────────────
 
-export type GtpSubmissionsPillarCopy = { title: string; body: string };
-export type GtpSubmissionsThemeCopy = { title: string; body: string };
-
-export type GtpSubmissionsResolvedCopy = {
-  heroTitle: string;
-  heroLede: string;
-  heroTitleSize: "default" | "compact";
-  pillarsIntroBold: string;
-  pillarsIntro: string;
-  pillarsOutro: string;
-  pillarsLinkLabel: string;
-  pillarsLinkUrl: string;
-  pillars: [GtpSubmissionsPillarCopy, GtpSubmissionsPillarCopy, GtpSubmissionsPillarCopy];
-  themesSectionTitle: string;
-  themesIntro: string;
-  themes: [
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-    GtpSubmissionsThemeCopy,
-  ];
-  ctaTitle: string;
-  ctaSubtitle: string;
-  abstractTabLabel: string;
-  abstractDeadline: string;
-  workshopTabLabel: string;
-  workshopDeadline: string;
-  abstractFormIntro: string;
-  workshopFormIntro: string;
-  backToTopLabel: string;
-};
-
-const DEFAULT_SUBMISSION_PILLARS: [
-  GtpSubmissionsPillarCopy,
-  GtpSubmissionsPillarCopy,
-  GtpSubmissionsPillarCopy,
-] = [
-  {
-    title: "Understanding the Shift",
-    body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-  },
-  {
-    title: "Igniting Imagination",
-    body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-  },
-  {
-    title: "Accelerating Action",
-    body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-  },
-];
-
-const DEFAULT_SUBMISSION_THEMES: [
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-  GtpSubmissionsThemeCopy,
-] = [
-  {
-    title: "Earth System Science",
-    body: "Cutting-edge research on planetary boundaries, climate feedback loops, ecosystem thresholds, and earth system modelling.",
-  },
-  {
-    title: "Technology and AI",
-    body: "Innovative applications of artificial intelligence, machine learning, and emerging technologies for monitoring and responding to global tipping points.",
-  },
-  {
-    title: "Governance",
-    body: "Scientific analysis of governance frameworks, institutional capacity, and policy mechanisms for managing systemic risks and cross-border environmental challenges.",
-  },
-  {
-    title: "Finance and Business",
-    body: "Advances in sustainable finance, risk assessment methodologies, and business models that align with planetary boundaries.",
-  },
-  {
-    title: "Faith and Culture",
-    body: "Scientific studies examining the intersection of cultural values, spiritual traditions, and environmental stewardship.",
-  },
-  {
-    title: "Communications",
-    body: "Innovative approaches to science communication, public engagement, and behavioural change strategies for disseminating information about tipping points.",
-  },
-  {
-    title: "Nature-based Solutions",
-    body: "Scientific advances in ecosystem restoration, biodiversity conservation, and natural climate solutions addressing earth system tipping points.",
-  },
-  {
-    title: "Health",
-    body: "Research on the health impacts of environmental tipping points, health-centred approaches to climate action, and the co-benefits of planetary health interventions.",
-  },
-];
-
-const DEFAULT_SUBMISSIONS: GtpSubmissionsResolvedCopy = {
-  heroTitle: "Call for Abstract and Action Workshop Proposal Submissions",
-  heroLede:
-    "Submit scalable solutions across the conference's critical domains",
-  heroTitleSize: "compact",
-  pillarsIntroBold:
-    "We invite researchers and practitioners to submit abstracts for oral and poster presentations, and contribute to the programme agenda by proposing to convene action workshops.",
-  pillarsIntro:
-    "GTP 2026 is organised around three pillars that shape the programme and submissions.",
-  pillarsOutro:
-    "As research demonstrates that systems can shift rapidly when leadership, investment, and public confidence converge, GTP 2026 focuses on these three pillars.",
-  pillarsLinkLabel: "Download the Global Tipping Points Report 2025",
-  pillarsLinkUrl: "https://global-tipping-points.org/download/1418/",
-  pillars: DEFAULT_SUBMISSION_PILLARS,
-  themesSectionTitle: "8 Critical Domains",
-  themesIntro:
-    "We especially encourage submissions highlighting scalable solutions emerging from Asia across the conference's eight critical domains:",
-  themes: DEFAULT_SUBMISSION_THEMES,
-  ctaTitle: "Ready to Submit?",
-  ctaSubtitle: "Select a submission type below and complete the form.",
-  abstractTabLabel: "Abstract Submission",
-  abstractDeadline: "15 May 2026, 23:59 (GMT+8)",
-  workshopTabLabel: "Action Workshop Proposal Submission",
-  workshopDeadline: "8 May 2026, 23:59 (GMT+8)",
-  abstractFormIntro:
-    "Complete all required fields. The presenting author must submit this form.",
-  workshopFormIntro:
-    "Complete all required fields. The proposed session lead should submit this form.",
-  backToTopLabel: "Back to top",
-};
-
 type SanitySubmissionsRaw = {
   heroTitle?: string | null;
   heroLede?: string | null;
@@ -285,6 +171,8 @@ type SanitySubmissionsRaw = {
   abstractFormIntro?: string | null;
   workshopFormIntro?: string | null;
   backToTopLabel?: string | null;
+  abstractForm?: SanityAbstractFormRaw;
+  workshopForm?: SanityWorkshopFormRaw;
 };
 
 const submissionsQuery = `*[_type == "gtp2026SubmissionsPage"][0]{
@@ -308,7 +196,120 @@ const submissionsQuery = `*[_type == "gtp2026SubmissionsPage"][0]{
   workshopDeadline,
   abstractFormIntro,
   workshopFormIntro,
-  backToTopLabel
+  backToTopLabel,
+  abstractForm {
+    headerTitle,
+    headerSubtitle,
+    introParagraph1,
+    introParagraph2,
+    guidelinesTitle,
+    guidelinesBullets,
+    importantDatesTitle,
+    importantDatesBullets,
+    contactLead,
+    contactEmail,
+    contactMailtoSubject,
+    contactSubjectEmphasis,
+    presentingAuthorNote,
+    sectionPresenterDetails,
+    sectionSubmissionDetails,
+    labelEmail,
+    labelFullName,
+    labelInstitution,
+    labelDesignation,
+    designationPlaceholder,
+    labelCountry,
+    labelEarlyCareerQuestion,
+    earlyCareerYesLabel,
+    earlyCareerNoLabel,
+    labelPrimaryTheme,
+    labelPresentationPreference,
+    presentationOralLabel,
+    presentationPosterLabel,
+    labelAbstractTitle,
+    placeholderAbstractTitle,
+    abstractTitleMaxWords,
+    labelAbstract,
+    helperAbstract,
+    placeholderAbstract,
+    abstractBodyMaxWords,
+    labelAuthorList,
+    placeholderAuthorList,
+    wordCountLimitReachedSuffix,
+    submitButtonIdle,
+    submitButtonSubmitting,
+    overlaySubmittingLabel,
+    successSnackbarMessage,
+    fieldGenericPlaceholder
+  },
+  workshopForm {
+    headerTitle,
+    headerSubtitle,
+    introParagraph1,
+    introParagraph2,
+    introParagraph3,
+    pillarsThemesCalloutTitle,
+    requirementsPanelTitle,
+    requirementsSections[]{ title, intro, bullets, footer },
+    evaluationCriteriaTitle,
+    evaluationGroups[]{ title, items },
+    importantDatesTitle,
+    importantDatesBullets,
+    contactLead,
+    contactEmail,
+    contactMailtoSubject,
+    contactSubjectEmphasis,
+    registrationFeeNote,
+    sectionConvenerDetails,
+    sectionSessionOverview,
+    sectionSessionOutline,
+    sectionResourceRequirements,
+    sectionDeclaration,
+    labelEmail,
+    labelFullName,
+    labelInstitution,
+    labelDesignation,
+    designationPlaceholder,
+    labelCountry,
+    labelProposedSessionTitle,
+    placeholderSessionTitle,
+    sessionTitleMaxWords,
+    labelPrimaryPillar,
+    primaryPillarOptions,
+    labelPrimaryThematicArea,
+    labelSecondaryThemes,
+    secondaryThemesHint,
+    secondaryThemesPrimaryBadge,
+    secondaryThemesMaxSelectedNote,
+    labelSessionObjectives,
+    placeholderSessionObjectives,
+    labelExpectedOutcomes,
+    helperExpectedOutcomes,
+    labelSessionDetails,
+    helperSessionDetails,
+    labelSpeakerList,
+    helperSpeakerList,
+    labelResourceRequirements,
+    helperResourceRequirements,
+    labelFinancialResources,
+    financialOptionYes,
+    financialOptionNo,
+    financialOptionUncertain,
+    labelDiversityStatement,
+    placeholderDiversityStatement,
+    labelConflictOfInterest,
+    conflictIntro,
+    conflictOptionNoConflicts,
+    conflictOptionHasConflicts,
+    labelConflictDetails,
+    placeholderConflictDetails,
+    submitButtonIdle,
+    submitButtonSubmitting,
+    overlaySubmittingLabel,
+    successSnackbarMessage,
+    fieldGenericPlaceholder,
+    wordCountLimitReachedSuffix
+  }
 }`;
 
 export async function getGtp2026SubmissionsPage(): Promise<SanitySubmissionsRaw | null> {
@@ -370,6 +371,14 @@ export function mergeGtpSubmissionsCopy(
     abstractFormIntro: cms.abstractFormIntro?.trim() || d.abstractFormIntro,
     workshopFormIntro: cms.workshopFormIntro?.trim() || d.workshopFormIntro,
     backToTopLabel: cms.backToTopLabel?.trim() || d.backToTopLabel,
+    abstractForm: mergeAbstractFormCopy(
+      cms.abstractForm ?? null,
+      d.abstractForm,
+    ),
+    workshopForm: mergeWorkshopFormCopy(
+      cms.workshopForm ?? null,
+      d.workshopForm,
+    ),
   };
 }
 

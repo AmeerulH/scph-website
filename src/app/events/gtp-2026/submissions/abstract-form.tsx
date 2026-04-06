@@ -5,19 +5,24 @@ import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CalendarDays, Info } from "lucide-react";
 import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
+import type { GtpAbstractFormCopy } from "@/sanity/gtp-submissions-form-defaults";
 import { sendAbstractSubmission } from "./actions";
 import { CountrySelect } from "./country-select";
 import { Snackbar } from "./snackbar";
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function countWords(text: string): number {
   return text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function SubmitButton({ formValid }: { formValid: boolean }) {
+function SubmitButton({
+  formValid,
+  idleLabel,
+  pendingLabel,
+}: {
+  formValid: boolean;
+  idleLabel: string;
+  pendingLabel: string;
+}) {
   const { pending } = useFormStatus();
   return (
     <Button
@@ -26,7 +31,7 @@ function SubmitButton({ formValid }: { formValid: boolean }) {
       className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
       disabled={pending || !formValid}
     >
-      {pending ? "Submitting…" : "Submit Abstract"}
+      {pending ? pendingLabel : idleLabel}
     </Button>
   );
 }
@@ -40,6 +45,7 @@ interface WordCountInputProps {
   required?: boolean;
   multiline?: boolean;
   placeholder?: string;
+  limitReachedSuffix: string;
 }
 
 function WordCountField({
@@ -51,6 +57,7 @@ function WordCountField({
   required,
   multiline,
   placeholder,
+  limitReachedSuffix,
 }: WordCountInputProps) {
   const [value, setValue] = useState("");
   const wordCount = countWords(value);
@@ -65,8 +72,6 @@ function WordCountField({
     const raw = e.target.value;
     const words = raw.trim() === "" ? [] : raw.trim().split(/\s+/);
     if (words.length > maxWords) {
-      // Hard-cap: keep only the first maxWords words, preserve a trailing space
-      // so the caret stays natural after the last word
       setValue(words.slice(0, maxWords).join(" "));
     } else {
       setValue(raw);
@@ -109,7 +114,7 @@ function WordCountField({
       <p
         className={`mt-1 text-right text-xs ${atLimit ? "font-medium text-red-500" : "text-gray-400"}`}
       >
-        {wordCount} / {maxWords} words{atLimit ? " — limit reached" : ""}
+        {wordCount} / {maxWords} words{atLimit ? limitReachedSuffix : ""}
       </p>
     </div>
   );
@@ -170,109 +175,73 @@ function SectionDivider({ title }: { title: string }) {
   );
 }
 
-// ─── Form Header ──────────────────────────────────────────────────────────────
-
-function AbstractFormHeader() {
+function AbstractFormHeader({
+  fc,
+}: {
+  fc: GtpAbstractFormCopy;
+}) {
   return (
     <div className="space-y-5 border-b border-gray-200 pb-6">
       <div>
         <h2 className="font-heading text-xl font-bold leading-snug text-gtp-dark-teal">
-          Global Tipping Points Conference 2026
+          {fc.headerTitle}
         </h2>
         <p className="mt-0.5 font-heading text-base font-semibold text-gtp-teal">
-          Call for Abstracts Submission Form
+          {fc.headerSubtitle}
         </p>
       </div>
 
       <p className="text-sm leading-relaxed text-gray-600">
-        Building on the transformative insights of the{" "}
-        <strong>Global Tipping Points Report 2025</strong>, this conference
-        accelerates scientific understanding of critical thresholds that will
-        determine our collective future. GTP 2026 focuses on{" "}
-        <em>Understanding the Shift</em>, <em>Igniting Imagination</em>, and{" "}
-        <em>Accelerating Action</em> across planetary boundaries.
+        {fc.introParagraph1}
       </p>
 
       <p className="text-sm leading-relaxed text-gray-600">
-        We invite submissions advancing scientific understanding across Earth
-        System Science, Technology and AI, Governance, Finance and Business,
-        Faith and Culture, Communications, Nature-based Solutions, and Health.
-        Topics focusing on Asian contexts where solutions are emerging at scale
-        are particularly encouraged.
+        {fc.introParagraph2}
       </p>
 
-      {/* Submission Guidelines */}
       <div className="rounded-xl border border-gtp-teal/20 bg-gtp-teal/5 p-4">
         <div className="mb-2 flex items-center gap-2">
           <Info className="h-4 w-4 flex-shrink-0 text-gtp-teal" />
           <span className="text-sm font-semibold text-gtp-dark-teal">
-            Submission Guidelines
+            {fc.guidelinesTitle}
           </span>
         </div>
         <ul className="space-y-1 text-sm text-gray-600">
-          <li>
-            • <strong>Abstract title:</strong> Maximum 25 words
-          </li>
-          <li>
-            • <strong>Abstract length:</strong> Maximum 300 words — not
-            including title, author list and affiliation
-          </li>
-          <li>
-            • <strong>Submission limit:</strong> Every author can submit only
-            two abstracts as the presenting author, but can participate in
-            several abstracts as a co-author
-          </li>
+          {fc.guidelinesBullets.map((line) => (
+            <li key={line}>• {line}</li>
+          ))}
         </ul>
       </div>
 
-      {/* Important Dates */}
       <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
         <div className="mb-2 flex items-center gap-2">
           <CalendarDays className="h-4 w-4 flex-shrink-0 text-amber-600" />
           <span className="text-sm font-semibold text-amber-800">
-            Important Dates
+            {fc.importantDatesTitle}
           </span>
         </div>
         <ul className="space-y-1 text-sm text-amber-700">
-          <li>
-            • <strong>Submission deadline:</strong> 15th May 2026, 23:59 (GMT+8)
-          </li>
-          <li>
-            • <strong>Decision notification:</strong> 15th June 2026
-          </li>
+          {fc.importantDatesBullets.map((line) => (
+            <li key={line}>• {line}</li>
+          ))}
         </ul>
       </div>
 
       <p className="text-xs text-gray-500">
-        For enquiries, contact{" "}
+        {fc.contactLead}{" "}
         <a
-          href="mailto:scph_gtpc2026@sunway.edu.my?subject=Abstract Submission Inquiry"
+          href={`mailto:${fc.contactEmail}?subject=${encodeURIComponent(fc.contactMailtoSubject)}`}
           className="text-gtp-teal underline underline-offset-2 hover:text-gtp-dark-teal"
         >
-          scph_gtpc2026@sunway.edu.my
+          {fc.contactEmail}
         </a>{" "}
-        with the subject line: <em>Abstract Submission Inquiry</em>.
+        with the subject line: <em>{fc.contactSubjectEmphasis}</em>.
       </p>
 
-      <p className="text-xs font-medium text-gray-700">
-        This form must be completed by the presenting author (oral/poster).
-      </p>
+      <p className="text-xs font-medium text-gray-700">{fc.presentingAuthorNote}</p>
     </div>
   );
 }
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-
-const THEMES = [
-  "Earth System Science",
-  "Technology and AI",
-  "Governance",
-  "Finance and Business",
-  "Faith and Culture",
-  "Communications",
-  "Nature-based Solutions",
-  "Health",
-];
 
 const inputClass =
   "w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-900 bg-white transition-colors focus:border-gtp-teal focus:outline-none focus:ring-1 focus:ring-gtp-teal";
@@ -284,6 +253,7 @@ function Field({
   type = "text",
   placeholder,
   required,
+  genericPlaceholder,
 }: {
   id: string;
   name: string;
@@ -291,6 +261,7 @@ function Field({
   type?: string;
   placeholder?: string;
   required?: boolean;
+  genericPlaceholder: string;
 }) {
   return (
     <div>
@@ -305,7 +276,7 @@ function Field({
         id={id}
         name={name}
         type={type}
-        placeholder={placeholder ?? "Your answer"}
+        placeholder={placeholder ?? genericPlaceholder}
         required={required}
         className={inputClass}
       />
@@ -313,9 +284,15 @@ function Field({
   );
 }
 
-// ─── Inner form (remounted on success to reset all state) ────────────────────
-
-function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
+function AbstractFormContent({
+  abstractForm: fc,
+  themeTitles,
+  onSuccess,
+}: {
+  abstractForm: GtpAbstractFormCopy;
+  themeTitles: string[];
+  onSuccess: () => void;
+}) {
   const [state, formAction, isPending] = useActionState(
     sendAbstractSubmission,
     null,
@@ -340,37 +317,47 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
       className="space-y-6"
     >
       {isPending ? (
-        <FullPageLoadingOverlay variant="gtp" label="Submitting abstract" />
+        <FullPageLoadingOverlay variant="gtp" label={fc.overlaySubmittingLabel} />
       ) : null}
-      <AbstractFormHeader />
+      <AbstractFormHeader fc={fc} />
 
-      {/* Section 1 — Presenter Details */}
       <div className="space-y-4">
-        <SectionDivider title="Presenter Details" />
+        <SectionDivider title={fc.sectionPresenterDetails} />
 
-        <Field id="email" name="email" label="Email" type="email" required />
+        <Field
+          id="email"
+          name="email"
+          label={fc.labelEmail}
+          type="email"
+          required
+          genericPlaceholder={fc.fieldGenericPlaceholder}
+        />
         <Field
           id="fullName"
           name="fullName"
-          label="Title and Full Name (First Name, Last Name)"
+          label={fc.labelFullName}
           required
+          genericPlaceholder={fc.fieldGenericPlaceholder}
         />
         <Field
           id="institution"
           name="institution"
-          label="Institution"
+          label={fc.labelInstitution}
           required
+          genericPlaceholder={fc.fieldGenericPlaceholder}
         />
         <Field
           id="designation"
           name="designation"
-          label="Designation"
-          placeholder="If studying, indicate Student"
+          label={fc.labelDesignation}
+          placeholder={fc.designationPlaceholder}
           required
+          genericPlaceholder={fc.fieldGenericPlaceholder}
         />
         <div>
           <label className="mb-1.5 block text-sm font-medium text-gtp-dark-teal">
-            Country<span className="ml-1 text-red-500">*</span>
+            {fc.labelCountry}
+            <span className="ml-1 text-red-500">*</span>
           </label>
           <CountrySelect
             name="country"
@@ -381,49 +368,50 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
 
         <RadioGroup
           name="earlyCareer"
-          label="Are you an early career researcher? (Within 5 years of completing a PhD)"
-          options={["Yes", "No"]}
+          label={fc.labelEarlyCareerQuestion}
+          options={[fc.earlyCareerYesLabel, fc.earlyCareerNoLabel]}
           required
         />
       </div>
 
-      {/* Section 2 — Submission Details */}
       <div className="space-y-4">
-        <SectionDivider title="Submission Details" />
+        <SectionDivider title={fc.sectionSubmissionDetails} />
 
         <RadioGroup
           name="primaryTheme"
-          label="Primary Theme (select one)"
-          options={THEMES}
+          label={fc.labelPrimaryTheme}
+          options={themeTitles}
           required
           columns={2}
         />
 
         <RadioGroup
           name="presentationPreference"
-          label="Presentation preference (subject to committee approval)"
-          options={["Oral", "Poster"]}
+          label={fc.labelPresentationPreference}
+          options={[fc.presentationOralLabel, fc.presentationPosterLabel]}
           required
         />
 
         <WordCountField
           id="abstractTitle"
           name="abstractTitle"
-          label="Abstract title"
-          maxWords={25}
+          label={fc.labelAbstractTitle}
+          maxWords={fc.abstractTitleMaxWords}
           required
-          placeholder="Your abstract title"
+          placeholder={fc.placeholderAbstractTitle}
+          limitReachedSuffix={fc.wordCountLimitReachedSuffix}
         />
 
         <WordCountField
           id="abstract"
           name="abstract"
-          label="Abstract"
-          helper="Not including title, author list and affiliation"
-          maxWords={300}
+          label={fc.labelAbstract}
+          helper={fc.helperAbstract}
+          maxWords={fc.abstractBodyMaxWords}
           required
           multiline
-          placeholder="Write your abstract here…"
+          placeholder={fc.placeholderAbstract}
+          limitReachedSuffix={fc.wordCountLimitReachedSuffix}
         />
 
         <div>
@@ -431,7 +419,7 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
             htmlFor="authorList"
             className="mb-1.5 block text-sm font-medium text-gtp-dark-teal"
           >
-            Author list and affiliation
+            {fc.labelAuthorList}
             <span className="ml-1 text-red-500">*</span>
           </label>
           <textarea
@@ -439,7 +427,7 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
             name="authorList"
             rows={3}
             required
-            placeholder="e.g. John Doe (Sunway University, Malaysia), Jane Doe (University of Oxford, UK)"
+            placeholder={fc.placeholderAuthorList}
             className={inputClass}
           />
         </div>
@@ -452,14 +440,22 @@ function AbstractFormContent({ onSuccess }: { onSuccess: () => void }) {
         </div>
       )}
 
-      <SubmitButton formValid={isValid} />
+      <SubmitButton
+        formValid={isValid}
+        idleLabel={fc.submitButtonIdle}
+        pendingLabel={fc.submitButtonSubmitting}
+      />
     </form>
   );
 }
 
-// ─── Public wrapper — manages reset key + snackbar ────────────────────────────
-
-export function AbstractForm() {
+export function AbstractForm({
+  abstractForm,
+  themeTitles,
+}: {
+  abstractForm: GtpAbstractFormCopy;
+  themeTitles: string[];
+}) {
   const [resetKey, setResetKey] = useState(0);
   const [showSnackbar, setShowSnackbar] = useState(false);
 
@@ -470,10 +466,15 @@ export function AbstractForm() {
 
   return (
     <>
-      <AbstractFormContent key={resetKey} onSuccess={handleSuccess} />
+      <AbstractFormContent
+        key={resetKey}
+        abstractForm={abstractForm}
+        themeTitles={themeTitles}
+        onSuccess={handleSuccess}
+      />
       <Snackbar
         show={showSnackbar}
-        message="Abstract submitted successfully! We will be in touch by 15th June 2026."
+        message={abstractForm.successSnackbarMessage}
         onClose={() => setShowSnackbar(false)}
       />
     </>

@@ -6,6 +6,12 @@ import {gtp2026MediaPageType} from './gtp2026MediaPageType'
 import {gtp2026RegisterPageType} from './gtp2026RegisterPageType'
 import {gtp2026SubmissionsPageType} from './gtp2026SubmissionsPageType'
 import {
+  gtp2026AbstractFormCopyType,
+  gtp2026SubmissionsEvalCriterionGroupType,
+  gtp2026SubmissionsRichSectionType,
+  gtp2026WorkshopFormCopyType,
+} from './gtp2026SubmissionsFormCopyTypes'
+import {
   gtp2026SubmissionsPillarSlotType,
   gtp2026SubmissionsThemeSlotType,
 } from './gtp2026SubmissionsSlotTypes'
@@ -37,6 +43,10 @@ export const schemaTypes = [
   gtp2026AboutPageType,
   gtp2026SubmissionsPillarSlotType,
   gtp2026SubmissionsThemeSlotType,
+  gtp2026SubmissionsRichSectionType,
+  gtp2026SubmissionsEvalCriterionGroupType,
+  gtp2026AbstractFormCopyType,
+  gtp2026WorkshopFormCopyType,
   gtp2026SubmissionsPageType,
   gtp2026GetInvolvedPageType,
   gtp2026RegisterPageType,
