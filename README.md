@@ -92,9 +92,8 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 ### Import scripts
 
 - **GTP programme** (agenda): `npm run import-gtp-programme` — source [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx), script [`scripts/import-gtp-programme-to-sanity.ts`](scripts/import-gtp-programme-to-sanity.ts). Uses `SANITY_DATASET` from `.env.local`. `DRY_RUN=1` prints JSON only. With `SANITY_DATASET=development` or `GTP_APPEND_TEST_SESSION=1`, Day 1 gets an extra test session.
+- **GTP Register / Get involved** (marketing copy): `npm run seed-gtp-register-page` and `npm run seed-gtp-get-involved-page` — source [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) (same defaults as `mergeGtpRegisterCopy` / `mergeGtpGetInvolvedCopy`). Upserts singletons `_id` = `gtp2026RegisterPage` / `gtp2026GetInvolvedPage`. `DRY_RUN=1` prints JSON only. Prefer `SANITY_DATASET=development` first; align with `SANITY_STUDIO_DATASET` in `studio/.env`.
 - **Team roster**: [`scripts/import-team-to-sanity.js`](scripts/import-team-to-sanity.js) (see script header for usage).
-
-Bulk seeding of other page copy is **not** included here; add new `scripts/import-*.ts` as needed.
 
 ### CMS sandbox
 
