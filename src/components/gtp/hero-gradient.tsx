@@ -1,7 +1,9 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
+import type { GtpAboutHeroCopy } from "@/data/gtp-about-page-defaults";
 import { Button } from "@/components/ui/button";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import {
@@ -10,7 +12,36 @@ import {
   heroStaggerItemReduced,
 } from "@/lib/motion-presets";
 
-export function GtpHeroGradient() {
+function CtaHref({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const internal = href.startsWith("/") || href.startsWith("#");
+  if (internal) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a
+      href={href}
+      className={className}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {children}
+    </a>
+  );
+}
+
+export function GtpHeroGradient({ copy }: { copy: GtpAboutHeroCopy }) {
   const prefersReducedMotion = useReducedMotion();
   const containerVariants = prefersReducedMotion
     ? { animate: { transition: { staggerChildren: 0, delayChildren: 0 } } }
@@ -32,22 +63,21 @@ export function GtpHeroGradient() {
             variants={itemVariants}
             className="inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm lg:text-base"
           >
-            12–15 October 2026 · Kuala Lumpur, Malaysia
+            {copy.badge}
           </motion.span>
 
           <motion.h1
             variants={itemVariants}
             className="mt-5 font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Global Tipping Points Conference 2026
+            {copy.title}
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
             className="mt-4 max-w-2xl text-base font-light leading-snug text-white/85 sm:text-lg md:text-xl"
           >
-            From Understanding to Imagination to Action: Crossing Thresholds
-            for a Thriving Planet
+            {copy.lede}
           </motion.p>
         </div>
 
@@ -62,14 +92,16 @@ export function GtpHeroGradient() {
             className="flex-1 justify-center py-7 text-base md:flex-none"
             asChild
           >
-            <Link href="/events/gtp-2026/register">Register Now →</Link>
+            <CtaHref href={copy.primaryCtaHref}>{copy.primaryCtaLabel}</CtaHref>
           </Button>
           <Button
             size="lg"
             className="flex-1 justify-center rounded-full border-2 border-white/50 bg-transparent py-7 text-base text-white hover:border-white hover:bg-white/10 md:flex-none"
             asChild
           >
-            <Link href="/events/gtp-2026/about#about">Learn More</Link>
+            <CtaHref href={copy.secondaryCtaHref}>
+              {copy.secondaryCtaLabel}
+            </CtaHref>
           </Button>
         </motion.div>
       </motion.div>

@@ -1,7 +1,7 @@
 import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
 import type { GtpCommitteeMember } from "@/components/gtp/gtp-committee-member-card";
 import { client } from "./client";
-import type { SectionBlock } from "./section-block-types";
+import type { GtpAboutPageDocumentRaw } from "./gtp-about-page-merge";
 import { sectionBlocksMayRender } from "./section-block-types";
 
 // ─── Highlight speakers ───────────────────────────────────────────────────────
@@ -63,13 +63,87 @@ export function mapSanityHighlightToProps(
   }));
 }
 
-// ─── GTP About page (section blocks) ─────────────────────────────────────────
+// ─── GTP About page (full document) ──────────────────────────────────────────
 
-export type Gtp2026AboutPageData = {
-  sections: SectionBlock[] | null;
-};
+export type Gtp2026AboutPageData = GtpAboutPageDocumentRaw;
 
-const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{ sections }`;
+const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
+  sections,
+  heroBand {
+    badge,
+    title,
+    lede,
+    primaryCtaLabel,
+    primaryCtaHref,
+    secondaryCtaLabel,
+    secondaryCtaHref
+  },
+  whatIsBand {
+    eyebrow,
+    title,
+    body,
+    quote,
+    learnMoreIntro,
+    learnMoreLinkLabel,
+    learnMoreLinkUrl,
+    downloadButtonLabel,
+    downloadButtonUrl,
+    "reportCoverUrl": reportCover.asset->url
+  },
+  whyMattersBand {
+    eyebrow,
+    title,
+    body,
+    ctaLabel,
+    ctaHref,
+    tallImageSrc,
+    topRightImageSrc,
+    bottomRightImageSrc,
+    tallImageAlt,
+    topRightImageAlt,
+    bottomRightImageAlt
+  },
+  themesBand {
+    title,
+    subtitle,
+    footerBlurb,
+    themes[] { num, title, body, icon }
+  },
+  speakersChrome { title, subtitle },
+  quotesBand {
+    title,
+    subtitle,
+    quotes[] {
+      name,
+      designation,
+      quote,
+      photoSrc,
+      avatarObjectClass,
+      avatarScaleClass
+    }
+  },
+  galleryBand {
+    title,
+    subtitle,
+    footerText,
+    footerLinkLabel,
+    footerLinkHref,
+    slides[] { src, alt }
+  },
+  eventInquiryBand { title, subtitle, intro },
+  sponsorsBand {
+    title,
+    subtitle,
+    sponsors[] {
+      name,
+      href,
+      "logoUrl": logo.asset->url
+    },
+    noticeBeforeLink,
+    noticeLinkText,
+    noticeLinkHref
+  }
+}`;
 
 export async function getGtp2026AboutPage(): Promise<Gtp2026AboutPageData | null> {
   return client.fetch<Gtp2026AboutPageData | null>(gtpAboutPageQuery);

@@ -1,4 +1,6 @@
 import {cmsSandboxPageType} from './cmsSandboxPageType'
+import {gtpAboutPageBandObjectTypes} from './objects/gtpAboutPageBands'
+import {gtpAboutWhatIsBandType} from './objects/gtpAboutWhatIsBandType'
 import {gtp2026AboutPageType} from './gtp2026AboutPageType'
 import {gtp2026BizForumPageType} from './gtp2026BizForumPageType'
 import {gtp2026GetInvolvedPageType} from './gtp2026GetInvolvedPageType'
@@ -40,6 +42,8 @@ export const schemaTypes = [
   gtp2026HighlightSpeakerType,
   gtp2026CommitteeMemberType,
   gtp2026FaqItemType,
+  ...gtpAboutPageBandObjectTypes,
+  gtpAboutWhatIsBandType,
   gtp2026AboutPageType,
   gtp2026SubmissionsPillarSlotType,
   gtp2026SubmissionsThemeSlotType,

@@ -14,6 +14,19 @@ import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GtpAboutHeroStack } from "@/components/gtp/gtp-about-hero-stack";
+import type {
+  GtpAboutEventInquiryCopy,
+  GtpAboutGalleryBandCopy,
+  GtpAboutQuotesBandCopy,
+  GtpAboutSpeakersChromeCopy,
+  GtpAboutSponsorLogoEntry,
+  GtpAboutSponsorsBandCopy,
+  GtpAboutThemeIconKey,
+  GtpAboutThemesBandCopy,
+  GtpAboutWhyMattersCopy,
+  GtpWhatIsBandContent,
+} from "@/data/gtp-about-page-defaults";
+import { mergeGtpAboutPage } from "@/sanity/gtp-about-page-merge";
 import {
   getGtp2026AboutPage,
   getGtp2026HighlightSpeakers,
@@ -101,11 +114,15 @@ const eventJsonLd = {
 
 // ─── About GTP (New Reality) ──────────────────────────────────────────────────
 
-function WhatIsGtpSection() {
+function WhatIsGtpSection({ content }: { content: GtpWhatIsBandContent }) {
+  const [para1, para2] = content.bodyParagraphs;
+  const coverSrc = content.reportCoverSrc;
+  const coverRemote = /^https?:\/\//i.test(coverSrc);
+
   return (
     <SectionWrapper
-      title="What are Global Tipping Points"
-      subtitle="New Reality"
+      title={content.title}
+      subtitle={content.eyebrow}
       theme="gtp"
       background="default"
       id="about"
@@ -114,38 +131,30 @@ function WhatIsGtpSection() {
         align="start"
         text={
           <>
-            <p className="text-lg leading-relaxed text-gray-600">
-              The Global Tipping Points initiative, led by Prof. Tim Lenton, is a
-              global research and policy effort focused on understanding critical
-              thresholds in the Earth system where small changes can trigger
-              large, irreversible shifts in climate, ecosystems, and human
-              societies.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-gray-600">
-              It identifies both dangerous and positive tipping points that could
-              rapidly accelerate solutions like clean energy adoption or ecosystem
-              restoration. The initiative aims to translate cutting-edge science
-              into actionable pathways for governments, finance, and society to
-              trigger rapid transformations toward a stable climate and a
-              healthier planet.
-            </p>
+            {para1 ? (
+              <p className="text-lg leading-relaxed text-gray-600">{para1}</p>
+            ) : null}
+            {para2 ? (
+              <p className="mt-4 text-base leading-relaxed text-gray-600">
+                {para2}
+              </p>
+            ) : null}
             <p className="mt-4 text-sm text-gray-500">
-              To learn more about Global Tipping Points, visit{" "}
+              {content.learnMoreIntro}{" "}
               <a
-                href="https://global-tipping-points.org/"
+                href={content.learnMoreLinkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-gtp-teal hover:underline"
               >
-                global-tipping-points.org
+                {content.learnMoreLinkLabel}
               </a>
             </p>
 
             <blockquote className="mt-8 rounded-2xl bg-gtp-teal/10 p-6 ring-1 ring-gtp-teal/20">
               <Quote className="mb-3 h-6 w-6 text-gtp-teal/50" />
               <p className="font-heading text-lg font-semibold italic leading-snug text-gtp-dark-teal">
-                &ldquo;Systems that once seemed immovable can suddenly
-                shift.&rdquo;
+                &ldquo;{content.quote}&rdquo;
               </p>
             </blockquote>
           </>
@@ -154,21 +163,22 @@ function WhatIsGtpSection() {
           <div className="flex flex-col items-center gap-5">
             <div className="mx-auto w-full max-w-[200px] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gtp-dark-teal/10">
               <Image
-                src="/images/gtp/report-cover.avif"
+                src={coverSrc}
                 alt="Global Tipping Points 2025 Report Cover"
                 width={200}
                 height={266}
                 className="h-auto w-full object-cover"
+                unoptimized={coverRemote}
               />
             </div>
             <Button variant="gtpSecondary" size="default" asChild>
               <a
-                href="https://global-tipping-points.org/download/1418/"
+                href={content.downloadButtonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <Download className="mr-2 h-4 w-4" />
-                Download GTP 2025 Report
+                {content.downloadButtonLabel}
               </a>
             </Button>
           </div>
@@ -182,11 +192,19 @@ function WhatIsGtpSection() {
 
 // ─── About Conference ─────────────────────────────────────────────────────────
 
-function WhyItMattersSection() {
+function imgUnoptimized(src: string) {
+  return /^https?:\/\//i.test(src);
+}
+
+function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
+  const [p1, p2, p3] = content.bodyParagraphs;
+  const ctaInternal =
+    content.ctaHref.startsWith("/") || content.ctaHref.startsWith("#");
+
   return (
     <SectionWrapper
-      title="The Idea behind Global Tipping Points Conference 2026"
-      subtitle="Why This Meeting Matters"
+      title={content.title}
+      subtitle={content.eyebrow}
       theme="gtp"
       background="dark"
     >
@@ -194,28 +212,35 @@ function WhyItMattersSection() {
         align="start"
         text={
           <>
-            <p className="text-lg leading-relaxed text-white/80">
-              The world is approaching decisions that will shape lives, economies
-              and ecosystems for generations. Climate change is no longer a
-              distant risk; its impacts are already visible in food systems,
-              health, cities and financial stability.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-white/75">
-              Yet the future is not fixed. Research on tipping points shows that
-              when leadership, investment and public confidence align, change can
-              accelerate rapidly and systems that once seemed immovable can shift.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-white/70">
-              Global Tipping Points Conference 2026 (GTP 2026) focuses on where
-              that momentum can be unlocked. Hosted in Asia for the first time,
-              the meeting brings together leaders from science, finance, culture
-              and policy in a region where climate risks are intensifying but
-              where many of the solutions are already emerging at scale.
-            </p>
+            {p1 ? (
+              <p className="text-lg leading-relaxed text-white/80">{p1}</p>
+            ) : null}
+            {p2 ? (
+              <p className="mt-4 text-base leading-relaxed text-white/75">
+                {p2}
+              </p>
+            ) : null}
+            {p3 ? (
+              <p className="mt-4 text-base leading-relaxed text-white/70">
+                {p3}
+              </p>
+            ) : null}
             <Button variant="gtpSecondary" size="lg" className="mt-8" asChild>
-              <Link href="/events/gtp-2026/programmes">
-                Explore the Programme <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              {ctaInternal ? (
+                <Link href={content.ctaHref}>
+                  {content.ctaLabel}{" "}
+                  <ArrowRight className="ml-2 inline h-4 w-4" />
+                </Link>
+              ) : (
+                <a
+                  href={content.ctaHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {content.ctaLabel}{" "}
+                  <ArrowRight className="ml-2 inline h-4 w-4" />
+                </a>
+              )}
             </Button>
           </>
         }
@@ -223,29 +248,32 @@ function WhyItMattersSection() {
           <div className="grid grid-cols-2 grid-rows-2 gap-3">
             <div className="relative row-span-2 min-h-[280px] overflow-hidden rounded-2xl">
               <Image
-                src="/images/gtp/conference/leaves.jpg"
-                alt="Nature and sustainability"
+                src={content.tallImageSrc}
+                alt={content.tallImageAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                unoptimized={imgUnoptimized(content.tallImageSrc)}
               />
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
-                src="/images/gtp/conference/river.jpg"
-                alt="River ecosystem"
+                src={content.topRightImageSrc}
+                alt={content.topRightImageAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                unoptimized={imgUnoptimized(content.topRightImageSrc)}
               />
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
               <Image
-                src="/images/gtp/conference/solar.jpg"
-                alt="Solar energy transition"
+                src={content.bottomRightImageSrc}
+                alt={content.bottomRightImageAlt}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                unoptimized={imgUnoptimized(content.bottomRightImageSrc)}
               />
             </div>
           </div>
@@ -257,53 +285,37 @@ function WhyItMattersSection() {
 
 // ─── Conference Themes ────────────────────────────────────────────────────────
 
-const themes = [
-  {
-    id: "01",
-    num: "01",
-    icon: TrendingDown,
-    title: "Understanding the Shift",
-    body: "Clarifying what is changing in the world today, including climate and nature risks, as well as social and economic pressures that affect health, food security and stability.",
-    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[0],
-    iconWrap: "bg-white/15",
-    iconColour: "text-white",
-    bodyClass: "text-white/85",
-    numClass: "text-white/35",
-    titleClass: "text-white",
-  },
-  {
-    id: "02",
-    num: "02",
-    icon: Lightbulb,
-    title: "Igniting Imagination",
-    body: "Exploring how culture, faith, creativity and moral leadership help people, communities and institutions transition into reformation.",
-    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[1],
-    iconWrap: "bg-white/15",
-    iconColour: "text-white",
-    bodyClass: "text-white/85",
-    numClass: "text-white/35",
-    titleClass: "text-white",
-  },
-  {
-    id: "03",
-    num: "03",
-    icon: Zap,
-    title: "Accelerating Action",
-    body: "Identifying what policies, investments and partnerships can reinforce each other and create lasting momentum.",
-    bgClass: GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[2],
-    iconWrap: "bg-white/15",
-    iconColour: "text-white",
-    bodyClass: "text-white/85",
-    numClass: "text-white/35",
-    titleClass: "text-white",
-  },
-];
+const THEME_ICONS: Record<
+  GtpAboutThemeIconKey,
+  typeof TrendingDown
+> = {
+  "trending-down": TrendingDown,
+  lightbulb: Lightbulb,
+  zap: Zap,
+};
 
-function ThemesSection() {
+function ThemesSection({ content }: { content: GtpAboutThemesBandCopy }) {
+  const items = content.themes.map((t, i) => ({
+    id: t.id,
+    num: t.num,
+    icon: THEME_ICONS[t.icon],
+    title: t.title,
+    body: t.body,
+    bgClass:
+      GTP_EXPLORE_VERTICAL_BG_CLASSNAMES[
+        i % GTP_EXPLORE_VERTICAL_BG_CLASSNAMES.length
+      ]!,
+    iconWrap: "bg-white/15",
+    iconColour: "text-white",
+    bodyClass: "text-white/85",
+    numClass: "text-white/35",
+    titleClass: "text-white",
+  }));
+
   return (
     <SectionWrapper
-      title="Three Pathways to Change"
-      subtitle="Conference Themes"
+      title={content.title}
+      subtitle={content.subtitle}
       theme="gtp"
       background="muted"
     >
@@ -311,11 +323,10 @@ function ThemesSection() {
         variant="gtp-gradient-pillar"
         gridClassName="flex flex-col gap-4 md:flex-row md:items-stretch md:gap-3"
         itemClassName="w-full min-w-0 flex-1 basis-0 md:flex-[1_1_0%]"
-        items={themes}
+        items={items}
       />
       <p className="mx-auto mt-10 max-w-2xl text-center text-sm leading-relaxed text-gtp-teal">
-        The conference is designed for leaders who want clarity, confidence that
-        they are not alone, and credible pathways forward.
+        {content.footerBlurb}
       </p>
     </SectionWrapper>
   );
@@ -323,11 +334,17 @@ function ThemesSection() {
 
 // ─── Speaker Highlights ───────────────────────────────────────────────────────
 
-function SpeakersSection({ speakers }: { speakers: GtpHighlightSpeaker[] }) {
+function SpeakersSection({
+  chrome,
+  speakers,
+}: {
+  chrome: GtpAboutSpeakersChromeCopy;
+  speakers: GtpHighlightSpeaker[];
+}) {
   return (
     <SectionWrapper
-      title="Speaker Highlights"
-      subtitle="Our Speakers"
+      title={chrome.title}
+      subtitle={chrome.subtitle}
       theme="gtp"
       background="default"
     >
@@ -338,19 +355,22 @@ function SpeakersSection({ speakers }: { speakers: GtpHighlightSpeaker[] }) {
 
 // ─── Event inquiry (above sponsors) ───────────────────────────────────────────
 
-function EventInquirySection() {
+function EventInquirySection({
+  content,
+}: {
+  content: GtpAboutEventInquiryCopy;
+}) {
   return (
     <SectionWrapper
-      title="Questions about the event?"
-      subtitle="Get in touch"
+      title={content.title}
+      subtitle={content.subtitle}
       theme="gtp"
       background="default"
       id="event-inquiry"
     >
       <GtpEventInquiryPanel>
         <p className="mb-6 text-center text-sm leading-relaxed text-gray-600">
-          Send us a message about registration, programme details, or general
-          enquiries. We&apos;ll respond as soon as we can.
+          {content.intro}
         </p>
         <ContactForm />
       </GtpEventInquiryPanel>
@@ -385,11 +405,63 @@ const sponsorRowSlots = [
   ...Array.from({ length: 7 }, (_, i) => `ph-${i}`),
 ] as const;
 
-function SponsorsSection() {
+/** When using CMS logos, pad with placeholders up to this many slots per row (legacy PIK strip width). */
+const SPONSOR_ROW_MIN_SLOTS = sponsorRowSlots.length;
+
+function GtpSponsorLogoCell({ entry }: { entry: GtpAboutSponsorLogoEntry }) {
+  const remote = imgUnoptimized(entry.logoUrl);
+  const card = (
+    <span className="flex h-full w-full items-center justify-center px-2">
+      <Image
+        src={entry.logoUrl}
+        alt={entry.name}
+        width={160}
+        height={56}
+        className="h-11 w-auto max-w-[10rem] object-contain"
+        unoptimized={remote}
+      />
+    </span>
+  );
+  const shellClass =
+    "mr-4 flex h-20 w-44 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-white px-3 py-2 shadow-sm transition-opacity hover:opacity-90";
+
+  const href = entry.href?.trim();
+  if (href) {
+    const internal = href.startsWith("/") || href.startsWith("#");
+    if (internal) {
+      return (
+        <Link href={href} className={shellClass}>
+          {card}
+        </Link>
+      );
+    }
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={shellClass}
+        aria-label={`${entry.name} (opens in new tab)`}
+      >
+        {card}
+      </a>
+    );
+  }
+
+  return <div className={shellClass}>{card}</div>;
+}
+
+function SponsorsSection({ band }: { band: GtpAboutSponsorsBandCopy }) {
+  const cmsLogos = band.sponsorLogos.filter((x) => x.logoUrl?.trim() && x.name?.trim());
+  const useCmsMarquee = cmsLogos.length > 0;
+  const placeholderPadCount = useCmsMarquee
+    ? Math.max(0, SPONSOR_ROW_MIN_SLOTS - cmsLogos.length)
+    : 0;
+
   return (
     <SectionWrapper
-      title="Building a Global Coalition"
-      subtitle="Our Sponsors & Partners"
+      title={band.title}
+      subtitle={band.subtitle}
       theme="gtp"
       background="default"
     >
@@ -401,24 +473,41 @@ function SponsorsSection() {
         forwardStripClassName="mb-5"
         renderRow={(slot) => (
           <>
-            {sponsorRowSlots.map((id) =>
-              id === "pik" ? (
-                <PikPartnerLogo key={`${slot}-${id}`} />
-              ) : (
-                <PartnerLogoPlaceholder key={`${slot}-${id}`} elevated />
-              ),
+            {useCmsMarquee ? (
+              <>
+                {cmsLogos.map((entry, i) => (
+                  <GtpSponsorLogoCell
+                    key={`${slot}-${entry.name}-${i}`}
+                    entry={entry}
+                  />
+                ))}
+                {Array.from({ length: placeholderPadCount }, (_, i) => (
+                  <PartnerLogoPlaceholder
+                    key={`${slot}-cms-pad-${i}`}
+                    elevated
+                  />
+                ))}
+              </>
+            ) : (
+              sponsorRowSlots.map((id) =>
+                id === "pik" ? (
+                  <PikPartnerLogo key={`${slot}-${id}`} />
+                ) : (
+                  <PartnerLogoPlaceholder key={`${slot}-${id}`} elevated />
+                ),
+              )
             )}
           </>
         )}
       />
 
       <PlaceholderNotice>
-        Partner and sponsor logos coming soon. Interested in partnering?{" "}
+        {band.noticeBeforeLink}
         <Link
-          href="/events/gtp-2026/get-involved#partnership"
+          href={band.noticeLinkHref}
           className="font-semibold text-gtp-dark-teal hover:underline"
         >
-          Get in touch →
+          {band.noticeLinkText}
         </Link>
       </PlaceholderNotice>
     </SectionWrapper>
@@ -433,7 +522,15 @@ function SponsorsSection() {
 // containers so the browser measures each copy as one concrete element.
 // translateX(-50%) then equals EXACTLY one copy's width → seamless loop.
 
-function GalleryImg({ src, alt, sizes }: { src: string; alt: string; sizes: string }) {
+function GalleryImg({
+  src,
+  alt,
+  sizes,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+}) {
   return (
     <Image
       src={src}
@@ -441,122 +538,189 @@ function GalleryImg({ src, alt, sizes }: { src: string; alt: string; sizes: stri
       fill
       className="object-cover transition-transform duration-500 hover:scale-105"
       sizes={sizes}
+      unoptimized={imgUnoptimized(src)}
     />
   );
 }
 
-function BentoGroups() {
+function BentoGroups({ slides }: { slides: GtpAboutGalleryBandCopy["slides"] }) {
+  const slide = (i: number) => slides[i] ?? slides[0]!;
   return (
-    // Each group has mr-3 so the gap at the seam after each loop iteration
-    // matches the gap between groups within a copy.
     <div className="flex h-72 shrink-0">
-      {/* 1 — Main Photo: wide single */}
       <div className="relative mr-3 h-72 w-120 shrink-0 overflow-hidden rounded-2xl">
-        <GalleryImg src="/images/gtp/gtp-2025/main-photo.avif" alt="GTP 2025 — Group Photo" sizes="480px" />
+        <GalleryImg
+          src={slide(0).src}
+          alt={slide(0).alt}
+          sizes="480px"
+        />
       </div>
 
-      {/* 2 — tall-left + 2 stacked-right */}
       <div className="mr-3 flex h-72 w-85 shrink-0 gap-2">
         <div className="relative flex-1 overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/preview-004.avif" alt="GTP 2025 session" sizes="168px" />
+          <GalleryImg
+            src={slide(1).src}
+            alt={slide(1).alt}
+            sizes="168px"
+          />
         </div>
         <div className="flex w-40 flex-col gap-2">
           <div className="relative flex-1 overflow-hidden rounded-2xl">
-            <GalleryImg src="/images/gtp/gtp-2025/networking.avif" alt="Networking" sizes="160px" />
+            <GalleryImg
+              src={slide(2).src}
+              alt={slide(2).alt}
+              sizes="160px"
+            />
           </div>
           <div className="relative flex-1 overflow-hidden rounded-2xl">
-            <GalleryImg src="/images/gtp/gtp-2025/conf-7.avif" alt="Conference session" sizes="160px" />
+            <GalleryImg
+              src={slide(3).src}
+              alt={slide(3).alt}
+              sizes="160px"
+            />
           </div>
         </div>
       </div>
 
-      {/* 3 — wide single */}
       <div className="relative mr-3 h-72 w-105 shrink-0 overflow-hidden rounded-2xl">
-        <GalleryImg src="/images/gtp/gtp-2025/games-on-lawn.avif" alt="Outdoor activities" sizes="420px" />
+        <GalleryImg
+          src={slide(4).src}
+          alt={slide(4).alt}
+          sizes="420px"
+        />
       </div>
 
-      {/* 4 — 2×2 grid */}
       <div className="mr-3 grid h-72 w-85 shrink-0 grid-cols-2 grid-rows-2 gap-2">
         <div className="relative overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/conf-4.avif" alt="Conference session" sizes="168px" />
+          <GalleryImg
+            src={slide(5).src}
+            alt={slide(5).alt}
+            sizes="168px"
+          />
         </div>
         <div className="relative overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/preview-117.avif" alt="GTP 2025 preview" sizes="168px" />
+          <GalleryImg
+            src={slide(6).src}
+            alt={slide(6).alt}
+            sizes="168px"
+          />
         </div>
         <div className="relative overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/conf-15.jpg" alt="Conference session" sizes="168px" />
+          <GalleryImg
+            src={slide(7).src}
+            alt={slide(7).alt}
+            sizes="168px"
+          />
         </div>
         <div className="relative overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/conf-9.avif" alt="Conference session" sizes="168px" />
+          <GalleryImg
+            src={slide(8).src}
+            alt={slide(8).alt}
+            sizes="168px"
+          />
         </div>
       </div>
 
-      {/* 5 — tall-left + 2 stacked-right */}
       <div className="mr-3 flex h-72 w-85 shrink-0 gap-2">
         <div className="relative flex-1 overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/workshop.avif" alt="Workshop" sizes="168px" />
+          <GalleryImg
+            src={slide(9).src}
+            alt={slide(9).alt}
+            sizes="168px"
+          />
         </div>
         <div className="flex w-40 flex-col gap-2">
           <div className="relative flex-1 overflow-hidden rounded-2xl">
-            <GalleryImg src="/images/gtp/gtp-2025/conf-18.jpg" alt="Conference session" sizes="160px" />
+            <GalleryImg
+              src={slide(10).src}
+              alt={slide(10).alt}
+              sizes="160px"
+            />
           </div>
           <div className="relative flex-1 overflow-hidden rounded-2xl">
-            <GalleryImg src="/images/gtp/gtp-2025/conf-5.avif" alt="Conference session" sizes="160px" />
+            <GalleryImg
+              src={slide(11).src}
+              alt={slide(11).alt}
+              sizes="160px"
+            />
           </div>
         </div>
       </div>
 
-      {/* 6 — wide single */}
       <div className="relative mr-3 h-72 w-105 shrink-0 overflow-hidden rounded-2xl">
-        <GalleryImg src="/images/gtp/gtp-2025/preview-092.avif" alt="GTP 2025 preview" sizes="420px" />
+        <GalleryImg
+          src={slide(12).src}
+          alt={slide(12).alt}
+          sizes="420px"
+        />
       </div>
 
-      {/* 7 — side-by-side equal */}
       <div className="mr-3 flex h-72 w-95 shrink-0 gap-2">
         <div className="relative flex-1 overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/preview-106.avif" alt="GTP 2025 preview" sizes="188px" />
+          <GalleryImg
+            src={slide(13).src}
+            alt={slide(13).alt}
+            sizes="188px"
+          />
         </div>
         <div className="relative flex-1 overflow-hidden rounded-2xl">
-          <GalleryImg src="/images/gtp/gtp-2025/conf-12.avif" alt="Conference session" sizes="188px" />
+          <GalleryImg
+            src={slide(14).src}
+            alt={slide(14).alt}
+            sizes="188px"
+          />
         </div>
       </div>
     </div>
   );
 }
 
-function GalleryBentoStrip() {
+function GalleryBentoStrip({
+  slides,
+}: {
+  slides: GtpAboutGalleryBandCopy["slides"];
+}) {
   return (
-    // overflow-hidden clips the scrolling strip; the fade mask softens edges.
-    // The animated div holds TWO BentoGroups wrappers of equal width W.
-    // translateX(-50%) = translateX(-W), snapping back to translateX(0) which
-    // looks identical → perfectly seamless infinite loop.
     <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
       <div className="flex w-max animate-marquee will-change-transform">
-        <BentoGroups />
-        <BentoGroups />
+        <BentoGroups slides={slides} />
+        <BentoGroups slides={slides} />
       </div>
     </div>
   );
 }
 
-function GallerySection() {
+function GallerySection({ band }: { band: GtpAboutGalleryBandCopy }) {
+  const footerInternal =
+    band.footerLinkHref.startsWith("/") || band.footerLinkHref.startsWith("#");
+
   return (
     <SectionWrapper
-      title="Moments That Matter"
-      subtitle="Our Gallery"
+      title={band.title}
+      subtitle={band.subtitle}
       theme="gtp"
       background="dark"
     >
-      <GalleryBentoStrip />
+      <GalleryBentoStrip slides={band.slides} />
 
       <p className="mt-6 text-center text-sm text-white/60">
-        Photos from GTP 2025.{" "}
-        <Link
-          href="/events/gtp-2026/media"
-          className="font-semibold text-gtp-teal hover:text-white hover:underline"
-        >
-          See more →
-        </Link>
+        {band.footerText}{" "}
+        {footerInternal ? (
+          <Link
+            href={band.footerLinkHref}
+            className="font-semibold text-gtp-teal hover:text-white hover:underline"
+          >
+            {band.footerLinkLabel}
+          </Link>
+        ) : (
+          <a
+            href={band.footerLinkHref}
+            className="font-semibold text-gtp-teal hover:text-white hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {band.footerLinkLabel}
+          </a>
+        )}
       </p>
     </SectionWrapper>
   );
@@ -564,101 +728,67 @@ function GallerySection() {
 
 // ─── Quote Section ────────────────────────────────────────────────────────────
 
-const coChairQuotes = [
-  {
-    name: "Tim Lenton",
-    designation: "Co-Chair · Founding Director, Global Systems Institute, University of Exeter",
-    quote: "The Global Tipping Points Conference 2026 is a great opportunity for a bunch of us to come together as businesses, as thinkers, as policymakers, both to wrestle down the incredible risks we're running in crossing tipping points in the Earth system—our life support system—but also how can we together seize the positive tipping point opportunities to accelerate us out of trouble and into a healthier, happier, flourishing future together.",
-    hasPhoto: true,
-    photoSrc: "/images/gtp/co-chairs/tim-lenton.jpg",
-    /** Fine-tune face in circular crop (object-fit: cover) */
-    avatarObjectClass: "object-[50%_38%]",
-  },
-  {
-    name: "Johan Rockström",
-    designation: "Co-Chair · Director, Potsdam Institute for Climate Impact Research",
-    quote: "Scientifically, we know we are moving towards profound challenges and risks at the planetary scale, with an increasing risk of tipping points in the Earth system. Against this backdrop, the Malaysian Global Tipping Point Conference offers a crucial forum to examine how positive societal tipping points can help build more equitable, stable and resilient societies.",
-    hasPhoto: true,
-    photoSrc: "/images/gtp/co-chairs/johan-rockstrom.jpg",
-    avatarObjectClass: "object-[50%_22%]",
-    avatarScaleClass: "scale-[1.35] origin-[50%_28%]",
-  },
-  {
-    name: "Jemilah Mahmood",
-    designation: "Co-Chair · Executive Director, Sunway Centre for Planetary Health, Sunway University",
-    quote: "This year, the Sunway Centre for Planetary Health will proudly host the Global Tipping Points Conference at Sunway University, the first in Asia. Together, scientists, policymakers, business leaders, civil society, Indigenous voices, artists, and youth will unite to spotlight South and Southeast Asia's lived realities and accelerate the positive tipping points we need for a healthier planet and future. Join us in Sunway this October and we will see you there! Follow us on @sunwaycph to find out more!",
-    hasPhoto: true,
-    photoSrc: "/images/scph/team/professor-tan-sri-dr-jemilah-mahmood.png",
-    avatarObjectClass: "object-[50%_22%]",
-    avatarScaleClass: "scale-[1.48] origin-[50%_6%]",
-  },
-];
-
-function QuoteSection() {
+function QuoteSection({ band }: { band: GtpAboutQuotesBandCopy }) {
   return (
     <SectionWrapper
-      title="Words from Our Co-Chairs"
-      subtitle="Leadership Voices"
+      title={band.title}
+      subtitle={band.subtitle}
       theme="gtp"
       background="dark"
     >
-      <StaggerReveal
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0"
-      >
-        {coChairQuotes.map(
+      <StaggerReveal className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-4 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-x-visible md:px-0 md:pb-0">
+        {band.quotes.map(
           ({
             name,
             designation,
             quote,
-            hasPhoto,
             photoSrc,
             avatarObjectClass,
             avatarScaleClass,
           }) => (
-          <div
-            key={name}
-            className="w-[85vw] max-w-[85vw] flex-shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm md:w-auto md:max-w-none"
-          >
-            {/* Quote icon */}
-            <Quote className="mb-4 h-8 w-8 shrink-0 text-gtp-teal/60" />
+            <div
+              key={name}
+              className="flex w-[85vw] max-w-[85vw] shrink-0 snap-center flex min-h-[320px] flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm md:w-auto md:max-w-none"
+            >
+              <Quote className="mb-4 h-8 w-8 shrink-0 text-gtp-teal/60" />
 
-            {/* Quote text */}
-            <p className="flex-1 font-heading text-base font-semibold italic leading-relaxed text-white/90">
-              &ldquo;{quote}&rdquo;
-            </p>
+              <p className="flex-1 font-heading text-base font-semibold italic leading-relaxed text-white/90">
+                &ldquo;{quote}&rdquo;
+              </p>
 
-            {/* Attribution */}
-            <div className="mt-6 flex items-center gap-4 border-t border-white/10 pt-5">
-              {hasPhoto && photoSrc ? (
-                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-2 ring-gtp-teal/30">
-                  <Image
-                    src={photoSrc}
-                    alt={name}
-                    fill
-                    className={cn(
-                      "object-cover",
-                      avatarObjectClass ?? "object-center",
-                      avatarScaleClass,
-                    )}
-                    sizes="56px"
-                  />
+              <div className="mt-6 flex items-center gap-4 border-t border-white/10 pt-5">
+                {photoSrc?.trim() ? (
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full ring-2 ring-gtp-teal/30">
+                    <Image
+                      src={photoSrc}
+                      alt={name}
+                      fill
+                      className={cn(
+                        "object-cover",
+                        avatarObjectClass ?? "object-center",
+                        avatarScaleClass,
+                      )}
+                      sizes="56px"
+                      unoptimized={imgUnoptimized(photoSrc)}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gtp-teal/10 ring-2 ring-gtp-teal/20">
+                    <UserCircle2 className="h-8 w-8 text-gtp-teal/40" />
+                  </div>
+                )}
+                <div>
+                  <p className="font-heading text-sm font-bold text-white">
+                    {name}
+                  </p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-white/50">
+                    {designation}
+                  </p>
                 </div>
-              ) : (
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gtp-teal/10 ring-2 ring-gtp-teal/20">
-                  <UserCircle2 className="h-8 w-8 text-gtp-teal/40" />
-                </div>
-              )}
-              <div>
-                <p className="font-heading text-sm font-bold text-white">
-                  {name}
-                </p>
-                <p className="mt-0.5 text-xs leading-relaxed text-white/50">
-                  {designation}
-                </p>
               </div>
             </div>
-          </div>
-        ))}
+          ),
+        )}
       </StaggerReveal>
     </SectionWrapper>
   );
@@ -675,6 +805,7 @@ export default async function GtpAboutPage() {
   const carouselSessions = buildGtpCarouselSessions(programme);
   const aboutSections = aboutCms?.sections ?? null;
   const showAboutCmsBands = gtpAboutCmsSectionsRender(aboutSections);
+  const about = mergeGtpAboutPage(aboutCms);
   const speakersList =
     highlightRows.length > 0
       ? mapSanityHighlightToProps(highlightRows)
@@ -686,18 +817,21 @@ export default async function GtpAboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
-      <GtpAboutHeroStack carouselSessions={carouselSessions} />
+      <GtpAboutHeroStack
+        carouselSessions={carouselSessions}
+        heroCopy={about.hero}
+      />
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}
-      <WhatIsGtpSection />
-      <WhyItMattersSection />
-      <ThemesSection />
-      <SpeakersSection speakers={speakersList} />
-      <QuoteSection />
-      <GallerySection />
-      <EventInquirySection />
-      <SponsorsSection />
+      <WhatIsGtpSection content={about.whatIs} />
+      <WhyItMattersSection content={about.whyMatters} />
+      <ThemesSection content={about.themes} />
+      <SpeakersSection chrome={about.speakersChrome} speakers={speakersList} />
+      <QuoteSection band={about.quotes} />
+      <GallerySection band={about.gallery} />
+      <EventInquirySection content={about.eventInquiry} />
+      <SponsorsSection band={about.sponsors} />
     </>
   );
 }

@@ -129,19 +129,19 @@ Node/ts scripts under `scripts/` to seed or upsert hardcoded repo copy into Sani
 
 **Scope:** Minimal singletons; routes show placeholder until `sections` have visible blocks — [`src/app/events/gtp-2026/media/page.tsx`](src/app/events/gtp-2026/media/page.tsx), [`src/app/events/gtp-2026/biz-forum/page.tsx`](src/app/events/gtp-2026/biz-forum/page.tsx).
 
-**Sanity `_type`:** `gtp2026MediaPage`, `gtp2026BizForumPage`.
+**Sanity `_type`:** `gtp2026MediaPage`, `gtp2026BizForumPage`, optional shell `gtp2026AboutPage` (same script).
 
-**Implemented:** [`scripts/seed-gtp-media-bizforum-pages.ts`](scripts/seed-gtp-media-bizforum-pages.ts). `npm run seed-gtp-media-bizforum-pages`.
+**Implemented:** [`scripts/seed-gtp-media-bizforum-pages.ts`](scripts/seed-gtp-media-bizforum-pages.ts). `npm run seed-gtp-media-bizforum-pages`. About uses Studio field **`whatIsBand`** (object `gtpAboutWhatIsBand`) for the “What are Global Tipping Points” band; site falls back to [`src/data/gtp-about-what-is-defaults.ts`](src/data/gtp-about-what-is-defaults.ts) when title/body are empty.
 
-**Verify:** Publish in Studio → `/events/gtp-2026/media` and `/events/gtp-2026/biz-forum` show seeded placeholder copy; add section blocks later for full layout.
+**Verify:** `sanity schema deploy` after schema changes → re-seed → Publish → `/events/gtp-2026/about` still matches design while copy is editable in Studio.
 
 ---
 
-## Stage 7 — GTP About `sections` (optional, hard)
+## Stage 7 — GTP About `sections` (optional)
 
-**Scope:** Extra bands only; main about content is JSX — [`src/app/events/gtp-2026/about/page.tsx`](src/app/events/gtp-2026/about/page.tsx), `gtp2026AboutPage` in [`studio/schemaTypes/gtp2026AboutPageType.ts`](studio/schemaTypes/gtp2026AboutPageType.ts).
+**Scope:** Main About copy now lives on `gtp2026AboutPage` (hero through sponsors); see [`src/data/gtp-about-page-defaults.ts`](src/data/gtp-about-page-defaults.ts) and [`src/sanity/gtp-about-page-merge.ts`](src/sanity/gtp-about-page-merge.ts). Optional `sections[]` under the hero remains for generic `section*` blocks.
 
-**Approach:** Editor-authored in Studio, or extract copy into a data module matching `section*` shapes then seed.
+**Remaining:** Programme carousel still reads `gtp2026Programme`. Sponsor **marquee** uses CMS logos when `sponsorsBand.sponsors` has entries; otherwise PIK + placeholders (see `gtpAboutSponsorLogo`).
 
 ---
 
