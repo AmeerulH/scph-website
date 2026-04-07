@@ -15,6 +15,7 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { cn } from "@/lib/utils";
 import type { Session } from "./types";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
@@ -312,7 +313,9 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
 
                       {/* Register button */}
                       <a
-                        href="/events/gtp-2026/register"
+                        href={GTP_2026_REGISTRATION_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="flex w-full items-center justify-center gap-2 rounded-full bg-gtp-orange py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-gtp-orange-dark"
                       >
                         Register to Join

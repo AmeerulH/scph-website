@@ -5,7 +5,6 @@ import {gtp2026AboutPageType} from './gtp2026AboutPageType'
 import {gtp2026BizForumPageType} from './gtp2026BizForumPageType'
 import {gtp2026GetInvolvedPageType} from './gtp2026GetInvolvedPageType'
 import {gtp2026MediaPageType} from './gtp2026MediaPageType'
-import {gtp2026RegisterPageType} from './gtp2026RegisterPageType'
 import {gtp2026SubmissionsPageType} from './gtp2026SubmissionsPageType'
 import {
   gtp2026AbstractFormCopyType,
@@ -58,7 +57,6 @@ export const schemaTypes = [
   gtp2026WorkshopFormCopyType,
   gtp2026SubmissionsPageType,
   gtp2026GetInvolvedPageType,
-  gtp2026RegisterPageType,
   gtp2026MediaPageType,
   gtp2026BizForumPageType,
   teamMemberType,

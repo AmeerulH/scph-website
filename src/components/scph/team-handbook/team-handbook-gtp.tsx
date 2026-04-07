@@ -48,12 +48,6 @@ const gtpCmsPages = [
       "Singleton `gtp2026Programme` (fixed id): days, sessions, workshops, speakers. Drives programme page and parts of About.",
   },
   {
-    route: "/events/gtp-2026/register",
-    docTypes: "gtp2026RegisterPage",
-    title: "Register",
-    notes: "Headings, body copy, links, and registration chrome for the register flow.",
-  },
-  {
     route: "/events/gtp-2026/get-involved",
     docTypes: "gtp2026GetInvolvedPage",
     title: "Get involved",

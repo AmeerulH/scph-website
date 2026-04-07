@@ -52,6 +52,7 @@ import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { cn } from "@/lib/utils";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { getSiteUrlString } from "@/lib/site-url";
 const aboutDescription =
   "Global Tipping Points Conference 2026, 12–15 October in Kuala Lumpur—science, finance, culture and policy for positive tipping points, hosted by Sunway Centre for Planetary Health.";
@@ -106,7 +107,7 @@ const eventJsonLd = {
   },
   offers: {
     "@type": "Offer",
-    url: `${gtpSite}/events/gtp-2026/register`,
+    url: GTP_2026_REGISTRATION_URL,
     availability: "https://schema.org/InStock",
     validFrom: "2026-01-01",
   },

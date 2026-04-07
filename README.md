@@ -74,7 +74,6 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 | `gtp2026CommitteeMember` | `/events/gtp-2026/organising-committee` |
 | `gtp2026FaqItem` | `/events/gtp-2026/faq` |
 | `gtp2026GetInvolvedPage` | `/events/gtp-2026/get-involved` |
-| `gtp2026RegisterPage` | `/events/gtp-2026/register` |
 | `gtp2026SubmissionsPage` | `/events/gtp-2026/submissions` |
 | `gtp2026MediaPage` | `/events/gtp-2026/media` |
 | `gtp2026BizForumPage` | `/events/gtp-2026/biz-forum` |
@@ -92,7 +91,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 ### Import scripts
 
 - **GTP programme** (agenda): `npm run import-gtp-programme` — source [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx), script [`scripts/import-gtp-programme-to-sanity.ts`](scripts/import-gtp-programme-to-sanity.ts). Uses `SANITY_DATASET` from `.env.local`. `DRY_RUN=1` prints JSON only. With `SANITY_DATASET=development` or `GTP_APPEND_TEST_SESSION=1`, Day 1 gets an extra test session.
-- **GTP Register / Get involved** (marketing copy): `npm run seed-gtp-register-page` and `npm run seed-gtp-get-involved-page` — source [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) (same defaults as `mergeGtpRegisterCopy` / `mergeGtpGetInvolvedCopy`). Upserts singletons `_id` = `gtp2026RegisterPage` / `gtp2026GetInvolvedPage`. `DRY_RUN=1` prints JSON only. Prefer `SANITY_DATASET=development` first; align with `SANITY_STUDIO_DATASET` in `studio/.env`.
+- **GTP Get involved** (marketing copy): `npm run seed-gtp-get-involved-page` — source [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) (same defaults as `mergeGtpGetInvolvedCopy`). Upserts singleton `_id` = `gtp2026GetInvolvedPage`. `DRY_RUN=1` prints JSON only. Prefer `SANITY_DATASET=development` first; align with `SANITY_STUDIO_DATASET` in `studio/.env`. Conference registration is on Sunway Events (see `GTP_2026_REGISTRATION_URL` in [`src/lib/gtp-registration-url.ts`](src/lib/gtp-registration-url.ts)); `/events/gtp-2026/register` redirects there.
 - **GTP Submissions** (page + in-form copy): `npm run seed-gtp-submissions-page` — [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) + [`src/sanity/gtp-submissions-form-defaults.ts`](src/sanity/gtp-submissions-form-defaults.ts); upserts `_id` = `gtp2026SubmissionsPage` including `abstractForm` and `workshopForm` (see [`studio/schemaTypes/gtp2026SubmissionsFormCopyTypes.ts`](studio/schemaTypes/gtp2026SubmissionsFormCopyTypes.ts)). After schema changes, run `cd studio && npx sanity schema deploy`. `DRY_RUN=1` prints JSON only.
 - **GTP highlight speakers**: `npm run seed-gtp-highlight-speakers` — source [`src/data/gtp-highlight-speakers.ts`](src/data/gtp-highlight-speakers.ts); upserts one `gtp2026HighlightSpeaker` per row with `_id` = `gtpHighlightSpeaker-<slug>`, `order` from array index, optional image upload from `public/`. `DRY_RUN=1` prints JSON only (image shown as placeholder note).
 - **GTP organising committee**: `npm run seed-gtp-committee-members` — source [`src/data/gtp-committee-static.ts`](src/data/gtp-committee-static.ts); upserts `gtp2026CommitteeMember` docs with `_id` = `gtpCommittee-<cochair|planning|programme>-<slug(name-role)>`, global `order` for sort, optional images. `DRY_RUN=1` prints JSON only.

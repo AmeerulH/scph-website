@@ -27,6 +27,7 @@ import {
 import type { SectionBlock } from "@/sanity/section-block-types";
 import type { GtpAboutWhatIsBandRaw } from "@/sanity/gtp-about-what-is-merge";
 import { mergeGtpWhatIsBand } from "@/sanity/gtp-about-what-is-merge";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 
 function s(v: string | null | undefined, fallback: string): string {
   const t = v?.trim();
@@ -148,6 +149,18 @@ export type GtpAboutPageDocumentRaw = {
   sponsorsBand?: GtpAboutSponsorsBandRaw;
 };
 
+/** On-site register route is deprecated; hero primary CTA must open Sunway Events. */
+function heroPrimaryRegistrationHref(
+  fromCms: string | null | undefined,
+  fallback: string,
+): string {
+  const resolved = s(fromCms, fallback);
+  if (resolved.includes("/events/gtp-2026/register")) {
+    return GTP_2026_REGISTRATION_URL;
+  }
+  return resolved;
+}
+
 function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
   const d = DEFAULT_GTP_ABOUT_HERO;
   if (!raw) return d;
@@ -156,7 +169,10 @@ function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
     title: s(raw.title, d.title),
     lede: s(raw.lede, d.lede),
     primaryCtaLabel: s(raw.primaryCtaLabel, d.primaryCtaLabel),
-    primaryCtaHref: s(raw.primaryCtaHref, d.primaryCtaHref),
+    primaryCtaHref: heroPrimaryRegistrationHref(
+      raw.primaryCtaHref,
+      d.primaryCtaHref,
+    ),
     secondaryCtaLabel: s(raw.secondaryCtaLabel, d.secondaryCtaLabel),
     secondaryCtaHref: s(raw.secondaryCtaHref, d.secondaryCtaHref),
   };

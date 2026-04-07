@@ -63,32 +63,6 @@ export const DEFAULT_GET_INVOLVED: GtpGetInvolvedResolvedCopy = {
   },
 };
 
-export type GtpRegisterResolvedCopy = {
-  heroTitle: string;
-  heroLede: string;
-  sectionTitle: string;
-  sectionSubtitle: string;
-  bodyLead: string;
-  bodyHighlight: string;
-  bodyMore: string;
-  primaryCtaLabel: string;
-  secondaryCtaLabel: string;
-};
-
-export const DEFAULT_REGISTER: GtpRegisterResolvedCopy = {
-  heroTitle: "Register Now",
-  heroLede: "12–15 October 2026 · Kuala Lumpur, Malaysia",
-  sectionTitle: "Join the Conference",
-  sectionSubtitle: "Registration",
-  bodyLead:
-    "Registration for the Global Tipping Points Conference 2026 will open soon.",
-  bodyHighlight: "Early bird rates will be available for a limited time.",
-  bodyMore:
-    "Sign up below to be notified when registration opens, or get in touch if you have questions about group bookings, scholarships, or partnership opportunities.",
-  primaryCtaLabel: "Notify Me When Registration Opens",
-  secondaryCtaLabel: "Contact Us",
-};
-
 // ─── Submissions ─────────────────────────────────────────────────────────────
 
 export type GtpSubmissionsPillarCopy = { title: string; body: string };

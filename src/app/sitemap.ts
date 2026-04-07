@@ -13,7 +13,6 @@ const PATHS: string[] = [
   "/projects",
   "/events/gtp-2026/about",
   "/events/gtp-2026/programmes",
-  "/events/gtp-2026/register",
   "/events/gtp-2026/submissions",
   "/events/gtp-2026/faq",
   "/events/gtp-2026/get-involved",

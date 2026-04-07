@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronDown } from "lucide-react";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -158,7 +159,13 @@ export function GtpHeroCarousel() {
           className="mt-10 flex flex-wrap items-center justify-center gap-4"
         >
           <Button variant="gtpCta" size="lg" asChild>
-            <Link href="/events/gtp-2026/register">Register Now →</Link>
+            <a
+              href={GTP_2026_REGISTRATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Register Now →
+            </a>
           </Button>
           <Button
             size="lg"

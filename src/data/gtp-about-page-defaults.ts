@@ -3,6 +3,7 @@
  * Used for CMS merge fallbacks and for `seed-gtp-media-bizforum-pages` About document.
  */
 
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import type { GtpWhatIsBandContent } from "./gtp-about-what-is-defaults";
 import { DEFAULT_GTP_WHAT_IS_BAND } from "./gtp-about-what-is-defaults";
 
@@ -23,7 +24,7 @@ export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
   title: "Global Tipping Points Conference 2026",
   lede: "From Understanding to Imagination to Action: Crossing Thresholds for a Thriving Planet",
   primaryCtaLabel: "Register Now →",
-  primaryCtaHref: "/events/gtp-2026/register",
+  primaryCtaHref: GTP_2026_REGISTRATION_URL,
   secondaryCtaLabel: "Learn More",
   secondaryCtaHref: "/events/gtp-2026/about#about",
 };

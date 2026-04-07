@@ -1,10 +1,8 @@
 import { client } from "./client";
 import {
   DEFAULT_GET_INVOLVED,
-  DEFAULT_REGISTER,
   DEFAULT_SUBMISSIONS,
   type GtpGetInvolvedResolvedCopy,
-  type GtpRegisterResolvedCopy,
   type GtpSubmissionsPillarCopy,
   type GtpSubmissionsResolvedCopy,
   type GtpSubmissionsThemeCopy,
@@ -19,7 +17,6 @@ import type { SectionBlock } from "./section-block-types";
 
 export type {
   GtpGetInvolvedResolvedCopy,
-  GtpRegisterResolvedCopy,
   GtpSubmissionsPillarCopy,
   GtpSubmissionsResolvedCopy,
   GtpSubmissionsThemeCopy,
@@ -96,54 +93,6 @@ export function mergeGtpGetInvolvedCopy(
       ctaLabel:
         cms.partnershipCtaLabel?.trim() || d.partnership.ctaLabel,
     },
-  };
-}
-
-// ─── Register ─────────────────────────────────────────────────────────────────
-
-type SanityRegisterRaw = {
-  heroTitle?: string | null;
-  heroLede?: string | null;
-  sectionTitle?: string | null;
-  sectionSubtitle?: string | null;
-  bodyLead?: string | null;
-  bodyHighlight?: string | null;
-  bodyMore?: string | null;
-  primaryCtaLabel?: string | null;
-  secondaryCtaLabel?: string | null;
-};
-
-const registerQuery = `*[_type == "gtp2026RegisterPage"][0]{
-  heroTitle,
-  heroLede,
-  sectionTitle,
-  sectionSubtitle,
-  bodyLead,
-  bodyHighlight,
-  bodyMore,
-  primaryCtaLabel,
-  secondaryCtaLabel
-}`;
-
-export async function getGtp2026RegisterPage(): Promise<SanityRegisterRaw | null> {
-  return client.fetch(registerQuery);
-}
-
-export function mergeGtpRegisterCopy(
-  cms: SanityRegisterRaw | null,
-): GtpRegisterResolvedCopy {
-  const d = DEFAULT_REGISTER;
-  if (!cms) return d;
-  return {
-    heroTitle: cms.heroTitle?.trim() || d.heroTitle,
-    heroLede: cms.heroLede?.trim() || d.heroLede,
-    sectionTitle: cms.sectionTitle?.trim() || d.sectionTitle,
-    sectionSubtitle: cms.sectionSubtitle?.trim() || d.sectionSubtitle,
-    bodyLead: cms.bodyLead?.trim() || d.bodyLead,
-    bodyHighlight: cms.bodyHighlight?.trim() || d.bodyHighlight,
-    bodyMore: cms.bodyMore?.trim() || d.bodyMore,
-    primaryCtaLabel: cms.primaryCtaLabel?.trim() || d.primaryCtaLabel,
-    secondaryCtaLabel: cms.secondaryCtaLabel?.trim() || d.secondaryCtaLabel,
   };
 }
 

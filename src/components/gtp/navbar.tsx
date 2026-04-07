@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { usePathname } from "next/navigation";
 import { Menu, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -192,7 +193,13 @@ export function GtpNavbar() {
         {/* Desktop CTA */}
         <div className="hidden lg:block">
           <Button variant="gtpCta" size="sm" asChild>
-            <Link href="/events/gtp-2026/register">Register Now</Link>
+            <a
+              href={GTP_2026_REGISTRATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Register Now
+            </a>
           </Button>
         </div>
 
@@ -294,9 +301,14 @@ export function GtpNavbar() {
                     className="w-full"
                     asChild
                   >
-                    <Link href="/events/gtp-2026/register" onClick={closeSheet}>
+                    <a
+                      href={GTP_2026_REGISTRATION_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={closeSheet}
+                    >
                       Register Now
-                    </Link>
+                    </a>
                   </Button>
                 </SheetClose>
               </div>
