@@ -11,6 +11,7 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import type { Gtp2026FaqGroupWithItems } from "@/sanity/gtp-stage1";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { FaqAnswerBody } from "@/components/gtp/faq-answer-body";
 import { cn } from "@/lib/utils";
 
 /** Slightly bouncy spring for FAQ expand/collapse */
@@ -213,9 +214,7 @@ export function GtpFaqSectionClient({ groups }: Props) {
                     className="min-w-0 overflow-hidden border-gtp-dark-teal/8 text-base leading-relaxed text-gray-600"
                   >
                     <div className="min-w-0 border-t border-gtp-dark-teal/8 px-4 pb-4 pt-3">
-                      <p className="whitespace-pre-wrap wrap-anywhere">
-                        {item.answer.trim()}
-                      </p>
+                      <FaqAnswerBody text={item.answer} />
                     </div>
                   </motion.div>
                 ) : null}

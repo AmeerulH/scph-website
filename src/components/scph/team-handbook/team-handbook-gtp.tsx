@@ -319,6 +319,9 @@ export function TeamHandbookGtpSections() {
               Open each <strong>GTP 2026 FAQ tab</strong> document: set the tab
               label and tab order, then edit the <strong>Questions (accordions)</strong>{" "}
               list (question, answer, sort order per row). Publish when done.
+              For bullet lists in an answer, use new lines starting with{" "}
+              <code className="rounded bg-gray-100 px-1">- </code> (dash + space)
+              per item after a short intro line.
             </p>
             <div className="mt-4 max-w-4xl">
               <HandbookScreenshotFigure
