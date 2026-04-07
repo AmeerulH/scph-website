@@ -45,7 +45,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026Programme",
     title: "Programme",
     notes:
-      "Singleton `gtp2026Programme` (fixed id): days, sessions (incl. objective, venue type, venue line, format label), workshops, speakers. Drives programme page and parts of About.",
+      "Singleton `gtp2026Programme` (fixed id): days, sessions (venue type, venue line, format label, optional Objective), workshops (optional Objective on each row), speakers. Objective copy appears on the full programme page (session cards, concurrent tracks, workshop sub-cards, session detail modal) when filled—not on the small About hero carousel. Drives programme page and parts of About.",
   },
   {
     route: "/events/gtp-2026/get-involved",
@@ -267,8 +267,10 @@ export function TeamHandbookGtpSections() {
           </li>
           <li>
             <strong>Programme</strong> — Editing days/sessions affects both the
-            full programme page and carousel snippets. Publish once you are
-            happy; preview on{" "}
+            full programme page and carousel snippets. Optional{" "}
+            <strong>Objective</strong> on a session or workshop row shows on the
+            programme page and in the session modal only (not the About carousel).
+            Publish once you are happy; preview on{" "}
             <Link
               href="/events/gtp-2026/programmes"
               className="text-gtp-teal hover:underline"
@@ -347,7 +349,10 @@ export function TeamHandbookGtpSections() {
             </h3>
             <p className="mt-2 max-w-3xl text-sm text-gray-600">
               Open <strong>GTP 2026 Programme</strong> (singleton). Add or
-              reorder days, then sessions/workshops inside a day. Complex
+              reorder days, then sessions/workshops inside a day. Use{" "}
+              <strong>Objective</strong> when you want a short goal line for that
+              session or workshop row—it appears on the programme page and in the
+              session modal, not on the About carousel. Complex
               relationships—when in doubt, duplicate an existing session as a
               template.
             </p>
