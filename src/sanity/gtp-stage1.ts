@@ -241,7 +241,8 @@ export type Gtp2026FaqItemData = {
   order?: number | null;
 };
 
-const faqQuery = `*[_type == "gtp2026FaqItem"] | order(order asc, question asc) {
+/** Legacy flat documents (pre–embedded-items schema). */
+const faqLegacyItemQuery = `*[_type == "gtp2026FaqItem"] | order(order asc, question asc) {
   _id,
   question,
   answer,
@@ -249,5 +250,107 @@ const faqQuery = `*[_type == "gtp2026FaqItem"] | order(order asc, question asc) 
 }`;
 
 export async function getGtp2026FaqItems(): Promise<Gtp2026FaqItemData[]> {
-  return client.fetch(faqQuery);
+  return client.fetch(faqLegacyItemQuery);
+}
+
+export type Gtp2026FaqGroupWithItems = {
+  _id: string;
+  title: string;
+  order?: number | null;
+  items: Gtp2026FaqItemData[];
+};
+
+const faqGroupsWithItemsQuery = `*[_type == "gtp2026FaqGroup"] | order(order asc, title asc) {
+  _id,
+  title,
+  order,
+  "items": items | order(order asc, question asc) {
+    _key,
+    question,
+    answer,
+    order
+  }
+}`;
+
+const LEGACY_FALLBACK_GROUP_ID = "gtp-faq-legacy-fallback";
+
+function filterValidFaqItems(rows: Gtp2026FaqItemData[]): Gtp2026FaqItemData[] {
+  return rows.filter((item) => item.question?.trim() && item.answer?.trim());
+}
+
+function mapEmbeddedFaqRows(
+  rows: {
+    _key?: string | null;
+    question?: string | null;
+    answer?: string | null;
+    order?: number | null;
+  }[] | null,
+  groupId: string,
+): Gtp2026FaqItemData[] {
+  if (!rows?.length) return [];
+  return filterValidFaqItems(
+    rows.map((row, index) => ({
+      _id:
+        typeof row._key === "string" && row._key.trim()
+          ? `${groupId}-${row._key}`
+          : `${groupId}-item-${index}`,
+      question: typeof row.question === "string" ? row.question : "",
+      answer: typeof row.answer === "string" ? row.answer : "",
+      order: row.order,
+    })),
+  );
+}
+
+/**
+ * FAQ tabs: each `gtp2026FaqGroup` document holds an `items` array (Q&A).
+ * Falls back to legacy `gtp2026FaqItem` documents if no tab has embedded items yet.
+ */
+export async function getGtp2026FaqGroupsWithItems(): Promise<
+  Gtp2026FaqGroupWithItems[]
+> {
+  const groups = await client
+    .fetch<
+      {
+        _id: string;
+        title?: string | null;
+        order?: number | null;
+        items?: {
+          _key?: string | null;
+          question?: string | null;
+          answer?: string | null;
+          order?: number | null;
+        }[] | null;
+      }[]
+    >(faqGroupsWithItemsQuery)
+    .catch(() => []);
+
+  const withValidItems: Gtp2026FaqGroupWithItems[] = groups.map((g) => ({
+    _id: g._id,
+    title: typeof g.title === "string" ? g.title.trim() : "",
+    order: g.order,
+    items: mapEmbeddedFaqRows(g.items ?? null, g._id),
+  }));
+
+  const nonEmpty = withValidItems.filter(
+    (g) => g.title && g.items.length > 0,
+  );
+
+  if (nonEmpty.length > 0) {
+    return nonEmpty;
+  }
+
+  const flat = await getGtp2026FaqItems().catch(() => []);
+  const legacyItems = filterValidFaqItems(flat);
+  if (legacyItems.length === 0) {
+    return [];
+  }
+
+  return [
+    {
+      _id: LEGACY_FALLBACK_GROUP_ID,
+      title: "FAQ",
+      order: 0,
+      items: legacyItems,
+    },
+  ];
 }

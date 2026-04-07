@@ -1,9 +1,10 @@
 import {defineField, defineType} from 'sanity'
 
-export const gtp2026FaqItemType = defineType({
-  name: 'gtp2026FaqItem',
-  title: 'GTP 2026 FAQ item',
-  type: 'document',
+/** Embedded Q&A row inside a `gtp2026FaqGroup` (tab) document. */
+export const gtp2026FaqAccordionItemType = defineType({
+  name: 'gtp2026FaqAccordionItem',
+  title: 'FAQ item',
+  type: 'object',
   fields: [
     defineField({
       name: 'order',
@@ -29,16 +30,9 @@ export const gtp2026FaqItemType = defineType({
     select: {title: 'question', order: 'order'},
     prepare({title, order}) {
       return {
-        title: title ?? 'FAQ',
+        title: title ?? 'Item',
         subtitle: order != null ? `Order ${order}` : undefined,
       }
     },
   },
-  orderings: [
-    {
-      title: 'Order',
-      name: 'orderAsc',
-      by: [{field: 'order', direction: 'asc'}],
-    },
-  ],
 })

@@ -1,0 +1,16 @@
+---
+description: Master project guardrails — Sanity CMS, seeds, Next.js architecture, performance; full detail in AGENTS.md
+alwaysApply: true
+---
+
+# SCPH / GTP website — always apply
+
+Before non-trivial work (new pages/sections, CMS fields, or large UI changes):
+
+1. **Read `AGENTS.md`** at the repository root for the full checklist and conventions.
+
+2. **Sanity:** Editors own published content. Code defaults merge with CMS—changing defaults does not overwrite Studio. New CMS-backed surfaces need **schema deploy**, **data layer**, and usually a **seed script** + `package.json` script; update **`SANITY_TYPE_TO_PATHS`** in `src/app/api/revalidate/sanity/route.ts` when adding webhook revalidation for a new `_type`.
+
+3. **Quality:** Minimal diffs, match existing patterns, Server Components by default, `next/image` for media, keep performance/CWV in mind (target 90+ scores where realistic—see AGENTS.md).
+
+If `AGENTS.md` and this rule conflict, **prefer updating `AGENTS.md`** and keep this rule as a pointer.

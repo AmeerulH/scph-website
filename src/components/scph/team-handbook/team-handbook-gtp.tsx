@@ -74,9 +74,10 @@ const gtpCmsPages = [
   },
   {
     route: "/events/gtp-2026/faq",
-    docTypes: "gtp2026FaqItem",
+    docTypes: "gtp2026FaqGroup",
     title: "FAQ",
-    notes: "Many documents (`gtp2026FaqItem`), each Q&A; order controlled in Studio.",
+    notes:
+      "One document per tab (`gtp2026FaqGroup`). Edit tab order + label, then add/reorder questions in the embedded list (each row is an accordion).",
   },
   {
     route: "/events/gtp-2026/organising-committee",
@@ -315,9 +316,9 @@ export function TeamHandbookGtpSections() {
               Example B — Add an FAQ entry
             </h3>
             <p className="mt-2 max-w-3xl text-sm text-gray-600">
-              Create a new <strong>GTP 2026 FAQ item</strong>, set question and
-              answer, assign order, publish. The FAQ page lists items in sort
-              order.
+              Open each <strong>GTP 2026 FAQ tab</strong> document: set the tab
+              label and tab order, then edit the <strong>Questions (accordions)</strong>{" "}
+              list (question, answer, sort order per row). Publish when done.
             </p>
             <div className="mt-4 max-w-4xl">
               <HandbookScreenshotFigure
@@ -325,7 +326,7 @@ export function TeamHandbookGtpSections() {
                 width={1024}
                 height={532}
                 alt="Sanity Studio FAQ item with sort order, question, and answer fields"
-                caption="FAQ item: set sort order, question, and answer—match the list order you want on /events/gtp-2026/faq."
+                caption="FAQ content now lives on each tab document: use the embedded list for all Q&amp;As in that tab."
               />
             </div>
           </div>

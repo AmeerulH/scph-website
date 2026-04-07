@@ -1,42 +1,156 @@
-[
-  {
-    "question": "When and where is Global Tipping Points Conference 2026?",
-    "answer": "GTP 2026 runs 12–15 October 2026 in Kuala Lumpur, Malaysia. The conference is hosted by the Sunway Centre for Planetary Health and partners. Exact venue details and daily timings will be confirmed closer to the event—check the programme page and your registration communications for updates."
-  },
-  {
-    "question": "Who should attend?",
-    "answer": "The programme is designed for researchers, policymakers, practitioners, funders, and partners working on climate, health, finance, culture, and systems change. Whether you focus on science, implementation, or mobilising action, you will find sessions that connect evidence to decisions at scale."
-  },
-  {
-    "question": "How do I register?",
-    "answer": "Use the Register page on this site to complete your registration. If you need an invoice, group booking, or other arrangement, contact the team via the Get involved page (Contact section) and we will guide you."
-  },
-  {
-    "question": "What is included in registration?",
-    "answer": "What is included depends on the ticket or pass type you select. In general, registration covers access to the core conference programme and materials as described at the point of purchase. Any pre-conference workshops, side events, or networking programmes will be called out separately if they need an add-on or invitation."
-  },
-  {
-    "question": "How can I submit an abstract or workshop proposal?",
-    "answer": "Submissions for abstracts and action workshops are handled through the Submissions page (/events/gtp-2026/submissions). Please read the pillar and theme guidance, word limits, and deadlines on that page before you submit. If the form or process is unclear, use the contact options on Get involved."
-  },
-  {
-    "question": "Will sessions be recorded or hybrid?",
-    "answer": "We aim to share selected content where speakers and rights allow. A final policy on recording, live streaming, and on-demand access will be published ahead of the conference. Register to receive official updates so you do not miss changes to format or access."
-  },
-  {
-    "question": "Travel, visas, and getting to Kuala Lumpur",
-    "answer": "Kuala Lumpur is well connected by air. Visa rules depend on your nationality; check the latest requirements with Malaysian immigration or your embassy well in advance. We recommend booking flexible travel where possible and allowing extra time for connections. Practical travel tips and recommended areas to stay will be shared with registered participants."
-  },
-  {
-    "question": "Accessibility, dietary needs, and inclusion",
-    "answer": "We want everyone to participate fully. When you register, share accessibility requirements, dietary needs, or inclusion considerations so we can plan reasonable support with the venue. For anything sensitive or complex, contact us directly via Get involved and we will work with you confidentially."
-  },
-  {
-    "question": "Code of conduct and respectful participation",
-    "answer": "GTP 2026 is a professional meeting built on respect, curiosity, and collaboration. Harassment, discrimination, or disruptive behaviour is not tolerated. If you experience or witness a problem, please reach out to conference staff or use the contact routes on the Get involved page so we can respond quickly."
-  },
-  {
-    "question": "Who can I contact for partnerships or media enquiries?",
-    "answer": "For partnerships, media, or general questions not answered here, use the Contact section on the Get involved page (/events/gtp-2026/get-involved#contact). Please include your organisation, role, and what you need—we will route your message to the right team."
-  }
-]
+{
+  "groups": [
+    {
+      "_id": "gtpFaqGroup-general",
+      "title": "General Information",
+      "order": 0,
+      "items": [
+        {
+          "question": "What is the Global Tipping Points Conference 2026?",
+          "answer": "The Global Tipping Points Conference 2026 brings together scientists, policymakers, media professionals, and practitioners to explore critical climate tipping points and accelerate action toward planetary health solutions."
+        },
+        {
+          "question": "Where and when will the conference take place?",
+          "answer": "Sunway University, Malaysia. 12–15 October 2026."
+        },
+        {
+          "question": "Who should attend this conference?",
+          "answer": "Scientists, policymakers, business leaders, civil society, Indigenous Peoples, artists, and youth who have an interest in planetary health solutions."
+        },
+        {
+          "question": "How do I get to the venue?",
+          "answer": "The conference will be held at Sunway University, about 45–60 minutes from Kuala Lumpur International Airport (KLIA) by car, and is easily accessible via Grab and taxi. By public transport, take the Light Rail Transport (LRT) Kelana Jaya Line to USJ 7 Station, switch to the Bus Rapid Transit (BRT) Sunway Line, and alight at SunU–Monash Station, followed by a short walk to campus."
+        },
+        {
+          "question": "Will there be Wi-Fi at the venue?",
+          "answer": "Complimentary Wi-Fi is available at the venue. Login credentials will be provided on the day of the conference."
+        },
+        {
+          "question": "Where can I get the latest information about Global Tipping Points?",
+          "answer": "To learn more about Global Tipping Points, visit global-tipping-points.org."
+        }
+      ]
+    },
+    {
+      "_id": "gtpFaqGroup-registration",
+      "title": "Registration and Pricing",
+      "order": 1,
+      "items": [
+        {
+          "question": "How do I register?",
+          "answer": "Registration can be completed directly on the website: https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/register. Early bird rates will be available for a limited time—stay tuned."
+        },
+        {
+          "question": "How much does it cost to attend the conference?",
+          "answer": "Registration fees vary by participant category (e.g. early bird, standard, student, or partner rates). Detailed pricing will be available on the official registration page."
+        },
+        {
+          "question": "Are there early bird or discounted rates available?",
+          "answer": "Yes. Early bird rates will be offered for a limited time until 31 July 2026. Discounts may also be available for students, group registrations, or partners."
+        },
+        {
+          "question": "What does the registration fee include?",
+          "answer": "For in-person participants, registration includes access to all conference sessions, poster and exhibition areas, and a conference kit (name tag and programme booklet). Meals during the conference are also covered, including two coffee breaks and lunch."
+        },
+        {
+          "question": "Are there any scholarships or financial support options?",
+          "answer": "To enquire about scholarships and financial support, please get in touch via https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/get-involved#contact"
+        },
+        {
+          "question": "Can I participate virtually?",
+          "answer": "Yes. Detailed pricing will be available on the official registration page."
+        },
+        {
+          "question": "Will the conference be held in-person or hybrid?",
+          "answer": "Hybrid."
+        },
+        {
+          "question": "Does the conference provide certificates of participation?",
+          "answer": "Yes. A participation certificate will be given at the end of the conference."
+        },
+        {
+          "question": "Can I register on behalf of someone else?",
+          "answer": "Yes. You may register on behalf of another participant; ensure their details are entered accurately at registration."
+        },
+        {
+          "question": "Is accommodation included in the registration fee?",
+          "answer": "Accommodation is not included in the registration fee, but recommended hotels and special rates may be provided."
+        },
+        {
+          "question": "How can I cancel my registration, and am I eligible for a refund?",
+          "answer": "Cancellation and refund terms will be published on the official registration page. For specific cases, contact the conference team via the Get involved page."
+        },
+        {
+          "question": "Who can I contact for more information?",
+          "answer": "For further enquiries, please contact scph_gtpc2026@sunway.edu.my"
+        }
+      ]
+    },
+    {
+      "_id": "gtpFaqGroup-abstract",
+      "title": "Abstract Proposal Submissions",
+      "order": 2,
+      "items": [
+        {
+          "question": "Can I submit an abstract to present at the conference?",
+          "answer": "Yes. Participants are encouraged to submit abstracts for consideration as part of the conference programme."
+        },
+        {
+          "question": "What topics are eligible for abstract submission?",
+          "answer": "Eligible themes include: Earth system science; Technology and AI; Governance; Finance and Business; Faith and Culture; Communications; Nature-Based Solutions; and Health."
+        },
+        {
+          "question": "What is the deadline for abstract submission?",
+          "answer": "Deadlines will be confirmed on the Submissions page. Please check https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/submissions for the latest dates."
+        },
+        {
+          "question": "How do I submit an abstract?",
+          "answer": "Abstracts must be submitted through the official submission link on the conference website: https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/submissions"
+        },
+        {
+          "question": "What is the selection process for abstracts?",
+          "answer": "All submissions will be reviewed by the programme committee based on relevance, originality, and impact."
+        },
+        {
+          "question": "When will I be notified of the outcome?",
+          "answer": "Applicants will be notified via email by 15 June 2026."
+        },
+        {
+          "question": "Is conference registration required if my abstract is accepted?",
+          "answer": "Yes. Registration and payment of the applicable fee are required after acceptance notification is received."
+        }
+      ]
+    },
+    {
+      "_id": "gtpFaqGroup-workshop",
+      "title": "Action Workshop Proposal Submissions",
+      "order": 3,
+      "items": [
+        {
+          "question": "What are Action Workshops?",
+          "answer": "Action Workshops are interactive sessions focused on practical solutions, collaboration, and implementation strategies related to tipping points and climate action."
+        },
+        {
+          "question": "Can I propose an Action Workshop?",
+          "answer": "Yes. Individuals and organisations are invited to submit proposals for Action Workshops."
+        },
+        {
+          "question": "What should be included in an Action Workshop proposal?",
+          "answer": "Proposals should clearly outline the workshop objectives, format, expected outcomes, target audience, and facilitator(s). Refer to the Action Workshop proposal submission page for full requirements: https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/submissions"
+        },
+        {
+          "question": "What is the deadline for Action Workshop submissions?",
+          "answer": "Deadlines will be confirmed on the Submissions page. Please check https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/submissions for the latest dates."
+        },
+        {
+          "question": "How are Action Workshop proposals evaluated?",
+          "answer": "Proposals will be assessed based on relevance, interactivity, feasibility, and potential for real-world impact."
+        },
+        {
+          "question": "Will workshop facilitators need to register for the conference?",
+          "answer": "Yes. All selected workshop facilitators are required to register."
+        }
+      ]
+    }
+  ]
+}

@@ -17,7 +17,8 @@ import {
   gtp2026SubmissionsThemeSlotType,
 } from './gtp2026SubmissionsSlotTypes'
 import {gtp2026CommitteeMemberType} from './gtp2026CommitteeMemberType'
-import {gtp2026FaqItemType} from './gtp2026FaqItemType'
+import {gtp2026FaqAccordionItemType} from './gtp2026FaqAccordionItemType'
+import {gtp2026FaqGroupType} from './gtp2026FaqGroupType'
 import {gtp2026HighlightSessionSlotType} from './gtp2026HighlightSessionSlotType'
 import {gtp2026HighlightSpeakerType} from './gtp2026HighlightSpeakerType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
@@ -45,7 +46,8 @@ export const schemaTypes = [
   gtp2026HighlightSessionSlotType,
   gtp2026HighlightSpeakerType,
   gtp2026CommitteeMemberType,
-  gtp2026FaqItemType,
+  gtp2026FaqAccordionItemType,
+  gtp2026FaqGroupType,
   ...gtpAboutPageBandObjectTypes,
   gtpAboutWhatIsBandType,
   gtp2026AboutPageType,

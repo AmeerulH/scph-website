@@ -21,6 +21,8 @@ npm install
 npm run dev
 ```
 
+Use **Node 20 or 22 LTS** if `npm install` fails with `Invalid Version` (seen on some Node 25 / npm 11 setups). The repo includes [`studio/.npmrc`](studio/.npmrc) with `legacy-peer-deps=true` so installs match what `sanity dev` expects. If install still breaks, delete `studio/node_modules` and `studio/package-lock.json`, then run `npm install` again.
+
 After schema changes, deploy the schema to your content lake:
 
 ```bash
@@ -72,7 +74,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 | `gtp2026HighlightSpeaker` | `/`, `/events/gtp-2026/about` |
 | `gtp2026AboutPage` | `/events/gtp-2026/about` |
 | `gtp2026CommitteeMember` | `/events/gtp-2026/organising-committee` |
-| `gtp2026FaqItem` | `/events/gtp-2026/faq` |
+| `gtp2026FaqGroup` | `/events/gtp-2026/faq` |
 | `gtp2026GetInvolvedPage` | `/events/gtp-2026/get-involved` |
 | `gtp2026SubmissionsPage` | `/events/gtp-2026/submissions` |
 | `gtp2026MediaPage` | `/events/gtp-2026/media` |
@@ -95,7 +97,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 - **GTP Submissions** (page + in-form copy): `npm run seed-gtp-submissions-page` — [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) + [`src/sanity/gtp-submissions-form-defaults.ts`](src/sanity/gtp-submissions-form-defaults.ts); upserts `_id` = `gtp2026SubmissionsPage` including `abstractForm` and `workshopForm` (see [`studio/schemaTypes/gtp2026SubmissionsFormCopyTypes.ts`](studio/schemaTypes/gtp2026SubmissionsFormCopyTypes.ts)). After schema changes, run `cd studio && npx sanity schema deploy`. `DRY_RUN=1` prints JSON only.
 - **GTP highlight speakers**: `npm run seed-gtp-highlight-speakers` — source [`src/data/gtp-highlight-speakers.ts`](src/data/gtp-highlight-speakers.ts); upserts one `gtp2026HighlightSpeaker` per row with `_id` = `gtpHighlightSpeaker-<slug>`, `order` from array index, optional image upload from `public/`. `DRY_RUN=1` prints JSON only (image shown as placeholder note).
 - **GTP organising committee**: `npm run seed-gtp-committee-members` — source [`src/data/gtp-committee-static.ts`](src/data/gtp-committee-static.ts); upserts `gtp2026CommitteeMember` docs with `_id` = `gtpCommittee-<cochair|planning|programme>-<slug(name-role)>`, global `order` for sort, optional images. `DRY_RUN=1` prints JSON only.
-- **GTP FAQ**: `npm run seed-gtp-faq-items` — source [`scripts/data/gtp-faq-seed.json`](scripts/data/gtp-faq-seed.json); upserts `gtp2026FaqItem` docs with `_id` = `gtpFaqItem-<slug(question)>` (suffix if slug collides), `order` from array index. `DRY_RUN=1` prints JSON only.
+- **GTP FAQ**: `npm run seed-gtp-faq-items` — source [`scripts/data/gtp-faq-seed.json`](scripts/data/gtp-faq-seed.json); nested `groups` upsert `gtp2026FaqGroup` tab documents (fixed `_id` per tab) with embedded `items[]` (`gtp2026FaqAccordionItem` objects, stable `_key` per row). `DRY_RUN=1` prints JSON only.
 - **GTP Media + Business forum + About**: `npm run seed-gtp-media-bizforum-pages` — upserts `gtp2026MediaPage` / `gtp2026BizForumPage` (placeholder shell) and `gtp2026AboutPage` with **full About page copy** (hero headline/CTAs, what-is band, why-it-matters, themes, speaker section titles, co-chair quotes, gallery slides, event inquiry, sponsors notice) plus empty `sections`. **Sponsors & partners:** the seed uploads **PIK** (`public/images/gtp/logos/pik-logo.png`) into `sponsorsBand.sponsors`. Add more rows in Studio (image + name + optional URL). When the list is empty, the About page falls back to the built-in PIK + placeholder tiles. Re-running the seed replaces the whole `gtp2026AboutPage` document. The hero **programme carousel** still uses `gtp2026Programme`. After schema changes, run `cd studio && npx sanity schema deploy`, re-seed, and **Publish**. `DRY_RUN=1` prints JSON only.
 - **SCPH Meet the Team (section chrome)**: `npm run seed-scph-meet-the-team-page` — upserts `scphMeetTheTeamPage` with `_id` = `scphMeetTheTeamPage` (section title, subtitle, optional intro blurb in Studio, “Get Involved” toggle). Same defaults as schema `initialValue`s and the Meet the Team fallbacks in [`src/app/(scph)/about-us/page.tsx`](src/app/(scph)/about-us/page.tsx). `DRY_RUN=1` prints JSON only.
 - **SCPH Home** (hero, highlighted events, stats, roadmap, NPHAP, partners): `npm run seed-scph-home-page` — upserts `scphHomePage` with `_id` = `scphHomePage`. Seeds **`hero`**, **`highlightedEvents`**, `statsRow`, empty `introSections`, `roadmapSection` / `nphapSection`, and **`partnersBand`** (title, eyebrow, notice + link; **`partners`** array empty — add **Sponsor / partner logo** rows in Studio like GTP About). When `partners` has images, the home marquee shows them; otherwise placeholder tiles. Defaults: [`src/data/scph-home-hero-defaults.ts`](src/data/scph-home-hero-defaults.ts), [`src/data/scph-home-partners-defaults.ts`](src/data/scph-home-partners-defaults.ts). After schema changes, `cd studio && npx sanity schema deploy`. Re-running replaces the whole document. `DRY_RUN=1` prints JSON only.
