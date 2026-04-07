@@ -2,89 +2,104 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone, ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import type {
+  FooterNavLinkResolved,
+  ScphFooterResolved,
+} from "@/sanity/footer-types";
 
-/** Same PNG icons and profile URLs as `src/components/gtp/footer.tsx`. */
-const socialLinks = [
-  {
-    icon: "/images/gtp/social/fb.png",
-    href: "https://www.facebook.com/SunwayCPH",
-    label: "Facebook",
-  },
-  {
-    icon: "/images/gtp/social/ig.png",
-    href: "https://www.instagram.com/sunwaycph/",
-    label: "Instagram",
-  },
-  {
-    icon: "/images/gtp/social/li.png",
-    href: "https://my.linkedin.com/showcase/sunway-centre-for-planetary-health/",
-    label: "LinkedIn",
-  },
-  {
-    icon: "/images/gtp/social/tt.png",
-    href: "https://www.tiktok.com/@sunwaycph?is_from_webapp=1&sender_device=pc",
-    label: "TikTok",
-  },
-  {
-    icon: "/images/gtp/social/x.png",
-    href: "https://x.com/SunwayCPH",
-    label: "X / Twitter",
-  },
-  {
-    icon: "/images/gtp/social/yt.png",
-    href: "https://www.youtube.com/@sunwaycentreforplanetaryhe8898",
-    label: "YouTube",
-  },
-];
+function isProbablyExternalHref(href: string): boolean {
+  return /^https?:\/\//i.test(href);
+}
 
-const quickLinks = [
-  { label: "About Us", href: "/about-us" },
-  { label: "Programmes", href: "/programmes" },
-  { label: "Research", href: "/research" },
-  { label: "Media", href: "/media" },
-];
+function ScphFooterNavLink({ link }: { link: FooterNavLinkResolved }) {
+  const external =
+    link.openInNewTab || isProbablyExternalHref(link.href);
+  if (external) {
+    return (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-sm text-white/70 transition-colors hover:text-white"
+      >
+        {link.label}
+        <ExternalLink className="h-3 w-3 opacity-60" />
+      </a>
+    );
+  }
+  return (
+    <Link
+      href={link.href}
+      prefetch={false}
+      className="text-sm text-white/70 transition-colors hover:text-white"
+    >
+      {link.label}
+    </Link>
+  );
+}
 
-const communityLinks = [
-  { label: "Media Professional Network", href: "/network" },
-  { label: "Youth Action Network", href: "/network" },
-];
+function ScphFooterLinkColumn({
+  title,
+  links,
+}: {
+  title: string;
+  links: FooterNavLinkResolved[];
+}) {
+  return (
+    <div>
+      <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
+        {title}
+      </h3>
+      <ul className="space-y-2.5">
+        {links.map((link) => (
+          <li key={`${link.label}-${link.href}`}>
+            <ScphFooterNavLink link={link} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
-const conferenceLinks = [
-  { label: "GTP 2026", href: "/events/gtp-2026/about", external: false },
-  { label: "PHAM 2024", href: "https://www.pham2024.com/", external: true },
-];
+export function ScphFooter({ data }: { data: ScphFooterResolved }) {
+  const addressLines = data.address.split(/\r?\n/).filter((l) => l.trim());
 
-export function ScphFooter() {
+  const logoSizes =
+    data.logo.width && data.logo.height
+      ? { width: data.logo.width, height: data.logo.height }
+      : { width: 180, height: 60 };
+
+  const bottomSizes =
+    data.bottomLogo.width && data.bottomLogo.height
+      ? { width: data.bottomLogo.width, height: data.bottomLogo.height }
+      : { width: 360, height: 120 };
+
+  const logoRemote = data.logo.src.startsWith("http");
+  const bottomRemote = data.bottomLogo.src.startsWith("http");
+
   return (
     <footer className="overflow-hidden">
-      {/* Gradient header bar */}
       <div className="h-2 bg-gradient-to-r from-scph-green via-scph-blue to-scph-dark-green" />
 
       <div className="bg-scph-blue text-white">
         <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
-          {/* Top row — branding + tagline + social */}
           <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div className="max-w-sm">
-              {/* Logo — use logo-mixcolor.png once provided, falls back to current */}
               <Image
-                src="/images/scph/logo-mixcolor.png"
-                alt="Sunway Centre for Planetary Health"
-                width={180}
-                height={60}
+                src={data.logo.src}
+                alt={data.logo.alt}
+                width={logoSizes.width}
+                height={logoSizes.height}
                 className="h-auto w-auto"
+                unoptimized={logoRemote && data.logo.src.toLowerCase().includes(".svg")}
               />
-              <p className="mt-4 text-sm leading-relaxed text-white/70">
-                Sunway Centre for Planetary Health is a &ldquo;Think-and-Do&rdquo; tank,
-                committed to research and advocacy that advances planetary
-                health through three priority areas: healthy cities,
-                health-centred decarbonisation, and driving an education
-                revolution.
+              <p className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-white/70">
+                {data.tagline}
               </p>
             </div>
 
-            {/* Social icons — same PNGs + styling as GTP footer */}
             <div className="flex flex-wrap gap-3">
-              {socialLinks.map(({ icon, href, label }) => (
+              {data.socialLinks.map(({ iconSrc, href, label }) => (
                 <a
                   key={label}
                   href={href}
@@ -94,7 +109,7 @@ export function ScphFooter() {
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all duration-200 hover:border-white/60 hover:opacity-100"
                 >
                   <Image
-                    src={icon}
+                    src={iconSrc}
                     alt=""
                     width={20}
                     height={20}
@@ -107,79 +122,20 @@ export function ScphFooter() {
 
           <Separator className="my-10 bg-white/10" />
 
-          {/* Link columns */}
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
-            {/* Quick Links */}
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
-                Quick Links
-              </h3>
-              <ul className="space-y-2.5">
-                {quickLinks.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="text-sm text-white/70 transition-colors hover:text-white"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ScphFooterLinkColumn
+              title={data.columnQuick.title}
+              links={data.columnQuick.links}
+            />
+            <ScphFooterLinkColumn
+              title={data.columnCommunity.title}
+              links={data.columnCommunity.links}
+            />
+            <ScphFooterLinkColumn
+              title={data.columnConferences.title}
+              links={data.columnConferences.links}
+            />
 
-            {/* Community */}
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
-                Community
-              </h3>
-              <ul className="space-y-2.5">
-                {communityLinks.map(({ label, href }) => (
-                  <li key={label}>
-                    <Link
-                      href={href}
-                      className="text-sm text-white/70 transition-colors hover:text-white"
-                    >
-                      {label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Conferences */}
-            <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
-                Conferences
-              </h3>
-              <ul className="space-y-2.5">
-                {conferenceLinks.map(({ label, href, external }) => (
-                  <li key={label}>
-                    {external ? (
-                      <a
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-sm text-white/70 transition-colors hover:text-white"
-                      >
-                        {label}
-                        <ExternalLink className="h-3 w-3 opacity-60" />
-                      </a>
-                    ) : (
-                      <Link
-                        href={href}
-                        prefetch={false}
-                        className="text-sm text-white/70 transition-colors hover:text-white"
-                      >
-                        {label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact Us */}
             <div className="min-w-0">
               <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-white/50">
                 Contact Us
@@ -188,27 +144,34 @@ export function ScphFooter() {
                 <li className="flex items-start gap-2 text-sm text-white/70">
                   <Mail className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                   <a
-                    href="mailto:scph@sunway.edu.my"
+                    href={`mailto:${data.contactEmail}`}
                     className="break-all transition-colors hover:text-white"
                   >
-                    scph@sunway.edu.my
+                    {data.contactEmail}
                   </a>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-white/70">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                   <span>
-                    Sunway University, 5, Jalan Universiti,<br />
-                    Bandar Sunway, 47500,<br />
-                    Petaling Jaya, Selangor, Malaysia
+                    {addressLines.map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i < addressLines.length - 1 ? (
+                          <>
+                            <br />
+                          </>
+                        ) : null}
+                      </span>
+                    ))}
                   </span>
                 </li>
                 <li className="flex items-start gap-2 text-sm text-white/70">
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                   <a
-                    href="tel:+60374918622"
+                    href={`tel:${data.phoneTel.replace(/\s/g, "")}`}
                     className="transition-colors hover:text-white"
                   >
-                    03 – 7491 8622
+                    {data.phoneDisplay}
                   </a>
                 </li>
               </ul>
@@ -219,10 +182,10 @@ export function ScphFooter() {
               <div className="flex items-start gap-2 text-sm text-white/70">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-scph-green" />
                 <a
-                  href="mailto:scphcareer@sunway.edu.my"
+                  href={`mailto:${data.careerEmail}`}
                   className="break-all transition-colors hover:text-white"
                 >
-                  scphcareer@sunway.edu.my
+                  {data.careerEmail}
                 </a>
               </div>
             </div>
@@ -230,18 +193,21 @@ export function ScphFooter() {
 
           <Separator className="my-10 bg-white/10" />
 
-          {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-4 text-xs text-white/40 md:flex-row">
-            <p>© 2026 Sunway Centre for Planetary Health. All rights reserved.</p>
+            <p>{data.copyrightLine}</p>
             <div className="flex flex-wrap items-center justify-center gap-3 md:justify-end">
-              <span className="shrink-0">Part of</span>
+              <span className="shrink-0">{data.partOfLabel}</span>
               <span className="inline-flex shrink-0 items-center overflow-visible py-0.5">
                 <Image
-                  src="/images/gtp/logos/sunway-uni-white.png"
-                  alt="Sunway University"
-                  width={360}
-                  height={120}
+                  src={data.bottomLogo.src}
+                  alt={data.bottomLogo.alt}
+                  width={bottomSizes.width}
+                  height={bottomSizes.height}
                   className="h-12 w-auto max-w-[min(90vw,22rem)] object-contain mix-blend-lighten sm:h-14 md:h-16"
+                  unoptimized={
+                    bottomRemote &&
+                    data.bottomLogo.src.toLowerCase().includes(".svg")
+                  }
                 />
               </span>
             </div>

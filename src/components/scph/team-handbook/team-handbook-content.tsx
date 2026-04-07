@@ -89,6 +89,13 @@ const cmsPages = [
     notes:
       "Section title, subtitle, intro blurb, optional “Get involved” CTA. Team members are separate Team member documents.",
   },
+  {
+    route: "/",
+    docType: "scphFooter",
+    title: "SCPH site footer (global)",
+    notes:
+      "Singleton `scphFooter` (fixed id). Tagline, logo, three link columns, contact + career block, social links (preset icons), copyright, “Part of” + bottom logo. Shown on every SCPH marketing page.",
+  },
 ] as const;
 
 const sectionBlocks = [

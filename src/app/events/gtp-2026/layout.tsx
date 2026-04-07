@@ -3,6 +3,7 @@ import { GtpNavbar } from "@/components/gtp/navbar";
 import { GtpFooter } from "@/components/gtp/footer";
 import { AtmosphericReveal } from "@/components/motion/AtmosphericReveal";
 import { getSiteUrlString } from "@/lib/site-url";
+import { getMergedGtpFooter } from "@/sanity/footer";
 
 const gtpDefaultDescription =
   "12–15 October 2026 · Kuala Lumpur, Malaysia. Science, finance, culture and policy for positive tipping points — hosted by Sunway Centre for Planetary Health.";
@@ -30,7 +31,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GtpLayout({ children }: { children: React.ReactNode }) {
+export default async function GtpLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const footerData = await getMergedGtpFooter();
   return (
     <>
       <GtpNavbar />
@@ -44,7 +50,7 @@ export default function GtpLayout({ children }: { children: React.ReactNode }) {
           {children}
         </AtmosphericReveal>
       </main>
-      <GtpFooter />
+      <GtpFooter data={footerData} />
     </>
   );
 }

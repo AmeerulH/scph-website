@@ -85,6 +85,13 @@ const gtpCmsPages = [
     title: "Organising committee",
     notes: "Committee members as separate documents with order field.",
   },
+  {
+    route: "/events/gtp-2026/about",
+    docTypes: "gtp2026Footer",
+    title: "GTP site footer (global)",
+    notes:
+      "Singleton `gtp2026Footer` (fixed id). Wide partner/banner image (optional — empty uses the built-in SVG), quick links, important dates, contact rows, social (preset icons), copyright + hosted-by link. Applies to all routes under `/events/gtp-2026/`.",
+  },
 ] as const;
 
 export function TeamHandbookGtpSections() {

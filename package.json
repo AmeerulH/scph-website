@@ -18,7 +18,8 @@
     "seed-scph-home-page": "npx tsx scripts/seed-scph-home-page.ts",
     "seed-scph-events-programmes-projects-pages": "npx tsx scripts/seed-scph-events-programmes-projects-pages.ts",
     "seed-scph-section-pages": "npx tsx scripts/seed-scph-section-pages.ts",
-    "seed-scph-media-page": "npx tsx scripts/seed-scph-media-page.ts"
+    "seed-scph-media-page": "npx tsx scripts/seed-scph-media-page.ts",
+    "seed-footers": "npx tsx scripts/seed-footers.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.20.0",

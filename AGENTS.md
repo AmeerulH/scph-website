@@ -71,6 +71,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-scph-events-programmes-projects-pages` | `scripts/seed-scph-events-programmes-projects-pages.ts` | `scphEventsPage`, `scphProgrammesPage`, `scphProjectsPage` |
 | `seed-scph-section-pages` | `scripts/seed-scph-section-pages.ts` | Section shells (about / research / network style singletons) |
 | `seed-scph-media-page` | `scripts/seed-scph-media-page.ts` | `scphMediaPage` |
+| `seed-footers` | `scripts/seed-footers.ts` | `scphFooter`, `gtp2026Footer` (singletons; merge with code defaults in `src/sanity/footer.ts`) |
 
 Many seeds support `DRY_RUN=1` to print JSON only—use before writing to a shared dataset.
 
@@ -121,6 +122,8 @@ After significant UI or image changes, run **`npm run build`** locally and spot-
 | Concern | Location |
 |---------|----------|
 | Revalidation map | `src/app/api/revalidate/sanity/route.ts` |
+| Sitemap paths (shared with footer revalidation) | `src/lib/public-indexable-paths.ts` |
+| SCPH / GTP footer merge + GROQ | `src/sanity/footer.ts`, defaults in `src/data/scph-footer-defaults.ts`, `src/data/gtp-footer-defaults.ts` |
 | Sitemap | `src/app/sitemap.ts` |
 | Sanity client | `src/sanity/client.ts` |
 | GTP marketing defaults / merge | `src/sanity/gtp-marketing-defaults.ts`, `gtp-stage2.ts`, `gtp-about-page-merge.ts` |

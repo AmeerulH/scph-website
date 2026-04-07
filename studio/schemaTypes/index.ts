@@ -16,12 +16,21 @@ import {
   gtp2026SubmissionsPillarSlotType,
   gtp2026SubmissionsThemeSlotType,
 } from './gtp2026SubmissionsSlotTypes'
+import {
+  footerLinkColumnType,
+  footerNavLinkType,
+  footerSocialLinkType,
+  gtpFooterContactRowType,
+  gtpFooterImportantDateType,
+} from './footerObjectTypes'
 import {gtp2026CommitteeMemberType} from './gtp2026CommitteeMemberType'
+import {gtp2026FooterType} from './gtp2026FooterType'
 import {gtp2026FaqAccordionItemType} from './gtp2026FaqAccordionItemType'
 import {gtp2026FaqGroupType} from './gtp2026FaqGroupType'
 import {gtp2026HighlightSessionSlotType} from './gtp2026HighlightSessionSlotType'
 import {gtp2026HighlightSpeakerType} from './gtp2026HighlightSpeakerType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
+import {scphFooterType} from './scphFooterType'
 import {scphHomePageType} from './scphHomePageType'
 import {scphMeetTheTeamPageType} from './scphMeetTheTeamPageType'
 import {scphSectionPageTypes} from './scphSectionsPageTypes'
@@ -46,6 +55,11 @@ export const schemaTypes = [
   gtp2026HighlightSessionSlotType,
   gtp2026HighlightSpeakerType,
   gtp2026CommitteeMemberType,
+  footerNavLinkType,
+  footerLinkColumnType,
+  footerSocialLinkType,
+  gtpFooterImportantDateType,
+  gtpFooterContactRowType,
   gtp2026FaqAccordionItemType,
   gtp2026FaqGroupType,
   ...gtpAboutPageBandObjectTypes,
@@ -67,6 +81,8 @@ export const schemaTypes = [
   ...scphPageBandObjectTypes,
   ...scphMediaPageObjectTypes,
   cmsSandboxPageType,
+  scphFooterType,
+  gtp2026FooterType,
   scphHomePageType,
   scphMeetTheTeamPageType,
   ...scphSectionPageTypes,

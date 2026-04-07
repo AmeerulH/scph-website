@@ -1,25 +1,8 @@
 import type { MetadataRoute } from "next";
+import { ALL_PUBLIC_INDEXABLE_PATHS } from "@/lib/public-indexable-paths";
 import { getSiteUrlString } from "@/lib/site-url";
 
-/** Public indexable paths (SCPH site + GTP 2026). */
-const PATHS: string[] = [
-  "/",
-  "/about-us",
-  "/programmes",
-  "/research",
-  "/events",
-  "/media",
-  "/network",
-  "/projects",
-  "/events/gtp-2026/about",
-  "/events/gtp-2026/programmes",
-  "/events/gtp-2026/submissions",
-  "/events/gtp-2026/faq",
-  "/events/gtp-2026/get-involved",
-  "/events/gtp-2026/media",
-  "/events/gtp-2026/biz-forum",
-  "/events/gtp-2026/organising-committee",
-];
+const PATHS: string[] = [...ALL_PUBLIC_INDEXABLE_PATHS];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrlString();

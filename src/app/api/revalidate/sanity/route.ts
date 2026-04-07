@@ -1,6 +1,10 @@
 import { revalidatePath } from "next/cache";
 import { type NextRequest, NextResponse } from "next/server";
 import { parseBody } from "next-sanity/webhook";
+import {
+  GTP_2026_MARKETING_PATHS,
+  SCPH_MARKETING_PATHS,
+} from "@/lib/public-indexable-paths";
 
 export const runtime = "nodejs";
 
@@ -30,6 +34,8 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   scphEventsPage: ["/events"],
   scphProgrammesPage: ["/programmes"],
   scphProjectsPage: ["/projects"],
+  scphFooter: [...SCPH_MARKETING_PATHS],
+  gtp2026Footer: [...GTP_2026_MARKETING_PATHS],
 };
 
 function normalizeSanityDocumentId(id: string): string {
