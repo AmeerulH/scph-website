@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { groq } from "next-sanity";
 import {
   gtpFooterDefaults,
@@ -48,7 +49,6 @@ const scphFooterQuery = groq`*[_type == "scphFooter"][0]{
 const gtp2026FooterQuery = groq`*[_type == "gtp2026Footer"][0]{
   bannerLogosImage ${imageProjection},
   quickLinks[]{ label, href, openInNewTab },
-  importantDates[]{ label, dateText },
   contactRows[]{ rowType, text, url },
   socialLinks[]{ label, href, iconKey },
   copyrightLine,
@@ -110,7 +110,6 @@ type Gtp2026FooterCmsRow = {
 export type Gtp2026FooterCms = {
   bannerLogosImage?: SanityImageFrag;
   quickLinks?: FooterNavLinkCms[] | null;
-  importantDates?: { label?: string | null; dateText?: string | null }[] | null;
   contactRows?: Gtp2026FooterCmsRow[] | null;
   socialLinks?: FooterSocialLinkCms[] | null;
   copyrightLine?: string | null;
@@ -282,22 +281,6 @@ export function mergeScphFooter(cms: ScphFooterCms): ScphFooterResolved {
 
 export function mergeGtpFooter(cms: Gtp2026FooterCms): GtpFooterResolved {
   const d = gtpFooterDefaults;
-  const datesRaw = cms?.importantDates;
-  const importantDatesFromCms =
-    Array.isArray(datesRaw) && datesRaw.length > 0
-      ? (datesRaw
-          .map((row) => {
-            const label = nonEmpty(row?.label);
-            const date = nonEmpty(row?.dateText);
-            if (!label || !date) return null;
-            return { label, date };
-          })
-          .filter(Boolean) as { label: string; date: string }[])
-      : [];
-  const importantDates =
-    importantDatesFromCms.length > 0
-      ? importantDatesFromCms
-      : [...d.importantDates];
 
   const quick = normalizeNavLinks(cms?.quickLinks ?? undefined);
   const contactRowsFromCms = normalizeGtpContactRows(cms?.contactRows);
@@ -308,7 +291,6 @@ export function mergeGtpFooter(cms: Gtp2026FooterCms): GtpFooterResolved {
       GTP_FOOTER_BANNER_STATIC,
     ),
     quickLinks: quick.length > 0 ? quick : [...d.quickLinks],
-    importantDates,
     contactRows:
       contactRowsFromCms.length > 0 ? contactRowsFromCms : [...d.contactRows],
     socialLinks: mergeSocial(cms?.socialLinks ?? undefined, d.socialLinks),
@@ -328,11 +310,12 @@ export async function getMergedScphFooter(): Promise<ScphFooterResolved> {
   }
 }
 
-export async function getMergedGtpFooter(): Promise<GtpFooterResolved> {
+/** One fetch + merge per request when layout and pages both need footer data. */
+export const getMergedGtpFooter = cache(async function getMergedGtpFooter(): Promise<GtpFooterResolved> {
   try {
     const cms = await client.fetch<Gtp2026FooterCms>(gtp2026FooterQuery);
     return mergeGtpFooter(cms);
   } catch {
     return mergeGtpFooter(null);
   }
-}
+});

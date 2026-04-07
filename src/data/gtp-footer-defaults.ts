@@ -31,13 +31,6 @@ export const gtpFooterDefaultQuickLinks: FooterNavLinkResolved[] = [
   { label: "Submissions", href: "/events/gtp-2026/submissions", openInNewTab: false },
 ];
 
-export const gtpFooterDefaultImportantDates: { label: string; date: string }[] = [
-  { label: "Action Workshop Submission Deadline", date: "8 May 2026" },
-  { label: "Abstract Submission Deadline", date: "15 May 2026" },
-  { label: "Registration Opens", date: "TBC" },
-  { label: "Early Bird Registration", date: "TBC" },
-];
-
 export const gtpFooterDefaultContactRows: GtpFooterContactRowResolved[] = [
   { rowType: "email", text: "scph_gtpc2026@sunway.edu.my" },
   { rowType: "sitePlain", text: "www.sunwayplanetaryhealth.com.my" },
@@ -84,7 +77,6 @@ export const gtpFooterDefaultSocialLinks: FooterSocialResolved[] = [
 export const gtpFooterDefaults: GtpFooterResolved = {
   banner: { ...GTP_FOOTER_BANNER_STATIC },
   quickLinks: gtpFooterDefaultQuickLinks,
-  importantDates: gtpFooterDefaultImportantDates,
   contactRows: gtpFooterDefaultContactRows,
   socialLinks: gtpFooterDefaultSocialLinks,
   copyrightLine: "© 2026 Global Tipping Points Conference. All rights reserved.",

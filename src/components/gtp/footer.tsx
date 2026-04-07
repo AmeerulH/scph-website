@@ -134,7 +134,7 @@ export function GtpFooter({ data }: { data: GtpFooterResolved }) {
 
         <Separator className="my-8 bg-white/10" />
 
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <div>
             <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/50">
               Quick Links
@@ -143,20 +143,6 @@ export function GtpFooter({ data }: { data: GtpFooterResolved }) {
               {data.quickLinks.map((link) => (
                 <li key={`${link.label}-${link.href}`}>
                   <GtpFooterNavLink link={link} />
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-white/50">
-              Important Dates
-            </h3>
-            <ul className="space-y-3">
-              {data.importantDates.map(({ label, date }) => (
-                <li key={label} className="flex flex-col">
-                  <span className="text-xs font-medium text-white/50">{label}</span>
-                  <span className="text-sm text-white/80">{date}</span>
                 </li>
               ))}
             </ul>

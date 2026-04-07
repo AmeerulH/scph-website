@@ -76,7 +76,9 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     primaryCtaLabel,
     primaryCtaHref,
     secondaryCtaLabel,
-    secondaryCtaHref
+    secondaryCtaHref,
+    importantDatesEyebrow,
+    importantDates[]{ label, dateText }
   },
   whatIsBand {
     eyebrow,

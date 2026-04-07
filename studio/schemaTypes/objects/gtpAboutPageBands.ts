@@ -13,6 +13,21 @@ export const gtpAboutHeroBandType = defineType({
     defineField({name: 'primaryCtaHref', title: 'Primary CTA URL', type: 'string'}),
     defineField({name: 'secondaryCtaLabel', title: 'Secondary CTA label', type: 'string'}),
     defineField({name: 'secondaryCtaHref', title: 'Secondary CTA URL', type: 'string'}),
+    defineField({
+      name: 'importantDatesEyebrow',
+      title: 'Important dates — strip heading',
+      type: 'string',
+      description:
+        'Shown above the date rows in the hero (above the programme carousel). Not shown in the site footer.',
+    }),
+    defineField({
+      name: 'importantDates',
+      title: 'Important dates',
+      type: 'array',
+      of: [{type: 'gtpFooterImportantDate'}],
+      description:
+        'Deadlines and milestones in the About page hero. Edit here — the GTP footer no longer lists dates.',
+    }),
   ],
 })
 

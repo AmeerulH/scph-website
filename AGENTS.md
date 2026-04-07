@@ -65,7 +65,8 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-highlight-speakers` | `scripts/seed-gtp-highlight-speakers.ts` | `gtp2026HighlightSpeaker` (multiple docs) |
 | `seed-gtp-committee-members` | `scripts/seed-gtp-committee-members.ts` | `gtp2026CommitteeMember` |
 | `seed-gtp-faq-items` | `scripts/seed-gtp-faq-items.ts` | `gtp2026FaqGroup` (tab docs with embedded `gtp2026FaqAccordionItem` rows in `scripts/data/gtp-faq-seed.json`) |
-| `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` |
+| `seed-gtp-about-page` | `scripts/seed-gtp-about-page.ts` | `gtp2026AboutPage` singleton (full bands; shared builder `scripts/lib/gtp-about-page-seed-doc.ts`) |
+| `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
 | `seed-scph-meet-the-team-page` | `scripts/seed-scph-meet-the-team-page.ts` | `scphMeetTheTeamPage` |
 | `seed-scph-home-page` | `scripts/seed-scph-home-page.ts` | `scphHomePage` |
 | `seed-scph-events-programmes-projects-pages` | `scripts/seed-scph-events-programmes-projects-pages.ts` | `scphEventsPage`, `scphProgrammesPage`, `scphProjectsPage` |

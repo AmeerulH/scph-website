@@ -9,6 +9,16 @@ import { DEFAULT_GTP_WHAT_IS_BAND } from "./gtp-about-what-is-defaults";
 
 export type { GtpWhatIsBandContent } from "./gtp-about-what-is-defaults";
 
+/** Shown in the About hero above the programme carousel (from `gtp2026AboutPage.heroBand`). */
+export type GtpAboutImportantDateEntry = { label: string; date: string };
+
+export const DEFAULT_GTP_ABOUT_IMPORTANT_DATES: GtpAboutImportantDateEntry[] = [
+  { label: "Action Workshop Submission Deadline", date: "8 May 2026" },
+  { label: "Abstract Submission Deadline", date: "15 May 2026" },
+  { label: "Registration Opens", date: "TBC" },
+  { label: "Early Bird Registration", date: "TBC" },
+];
+
 export type GtpAboutHeroCopy = {
   badge: string;
   title: string;
@@ -17,6 +27,9 @@ export type GtpAboutHeroCopy = {
   primaryCtaHref: string;
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
+  /** Eyebrow above the important-dates strip in the hero. */
+  importantDatesEyebrow: string;
+  importantDates: GtpAboutImportantDateEntry[];
 };
 
 export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
@@ -27,6 +40,8 @@ export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
   primaryCtaHref: GTP_2026_REGISTRATION_URL,
   secondaryCtaLabel: "Learn More",
   secondaryCtaHref: "/events/gtp-2026/about#about",
+  importantDatesEyebrow: "Important dates",
+  importantDates: DEFAULT_GTP_ABOUT_IMPORTANT_DATES,
 };
 
 export type GtpAboutWhyMattersCopy = {

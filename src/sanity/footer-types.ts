@@ -56,7 +56,6 @@ export type GtpFooterBannerResolved =
 export type GtpFooterResolved = {
   banner: GtpFooterBannerResolved;
   quickLinks: FooterNavLinkResolved[];
-  importantDates: { label: string; date: string }[];
   contactRows: GtpFooterContactRowResolved[];
   socialLinks: FooterSocialResolved[];
   copyrightLine: string;

@@ -3,6 +3,7 @@ import type {
   GtpAboutGalleryBandCopy,
   GtpAboutGallerySlideCopy,
   GtpAboutHeroCopy,
+  GtpAboutImportantDateEntry,
   GtpAboutPageResolved,
   GtpAboutQuoteCardCopy,
   GtpAboutQuotesBandCopy,
@@ -43,6 +44,11 @@ function normIcon(v: string | null | undefined): GtpAboutThemeIconKey {
     : "trending-down";
 }
 
+export type GtpAboutHeroImportantDateRaw = {
+  label?: string | null;
+  dateText?: string | null;
+} | null;
+
 export type GtpAboutHeroBandRaw = {
   badge?: string | null;
   title?: string | null;
@@ -51,6 +57,8 @@ export type GtpAboutHeroBandRaw = {
   primaryCtaHref?: string | null;
   secondaryCtaLabel?: string | null;
   secondaryCtaHref?: string | null;
+  importantDatesEyebrow?: string | null;
+  importantDates?: GtpAboutHeroImportantDateRaw[] | null;
 } | null;
 
 export type GtpAboutWhyMattersBandRaw = {
@@ -161,6 +169,26 @@ function heroPrimaryRegistrationHref(
   return resolved;
 }
 
+function mergeImportantDates(
+  raw: GtpAboutHeroBandRaw,
+  fallback: GtpAboutImportantDateEntry[],
+): GtpAboutImportantDateEntry[] {
+  const datesRaw = raw?.importantDates;
+  const fromCms =
+    Array.isArray(datesRaw) && datesRaw.length > 0
+      ? (datesRaw
+          .map((row) => {
+            if (!row || typeof row !== "object") return null;
+            const label = row.label?.trim();
+            const date = row.dateText?.trim();
+            if (!label || !date) return null;
+            return { label, date };
+          })
+          .filter(Boolean) as GtpAboutImportantDateEntry[])
+      : [];
+  return fromCms.length > 0 ? fromCms : [...fallback];
+}
+
 function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
   const d = DEFAULT_GTP_ABOUT_HERO;
   if (!raw) return d;
@@ -175,6 +203,8 @@ function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
     ),
     secondaryCtaLabel: s(raw.secondaryCtaLabel, d.secondaryCtaLabel),
     secondaryCtaHref: s(raw.secondaryCtaHref, d.secondaryCtaHref),
+    importantDatesEyebrow: s(raw.importantDatesEyebrow, d.importantDatesEyebrow),
+    importantDates: mergeImportantDates(raw, d.importantDates),
   };
 }
 

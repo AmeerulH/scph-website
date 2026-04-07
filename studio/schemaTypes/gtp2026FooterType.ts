@@ -41,12 +41,6 @@ export const gtp2026FooterType = defineType({
       of: [{type: 'footerNavLink'}],
     }),
     defineField({
-      name: 'importantDates',
-      title: 'Important dates',
-      type: 'array',
-      of: [{type: 'gtpFooterImportantDate'}],
-    }),
-    defineField({
       name: 'contactRows',
       title: 'Contact rows',
       type: 'array',

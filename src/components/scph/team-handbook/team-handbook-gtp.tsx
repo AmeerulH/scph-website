@@ -31,7 +31,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026AboutPage",
     title: "About (conference hub)",
     notes:
-      "Hero band, optional section blocks under hero, “What are Global Tipping Points”, “Why this matters”, themes, speaker chrome, quotes, priorities, sponsors, etc. Carousel still pulls from `gtp2026Programme`.",
+      "Hero band (headline CTAs plus **Important dates** above the programme carousel), optional section blocks under hero, “What are Global Tipping Points”, “Why this matters”, themes, speaker chrome, quotes, priorities, sponsors, etc. Carousel still pulls from `gtp2026Programme`.",
   },
   {
     route: "/events/gtp-2026/about",
@@ -90,7 +90,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026Footer",
     title: "GTP site footer (global)",
     notes:
-      "Singleton `gtp2026Footer` (fixed id). Wide partner/banner image (optional — empty uses the built-in SVG), quick links, important dates, contact rows, social (preset icons), copyright + hosted-by link. Applies to all routes under `/events/gtp-2026/`.",
+      "Singleton `gtp2026Footer` (fixed id). Wide partner/banner image (optional — empty uses the built-in SVG), quick links, contact rows, social (preset icons), copyright + hosted-by link. Applies to all routes under `/events/gtp-2026/`. Important dates are edited on `gtp2026AboutPage` → Hero.",
   },
 ] as const;
 

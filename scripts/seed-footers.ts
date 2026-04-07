@@ -92,12 +92,6 @@ function buildGtp2026FooterDoc() {
     _type: "gtp2026Footer" as const,
     internalTitle: "GTP 2026 footer",
     quickLinks: footerNavLinksSanity(d.quickLinks, "ql"),
-    importantDates: d.importantDates.map((row, i) => ({
-      _type: "gtpFooterImportantDate" as const,
-      _key: `id-${i}`,
-      label: row.label,
-      dateText: row.date,
-    })),
     contactRows: d.contactRows.map((row, i) => {
       if (row.rowType === "externalLink") {
         return {
