@@ -3,6 +3,8 @@
  * Used as JSX fallback and as the seed payload for `gtp2026AboutPage.whatIsBand`.
  */
 export type GtpWhatIsBandContent = {
+  /** From CMS `whatIsBand.enabled`; when false the band is not rendered. */
+  enabled: boolean;
   eyebrow: string;
   title: string;
   bodyParagraphs: [string, string];
@@ -17,6 +19,7 @@ export type GtpWhatIsBandContent = {
 };
 
 export const DEFAULT_GTP_WHAT_IS_BAND: GtpWhatIsBandContent = {
+  enabled: true,
   eyebrow: "New Reality",
   title: "What are Global Tipping Points",
   bodyParagraphs: [

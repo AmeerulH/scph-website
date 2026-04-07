@@ -34,7 +34,7 @@ const cmsPages = [
     docType: "scphHomePage",
     title: "Home",
     notes:
-      "Hero, highlighted events, stats, intro sections (blocks), roadmap + NPHAP (prose+CTA), partners band.",
+      "Hero, highlighted events, stats, intro sections (blocks), roadmap + NPHAP (prose+CTA), partners band (**Show partners band** + logos; band hidden when off or no logo+name rows).",
   },
   {
     route: "/about-us",

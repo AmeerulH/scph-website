@@ -27,6 +27,7 @@ import type {
   GtpWhatIsBandContent,
 } from "@/data/gtp-about-page-defaults";
 import { mergeGtpAboutPage } from "@/sanity/gtp-about-page-merge";
+import { gtpAboutSponsorsBandHasQualifyingLogos } from "@/data/gtp-about-page-defaults";
 import {
   getGtp2026AboutPage,
   getGtp2026HighlightSpeakers,
@@ -807,6 +808,9 @@ export default async function GtpAboutPage() {
   const aboutSections = aboutCms?.sections ?? null;
   const showAboutCmsBands = gtpAboutCmsSectionsRender(aboutSections);
   const about = mergeGtpAboutPage(aboutCms);
+  const showSponsorsSection =
+    about.sponsors.enabled &&
+    gtpAboutSponsorsBandHasQualifyingLogos(about.sponsors);
   const speakersList =
     highlightRows.length > 0
       ? mapSanityHighlightToProps(highlightRows)
@@ -818,21 +822,35 @@ export default async function GtpAboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
       />
-      <GtpAboutHeroStack
-        carouselSessions={carouselSessions}
-        heroCopy={about.hero}
-      />
+      {about.hero.enabled ? (
+        <GtpAboutHeroStack
+          carouselSessions={carouselSessions}
+          heroCopy={about.hero}
+        />
+      ) : null}
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}
-      <WhyItMattersSection content={about.whyMatters} />
-      <ThemesSection content={about.themes} />
-      <SpeakersSection chrome={about.speakersChrome} speakers={speakersList} />
-      <WhatIsGtpSection content={about.whatIs} />
-      <QuoteSection band={about.quotes} />
-      <GallerySection band={about.gallery} />
-      <EventInquirySection content={about.eventInquiry} />
-      <SponsorsSection band={about.sponsors} />
+      {about.whyMatters.enabled ? (
+        <WhyItMattersSection content={about.whyMatters} />
+      ) : null}
+      {about.themes.enabled ? (
+        <ThemesSection content={about.themes} />
+      ) : null}
+      {about.speakersChrome.enabled ? (
+        <SpeakersSection chrome={about.speakersChrome} speakers={speakersList} />
+      ) : null}
+      {about.whatIs.enabled ? (
+        <WhatIsGtpSection content={about.whatIs} />
+      ) : null}
+      {about.quotes.enabled ? <QuoteSection band={about.quotes} /> : null}
+      {about.gallery.enabled ? (
+        <GallerySection band={about.gallery} />
+      ) : null}
+      {about.eventInquiry.enabled ? (
+        <EventInquirySection content={about.eventInquiry} />
+      ) : null}
+      {showSponsorsSection ? <SponsorsSection band={about.sponsors} /> : null}
     </>
   );
 }

@@ -137,6 +137,7 @@ Developed by the Academy of Sciences Malaysia, NPHAP charts a bold, whole-of-nat
 };
 
 const PARTNERS_BAND_SEED = {
+  showBand: true,
   title: DEFAULT_SCPH_HOME_PARTNERS_COPY.title,
   subtitle: DEFAULT_SCPH_HOME_PARTNERS_COPY.subtitle,
   partners: [] as const,

@@ -20,6 +20,7 @@ export const DEFAULT_GTP_ABOUT_IMPORTANT_DATES: GtpAboutImportantDateEntry[] = [
 ];
 
 export type GtpAboutHeroCopy = {
+  enabled: boolean;
   badge: string;
   title: string;
   lede: string;
@@ -33,6 +34,7 @@ export type GtpAboutHeroCopy = {
 };
 
 export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
+  enabled: true,
   badge: "12–15 October 2026 · Kuala Lumpur, Malaysia",
   title: "Global Tipping Points Conference 2026",
   lede: "From Understanding to Imagination to Action: Crossing Thresholds for a Thriving Planet",
@@ -45,6 +47,7 @@ export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
 };
 
 export type GtpAboutWhyMattersCopy = {
+  enabled: boolean;
   eyebrow: string;
   title: string;
   bodyParagraphs: [string, string, string];
@@ -59,6 +62,7 @@ export type GtpAboutWhyMattersCopy = {
 };
 
 export const DEFAULT_GTP_WHY_MATTERS: GtpAboutWhyMattersCopy = {
+  enabled: true,
   eyebrow: "Why This Meeting Matters",
   title: "The Idea behind Global Tipping Points Conference 2026",
   bodyParagraphs: [
@@ -87,6 +91,7 @@ export type GtpAboutThemeCardCopy = {
 };
 
 export type GtpAboutThemesBandCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
   footerBlurb: string;
@@ -94,6 +99,7 @@ export type GtpAboutThemesBandCopy = {
 };
 
 export const DEFAULT_GTP_THEMES_BAND: GtpAboutThemesBandCopy = {
+  enabled: true,
   title: "Three Pathways to Change",
   subtitle: "Conference Themes",
   footerBlurb:
@@ -124,11 +130,13 @@ export const DEFAULT_GTP_THEMES_BAND: GtpAboutThemesBandCopy = {
 };
 
 export type GtpAboutSpeakersChromeCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
 };
 
 export const DEFAULT_GTP_SPEAKERS_CHROME: GtpAboutSpeakersChromeCopy = {
+  enabled: true,
   title: "Speaker Highlights",
   subtitle: "Our Speakers",
 };
@@ -143,12 +151,14 @@ export type GtpAboutQuoteCardCopy = {
 };
 
 export type GtpAboutQuotesBandCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
   quotes: GtpAboutQuoteCardCopy[];
 };
 
 export const DEFAULT_GTP_QUOTES_BAND: GtpAboutQuotesBandCopy = {
+  enabled: true,
   title: "Words from Our Co-Chairs",
   subtitle: "Leadership Voices",
   quotes: [
@@ -187,6 +197,7 @@ export const DEFAULT_GTP_QUOTES_BAND: GtpAboutQuotesBandCopy = {
 export type GtpAboutGallerySlideCopy = { src: string; alt: string };
 
 export type GtpAboutGalleryBandCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
   footerText: string;
@@ -215,6 +226,7 @@ export const DEFAULT_GTP_GALLERY_SLIDES: GtpAboutGallerySlideCopy[] = [
 ];
 
 export const DEFAULT_GTP_GALLERY_BAND: GtpAboutGalleryBandCopy = {
+  enabled: true,
   title: "Moments That Matter",
   subtitle: "Our Gallery",
   footerText: "Photos from GTP 2025.",
@@ -224,12 +236,14 @@ export const DEFAULT_GTP_GALLERY_BAND: GtpAboutGalleryBandCopy = {
 };
 
 export type GtpAboutEventInquiryCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
   intro: string;
 };
 
 export const DEFAULT_GTP_EVENT_INQUIRY: GtpAboutEventInquiryCopy = {
+  enabled: true,
   title: "Questions about the event?",
   subtitle: "Get in touch",
   intro:
@@ -244,6 +258,7 @@ export type GtpAboutSponsorLogoEntry = {
 };
 
 export type GtpAboutSponsorsBandCopy = {
+  enabled: boolean;
   title: string;
   subtitle: string;
   /** When non-empty, marquee uses these instead of PIK + placeholders. */
@@ -254,6 +269,7 @@ export type GtpAboutSponsorsBandCopy = {
 };
 
 export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutSponsorsBandCopy = {
+  enabled: true,
   title: "Building a Global Coalition",
   subtitle: "Our Sponsors & Partners",
   sponsorLogos: [],
@@ -280,5 +296,14 @@ export type GtpAboutPageResolved = {
   eventInquiry: GtpAboutEventInquiryCopy;
   sponsors: GtpAboutSponsorsBandCopy;
 };
+
+/** At least one sponsor row with logo URL + name (public sponsors band gate). */
+export function gtpAboutSponsorsBandHasQualifyingLogos(
+  band: GtpAboutSponsorsBandCopy,
+): boolean {
+  return band.sponsorLogos.some(
+    (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
+  );
+}
 
 export { DEFAULT_GTP_WHAT_IS_BAND };

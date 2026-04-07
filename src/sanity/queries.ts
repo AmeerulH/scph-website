@@ -66,6 +66,7 @@ const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
   roadmapSection,
   nphapSection,
   partnersBand {
+    showBand,
     title,
     subtitle,
     partners[] {

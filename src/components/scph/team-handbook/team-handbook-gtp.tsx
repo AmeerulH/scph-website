@@ -31,7 +31,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026AboutPage",
     title: "About (conference hub)",
     notes:
-      "Hero band (headline CTAs plus **Important dates** above the programme carousel), optional section blocks under hero, “What are Global Tipping Points”, “Why this matters”, themes, speaker chrome, quotes, priorities, sponsors, etc. Carousel still pulls from `gtp2026Programme`.",
+      "Each band has **Visible on site** at the top of its fields (same idea as SCPH section blocks). Extra blocks under the hero use each block’s own toggle. Sponsors show only when that band is visible and at least one sponsor has logo + name. Hero includes **Important dates** above the carousel. Carousel uses `gtp2026Programme`.",
   },
   {
     route: "/events/gtp-2026/about",

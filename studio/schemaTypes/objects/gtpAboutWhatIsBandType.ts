@@ -7,6 +7,14 @@ export const gtpAboutWhatIsBandType = defineType({
   type: 'object',
   fields: [
     defineField({
+      name: 'enabled',
+      title: 'Visible on site',
+      type: 'boolean',
+      initialValue: true,
+      description:
+        'When off, this section is hidden on the public About page (same idea as SCPH section blocks).',
+    }),
+    defineField({
       name: 'eyebrow',
       title: 'Eyebrow / subtitle',
       type: 'string',

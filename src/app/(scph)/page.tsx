@@ -34,7 +34,10 @@ import {
   resolveScphHomeHero,
   resolveScphHomeHighlightedEvents,
 } from "@/sanity/scph-home-resolvers";
-import { mergeScphHomePartnersBand } from "@/sanity/scph-home-partners";
+import {
+  mergeScphHomePartnersBand,
+  scphHomePartnersHasQualifyingLogos,
+} from "@/sanity/scph-home-partners";
 import { ScphHomePartnersSection } from "@/components/scph/scph-home-partners-section";
 import type {
   SectionProseCtaBlock,
@@ -343,6 +346,8 @@ export default async function HomePage() {
   const cmsRoadmap = homeDoc?.roadmapSection;
   const cmsNphap = homeDoc?.nphapSection;
   const partnersBand = mergeScphHomePartnersBand(homeDoc?.partnersBand);
+  const showPartnersSection =
+    partnersBand.showBand && scphHomePartnersHasQualifyingLogos(partnersBand);
 
   return (
     <>
@@ -391,7 +396,9 @@ export default async function HomePage() {
       ) : (
         <NphapSection />
       )}
-      <ScphHomePartnersSection band={partnersBand} />
+      {showPartnersSection ? (
+        <ScphHomePartnersSection band={partnersBand} />
+      ) : null}
     </>
   );
 }

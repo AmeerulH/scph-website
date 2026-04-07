@@ -7,6 +7,7 @@ export type ScphHomePartnerLogoEntry = {
 };
 
 export type ScphHomePartnersBandResolved = {
+  showBand: boolean;
   title: string;
   subtitle: string;
   partnerLogos: ScphHomePartnerLogoEntry[];
@@ -16,6 +17,7 @@ export type ScphHomePartnersBandResolved = {
 };
 
 export type ScphHomePartnersBandRaw = {
+  showBand?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   partners?: Array<{
@@ -45,12 +47,21 @@ function mergePartnerLogo(
   return entry;
 }
 
+export function scphHomePartnersHasQualifyingLogos(
+  band: ScphHomePartnersBandResolved,
+): boolean {
+  return band.partnerLogos.some(
+    (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
+  );
+}
+
 export function mergeScphHomePartnersBand(
   raw: ScphHomePartnersBandRaw | undefined,
 ): ScphHomePartnersBandResolved {
   const d = DEFAULT_SCPH_HOME_PARTNERS_COPY;
   if (!raw) {
     return {
+      showBand: true,
       title: d.title,
       subtitle: d.subtitle,
       partnerLogos: [],
@@ -65,6 +76,7 @@ export function mergeScphHomePartnersBand(
     .filter((x): x is ScphHomePartnerLogoEntry => x != null);
 
   return {
+    showBand: raw.showBand !== false,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     partnerLogos,

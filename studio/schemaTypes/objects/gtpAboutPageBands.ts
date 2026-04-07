@@ -1,11 +1,24 @@
 import {defineField, defineType} from 'sanity'
 
+/** Same UX as SCPH `sectionProseCta.enabled` — first field on each About band. */
+function gtpAboutVisibleOnSiteField() {
+  return defineField({
+    name: 'enabled',
+    title: 'Visible on site',
+    type: 'boolean',
+    initialValue: true,
+    description:
+      'When off, this section is hidden on the public About page. Extra blocks under the hero use each block’s own “Visible on site” toggle.',
+  })
+}
+
 /** Hero text + CTAs above the programme carousel (GtpHeroGradient). */
 export const gtpAboutHeroBandType = defineType({
   name: 'gtpAboutHeroBand',
   title: 'About hero (headline)',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'badge', title: 'Badge line', type: 'string'}),
     defineField({name: 'title', title: 'Headline', type: 'string'}),
     defineField({name: 'lede', title: 'Supporting line', type: 'text', rows: 3}),
@@ -37,6 +50,7 @@ export const gtpAboutWhyMattersBandType = defineType({
   title: 'Why this meeting matters',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'eyebrow', title: 'Eyebrow', type: 'string'}),
     defineField({name: 'title', title: 'Heading', type: 'string'}),
     defineField({
@@ -100,6 +114,7 @@ export const gtpAboutThemesBandType = defineType({
   title: 'Conference themes',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({name: 'footerBlurb', title: 'Footer line', type: 'text', rows: 3}),
@@ -118,6 +133,7 @@ export const gtpAboutSpeakersChromeType = defineType({
   title: 'Speaker highlights (titles)',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
   ],
@@ -155,6 +171,7 @@ export const gtpAboutQuotesBandType = defineType({
   title: 'Co-chair quotes',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({
@@ -187,6 +204,7 @@ export const gtpAboutGalleryBandType = defineType({
   title: 'Gallery strip',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({name: 'footerText', title: 'Footer (before link)', type: 'string'}),
@@ -208,6 +226,7 @@ export const gtpAboutEventInquiryBandType = defineType({
   title: 'Event inquiry',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({name: 'intro', title: 'Intro paragraph', type: 'text', rows: 4}),
@@ -253,6 +272,7 @@ export const gtpAboutSponsorsBandType = defineType({
   title: 'Sponsors & partners',
   type: 'object',
   fields: [
+    gtpAboutVisibleOnSiteField(),
     defineField({name: 'title', title: 'Section title', type: 'string'}),
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({
@@ -261,7 +281,7 @@ export const gtpAboutSponsorsBandType = defineType({
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
       description:
-        'When this list has published logos, the site shows them in the marquee. If empty, the built-in PIK logo and placeholder tiles are used.',
+        'The public site shows this band only when visibility is on and at least one row has logo + name. Add rows in Studio (image + name + optional URL).',
     }),
     defineField({
       name: 'noticeBeforeLink',

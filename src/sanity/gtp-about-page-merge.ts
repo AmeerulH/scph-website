@@ -50,6 +50,7 @@ export type GtpAboutHeroImportantDateRaw = {
 } | null;
 
 export type GtpAboutHeroBandRaw = {
+  enabled?: boolean | null;
   badge?: string | null;
   title?: string | null;
   lede?: string | null;
@@ -62,6 +63,7 @@ export type GtpAboutHeroBandRaw = {
 } | null;
 
 export type GtpAboutWhyMattersBandRaw = {
+  enabled?: boolean | null;
   eyebrow?: string | null;
   title?: string | null;
   body?: string | null;
@@ -83,6 +85,7 @@ export type GtpAboutThemeCardRaw = {
 } | null;
 
 export type GtpAboutThemesBandRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   footerBlurb?: string | null;
@@ -90,6 +93,7 @@ export type GtpAboutThemesBandRaw = {
 } | null;
 
 export type GtpAboutSpeakersChromeRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
 } | null;
@@ -104,6 +108,7 @@ export type GtpAboutQuoteCardRaw = {
 } | null;
 
 export type GtpAboutQuotesBandRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   quotes?: GtpAboutQuoteCardRaw[] | null;
@@ -115,6 +120,7 @@ export type GtpAboutGallerySlideRaw = {
 } | null;
 
 export type GtpAboutGalleryBandRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   footerText?: string | null;
@@ -124,6 +130,7 @@ export type GtpAboutGalleryBandRaw = {
 } | null;
 
 export type GtpAboutEventInquiryBandRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   intro?: string | null;
@@ -136,6 +143,7 @@ export type GtpAboutSponsorLogoRaw = {
 } | null;
 
 export type GtpAboutSponsorsBandRaw = {
+  enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
   sponsors?: GtpAboutSponsorLogoRaw[] | null;
@@ -193,6 +201,7 @@ function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
   const d = DEFAULT_GTP_ABOUT_HERO;
   if (!raw) return d;
   return {
+    enabled: raw.enabled !== false,
     badge: s(raw.badge, d.badge),
     title: s(raw.title, d.title),
     lede: s(raw.lede, d.lede),
@@ -230,6 +239,7 @@ function mergeWhyMatters(raw: GtpAboutWhyMattersBandRaw): GtpAboutWhyMattersCopy
     ? splitThree(raw.body, d.bodyParagraphs)
     : d.bodyParagraphs;
   return {
+    enabled: raw.enabled !== false,
     eyebrow: s(raw.eyebrow, d.eyebrow),
     title: s(raw.title, d.title),
     bodyParagraphs,
@@ -261,11 +271,13 @@ function mergeThemeCard(
 
 function mergeThemes(raw: GtpAboutThemesBandRaw): GtpAboutThemesBandCopy {
   const d = DEFAULT_GTP_THEMES_BAND;
-  if (!raw?.themes?.length) return d;
+  const enabled = raw?.enabled !== false;
+  if (!raw?.themes?.length) return { ...d, enabled };
   const themes = d.themes.map((def, i) =>
     mergeThemeCard(raw.themes?.[i] ?? null, def),
   );
   return {
+    enabled,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     footerBlurb: s(raw.footerBlurb, d.footerBlurb),
@@ -279,6 +291,7 @@ function mergeSpeakersChrome(
   const d = DEFAULT_GTP_SPEAKERS_CHROME;
   if (!raw) return d;
   return {
+    enabled: raw.enabled !== false,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
   };
@@ -305,11 +318,13 @@ function mergeQuoteCard(
 
 function mergeQuotes(raw: GtpAboutQuotesBandRaw): GtpAboutQuotesBandCopy {
   const d = DEFAULT_GTP_QUOTES_BAND;
-  if (!raw?.quotes?.length) return d;
+  const enabled = raw?.enabled !== false;
+  if (!raw?.quotes?.length) return { ...d, enabled };
   const quotes = d.quotes.map((def, i) =>
     mergeQuoteCard(raw.quotes?.[i] ?? null, def),
   );
   return {
+    enabled,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     quotes,
@@ -334,6 +349,7 @@ function mergeGallery(raw: GtpAboutGalleryBandRaw): GtpAboutGalleryBandCopy {
     mergeSlide(raw.slides?.[i] ?? null, def),
   );
   return {
+    enabled: raw.enabled !== false,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     footerText: s(raw.footerText, d.footerText),
@@ -349,6 +365,7 @@ function mergeEventInquiry(
   const d = DEFAULT_GTP_EVENT_INQUIRY;
   if (!raw) return d;
   return {
+    enabled: raw.enabled !== false,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     intro: s(raw.intro, d.intro),
@@ -375,6 +392,7 @@ function mergeSponsors(raw: GtpAboutSponsorsBandRaw): GtpAboutSponsorsBandCopy {
     .map(mergeSponsorLogo)
     .filter((x): x is GtpAboutSponsorLogoEntry => x != null);
   return {
+    enabled: raw.enabled !== false,
     title: s(raw.title, d.title),
     subtitle: s(raw.subtitle, d.subtitle),
     sponsorLogos,

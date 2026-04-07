@@ -27,7 +27,7 @@ export const gtp2026AboutPageType = defineType({
       type: 'array',
       of: [...sectionBlockMembers],
       description:
-        'Optional SCPH-style blocks directly under the hero carousel.',
+        'Optional SCPH-style blocks directly under the hero carousel. Each block has its own **Visible on site** toggle (like other SCPH section blocks).',
     }),
     defineField({
       name: 'whatIsBand',

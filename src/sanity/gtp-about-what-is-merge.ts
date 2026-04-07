@@ -4,6 +4,7 @@ import {
 } from "@/data/gtp-about-what-is-defaults";
 
 export type GtpAboutWhatIsBandRaw = {
+  enabled?: boolean | null;
   eyebrow?: string | null;
   title?: string | null;
   body?: string | null;
@@ -21,8 +22,12 @@ export function mergeGtpWhatIsBand(
   raw: GtpAboutWhatIsBandRaw | null | undefined,
 ): GtpWhatIsBandContent {
   const d = DEFAULT_GTP_WHAT_IS_BAND;
+  const enabled = raw?.enabled !== false;
+  if (raw && raw.enabled === false) {
+    return { ...d, enabled: false };
+  }
   if (!raw?.title?.trim() || !raw?.body?.trim()) {
-    return d;
+    return { ...d, enabled };
   }
   const parts = raw.body
     .split(/\n\n/)
@@ -31,6 +36,7 @@ export function mergeGtpWhatIsBand(
   const p1 = parts[0] ?? "";
   const p2 = parts[1] ?? "";
   return {
+    enabled,
     eyebrow: raw.eyebrow?.trim() || d.eyebrow,
     title: raw.title.trim(),
     bodyParagraphs: [p1, p2],

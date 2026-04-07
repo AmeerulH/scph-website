@@ -70,6 +70,7 @@ export type Gtp2026AboutPageData = GtpAboutPageDocumentRaw;
 const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
   sections,
   heroBand {
+    enabled,
     badge,
     title,
     lede,
@@ -81,6 +82,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     importantDates[]{ label, dateText }
   },
   whatIsBand {
+    enabled,
     eyebrow,
     title,
     body,
@@ -93,6 +95,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     "reportCoverUrl": reportCover.asset->url
   },
   whyMattersBand {
+    enabled,
     eyebrow,
     title,
     body,
@@ -106,13 +109,15 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     bottomRightImageAlt
   },
   themesBand {
+    enabled,
     title,
     subtitle,
     footerBlurb,
     themes[] { num, title, body, icon }
   },
-  speakersChrome { title, subtitle },
+  speakersChrome { enabled, title, subtitle },
   quotesBand {
+    enabled,
     title,
     subtitle,
     quotes[] {
@@ -125,6 +130,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     }
   },
   galleryBand {
+    enabled,
     title,
     subtitle,
     footerText,
@@ -132,8 +138,9 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     footerLinkHref,
     slides[] { src, alt }
   },
-  eventInquiryBand { title, subtitle, intro },
+  eventInquiryBand { enabled, title, subtitle, intro },
   sponsorsBand {
+    enabled,
     title,
     subtitle,
     sponsors[] {

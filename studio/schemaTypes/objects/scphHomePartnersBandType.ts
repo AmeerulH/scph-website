@@ -10,6 +10,14 @@ export const scphHomePartnersBandType = defineType({
   type: 'object',
   fields: [
     defineField({
+      name: 'showBand',
+      title: 'Show partners band on home page',
+      type: 'boolean',
+      initialValue: true,
+      description:
+        'When on, the band appears only if at least one partner has both logo and name. When off, the band is hidden.',
+    }),
+    defineField({
       name: 'title',
       title: 'Section title',
       type: 'string',
