@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import type { Session } from "./types";
 import { TYPE_META } from "./data";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
+import { SessionObjectiveBlock } from "./session-objective-block";
+import { getSessionVenueLine } from "./session-display-helpers";
 
 export function SessionCard({
   session,
@@ -63,12 +65,12 @@ export function SessionCard({
             </span>
           )}
         </div>
-        {!session.isEvening && (
-          <div className="flex items-center gap-1.5 text-gray-400">
-            <MapPin className="h-3.5 w-3.5" />
-            <span className="text-xs italic">Location TBC</span>
-          </div>
-        )}
+        <div className="flex min-w-0 max-w-full items-start gap-1.5 text-gray-400">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span className="text-xs italic wrap-anywhere">
+            {getSessionVenueLine(session)}
+          </span>
+        </div>
         <span
           className={cn(
             "ml-auto flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
@@ -80,11 +82,16 @@ export function SessionCard({
         </span>
       </div>
 
-      {/* Card body */}
+      {/* Card body — title first; objective full width below so long copy expands the card naturally */}
       <div className="px-6 py-5">
         <h3 className="font-heading text-lg font-bold leading-snug text-gtp-dark-teal">
           {session.title}
         </h3>
+        <SessionObjectiveBlock
+          text={session.objective}
+          className="mt-4"
+          collapsibleOnMobile
+        />
 
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (

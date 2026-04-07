@@ -18,6 +18,13 @@ export const programmeWorkshopType = defineType({
       type: 'string',
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: 'objective',
+      title: 'Objective',
+      type: 'text',
+      rows: 4,
+      description: 'Optional. Shown for this parallel slot on the programme page.',
+    }),
   ],
   preview: {
     select: {title: 'title', number: 'number'},

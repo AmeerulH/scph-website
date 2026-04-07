@@ -1,9 +1,19 @@
 import { Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Session } from "./types";
+import type { Session, Workshop } from "./types";
 import { WorkshopSubCard } from "./workshop-sub-card";
+import { SessionObjectiveBlock } from "./session-objective-block";
+import { getSessionVenueLine } from "./session-display-helpers";
 
-export function ConcurrentBlock({ session, onClick }: { session: Session; onClick?: () => void }) {
+export function ConcurrentBlock({
+  session,
+  onClick,
+  onWorkshopClick,
+}: {
+  session: Session;
+  onClick?: () => void;
+  onWorkshopClick?: (w: Workshop) => void;
+}) {
   const isResearch = session.type === "research";
 
   const workshopSessions =
@@ -55,9 +65,9 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 text-gtp-dark-teal/50">
-          <MapPin className="h-3.5 w-3.5" />
-          <span className="text-xs italic">Location TBC</span>
+        <div className="flex min-w-0 max-w-full items-start gap-2 text-gtp-dark-teal/50">
+          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span className="text-xs italic wrap-anywhere">{getSessionVenueLine(session)}</span>
         </div>
         <span
           className={cn(
@@ -72,9 +82,12 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
       </div>
 
       <div className="px-6 py-5">
-        <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
-          {session.title}
-        </h3>
+        <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">{session.title}</h3>
+        <SessionObjectiveBlock
+          text={session.objective}
+          className="mt-4"
+          collapsibleOnMobile
+        />
 
         {hasBothTypes ? (
           /* Two-column layout: Workshop Sessions | Research Sessions */
@@ -86,7 +99,11 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
               </h4>
               <div className="space-y-3">
                 {workshopSessions.map((w) => (
-                  <WorkshopSubCard key={w.number} w={w} />
+                  <WorkshopSubCard
+                    key={w.number}
+                    w={w}
+                    onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+                  />
                 ))}
               </div>
             </div>
@@ -98,7 +115,11 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
               </h4>
               <div className="space-y-3">
                 {researchSessions.map((w) => (
-                  <WorkshopSubCard key={w.number} w={w} />
+                  <WorkshopSubCard
+                    key={w.number}
+                    w={w}
+                    onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+                  />
                 ))}
               </div>
             </div>
@@ -107,7 +128,11 @@ export function ConcurrentBlock({ session, onClick }: { session: Session; onClic
           /* Single-column fallback */
           <div className="mt-5 space-y-3 border-l-2 border-gtp-teal/25 pl-5">
             {session.workshops?.map((w) => (
-              <WorkshopSubCard key={w.number} w={w} />
+              <WorkshopSubCard
+                key={w.number}
+                w={w}
+                onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+              />
             ))}
           </div>
         )}

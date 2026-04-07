@@ -8,6 +8,7 @@ import {
 } from "@/components/gtp/programmes/data";
 import type {
   ConferenceThemeId,
+  ProgrammeVenueType,
   Session,
   SessionType,
   Speaker,
@@ -31,6 +32,16 @@ const SESSION_TYPES = new Set<SessionType>([
 ]);
 
 const THEME_IDS = new Set<ConferenceThemeId>(["shift", "imagination", "action"]);
+
+const VENUE_TYPES = new Set<ProgrammeVenueType>([
+  "main",
+  "evening_offsite",
+  "online",
+  "breakout",
+  "multiple",
+  "tbc",
+  "other",
+]);
 
 export type GtpProgrammeTab = { id: TabId; label: string };
 
@@ -72,6 +83,7 @@ const CAROUSEL_EXCLUDED_TYPES = new Set<SessionType>(["break", "reconvening"]);
 interface SanityWorkshopRow {
   number?: string;
   title?: string;
+  objective?: string;
 }
 
 interface SanitySpeakerRow {
@@ -84,6 +96,7 @@ interface SanitySessionRow {
   durationMins?: number;
   type?: string;
   title?: string;
+  objective?: string;
   theme?: string;
   speakerCount?: number;
   speakers?: SanitySpeakerRow[];
@@ -91,6 +104,9 @@ interface SanitySessionRow {
   breakLabel?: string;
   breakIcon?: string;
   isEvening?: boolean;
+  venueType?: string;
+  venueLine?: string;
+  formatLabel?: string;
 }
 
 interface SanityProgrammeDayRow {
@@ -118,13 +134,17 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       durationMins,
       type,
       title,
+      objective,
       theme,
       speakerCount,
       speakers[]{ name, designation },
-      workshops[]{ number, title },
+      workshops[]{ number, title, objective },
       breakLabel,
       breakIcon,
-      isEvening
+      isEvening,
+      venueType,
+      venueLine,
+      formatLabel
     }
   }
 }`;
@@ -187,7 +207,9 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   const number = typeof row.number === "string" ? row.number.trim() : "";
   const title = typeof row.title === "string" ? row.title.trim() : "";
   if (!number || !title) return null;
-  return { number, title };
+  const objective =
+    typeof row.objective === "string" && row.objective.trim() ? row.objective.trim() : undefined;
+  return objective ? { number, title, objective } : { number, title };
 }
 
 function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
@@ -206,6 +228,10 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     title,
     type: type as SessionType,
   };
+
+  if (typeof row.objective === "string" && row.objective.trim()) {
+    session.objective = row.objective.trim();
+  }
 
   if (typeof row.durationMins === "number" && Number.isFinite(row.durationMins)) {
     session.durationMins = row.durationMins;
@@ -238,6 +264,18 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
   }
 
   if (row.isEvening === true) session.isEvening = true;
+
+  if (typeof row.venueType === "string" && VENUE_TYPES.has(row.venueType as ProgrammeVenueType)) {
+    session.venueType = row.venueType as ProgrammeVenueType;
+  }
+
+  if (typeof row.venueLine === "string" && row.venueLine.trim()) {
+    session.venueLine = row.venueLine.trim();
+  }
+
+  if (typeof row.formatLabel === "string" && row.formatLabel.trim()) {
+    session.formatLabel = row.formatLabel.trim();
+  }
 
   return session;
 }

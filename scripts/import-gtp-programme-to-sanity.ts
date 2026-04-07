@@ -3,6 +3,7 @@
  *
  * Reads agenda from src/components/gtp/programmes/data.tsx and createOrReplace
  * document id `gtp2026Programme`. Re-running overwrites the same document.
+ * Session and workshop `objective` fields in data.tsx are included—Publish in Studio after import if needed.
  *
  * Prerequisites:
  *   - SANITY_API_TOKEN in .env.local (Editor+), same as import-team-to-sanity.js
@@ -74,6 +75,7 @@ function mapWorkshop(w: Workshop) {
     _type: 'programmeWorkshop' as const,
     number: w.number,
     title: w.title,
+    ...(w.objective?.trim() ? {objective: w.objective.trim()} : {}),
   }
 }
 
@@ -85,6 +87,7 @@ function mapSession(s: Session) {
     type: s.type,
   }
   if (s.durationMins != null) row.durationMins = s.durationMins
+  if (s.objective?.trim()) row.objective = s.objective.trim()
   if (s.theme) row.theme = s.theme
   if (s.speakerCount != null) row.speakerCount = s.speakerCount
   if (s.speakers?.length) row.speakers = s.speakers.map(mapSpeaker)
@@ -92,6 +95,9 @@ function mapSession(s: Session) {
   if (s.breakLabel) row.breakLabel = s.breakLabel
   if (s.breakIcon) row.breakIcon = s.breakIcon
   if (s.isEvening === true) row.isEvening = true
+  if (s.venueType) row.venueType = s.venueType
+  if (s.venueLine?.trim()) row.venueLine = s.venueLine.trim()
+  if (s.formatLabel?.trim()) row.formatLabel = s.formatLabel.trim()
   return row
 }
 

@@ -45,6 +45,14 @@ export const programmeSessionType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'objective',
+      title: 'Objective',
+      type: 'text',
+      rows: 5,
+      description:
+        'Shown on the public programme page. Use “TBC” if not final. For parallel slots, you can also set Objective on each workshop row.',
+    }),
+    defineField({
       name: 'theme',
       title: 'Conference theme',
       type: 'string',
@@ -100,14 +108,49 @@ export const programmeSessionType = defineType({
       title: 'Evening session',
       type: 'boolean',
       initialValue: false,
+      description:
+        'Used for default venue wording when Venue line is empty (evening vs daytime defaults on the site).',
+    }),
+    defineField({
+      name: 'venueType',
+      title: 'Venue type',
+      type: 'string',
+      description:
+        'For editors and planning. The public site shows Venue line when set; otherwise it uses defaults from Evening session.',
+      options: {
+        list: [
+          {title: 'Main venue (campus / plenary)', value: 'main'},
+          {title: 'Evening / off-site', value: 'evening_offsite'},
+          {title: 'Online', value: 'online'},
+          {title: 'Breakout / parallel room', value: 'breakout'},
+          {title: 'Multiple rooms / TBC', value: 'multiple'},
+          {title: 'Venue TBC', value: 'tbc'},
+          {title: 'Other', value: 'other'},
+        ],
+        layout: 'dropdown',
+      },
+    }),
+    defineField({
+      name: 'venueLine',
+      title: 'Venue line (public)',
+      type: 'string',
+      description:
+        'Exact text next to the map pin on the programme cards and in the session modal (e.g. “Sunway University, Kuala Lumpur” or “Venue TBC — Sunway, Malaysia”). Leave empty to use site defaults.',
+    }),
+    defineField({
+      name: 'formatLabel',
+      title: 'Format label (public)',
+      type: 'string',
+      description:
+        'Shown after “Format:” in the session modal (e.g. “Public Session”). Leave empty to use the default for this session type.',
     }),
   ],
   preview: {
-    select: {title: 'title', time: 'time', type: 'type'},
-    prepare({title, time, type}) {
+    select: {title: 'title', time: 'time', type: 'type', venueLine: 'venueLine'},
+    prepare({title, time, type, venueLine}) {
       return {
         title: title ?? 'Session',
-        subtitle: [time, type].filter(Boolean).join(' · '),
+        subtitle: [time, type, venueLine].filter(Boolean).join(' · '),
       }
     },
   },

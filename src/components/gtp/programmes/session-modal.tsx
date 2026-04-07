@@ -17,8 +17,10 @@ import {
 } from "lucide-react";
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { cn } from "@/lib/utils";
-import type { Session } from "./types";
+import type { Session, Workshop } from "./types";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
+import { SessionObjectiveBlock } from "./session-objective-block";
+import { getSessionFormatLabel, getSessionVenueLine } from "./session-display-helpers";
 
 // ─── WhatsApp icon (not in lucide) ────────────────────────────────────────────
 
@@ -36,6 +38,8 @@ interface SessionModalProps {
   session: Session | null;
   dayLabel?: string;
   onClose: () => void;
+  /** When set, parallel slots in the modal open a dedicated workshop modal (desktop grid below). */
+  onWorkshopClick?: (workshop: Workshop) => void;
 }
 
 function sessionExpectsSpeakerList(type: Session["type"]) {
@@ -50,7 +54,7 @@ function sessionExpectsSpeakerList(type: Session["type"]) {
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) {
+export function SessionModal({ session, dayLabel, onClose, onWorkshopClick }: SessionModalProps) {
   const [copied, setCopied] = React.useState(false);
 
   // Lock body scroll when open
@@ -64,15 +68,6 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
       document.body.style.overflow = "";
     };
   }, [session]);
-
-  // Close on Escape
-  React.useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
 
   function handleCopyLink() {
     navigator.clipboard.writeText(window.location.href).then(() => {
@@ -108,7 +103,12 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 24 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full max-w-2xl sm:max-w-3xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            className={cn(
+              "relative z-10 flex max-h-[90vh] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-2xl",
+              session.workshops && session.workshops.length > 0
+                ? "max-w-2xl sm:max-w-3xl lg:max-w-5xl"
+                : "max-w-2xl sm:max-w-3xl",
+            )}
             onClick={(e) => e.stopPropagation()}
           >
               {/* Close button — inside modal, top-right */}
@@ -170,33 +170,19 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                         {dayLabel ? ` · ${dayLabel}` : ""}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-sm text-gray-500">
-                      <MapPin className="h-4 w-4 shrink-0 text-gtp-teal" />
-                      <span className="italic">
-                        {session.isEvening ? "Evening venue TBC" : "Venue TBC — Sunway, Malaysia"}
-                      </span>
+                    <div className="flex items-start gap-2.5 text-sm text-gray-500">
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
+                      <span className="italic wrap-anywhere">{getSessionVenueLine(session)}</span>
                     </div>
                   </div>
 
                   {/* Format label */}
                   <div className="mt-4">
                     <span className="text-sm font-medium text-gray-700">Format: </span>
-                    <span className="text-sm text-gray-500">
-                      {session.type === "plenary" || session.type === "opening" || session.type === "closing"
-                        ? "Public Session"
-                        : session.type === "concurrent"
-                          ? "Action workshop"
-                          : session.type === "research"
-                            ? "Research session"
-                            : session.type === "fireside"
-                            ? "Fireside Chat"
-                            : session.type === "lightning"
-                              ? "Lightning Talk"
-                              : session.type === "special"
-                                ? "Special Event"
-                                : "Conference Session"}
-                    </span>
+                    <span className="text-sm text-gray-500">{getSessionFormatLabel(session)}</span>
                   </div>
+
+                  <SessionObjectiveBlock text={session.objective} className="mt-4" />
 
                   {/* Description */}
                   <div className="mt-5 border-t border-gray-100 pt-5 space-y-3 text-sm text-gray-600 leading-relaxed">
@@ -399,29 +385,68 @@ export function SessionModal({ session, dayLabel, onClose }: SessionModalProps) 
                           </div>
                         )}
 
-                      {/* Concurrent workshops list */}
-                      {session.workshops && session.workshops.length > 0 && (
-                        <div>
-                          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Sessions Available:</p>
-                          <div className="space-y-2">
-                            {session.workshops.map((w) => (
-                              <div
-                                key={w.number}
-                                className="flex items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 px-4 py-3"
-                              >
-                                <span className="shrink-0 rounded-full bg-gtp-teal/10 px-2 py-0.5 text-xs font-bold text-gtp-teal">
-                                  {w.number}
-                                </span>
-                                <span className="text-xs text-gray-600 leading-relaxed">{w.title}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
                     </div>
 
                   </div>
+
+                  {/* Parallel slots: full-width row below share / hosted columns (grid on desktop) */}
+                  {session.workshops && session.workshops.length > 0 && (
+                    <div className="mt-6 border-t border-gray-100 pt-5">
+                      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">
+                        Sessions Available
+                      </p>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {session.workshops.map((w) => {
+                          const clickable = Boolean(onWorkshopClick);
+                          const inner = (
+                            <>
+                              <span
+                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gtp-teal/10 text-xs font-bold text-gtp-teal"
+                                aria-hidden
+                              >
+                                {w.number}
+                              </span>
+                              <div className="min-w-0 flex-1 text-left">
+                                <span className="text-sm font-medium leading-snug text-gtp-dark-teal">
+                                  {w.title}
+                                </span>
+                                {w.objective?.trim() ? (
+                                  <p className="mt-2 line-clamp-4 text-xs leading-relaxed text-gray-600">
+                                    {w.objective.trim()}
+                                  </p>
+                                ) : null}
+                                {clickable ? (
+                                  <span className="mt-2 inline-block text-xs font-semibold text-gtp-teal">
+                                    View details →
+                                  </span>
+                                ) : null}
+                              </div>
+                            </>
+                          );
+                          const shellClass = cn(
+                            "flex items-start gap-3 rounded-xl border bg-gray-50/90 p-4 text-left transition-colors",
+                            clickable
+                              ? "cursor-pointer border-gray-100 hover:border-gtp-teal/35 hover:bg-white"
+                              : "border-gray-100",
+                          );
+                          return clickable ? (
+                            <button
+                              key={w.number}
+                              type="button"
+                              onClick={() => onWorkshopClick!(w)}
+                              className={shellClass}
+                            >
+                              {inner}
+                            </button>
+                          ) : (
+                            <div key={w.number} className={shellClass}>
+                              {inner}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                 </div>
               </div>

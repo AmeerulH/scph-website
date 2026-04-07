@@ -13,6 +13,16 @@ export type SessionType =
   | "closing"
   | "break";
 
+/** Mirrors Sanity `programmeSession.venueType` — optional metadata for editors; `venueLine` drives public copy. */
+export type ProgrammeVenueType =
+  | "main"
+  | "evening_offsite"
+  | "online"
+  | "breakout"
+  | "multiple"
+  | "tbc"
+  | "other";
+
 export interface Speaker {
   name: string;
   designation?: string;
@@ -21,6 +31,7 @@ export interface Speaker {
 export interface Workshop {
   number: string;
   title: string;
+  objective?: string;
 }
 
 export interface Session {
@@ -28,6 +39,8 @@ export interface Session {
   durationMins?: number;
   type: SessionType;
   title: string;
+  /** Session-level objective (CMS). Parallel slots may use `workshops[].objective` instead or as well. */
+  objective?: string;
   /** Named speakers — when present, rendered instead of generic placeholders */
   speakers?: Speaker[];
   /** Fallback when speaker names aren't confirmed yet */
@@ -38,4 +51,10 @@ export interface Session {
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";
   isEvening?: boolean;
+  /** CMS: categorisation for venue (optional). */
+  venueType?: ProgrammeVenueType;
+  /** CMS: exact map-pin / modal venue text; when empty, site uses defaults. */
+  venueLine?: string;
+  /** CMS: modal “Format:” text; when empty, site derives from session type. */
+  formatLabel?: string;
 }

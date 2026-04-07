@@ -10,6 +10,10 @@ import {
   BookOpen,
 } from "lucide-react";
 import type { Session, SessionType } from "./types";
+import {
+  agendaObjectiveForSessionTitle,
+  GTP_AGENDA_TITLE_OPENING_PLENARY_SCIENCE,
+} from "@/data/gtp-2026-agenda-objectives";
 
 // ─── Tab configuration ────────────────────────────────────────────────────────
 
@@ -98,6 +102,14 @@ export const TYPE_GRADIENTS: Record<string, string> = {
 
 // ─── Agenda Data ──────────────────────────────────────────────────────────────
 // Speaker line-ups are tentative; names are not shown until confirmed (speakerCount + TBC UI).
+// `objective` is shown on the programme page and is pushed to Sanity via `npm run import-gtp-programme`.
+
+/** Open workshop slots — replace when proposals are selected. */
+const OBJ_TBC_PROPOSAL =
+  "TBC — session details to be confirmed from the open call for proposals.";
+/** Open research slots — replace when abstracts are selected. */
+const OBJ_TBC_ABSTRACT =
+  "TBC — session details to be confirmed from the open abstract process.";
 
 export const day1: Session[] = [
   {
@@ -106,14 +118,18 @@ export const day1: Session[] = [
     type: "opening",
     title: "Opening of Global Tipping Points Conference 2026",
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Opening of Global Tipping Points Conference 2026",
+    ),
   },
   {
     time: "09:30 – 11:00",
     durationMins: 90,
     type: "plenary",
-    title: "Opening Plenary: The Science of Global Tipping Points",
+    title: GTP_AGENDA_TITLE_OPENING_PLENARY_SCIENCE,
     speakerCount: 4,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(GTP_AGENDA_TITLE_OPENING_PLENARY_SCIENCE),
   },
   {
     time: "11:00 – 11:30",
@@ -130,6 +146,9 @@ export const day1: Session[] = [
     title: "Lightning Talk: Frontline Realities of Tipping Points in Malaysia",
     speakerCount: 1,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Lightning Talk: Frontline Realities of Tipping Points in Malaysia",
+    ),
   },
   {
     time: "11:40 – 12:40",
@@ -138,6 +157,9 @@ export const day1: Session[] = [
     title: "Plenary 2: Global Context and ASEAN Pathways",
     speakerCount: 4,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 2: Global Context and ASEAN Pathways",
+    ),
   },
   {
     time: "12:40 – 14:00",
@@ -153,34 +175,64 @@ export const day1: Session[] = [
     type: "concurrent",
     title: "Action Workshops",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Action Workshops"),
     workshops: [
       {
         number: "1",
         title: "Workshop Session: Regional Perspectives Deep Dive",
+        objective:
+          "Compare regional narratives and priorities on tipping points and how they translate into policy and on-the-ground action.",
       },
       {
         number: "2",
         title: "Workshop Session: Storytelling and Public Relations",
+        objective:
+          "Develop narrative and communications approaches that make tipping points tangible for diverse public audiences.",
       },
-      { number: "3", title: "Workshop Session: Disinformation and Trust" },
-      { number: "4", title: "Workshop Session: Education and Systems Change" },
-      { number: "5", title: "Workshop Session: Co-creating Futures" },
-      { number: "6", title: "Workshop Session: The Air We Breathe" },
+      {
+        number: "3",
+        title: "Workshop Session: Disinformation and Trust",
+        objective:
+          "Unpack how misinformation and eroded trust slow transitions, and explore responses that support credible engagement.",
+      },
+      {
+        number: "4",
+        title: "Workshop Session: Education and Systems Change",
+        objective:
+          "Link education and learning systems to the capabilities and mindsets needed for systemic shifts.",
+      },
+      {
+        number: "5",
+        title: "Workshop Session: Co-creating Futures",
+        objective:
+          "Use participatory methods to imagine preferable futures and concrete steps that could tip systems positively.",
+      },
+      {
+        number: "6",
+        title: "Workshop Session: The Air We Breathe",
+        objective:
+          "Connect air quality, public health, and environmental tipping dynamics—especially in urban and regional contexts.",
+      },
       {
         number: "7",
         title: "Workshop Session: Tipping Points and the Coral Triangle",
+        objective:
+          "Focus on marine ecosystems, livelihoods, and governance in the Coral Triangle through a tipping-points lens.",
       },
       {
         number: "8",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "9",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "10",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
     ],
   },
@@ -190,14 +242,17 @@ export const day1: Session[] = [
     type: "research",
     title: "Research Sessions",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Research Sessions"),
     workshops: [
       {
         number: "11",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
       {
         number: "12",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
     ],
   },
@@ -216,12 +271,14 @@ export const day1: Session[] = [
     title: "Fireside Chat: [Insert Topic]",
     speakerCount: 1,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle("Fireside Chat: [Insert Topic]"),
   },
   {
     time: "16:30 – 17:00",
     durationMins: 30,
     type: "reconvening",
     title: "Reconvening",
+    objective: agendaObjectiveForSessionTitle("Reconvening"),
   },
   {
     time: "Evening",
@@ -229,6 +286,9 @@ export const day1: Session[] = [
     title: "Film Premiere: How to Live on Earth by Open Planet Studios",
     isEvening: true,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle(
+      "Film Premiere: How to Live on Earth by Open Planet Studios",
+    ),
   },
 ];
 
@@ -240,6 +300,9 @@ export const day2: Session[] = [
     title: "Lightning Talk: Who Really Pays for Environmental Damage?",
     speakerCount: 1,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Lightning Talk: Who Really Pays for Environmental Damage?",
+    ),
   },
   {
     time: "09:10 – 10:40",
@@ -248,6 +311,7 @@ export const day2: Session[] = [
     title: "Plenary 3: Flipping the Script",
     speakerCount: 4,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle("Plenary 3: Flipping the Script"),
   },
   {
     time: "10:40 – 11:10",
@@ -264,6 +328,9 @@ export const day2: Session[] = [
     title: "Plenary 4: Values and Cultural Tipping Points",
     speakerCount: 4,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 4: Values and Cultural Tipping Points",
+    ),
   },
   {
     time: "12:40 – 14:00",
@@ -279,44 +346,63 @@ export const day2: Session[] = [
     type: "concurrent",
     title: "Action Workshops",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Action Workshops"),
     workshops: [
       {
         number: "1",
         title: "Workshop Session: Legal Frameworks and Litigation",
+        objective:
+          "Review how law, rights, and litigation can accelerate or constrain tipping dynamics in climate and nature.",
       },
       {
         number: "2",
         title:
           "Workshop Session: Return on Values (ROV) – Doing Business Differently, Session One",
+        objective:
+          "Introduce Return on Values framing and practical implications for leadership and business model change.",
       },
       {
         number: "3",
         title: "Workshop Session: Islamic and Innovative Responsible Finance",
+        objective:
+          "Explore responsible finance—including Islamic finance lenses—to align capital with positive tipping trajectories.",
       },
       {
         number: "4",
         title: "Workshop Session: Health Leadership in Times of Instability",
+        objective:
+          "Connect planetary health, system shocks, and leadership under uncertainty to tipping-point responses.",
       },
-      { number: "5", title: "Workshop Session: Faith Charter and Toolkit" },
+      {
+        number: "5",
+        title: "Workshop Session: Faith Charter and Toolkit",
+        objective:
+          "Discuss faith-based commitments and tools that mobilise communities for environmental stewardship and justice.",
+      },
       {
         number: "6",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "7",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "8",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "9",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "10",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
     ],
   },
@@ -326,14 +412,17 @@ export const day2: Session[] = [
     type: "research",
     title: "Research Sessions",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Research Sessions"),
     workshops: [
       {
         number: "11",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
       {
         number: "12",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
     ],
   },
@@ -352,12 +441,16 @@ export const day2: Session[] = [
     title: "Fireside Chat: Leadership That Tips Energy Systems",
     speakerCount: 1,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle(
+      "Fireside Chat: Leadership That Tips Energy Systems",
+    ),
   },
   {
     time: "16:30 – 17:00",
     durationMins: 30,
     type: "reconvening",
     title: "Reconvening",
+    objective: agendaObjectiveForSessionTitle("Reconvening"),
   },
   {
     time: "17:00 – 18:00",
@@ -365,6 +458,7 @@ export const day2: Session[] = [
     type: "special",
     title: "Poster Exhibit",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Poster Exhibit"),
   },
   {
     time: "19:00",
@@ -372,6 +466,7 @@ export const day2: Session[] = [
     title: "Street Food Dinner",
     isEvening: true,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle("Street Food Dinner"),
   },
 ];
 
@@ -383,6 +478,9 @@ export const day3: Session[] = [
     title: "Plenary 5: Finance for Positive Tipping Points",
     speakerCount: 4,
     theme: "action",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 5: Finance for Positive Tipping Points",
+    ),
   },
   {
     time: "10:00 – 11:30",
@@ -391,6 +489,9 @@ export const day3: Session[] = [
     title: "Plenary 6: From Courtrooms to System Change",
     speakerCount: 4,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 6: From Courtrooms to System Change",
+    ),
   },
   {
     time: "11:30 – 12:00",
@@ -407,6 +508,9 @@ export const day3: Session[] = [
     title: "Plenary 7: Change is Possible – Cities as Tipping Points",
     speakerCount: 4,
     theme: "action",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 7: Change is Possible – Cities as Tipping Points",
+    ),
   },
   {
     time: "13:00 – 14:00",
@@ -422,38 +526,66 @@ export const day3: Session[] = [
     type: "concurrent",
     title: "Action Workshops",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Action Workshops"),
     workshops: [
       {
         number: "1",
         title: "Workshop Session: AI and Technology for Systems Transition",
+        objective:
+          "Discuss responsible use of AI and digital tools to monitor, model, and accelerate system transitions.",
       },
       {
         number: "2",
         title: "Workshop Session: Nature-Based Solutions at Scale",
+        objective:
+          "Examine how NbS can reach scale, with safeguards, finance, and metrics that align with tipping thinking.",
       },
       {
         number: "3",
         title: "Workshop Session: Food Systems and Tipping Dynamics",
+        objective:
+          "Link food security, land use, and diets to leverage points and trade-offs in food system transformation.",
       },
       {
         number: "4",
         title:
           "Workshop Session: Return on Values – Doing Business Differently",
+        objective:
+          "Continue ROV themes—embedding values into strategy, investment, and operations for systemic outcomes.",
       },
-      { number: "5", title: "Workshop Session: Health Leadership" },
-      { number: "6", title: "Workshop Session: Education Revolution" },
+      {
+        number: "5",
+        title: "Workshop Session: Health Leadership",
+        objective:
+          "Strengthen leadership bridges between health, climate, and equity agendas under growing instability.",
+      },
+      {
+        number: "6",
+        title: "Workshop Session: Education Revolution",
+        objective:
+          "Explore transformative education models that build agency for a tipping-points century.",
+      },
       {
         number: "7",
         title: "Workshop Session: System Shifts or System Shocks",
+        objective:
+          "Contrast managed transitions with disorderly shocks—and what governance needs to favour the former.",
       },
-      { number: "8", title: "Workshop Session: Cleantech Systems Change" },
+      {
+        number: "8",
+        title: "Workshop Session: Cleantech Systems Change",
+        objective:
+          "Connect clean technology deployment to system integration, policy, and tipping dynamics.",
+      },
       {
         number: "9",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
       {
         number: "10",
         title: "Workshop Session: [Title – Topic from Open Proposals]",
+        objective: OBJ_TBC_PROPOSAL,
       },
     ],
   },
@@ -463,14 +595,17 @@ export const day3: Session[] = [
     type: "research",
     title: "Research Sessions",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("Research Sessions"),
     workshops: [
       {
         number: "11",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
       {
         number: "12",
         title: "Research Session: [Title – Topic from Open Abstract Calls]",
+        objective: OBJ_TBC_ABSTRACT,
       },
     ],
   },
@@ -489,12 +624,16 @@ export const day3: Session[] = [
     title: "Fireside Chat: Peace Dividends and Health Security",
     speakerCount: 1,
     theme: "imagination",
+    objective: agendaObjectiveForSessionTitle(
+      "Fireside Chat: Peace Dividends and Health Security",
+    ),
   },
   {
     time: "16:30 – 17:00",
     durationMins: 30,
     type: "reconvening",
     title: "Reconvening",
+    objective: agendaObjectiveForSessionTitle("Reconvening"),
   },
 ];
 
@@ -506,6 +645,9 @@ export const day4: Session[] = [
     title: "Plenary 8: Bringing It All Together and Road to COP31",
     speakerCount: 4,
     theme: "shift",
+    objective: agendaObjectiveForSessionTitle(
+      "Plenary 8: Bringing It All Together and Road to COP31",
+    ),
   },
   {
     time: "10:30 – 11:00",
@@ -522,11 +664,15 @@ export const day4: Session[] = [
     title:
       "Next Steps and Closing — Launch of the Kuala Lumpur Tipping Points Declaration",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle(
+      "Next Steps and Closing — Launch of the Kuala Lumpur Tipping Points Declaration",
+    ),
   },
   {
     time: "12:30",
     type: "special",
     title: "End of Conference",
     theme: "action",
+    objective: agendaObjectiveForSessionTitle("End of Conference"),
   },
 ];
