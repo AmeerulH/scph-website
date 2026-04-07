@@ -825,10 +825,10 @@ export default async function GtpAboutPage() {
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}
-      <WhatIsGtpSection content={about.whatIs} />
       <WhyItMattersSection content={about.whyMatters} />
       <ThemesSection content={about.themes} />
       <SpeakersSection chrome={about.speakersChrome} speakers={speakersList} />
+      <WhatIsGtpSection content={about.whatIs} />
       <QuoteSection band={about.quotes} />
       <GallerySection band={about.gallery} />
       <EventInquirySection content={about.eventInquiry} />
