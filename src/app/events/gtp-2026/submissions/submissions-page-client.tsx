@@ -17,6 +17,7 @@ import {
   ArrowUp,
 } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
+import { Button } from "@/components/ui/button";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { GTP_EXPLORE_VERTICAL_BG_CLASSNAMES } from "@/components/gtp/gtp-site-explore-cards";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
@@ -80,7 +81,27 @@ function PillarsSection({ copy }: { copy: GtpSubmissionsResolvedCopy }) {
   }));
 
   return (
-    <SectionWrapper theme="gtp" background="default">
+    <SectionWrapper
+      theme="gtp"
+      background="default"
+      className="pt-10 pb-16 md:pt-12 md:pb-24"
+    >
+      <div className="mb-8 max-w-3xl">
+        <Button
+          type="button"
+          variant="gtpCta"
+          size="lg"
+          className="w-full sm:w-auto"
+          onClick={() =>
+            document
+              .getElementById("submissions-tabs")
+              ?.scrollIntoView({ behavior: "smooth", block: "center" })
+          }
+        >
+          Submit your abstract and proposal
+        </Button>
+      </div>
+
       <p className="mb-8 max-w-3xl text-left text-base font-bold leading-relaxed text-gtp-dark-teal md:text-lg">
         {copy.pillarsIntroBold}
       </p>
