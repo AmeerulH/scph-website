@@ -89,6 +89,8 @@ interface SanityWorkshopRow {
 interface SanitySpeakerRow {
   name?: string;
   designation?: string;
+  sessionRole?: string;
+  imageUrl?: string | null;
 }
 
 interface SanitySessionRow {
@@ -137,7 +139,12 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       objective,
       theme,
       speakerCount,
-      speakers[]{ name, designation },
+      speakers[]{
+        name,
+        designation,
+        sessionRole,
+        "imageUrl": image.asset->url
+      },
       workshops[]{ number, title, objective },
       breakLabel,
       breakIcon,
@@ -200,7 +207,18 @@ function mapSpeaker(row: SanitySpeakerRow): Speaker | null {
     typeof row.designation === "string" && row.designation.trim()
       ? row.designation.trim()
       : undefined;
-  return designation ? { name, designation } : { name };
+  const sessionRole =
+    typeof row.sessionRole === "string" && row.sessionRole.trim()
+      ? row.sessionRole.trim()
+      : undefined;
+  const imageUrl =
+    typeof row.imageUrl === "string" && row.imageUrl.trim() ? row.imageUrl.trim() : undefined;
+
+  const speaker: Speaker = { name };
+  if (designation) speaker.designation = designation;
+  if (sessionRole) speaker.sessionRole = sessionRole;
+  if (imageUrl) speaker.imageUrl = imageUrl;
+  return speaker;
 }
 
 function mapWorkshop(row: SanityWorkshopRow): Workshop | null {

@@ -26,6 +26,10 @@ export type ProgrammeVenueType =
 export interface Speaker {
   name: string;
   designation?: string;
+  /** Resolved Sanity asset URL when editors upload a photo */
+  imageUrl?: string;
+  /** Shown on cards/modal (e.g. Moderator, Panelist) */
+  sessionRole?: string;
 }
 
 export interface Workshop {

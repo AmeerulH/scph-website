@@ -7,7 +7,6 @@ import {
   X,
   Clock,
   MapPin,
-  UserCircle2,
   Copy,
   Check,
   Linkedin,
@@ -17,7 +16,8 @@ import {
 } from "lucide-react";
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { cn } from "@/lib/utils";
-import type { Session, Workshop } from "./types";
+import type { Session, Speaker, Workshop } from "./types";
+import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionFormatLabel, getSessionVenueLine } from "./session-display-helpers";
@@ -40,6 +40,10 @@ interface SessionModalProps {
   onClose: () => void;
   /** When set, parallel slots in the modal open a dedicated workshop modal (desktop grid below). */
   onWorkshopClick?: (workshop: Workshop) => void;
+}
+
+function isModeratorRole(role: string | undefined): boolean {
+  return Boolean(role?.trim().toLowerCase().includes("moderator"));
 }
 
 function sessionExpectsSpeakerList(type: Session["type"]) {
@@ -331,28 +335,13 @@ export function SessionModal({ session, dayLabel, onClose, onWorkshopClick }: Se
                       {session.speakers && session.speakers.length > 0 && (
                         <div className="space-y-4">
                           {session.type === "fireside" ? (
-                            <>
-                              <div>
-                                <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Moderator:</p>
-                                <SpeakerRow speaker={session.speakers[0]} />
-                              </div>
-                              {session.speakers.length > 1 && (
-                                <div>
-                                  <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
-                                  <div className="space-y-3">
-                                    {session.speakers.slice(1).map((sp) => (
-                                      <SpeakerRow key={sp.name} speaker={sp} />
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                            </>
+                            <FiresideSpeakersBlock speakers={session.speakers} />
                           ) : (
                             <div>
                               <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
                               <div className="space-y-3">
-                                {session.speakers.map((sp) => (
-                                  <SpeakerRow key={sp.name} speaker={sp} />
+                                {session.speakers.map((sp, i) => (
+                                  <SpeakerRow key={`${sp.name}-${i}`} speaker={sp} />
                                 ))}
                               </div>
                             </div>
@@ -460,13 +449,82 @@ export function SessionModal({ session, dayLabel, onClose, onWorkshopClick }: Se
   return ReactDOM.createPortal(modal, document.body);
 }
 
+// ─── Fireside: moderator vs speakers (role field when set, else first row = moderator) ─
+
+function FiresideSpeakersBlock({ speakers }: { speakers: Speaker[] }) {
+  const anyRole = speakers.some((s) => s.sessionRole?.trim());
+  let moderators: Speaker[];
+  let others: Speaker[];
+
+  if (anyRole) {
+    moderators = speakers.filter((s) => isModeratorRole(s.sessionRole));
+    others = speakers.filter((s) => !isModeratorRole(s.sessionRole));
+    if (moderators.length === 0) {
+      return (
+        <div>
+          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
+          <div className="space-y-3">
+            {speakers.map((sp, i) => (
+              <SpeakerRow key={`${sp.name}-${i}`} speaker={sp} />
+            ))}
+          </div>
+        </div>
+      );
+    }
+  } else {
+    moderators = speakers[0] ? [speakers[0]] : [];
+    others = speakers.slice(1);
+  }
+
+  return (
+    <>
+      {moderators.length > 0 ? (
+        <div>
+          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Moderator:</p>
+          <div className="space-y-3">
+            {moderators.map((sp, i) => (
+              <SpeakerRow
+                key={`${sp.name}-mod-${i}`}
+                speaker={sp}
+                suppressRoleWhenModerator
+              />
+            ))}
+          </div>
+        </div>
+      ) : null}
+      {others.length > 0 ? (
+        <div>
+          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
+          <div className="space-y-3">
+            {others.map((sp, i) => (
+              <SpeakerRow key={`${sp.name}-sp-${i}`} speaker={sp} />
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
 // ─── Speaker row ──────────────────────────────────────────────────────────────
 
-function SpeakerRow({ speaker }: { speaker: { name: string; designation?: string } }) {
+function SpeakerRow({
+  speaker,
+  suppressRoleWhenModerator,
+}: {
+  speaker: Speaker;
+  suppressRoleWhenModerator?: boolean;
+}) {
+  const role = speaker.sessionRole?.trim();
+  const showRole = Boolean(role && !(suppressRoleWhenModerator && isModeratorRole(speaker.sessionRole)));
+
   return (
     <div className="flex items-center gap-3">
-      <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
+      <ProgrammeSpeakerAvatar imageUrl={speaker.imageUrl} name={speaker.name} />
       <div className="min-w-0">
+        {showRole ? (
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p>
+        ) : null}
         <p className="text-sm font-semibold text-gray-800">{speaker.name}</p>
         {speaker.designation && (
           <p className="text-xs text-gtp-teal leading-relaxed">{speaker.designation}</p>

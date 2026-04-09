@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Clock, MapPin, UserCircle2 } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Session } from "./types";
 import { TYPE_META } from "./data";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
+import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 
 export function SessionCard({
   session,
@@ -96,16 +97,19 @@ export function SessionCard({
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {namedSpeakers.map((sp) => (
+            {namedSpeakers.map((sp, idx) => (
               <div
-                key={sp.name}
+                key={`${sp.name}-${idx}`}
                 className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
               >
-                <UserCircle2 className="h-8 w-8 shrink-0 text-gray-300" />
+                <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} sizeClassName="h-8 w-8" />
                 <div className="min-w-0">
-                  <p className="truncate text-xs font-semibold text-gray-500">
-                    {sp.name}
-                  </p>
+                  {sp.sessionRole?.trim() ? (
+                    <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                      {sp.sessionRole.trim()}
+                    </p>
+                  ) : null}
+                  <p className="truncate text-xs font-semibold text-gray-800">{sp.name}</p>
                   {sp.designation && (
                     <p className="truncate text-xs text-gray-400">{sp.designation}</p>
                   )}
