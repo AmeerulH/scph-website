@@ -55,6 +55,7 @@ import { TwoColumnTextImages } from "@/components/sections/two-column-text-image
 import { cn } from "@/lib/utils";
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { getSiteUrlString } from "@/lib/site-url";
+import { getGtpCountdownSnapshot } from "@/lib/gtp-countdown";
 const aboutDescription =
   "Global Tipping Points Conference 2026, 12–15 October in Kuala Lumpur—science, finance, culture and policy for positive tipping points, hosted by Sunway Centre for Planetary Health.";
 
@@ -816,6 +817,8 @@ export default async function GtpAboutPage() {
       ? mapSanityHighlightToProps(highlightRows)
       : gtpHighlightSpeakers;
 
+  const countdownInitial = getGtpCountdownSnapshot();
+
   return (
     <>
       <script
@@ -826,6 +829,7 @@ export default async function GtpAboutPage() {
         <GtpAboutHeroStack
           carouselSessions={carouselSessions}
           heroCopy={about.hero}
+          countdownInitial={countdownInitial}
         />
       ) : null}
       {showAboutCmsBands ? (

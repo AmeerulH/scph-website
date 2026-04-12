@@ -32,8 +32,9 @@ export function GtpForestHero({
   return (
     <div
       className={cn(
-        "relative overflow-hidden px-4 pt-40 text-center",
+        "relative min-h-104 overflow-hidden px-4 pt-40 text-center sm:min-h-112",
         bottomSpacing === "compact" ? "pb-16" : "pb-24",
+        bottomSpacing === "spacious" && "md:min-h-120",
       )}
     >
       <Image
@@ -41,6 +42,7 @@ export function GtpForestHero({
         alt=""
         fill
         className="object-cover object-center"
+        sizes="100vw"
         priority
       />
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />

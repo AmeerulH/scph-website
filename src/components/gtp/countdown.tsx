@@ -1,27 +1,10 @@
 "use client";
 
 import * as React from "react";
-
-// GTP 2026 opens 12 Oct 2026 00:00 MYT (UTC+8)
-const EVENT_TARGET = new Date("2026-10-12T00:00:00+08:00").getTime();
-
-interface TimeLeft {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-function calcTimeLeft(): TimeLeft {
-  const diff = EVENT_TARGET - Date.now();
-  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  return {
-    days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-    hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((diff / (1000 * 60)) % 60),
-    seconds: Math.floor((diff / 1000) % 60),
-  };
-}
+import {
+  calcGtpCountdownTimeLeft,
+  type GtpCountdownTimeLeft,
+} from "@/lib/gtp-countdown";
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -34,15 +17,20 @@ const UNITS = [
   { key: "seconds" as const, label: "Seconds" },
 ];
 
-const ZERO_TIME: TimeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
+export type GtpCountdownProps = {
+  /** From the server (or parent) so first paint matches real digits and avoids 00→N layout shift. */
+  initialTime: GtpCountdownTimeLeft;
+};
 
-export function GtpCountdown() {
-  // Stable SSR + first client paint — Date.now() differs between server and browser, so never use it in useState initialiser.
-  const [time, setTime] = React.useState<TimeLeft>(ZERO_TIME);
+export function GtpCountdown({ initialTime }: GtpCountdownProps) {
+  const [time, setTime] = React.useState<GtpCountdownTimeLeft>(initialTime);
 
   React.useEffect(() => {
-    setTime(calcTimeLeft());
-    const id = setInterval(() => setTime(calcTimeLeft()), 1000);
+    setTime(calcGtpCountdownTimeLeft(Date.now()));
+    const id = setInterval(
+      () => setTime(calcGtpCountdownTimeLeft(Date.now())),
+      1000,
+    );
     return () => clearInterval(id);
   }, []);
 
