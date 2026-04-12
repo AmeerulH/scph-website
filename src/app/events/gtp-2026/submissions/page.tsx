@@ -3,7 +3,9 @@ import {
   getGtp2026SubmissionsPage,
   mergeGtpSubmissionsCopy,
 } from "@/sanity/gtp-stage2";
-import { GtpSubmissionsPageClient } from "./submissions-page-client";
+import { GtpForestHero } from "@/components/sections/heroes";
+import { GtpSubmissionsStaticSections } from "./submissions-static";
+import { SubmissionsFormsClient } from "./submissions-forms-client";
 
 const description =
   "Submit abstracts and action workshop proposals for Global Tipping Points Conference 2026—oral, poster, and programme contributions in Kuala Lumpur.";
@@ -29,5 +31,15 @@ export const dynamic = "force-dynamic";
 export default async function GtpSubmissionsPage() {
   const cms = await getGtp2026SubmissionsPage().catch(() => null);
   const copy = mergeGtpSubmissionsCopy(cms);
-  return <GtpSubmissionsPageClient copy={copy} />;
+  return (
+    <>
+      <GtpForestHero
+        title={copy.heroTitle}
+        lede={copy.heroLede}
+        titleSize={copy.heroTitleSize}
+      />
+      <GtpSubmissionsStaticSections copy={copy} />
+      <SubmissionsFormsClient copy={copy} />
+    </>
+  );
 }
