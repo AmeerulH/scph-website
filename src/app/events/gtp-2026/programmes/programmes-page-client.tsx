@@ -348,7 +348,7 @@ export function ProgrammesPageClient({
       <div ref={anchorRef} />
 
       {/* Sticky tab strip + filter bar */}
-      <div ref={tabStripRef} className="sticky top-[72px] z-40">
+      <div ref={tabStripRef} className="sticky top-18 z-40">
         {/* Day tabs row + filter toggle button */}
         <div className="flex items-center justify-center gap-3 px-4 py-3">
           {/* Day tabs pill */}
