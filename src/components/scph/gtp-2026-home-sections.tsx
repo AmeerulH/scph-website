@@ -83,6 +83,7 @@ export function Gtp2026HomeSection({
                   width={200}
                   height={266}
                   className="h-auto w-full object-cover"
+                  sizes="(max-width: 1024px) min(100vw, 42rem), 200px"
                 />
               </div>
               <Button variant="scph" size="default" asChild>

@@ -118,7 +118,6 @@ function AboutSection() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 0px, 50vw"
-                priority
               />
             </div>
           </div>

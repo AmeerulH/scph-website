@@ -43,6 +43,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preconnect"
+          href="https://cdn.sanity.io"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={`${poppins.variable} ${inter.variable} font-sans antialiased`}
       >

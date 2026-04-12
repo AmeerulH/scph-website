@@ -44,6 +44,7 @@ export function GtpForestHero({
         className="object-cover object-center"
         sizes="100vw"
         priority
+        fetchPriority="high"
       />
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />
 

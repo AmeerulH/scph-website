@@ -93,6 +93,7 @@ export function ScphNavbar() {
             height={48}
             className="h-8 w-auto object-contain"
             priority
+            fetchPriority="high"
           />
         </Link>
 
