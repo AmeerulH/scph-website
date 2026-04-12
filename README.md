@@ -39,6 +39,7 @@ Hosted Studio: from `studio/`, use `npm run build` / `npm run deploy`. Point Stu
 | `SANITY_API_TOKEN` | Root `.env.local` | Write token for import scripts (e.g. `npm run import-gtp-programme`). |
 | `SANITY_REVALIDATE_SECRET` | Root `.env.local` | Shared secret for `POST /api/revalidate/sanity` (GROQ webhook). |
 | `SANITY_STUDIO_DATASET` | `studio/.env` | Dataset for **Studio + CLI** (`production` if unset). See `studio/.env.example`. |
+| `NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` | Root `.env.local` + Vercel | Optional. Enables [Cloudflare Web Analytics](https://developers.cloudflare.com/web-analytics/) beacon in [`src/app/layout.tsx`](src/app/layout.tsx) (public token from Cloudflare dashboard). |
 
 The Next client is configured in [`src/sanity/client.ts`](src/sanity/client.ts).
 

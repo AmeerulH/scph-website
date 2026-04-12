@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { poppins, inter } from "@/lib/fonts";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteUrlString } from "@/lib/site-url";
 import "./globals.css";
+
+const cloudflareWebAnalyticsToken =
+  process.env.NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN?.trim() ?? "";
 
 const siteUrl = getSiteUrlString();
 const defaultDescription =
@@ -45,6 +49,15 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        {cloudflareWebAnalyticsToken ? (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            strategy="afterInteractive"
+            data-cf-beacon={JSON.stringify({
+              token: cloudflareWebAnalyticsToken,
+            })}
+          />
+        ) : null}
       </body>
     </html>
   );
