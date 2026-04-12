@@ -131,6 +131,7 @@ After significant UI or image changes, run **`npm run build`** locally and spot-
 | Section block rendering | `src/components/sections/render-section-block.tsx` |
 | Studio schemas | `studio/schemaTypes/` |
 | Env & Studio setup | `README.md` |
+| Full-site Lighthouse (Unlighthouse) | `unlighthouse.config.ts`, `npm run unlighthouse:scan` — see `README.md` |
 
 ---
 

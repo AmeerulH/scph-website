@@ -39,6 +39,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Unlighthouse (full-site Lighthouse reports — regenerate locally)
+/unlighthouse
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

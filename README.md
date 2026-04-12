@@ -11,6 +11,17 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Production build: `npm run build`.
 
+### Full-site Lighthouse (Unlighthouse)
+
+Lab audits for routes in [`/sitemap.xml`](src/app/sitemap.ts) (see [`ALL_PUBLIC_INDEXABLE_PATHS`](src/lib/public-indexable-paths.ts)). Requires **Chrome/Chromium** on the machine.
+
+1. Point at **production/preview** or run **`npm run build && npm run start`** locally.
+2. Set **`UNLIGHTHOUSE_SITE`** or **`SCAN_SITE_URL`** to the origin (no path), e.g. `https://your-domain` or `http://localhost:3000`.
+3. Run **`npm run unlighthouse:scan`** (mobile) or **`npm run unlighthouse:scan:desktop`** (desktop, closer to Vercel Speed Insights desktop).
+4. Open the generated UI under **`unlighthouse/`** in the repo root (gitignored).
+
+Scores are **synthetic** (Lighthouse); [Vercel Speed Insights](https://vercel.com/docs/speed-insights) reflects **real users** and updates over days.
+
 ## Sanity Studio
 
 Schemas live in [`studio/`](studio/). Local Studio:
