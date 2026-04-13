@@ -280,7 +280,13 @@ export function ProgrammesPageClient({
   const tabIds = new Set(tabs.map((t) => t.id));
   const tabParam = searchParams.get("tab");
   const initialTab: TabId =
-    tabParam && tabIds.has(tabParam as TabId) ? (tabParam as TabId) : "pre";
+    tabParam && tabIds.has(tabParam as TabId)
+      ? (tabParam as TabId)
+      : tabIds.has("day1")
+        ? "day1"
+        : tabIds.has("pre")
+          ? "pre"
+          : ((tabs[0]?.id ?? "day1") as TabId);
   const initialSession = searchParams.get("session");
 
   const [activeTab, setActiveTab] = React.useState<TabId>(initialTab);
