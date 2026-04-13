@@ -51,6 +51,7 @@ export function ScphPageHero({
           fill
           className="object-cover object-center"
           priority
+          quality={60}
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-scph-blue/80" />

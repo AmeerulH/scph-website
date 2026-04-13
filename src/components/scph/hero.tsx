@@ -86,14 +86,12 @@ export function ScphHero({ hero, highlightedEvents }: ScphHeroProps) {
       >
         {/* Top-left — title + tagline */}
         <div className="max-w-2xl">
-          <motion.div variants={itemVariants}>
-            <h1 className="font-heading text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-              <span className="block text-white">{hero.headlinePrefix.trim()}</span>
-              <span className="mt-1 block text-scph-green md:mt-1.5">
-                {hero.headlineAccent.trim()}
-              </span>
-            </h1>
-          </motion.div>
+          <h1 className="font-heading text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            <span className="block text-white">{hero.headlinePrefix.trim()}</span>
+            <span className="mt-1 block text-scph-green md:mt-1.5">
+              {hero.headlineAccent.trim()}
+            </span>
+          </h1>
           <motion.p
             variants={itemVariants}
             className="mt-5 text-lg font-medium text-white/60 md:mt-6 md:text-xl"

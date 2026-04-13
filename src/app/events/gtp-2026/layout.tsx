@@ -45,7 +45,7 @@ export default async function GtpLayout({
         directly under the nav while the route streams in (CLS). Use GTP base colour so
         this area is not a blank white band before the hero paints.
       */}
-      <main className="min-h-[52dvh] bg-gtp-dark-teal">
+      <main className="min-h-screen bg-gtp-dark-teal">
         <AtmosphericReveal disableEntrance>
           {children}
         </AtmosphericReveal>

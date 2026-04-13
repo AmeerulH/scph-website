@@ -43,6 +43,7 @@ export function GtpForestHero({
         fill
         className="object-cover object-center"
         sizes="100vw"
+        quality={60}
         priority
         fetchPriority="high"
       />

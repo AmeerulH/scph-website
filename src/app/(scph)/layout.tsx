@@ -20,8 +20,8 @@ export default async function ScphLayout({
   return (
     <>
       <ScphNavbar />
-      <main>
-        <AtmosphericReveal>{children}</AtmosphericReveal>
+      <main className="min-h-screen">
+        <AtmosphericReveal disableEntrance>{children}</AtmosphericReveal>
       </main>
       <ScphFooter data={footerData} />
     </>

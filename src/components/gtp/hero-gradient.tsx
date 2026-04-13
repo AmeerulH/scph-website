@@ -59,19 +59,13 @@ export function GtpHeroGradient({ copy }: { copy: GtpAboutHeroCopy }) {
       >
         {/* Left: text content */}
         <div className="flex-1">
-          <motion.span
-            variants={itemVariants}
-            className="inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm lg:text-base"
-          >
+          <span className="inline-block rounded-full border border-white/30 bg-white/10 px-5 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm lg:text-base">
             {copy.badge}
-          </motion.span>
+          </span>
 
-          <motion.h1
-            variants={itemVariants}
-            className="mt-5 font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl"
-          >
+          <h1 className="mt-5 font-heading text-4xl font-bold leading-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
             {copy.title}
-          </motion.h1>
+          </h1>
 
           <motion.p
             variants={itemVariants}
