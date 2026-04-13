@@ -11,6 +11,7 @@ import {
   DEFAULT_ABSTRACT_FORM_COPY,
   DEFAULT_WORKSHOP_FORM_COPY,
 } from "./gtp-submissions-form-defaults";
+import { footerSocialIconSrc } from "@/lib/footer-social-icons";
 
 export type {
   GtpAbstractFormCopy,
@@ -19,6 +20,12 @@ export type {
   GtpWorkshopFormCopy,
 } from "./gtp-submissions-form-defaults";
 
+export type GtpGetInvolvedSocialLink = {
+  label: string;
+  href: string;
+  iconSrc: string;
+};
+
 export type GtpGetInvolvedResolvedCopy = {
   heroTitle: string;
   heroLede: string;
@@ -26,9 +33,27 @@ export type GtpGetInvolvedResolvedCopy = {
     sectionTitle: string;
     sectionSubtitle: string;
     intro: string;
+    /** Shown after the FAQ link when FAQ is enabled. */
+    introSuffix: string;
+    faqLinkLabel: string;
+    faqHref: string;
     orgName: string;
     orgAddress: string;
     conferenceDates: string;
+    addressLabel: string;
+    addressBody: string;
+    hoursLabel: string;
+    hoursBody: string;
+    phoneLabel: string;
+    phoneDisplay: string;
+    /** When set, phone display is wrapped in a tel: link. */
+    phoneTel: string;
+    emailLabel: string;
+    email: string;
+    socialHeading: string;
+    socialLinks: GtpGetInvolvedSocialLink[];
+    mapEmbedUrl: string | null;
+    mapIframeTitle: string;
   };
   partnership: {
     sectionTitle: string;
@@ -40,6 +65,31 @@ export type GtpGetInvolvedResolvedCopy = {
   };
 };
 
+const GET_INVOLVED_DEFAULT_SOCIAL_KEYS = [
+  { label: "Facebook", href: "https://www.facebook.com/SunwayCPH", key: "fb" },
+  { label: "Instagram", href: "https://www.instagram.com/sunwaycph/", key: "ig" },
+  {
+    label: "LinkedIn",
+    href: "https://my.linkedin.com/showcase/sunway-centre-for-planetary-health/",
+    key: "li",
+  },
+  {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@sunwaycph?is_from_webapp=1&sender_device=pc",
+    key: "tt",
+  },
+  { label: "X / Twitter", href: "https://x.com/SunwayCPH", key: "x" },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@sunwaycentreforplanetaryhe8898",
+    key: "yt",
+  },
+] as const;
+
+/** Google Maps → Share → Embed a map (Sunway University). */
+export const GTP_GET_INVOLVED_DEFAULT_MAP_EMBED_URL =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.102666846611!2d101.60384099999999!3d3.0672267!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4c8f5d98b46d%3A0xed55e2cca5c2d394!2sSunway%20University!5e0!3m2!1sen!2smy!4v1776067749588!5m2!1sen!2smy";
+
 export const DEFAULT_GET_INVOLVED: GtpGetInvolvedResolvedCopy = {
   heroTitle: "Get Involved",
   heroLede: "Connect with us. Partner with us. Collaborate for change.",
@@ -48,9 +98,32 @@ export const DEFAULT_GET_INVOLVED: GtpGetInvolvedResolvedCopy = {
     sectionSubtitle: "Contact Us",
     intro:
       "Have questions about the Global Tipping Points Conference 2026? Want to learn more about registration, submissions, or partnership opportunities? We'd love to hear from you.",
+    introSuffix:
+      " for topics such as registration and submissions, or use the form below or the contact details opposite.",
+    faqLinkLabel: "Read the FAQ",
+    faqHref: "/events/gtp-2026/faq",
     orgName: "Sunway Centre for Planetary Health",
-    orgAddress: "Sunway University, Kuala Lumpur, Malaysia",
+    orgAddress:
+      "Sunway Centre for Planetary Health Graduate Centre, Sunway University, Jalan Universiti, Bandar Sunway, 47500 Petaling Jaya, Selangor, Malaysia",
     conferenceDates: "Conference: 12–15 October 2026",
+    addressLabel: "Address",
+    addressBody:
+      "Sunway Centre for Planetary Health Graduate Centre, Sunway University, Jalan Universiti, Bandar Sunway, 47500 Petaling Jaya, Selangor, Malaysia",
+    hoursLabel: "Operating hours",
+    hoursBody: "Monday – Friday\n9am – 5pm (GMT+8)",
+    phoneLabel: "Call us",
+    phoneDisplay: "+60 3-7491 8622 ext. 7674",
+    phoneTel: "+60374918622",
+    emailLabel: "Email us",
+    email: "scph_gtpc2026@sunway.edu.my",
+    socialHeading: "Social",
+    socialLinks: GET_INVOLVED_DEFAULT_SOCIAL_KEYS.map(({ label, href, key }) => ({
+      label,
+      href,
+      iconSrc: footerSocialIconSrc(key),
+    })),
+    mapEmbedUrl: GTP_GET_INVOLVED_DEFAULT_MAP_EMBED_URL,
+    mapIframeTitle: "Sunway University on Google Maps",
   },
   partnership: {
     sectionTitle: "Partner with Us",

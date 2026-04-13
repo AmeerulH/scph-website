@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
-import { ContactForm } from "./contact-form";
+import { GtpGetInvolvedContactSection } from "@/components/gtp/gtp-get-involved-contact-section";
 import { GtpForestHero } from "@/components/sections/heroes";
-import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import type { GtpGetInvolvedResolvedCopy } from "@/sanity/gtp-stage2";
 import {
   getGtp2026GetInvolvedPage,
@@ -31,45 +30,6 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
-
-function ContactUsSection({
-  contact,
-}: {
-  contact: GtpGetInvolvedResolvedCopy["contact"];
-}) {
-  return (
-    <SectionWrapper
-      title={contact.sectionTitle}
-      subtitle={contact.sectionSubtitle}
-      theme="gtp"
-      background="default"
-      id="contact"
-    >
-      <TwoColumnTextImages
-        align="start"
-        text={
-          <>
-            <p className="text-base leading-relaxed text-gray-600">
-              {contact.intro}
-            </p>
-            <div className="mt-6 space-y-3">
-              <p className="text-sm font-semibold text-gtp-dark-teal">
-                {contact.orgName}
-              </p>
-              <p className="text-sm text-gray-500">{contact.orgAddress}</p>
-              <p className="text-sm text-gray-500">{contact.conferenceDates}</p>
-            </div>
-          </>
-        }
-        media={
-          <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-6 shadow-sm">
-            <ContactForm />
-          </div>
-        }
-      />
-    </SectionWrapper>
-  );
-}
 
 function PartnershipSection({
   partnership,
@@ -118,7 +78,7 @@ export default async function GtpGetInvolvedPage() {
   return (
     <>
       <GtpForestHero title={copy.heroTitle} lede={copy.heroLede} />
-      <ContactUsSection contact={copy.contact} />
+      <GtpGetInvolvedContactSection contact={copy.contact} />
       <PartnershipSection partnership={copy.partnership} />
     </>
   );

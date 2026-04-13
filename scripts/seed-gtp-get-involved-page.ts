@@ -16,26 +16,57 @@ import { createClient } from "@sanity/client";
 import * as dotenv from "dotenv";
 import * as path from "path";
 
+import { FOOTER_SOCIAL_ICON_PATHS } from "../src/lib/footer-social-icons";
 import { DEFAULT_GET_INVOLVED } from "../src/sanity/gtp-marketing-defaults";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 const DOC_ID = "gtp2026GetInvolvedPage";
 
+function iconKeyFromSrc(iconSrc: string): string {
+  for (const [key, src] of Object.entries(FOOTER_SOCIAL_ICON_PATHS)) {
+    if (src === iconSrc) return key;
+  }
+  return "fb";
+}
+
 function buildDocument() {
   const d = DEFAULT_GET_INVOLVED;
+  const c = d.contact;
   return {
     _id: DOC_ID,
     _type: "gtp2026GetInvolvedPage" as const,
     internalTitle: "Get involved",
     heroTitle: d.heroTitle,
     heroLede: d.heroLede,
-    contactSectionTitle: d.contact.sectionTitle,
-    contactSectionSubtitle: d.contact.sectionSubtitle,
-    contactIntro: d.contact.intro,
-    contactOrgName: d.contact.orgName,
-    contactOrgAddress: d.contact.orgAddress,
-    contactConferenceDates: d.contact.conferenceDates,
+    contactSectionTitle: c.sectionTitle,
+    contactSectionSubtitle: c.sectionSubtitle,
+    contactIntro: c.intro,
+    contactIntroSuffix: c.introSuffix,
+    contactFaqLinkLabel: c.faqLinkLabel,
+    contactFaqHref: c.faqHref,
+    contactOrgName: c.orgName,
+    contactOrgAddress: c.orgAddress,
+    contactConferenceDates: c.conferenceDates,
+    contactInfoAddressLabel: c.addressLabel,
+    contactInfoAddress: c.addressBody,
+    contactInfoHoursLabel: c.hoursLabel,
+    contactInfoHours: c.hoursBody,
+    contactInfoPhoneLabel: c.phoneLabel,
+    contactInfoPhone: c.phoneDisplay,
+    contactInfoPhoneTel: c.phoneTel,
+    contactInfoEmailLabel: c.emailLabel,
+    contactInfoEmail: c.email,
+    contactInfoSocialHeading: c.socialHeading,
+    contactInfoSocialLinks: c.socialLinks.map((s, i) => ({
+      _type: "footerSocialLink" as const,
+      _key: `soc-${i}`,
+      label: s.label,
+      href: s.href,
+      iconKey: iconKeyFromSrc(s.iconSrc),
+    })),
+    contactMapEmbedUrl: c.mapEmbedUrl ?? undefined,
+    contactMapTitle: c.mapIframeTitle,
     partnershipSectionTitle: d.partnership.sectionTitle,
     partnershipSectionSubtitle: d.partnership.sectionSubtitle,
     partnershipLead: d.partnership.lead,

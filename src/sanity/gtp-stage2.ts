@@ -1,8 +1,11 @@
 import { client } from "./client";
+import { footerSocialIconSrc } from "@/lib/footer-social-icons";
+import { sanitizeGoogleMapsEmbedUrl } from "@/lib/google-maps-embed";
 import {
   DEFAULT_GET_INVOLVED,
   DEFAULT_SUBMISSIONS,
   type GtpGetInvolvedResolvedCopy,
+  type GtpGetInvolvedSocialLink,
   type GtpSubmissionsPillarCopy,
   type GtpSubmissionsResolvedCopy,
   type GtpSubmissionsThemeCopy,
@@ -17,6 +20,7 @@ import type { SectionBlock } from "./section-block-types";
 
 export type {
   GtpGetInvolvedResolvedCopy,
+  GtpGetInvolvedSocialLink,
   GtpSubmissionsPillarCopy,
   GtpSubmissionsResolvedCopy,
   GtpSubmissionsThemeCopy,
@@ -30,9 +34,29 @@ type SanityGetInvolvedRaw = {
   contactSectionTitle?: string | null;
   contactSectionSubtitle?: string | null;
   contactIntro?: string | null;
+  contactIntroSuffix?: string | null;
+  contactFaqLinkLabel?: string | null;
+  contactFaqHref?: string | null;
   contactOrgName?: string | null;
   contactOrgAddress?: string | null;
   contactConferenceDates?: string | null;
+  contactInfoAddressLabel?: string | null;
+  contactInfoAddress?: string | null;
+  contactInfoHoursLabel?: string | null;
+  contactInfoHours?: string | null;
+  contactInfoPhoneLabel?: string | null;
+  contactInfoPhone?: string | null;
+  contactInfoPhoneTel?: string | null;
+  contactInfoEmailLabel?: string | null;
+  contactInfoEmail?: string | null;
+  contactInfoSocialHeading?: string | null;
+  contactInfoSocialLinks?: {
+    label?: string | null;
+    href?: string | null;
+    iconKey?: string | null;
+  }[] | null;
+  contactMapEmbedUrl?: string | null;
+  contactMapTitle?: string | null;
   partnershipSectionTitle?: string | null;
   partnershipSectionSubtitle?: string | null;
   partnershipLead?: string | null;
@@ -47,9 +71,25 @@ const getInvolvedQuery = `*[_type == "gtp2026GetInvolvedPage"][0]{
   contactSectionTitle,
   contactSectionSubtitle,
   contactIntro,
+  contactIntroSuffix,
+  contactFaqLinkLabel,
+  contactFaqHref,
   contactOrgName,
   contactOrgAddress,
   contactConferenceDates,
+  contactInfoAddressLabel,
+  contactInfoAddress,
+  contactInfoHoursLabel,
+  contactInfoHours,
+  contactInfoPhoneLabel,
+  contactInfoPhone,
+  contactInfoPhoneTel,
+  contactInfoEmailLabel,
+  contactInfoEmail,
+  contactInfoSocialHeading,
+  contactInfoSocialLinks[]{ label, href, iconKey },
+  contactMapEmbedUrl,
+  contactMapTitle,
   partnershipSectionTitle,
   partnershipSectionSubtitle,
   partnershipLead,
@@ -62,11 +102,74 @@ export async function getGtp2026GetInvolvedPage(): Promise<SanityGetInvolvedRaw 
   return client.fetch(getInvolvedQuery);
 }
 
+function nonEmpty(s: string | null | undefined): string | undefined {
+  const t = typeof s === "string" ? s.trim() : "";
+  return t ? t : undefined;
+}
+
+/** Strip legacy “For more information, contact us at …” lines from Studio copy. */
+function stripForMoreInformationContactSentence(s: string): string {
+  const without = s
+    .replace(
+      /\n\s*For more information,?\s*contact us at\s+[^\n]+/gi,
+      "",
+    )
+    .replace(
+      /\s*For more information,?\s*contact us at\s+[^\n.]+(?:\.[^\s]*)?\.?/gi,
+      "",
+    );
+  return without.replace(/\s{2,}/g, " ").trim();
+}
+
+function normalizeGetInvolvedSocialLinks(
+  raw: SanityGetInvolvedRaw["contactInfoSocialLinks"],
+  fallback: GtpGetInvolvedSocialLink[],
+): GtpGetInvolvedSocialLink[] {
+  if (!Array.isArray(raw)) return [...fallback];
+  const out: GtpGetInvolvedSocialLink[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const label = nonEmpty(item.label);
+    const href = nonEmpty(item.href);
+    const iconKey = nonEmpty(item.iconKey);
+    if (!label || !href || !iconKey) continue;
+    out.push({
+      label,
+      href,
+      iconSrc: footerSocialIconSrc(iconKey),
+    });
+  }
+  return out.length > 0 ? out : [...fallback];
+}
+
 export function mergeGtpGetInvolvedCopy(
   cms: SanityGetInvolvedRaw | null,
 ): GtpGetInvolvedResolvedCopy {
   const d = DEFAULT_GET_INVOLVED;
   if (!cms) return d;
+
+  const faqLabel = nonEmpty(cms.contactFaqLinkLabel);
+  const faqHref = nonEmpty(cms.contactFaqHref);
+  const faqEnabled = Boolean(faqLabel && faqHref);
+
+  const introSuffixFromCms = nonEmpty(cms.contactIntroSuffix);
+  const introSuffixRaw =
+    introSuffixFromCms ??
+    (faqEnabled ? d.contact.introSuffix : "");
+  const introSuffix = stripForMoreInformationContactSentence(introSuffixRaw);
+
+  const addressBody =
+    nonEmpty(cms.contactInfoAddress) ??
+    nonEmpty(cms.contactOrgAddress) ??
+    d.contact.addressBody;
+
+  const phoneTelExplicit =
+    cms.contactInfoPhoneTel !== undefined && cms.contactInfoPhoneTel !== null
+      ? String(cms.contactInfoPhoneTel).trim()
+      : undefined;
+  const phoneTel =
+    phoneTelExplicit !== undefined ? phoneTelExplicit : d.contact.phoneTel;
+
   return {
     heroTitle: cms.heroTitle?.trim() || d.heroTitle,
     heroLede: cms.heroLede?.trim() || d.heroLede,
@@ -75,11 +178,37 @@ export function mergeGtpGetInvolvedCopy(
         cms.contactSectionTitle?.trim() || d.contact.sectionTitle,
       sectionSubtitle:
         cms.contactSectionSubtitle?.trim() || d.contact.sectionSubtitle,
-      intro: cms.contactIntro?.trim() || d.contact.intro,
+      intro: stripForMoreInformationContactSentence(
+        cms.contactIntro?.trim() || d.contact.intro,
+      ),
+      introSuffix,
+      faqLinkLabel: faqEnabled ? faqLabel! : "",
+      faqHref: faqEnabled ? faqHref! : "",
       orgName: cms.contactOrgName?.trim() || d.contact.orgName,
       orgAddress: cms.contactOrgAddress?.trim() || d.contact.orgAddress,
       conferenceDates:
         cms.contactConferenceDates?.trim() || d.contact.conferenceDates,
+      addressLabel:
+        nonEmpty(cms.contactInfoAddressLabel) ?? d.contact.addressLabel,
+      addressBody,
+      hoursLabel: nonEmpty(cms.contactInfoHoursLabel) ?? d.contact.hoursLabel,
+      hoursBody: nonEmpty(cms.contactInfoHours) ?? d.contact.hoursBody,
+      phoneLabel: nonEmpty(cms.contactInfoPhoneLabel) ?? d.contact.phoneLabel,
+      phoneDisplay: nonEmpty(cms.contactInfoPhone) ?? d.contact.phoneDisplay,
+      phoneTel,
+      emailLabel: nonEmpty(cms.contactInfoEmailLabel) ?? d.contact.emailLabel,
+      email: nonEmpty(cms.contactInfoEmail) ?? d.contact.email,
+      socialHeading:
+        nonEmpty(cms.contactInfoSocialHeading) ?? d.contact.socialHeading,
+      socialLinks: normalizeGetInvolvedSocialLinks(
+        cms.contactInfoSocialLinks,
+        d.contact.socialLinks,
+      ),
+      mapEmbedUrl:
+        sanitizeGoogleMapsEmbedUrl(cms.contactMapEmbedUrl ?? null) ??
+        d.contact.mapEmbedUrl,
+      mapIframeTitle:
+        nonEmpty(cms.contactMapTitle) ?? d.contact.mapIframeTitle,
     },
     partnership: {
       sectionTitle:

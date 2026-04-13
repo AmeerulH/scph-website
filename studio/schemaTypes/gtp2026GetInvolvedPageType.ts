@@ -57,6 +57,98 @@ export const gtp2026GetInvolvedPageType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'contactIntroSuffix',
+      title: 'Contact — text after FAQ link',
+      description:
+        'Shown after the FAQ link when FAQ label and URL are set. Example: “Feel free to contact us using the form.”',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({
+      name: 'contactFaqLinkLabel',
+      title: 'Contact — FAQ link label',
+      description: 'Leave empty to hide the FAQ link. Use with FAQ URL.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactFaqHref',
+      title: 'Contact — FAQ URL or path',
+      description: 'Internal path (e.g. /events/gtp-2026/faq) or full URL.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoAddressLabel',
+      title: 'Contact info — address label',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoAddress',
+      title: 'Contact info — address',
+      type: 'text',
+      rows: 4,
+    }),
+    defineField({
+      name: 'contactInfoHoursLabel',
+      title: 'Contact info — operating hours label',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoHours',
+      title: 'Contact info — operating hours',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'contactInfoPhoneLabel',
+      title: 'Contact info — phone label',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoPhone',
+      title: 'Contact info — phone (display)',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoPhoneTel',
+      title: 'Contact info — phone tel: value',
+      description:
+        'Optional. E.164 or digits for the tel: link (e.g. +60374918622). Leave empty to show phone as plain text.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoEmailLabel',
+      title: 'Contact info — email label',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoEmail',
+      title: 'Contact info — email address',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoSocialHeading',
+      title: 'Contact info — social heading',
+      type: 'string',
+    }),
+    defineField({
+      name: 'contactInfoSocialLinks',
+      title: 'Contact info — social links',
+      type: 'array',
+      of: [{type: 'footerSocialLink'}],
+    }),
+    defineField({
+      name: 'contactMapEmbedUrl',
+      title: 'Google Map — embed URL',
+      description:
+        'In Google Maps: Share → Embed a map → copy only the iframe src URL (https://www.google.com/maps/embed?...).',
+      type: 'url',
+    }),
+    defineField({
+      name: 'contactMapTitle',
+      title: 'Google Map — iframe title (accessibility)',
+      type: 'string',
+    }),
+    defineField({
       name: 'partnershipSectionTitle',
       title: 'Partnership section — title',
       type: 'string',
