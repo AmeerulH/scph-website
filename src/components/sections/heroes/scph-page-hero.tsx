@@ -51,6 +51,7 @@ export function ScphPageHero({
           fill
           className="object-cover object-center"
           priority
+          fetchPriority="high"
           quality={60}
           sizes="100vw"
         />

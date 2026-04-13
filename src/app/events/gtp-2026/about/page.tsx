@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch programme from Sanity on every request (no ISR cache). */
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 const gtpSite = getSiteUrlString();
 const eventJsonLd = {
@@ -101,7 +101,7 @@ const eventJsonLd = {
       addressCountry: "MY",
     },
   },
-  image: [`${gtpSite}/images/gtp/forest-bg.jpg`],
+  image: [`${gtpSite}/images/gtp/forest-bg.webp`],
   organizer: {
     "@type": "Organization",
     name: "Sunway Centre for Planetary Health",

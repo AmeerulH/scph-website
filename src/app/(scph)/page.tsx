@@ -327,7 +327,7 @@ const organizationJsonLd = {
 };
 
 /** Refetch home CMS slices on each request so production edits show without redeploying. */
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [homeDoc, highlightRows] = await Promise.all([

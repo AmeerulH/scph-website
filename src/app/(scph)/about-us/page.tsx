@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch team (and page) from Sanity on every request — avoids stale Meet the Team data. */
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 // ─── Our Foundation ───────────────────────────────────────────────────────────
 
