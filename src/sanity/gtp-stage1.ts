@@ -101,9 +101,9 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     body,
     ctaLabel,
     ctaHref,
-    tallImageSrc,
-    topRightImageSrc,
-    bottomRightImageSrc,
+    "tallImageSrc": tallImage.asset->url,
+    "topRightImageSrc": topRightImage.asset->url,
+    "bottomRightImageSrc": bottomRightImage.asset->url,
     tallImageAlt,
     topRightImageAlt,
     bottomRightImageAlt
@@ -124,7 +124,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
       name,
       designation,
       quote,
-      photoSrc,
+      "photoSrc": photo.asset->url,
       avatarObjectClass,
       avatarScaleClass
     }
@@ -136,7 +136,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     footerText,
     footerLinkLabel,
     footerLinkHref,
-    slides[] { src, alt }
+    slides[] { "src": image.asset->url, alt }
   },
   eventInquiryBand { enabled, title, subtitle, intro },
   sponsorsBand {
