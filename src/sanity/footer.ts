@@ -123,6 +123,16 @@ function nonEmpty(s: string | null | undefined): string | undefined {
   return t ? t : undefined;
 }
 
+/** Former default; remap so published footers pick up the SCPH marketing site without a Studio edit. */
+const LEGACY_GTP_HOSTED_BY_URL =
+  "https://sunwayuniversity.edu.my/research/planetaryhealth";
+
+const GTP_FOOTER_SCPH_SITE_URL = "https://www.sunwayplanetaryhealth.com.my";
+
+function isSunwayPlanetaryHealthDisplayText(text: string): boolean {
+  return text.trim().toLowerCase() === "www.sunwayplanetaryhealth.com.my";
+}
+
 function parseNavLink(raw: FooterNavLinkCms): FooterNavLinkResolved | null {
   if (!raw || typeof raw !== "object") return null;
   const label = nonEmpty(raw.label);
@@ -237,7 +247,15 @@ function normalizeGtpContactRows(
     if (rt === "email") {
       out.push({ rowType: "email", text });
     } else if (rt === "sitePlain") {
-      out.push({ rowType: "sitePlain", text });
+      if (isSunwayPlanetaryHealthDisplayText(text)) {
+        out.push({
+          rowType: "externalLink",
+          text,
+          url: GTP_FOOTER_SCPH_SITE_URL,
+        });
+      } else {
+        out.push({ rowType: "sitePlain", text });
+      }
     } else if (rt === "externalLink") {
       const url = nonEmpty(row.url);
       if (url) out.push({ rowType: "externalLink", text, url });
@@ -297,7 +315,10 @@ export function mergeGtpFooter(cms: Gtp2026FooterCms): GtpFooterResolved {
     copyrightLine: nonEmpty(cms?.copyrightLine) ?? d.copyrightLine,
     hostedByPrefix: nonEmpty(cms?.hostedByPrefix) ?? d.hostedByPrefix,
     hostedByLabel: nonEmpty(cms?.hostedByLabel) ?? d.hostedByLabel,
-    hostedByUrl: nonEmpty(cms?.hostedByUrl) ?? d.hostedByUrl,
+    hostedByUrl: (() => {
+      const u = nonEmpty(cms?.hostedByUrl) ?? d.hostedByUrl;
+      return u === LEGACY_GTP_HOSTED_BY_URL ? GTP_FOOTER_SCPH_SITE_URL : u;
+    })(),
   };
 }
 

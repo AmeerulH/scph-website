@@ -12,6 +12,16 @@ function isProbablyExternalHref(href: string): boolean {
   return /^https?:\/\//i.test(href);
 }
 
+/** SCPH marketing site — treat as in-experience, not a third-party “external” row. */
+function isSunwayPlanetaryHealthSiteUrl(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.replace(/^www\./i, "").toLowerCase();
+    return host === "sunwayplanetaryhealth.com.my";
+  } catch {
+    return false;
+  }
+}
+
 function GtpFooterNavLink({ link }: { link: FooterNavLinkResolved }) {
   const external =
     link.openInNewTab || isProbablyExternalHref(link.href);
@@ -92,6 +102,17 @@ function GtpFooterContactRowView({ row }: { row: GtpFooterContactRowResolved }) 
       </li>
     );
   }
+  if (isSunwayPlanetaryHealthSiteUrl(row.url)) {
+    return (
+      <li className="flex items-start gap-2 text-sm text-white/70">
+        <Globe className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
+        <a href={row.url} className="break-all transition-colors hover:text-white">
+          {row.text}
+        </a>
+      </li>
+    );
+  }
+
   return (
     <li className="flex items-start gap-2 text-sm text-white/70">
       <Globe className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
@@ -186,15 +207,24 @@ export function GtpFooter({ data }: { data: GtpFooterResolved }) {
             <p>{data.copyrightLine}</p>
             <p>
               {data.hostedByPrefix}{" "}
-              <a
-                href={data.hostedByUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 transition-colors hover:text-white/70"
-              >
-                {data.hostedByLabel}
-                <ExternalLink className="h-3 w-3" />
-              </a>
+              {isSunwayPlanetaryHealthSiteUrl(data.hostedByUrl) ? (
+                <a
+                  href={data.hostedByUrl}
+                  className="transition-colors hover:text-white/70"
+                >
+                  {data.hostedByLabel}
+                </a>
+              ) : (
+                <a
+                  href={data.hostedByUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 transition-colors hover:text-white/70"
+                >
+                  {data.hostedByLabel}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
             </p>
           </div>
         </div>

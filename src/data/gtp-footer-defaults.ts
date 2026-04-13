@@ -33,7 +33,11 @@ export const gtpFooterDefaultQuickLinks: FooterNavLinkResolved[] = [
 
 export const gtpFooterDefaultContactRows: GtpFooterContactRowResolved[] = [
   { rowType: "email", text: "scph_gtpc2026@sunway.edu.my" },
-  { rowType: "sitePlain", text: "www.sunwayplanetaryhealth.com.my" },
+  {
+    rowType: "externalLink",
+    text: "www.sunwayplanetaryhealth.com.my",
+    url: "https://www.sunwayplanetaryhealth.com.my",
+  },
   {
     rowType: "externalLink",
     text: "www.globaltippingpoints.org",
@@ -82,5 +86,5 @@ export const gtpFooterDefaults: GtpFooterResolved = {
   copyrightLine: "© 2026 Global Tipping Points Conference. All rights reserved.",
   hostedByPrefix: "Hosted by",
   hostedByLabel: "Sunway Centre for Planetary Health",
-  hostedByUrl: "https://sunwayuniversity.edu.my/research/planetaryhealth",
+  hostedByUrl: "https://www.sunwayplanetaryhealth.com.my",
 };
