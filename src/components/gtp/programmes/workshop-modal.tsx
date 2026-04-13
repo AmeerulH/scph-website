@@ -4,11 +4,16 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Clock, MapPin, UserCircle2 } from "lucide-react";
+import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Session, Workshop } from "./types";
 import { TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
+import {
+  ProgrammeModalHostedByBlock,
+  ProgrammeModalShareRegisterColumn,
+} from "./programme-modal-chrome";
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -18,10 +23,13 @@ export type WorkshopModalContext = {
 export function WorkshopModal({
   context,
   dayLabel,
+  hostedBy,
   onClose,
 }: {
   context: WorkshopModalContext | null;
   dayLabel?: string;
+  /** Same programme-level “Hosted by” block as the main session modal. */
+  hostedBy: GtpSessionModalHostedBy;
   onClose: () => void;
 }) {
   const open = context != null;
@@ -59,7 +67,7 @@ export function WorkshopModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 24 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-xl"
+            className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-w-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -119,13 +127,19 @@ export function WorkshopModal({
 
                 <SessionObjectiveBlock text={w.objective} className="mt-4" />
 
-                <div className="mt-5 border-t border-gray-100 pt-4">
-                  <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
-                  <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
-                    <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
+                <div className="mt-6 border-t border-gray-100 pt-5 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
+                  <ProgrammeModalShareRegisterColumn shareTitle={w.title} />
+                  <div className="flex flex-col gap-6">
+                    <ProgrammeModalHostedByBlock hostedBy={hostedBy} />
                     <div>
-                      <p className="text-sm font-medium text-gray-600">To be confirmed</p>
-                      <p className="text-xs text-gray-400">Speaker details coming soon</p>
+                      <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
+                      <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
+                        <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">To be confirmed</p>
+                          <p className="text-xs text-gray-400">Speaker details coming soon</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

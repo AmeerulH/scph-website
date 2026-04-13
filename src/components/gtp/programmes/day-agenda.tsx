@@ -89,6 +89,7 @@ export function DayAgenda({
       <WorkshopModal
         context={workshopContext}
         dayLabel={dayLabel}
+        hostedBy={sessionModalHostedBy}
         onClose={() => setWorkshopContext(null)}
       />
     </>
