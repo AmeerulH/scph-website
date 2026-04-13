@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-const FOREST_BG = "/images/gtp/forest-bg.jpg";
+const FOREST_BG = "/images/gtp/forest-bg.webp";
 
 const titleSizeClasses = {
   default: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl",
