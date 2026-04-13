@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import type { Session, Workshop } from "./types";
 import { BreakStrip } from "./break-strip";
 import { ConcurrentBlock } from "./concurrent-block";
@@ -12,10 +13,12 @@ export function DayAgenda({
   sessions,
   highlightSession,
   dayLabel,
+  sessionModalHostedBy,
 }: {
   sessions: Session[];
   highlightSession?: string;
   dayLabel?: string;
+  sessionModalHostedBy: GtpSessionModalHostedBy;
 }) {
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
   const [workshopContext, setWorkshopContext] = React.useState<WorkshopModalContext | null>(null);
@@ -74,6 +77,7 @@ export function DayAgenda({
       <SessionModal
         session={selectedSession}
         dayLabel={dayLabel}
+        hostedBy={sessionModalHostedBy}
         onClose={() => setSelectedSession(null)}
         onWorkshopClick={
           selectedSession?.workshops?.length

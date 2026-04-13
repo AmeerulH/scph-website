@@ -15,6 +15,7 @@ export type {
   GtpFeaturedCarouselSession,
   GtpProgrammePageData,
   GtpProgrammeTab,
+  GtpSessionModalHostedBy,
 } from "./gtp-programme";
 export { buildGtpCarouselSessions, getGtp2026Programme } from "./gtp-programme";
 

@@ -82,6 +82,7 @@ export default async function ProgrammesPage() {
       <Suspense fallback={<ProgrammeClientFallback />}>
         <ProgrammesPageClient
           tabs={programme.tabs}
+          sessionModalHostedBy={programme.sessionModalHostedBy}
           day1={programme.day1}
           day2={programme.day2}
           day3={programme.day3}

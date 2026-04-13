@@ -129,6 +129,9 @@ function buildDocument() {
     _id: 'gtp2026Programme',
     _type: 'gtp2026Programme' as const,
     internalTitle: 'GTP 2026 programme',
+    sessionModalHostedSectionTitle: 'Hosted By',
+    sessionModalHostedName: 'Sunway Centre for Planetary Health',
+    sessionModalHostedSubtitle: 'Sunway University, Kuala Lumpur',
     days: buildDays(appendTest),
   }
 }

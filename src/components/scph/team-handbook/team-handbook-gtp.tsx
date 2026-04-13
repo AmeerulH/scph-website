@@ -45,7 +45,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026Programme",
     title: "Programme",
     notes:
-      "Singleton `gtp2026Programme` (fixed id): days, sessions (venue type, venue line, format label, optional Objective), workshops (optional Objective on each row), speakers. Objective copy appears on the full programme page (session cards, concurrent tracks, workshop sub-cards, session detail modal) when filled—not on the small About hero carousel. Drives programme page and parts of About.",
+      "Singleton `gtp2026Programme` (fixed id): days, sessions (venue type, venue line, format label, optional Objective), workshops (optional Objective on each row), speakers. **Session modal:** “Hosted by” heading, optional host logo (alt required with image), host name, and subtitle. Objective copy appears on the full programme page (session cards, concurrent tracks, workshop sub-cards, session detail modal) when filled—not on the small About hero carousel. Drives programme page and parts of About.",
   },
   {
     route: "/events/gtp-2026/get-involved",

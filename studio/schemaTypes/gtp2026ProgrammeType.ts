@@ -16,6 +16,48 @@ export const gtp2026ProgrammeType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'sessionModalHostedSectionTitle',
+      title: 'Session modal — “Hosted by” heading',
+      description: 'Shown above the host block when a visitor opens a session from the programme.',
+      type: 'string',
+      initialValue: 'Hosted By',
+    }),
+    defineField({
+      name: 'sessionModalHostedLogo',
+      title: 'Session modal — host logo',
+      description: 'Square or compact logo. If empty, the site shows a text placeholder.',
+      type: 'image',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alt text',
+          description: 'Describe the logo for screen readers.',
+          validation: (rule) =>
+            rule.custom((alt, context) => {
+              const parent = context.parent as {asset?: {_ref?: string}} | undefined
+              if (parent?.asset?._ref && !(typeof alt === 'string' && alt.trim())) {
+                return 'Alt text is required when an image is set'
+              }
+              return true
+            }),
+        }),
+      ],
+    }),
+    defineField({
+      name: 'sessionModalHostedName',
+      title: 'Session modal — host name',
+      type: 'string',
+      initialValue: 'Sunway Centre for Planetary Health',
+    }),
+    defineField({
+      name: 'sessionModalHostedSubtitle',
+      title: 'Session modal — host subtitle / location',
+      type: 'string',
+      initialValue: 'Sunway University, Kuala Lumpur',
+    }),
+    defineField({
       name: 'days',
       title: 'Days / tabs',
       type: 'array',

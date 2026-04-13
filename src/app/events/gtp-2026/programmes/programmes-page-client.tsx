@@ -7,7 +7,10 @@ import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { TabId, TYPE_META } from "@/components/gtp/programmes/data";
-import type { GtpProgrammeTab } from "@/sanity/queries";
+import type {
+  GtpProgrammeTab,
+  GtpSessionModalHostedBy,
+} from "@/sanity/queries";
 import { PreConferencePlaceholder } from "@/components/gtp/programmes/pre-conference-placeholder";
 import { DayAgenda } from "@/components/gtp/programmes/day-agenda";
 import type { Session, SessionType } from "@/components/gtp/programmes/types";
@@ -264,12 +267,14 @@ function filterSessions(
 
 export function ProgrammesPageClient({
   tabs,
+  sessionModalHostedBy,
   day1,
   day2,
   day3,
   day4,
 }: {
   tabs: GtpProgrammeTab[];
+  sessionModalHostedBy: GtpSessionModalHostedBy;
   day1: Session[];
   day2: Session[];
   day3: Session[];
@@ -446,6 +451,7 @@ export function ProgrammesPageClient({
                   sessions={currentSessions}
                   highlightSession={highlightSession ?? undefined}
                   dayLabel={currentDayLabel}
+                  sessionModalHostedBy={sessionModalHostedBy}
                 />
               )}
 

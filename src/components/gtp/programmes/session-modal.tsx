@@ -14,7 +14,9 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
+import Image from "next/image";
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
+import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Session, Speaker, Workshop } from "./types";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
@@ -37,6 +39,8 @@ function WhatsAppIcon({ className }: { className?: string }) {
 interface SessionModalProps {
   session: Session | null;
   dayLabel?: string;
+  /** From `gtp2026Programme` in Sanity (session modal “Hosted by” block). */
+  hostedBy: GtpSessionModalHostedBy;
   onClose: () => void;
   /** When set, parallel slots in the modal open a dedicated workshop modal (desktop grid below). */
   onWorkshopClick?: (workshop: Workshop) => void;
@@ -58,7 +62,27 @@ function sessionExpectsSpeakerList(type: Session["type"]) {
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
 
-export function SessionModal({ session, dayLabel, onClose, onWorkshopClick }: SessionModalProps) {
+function hostedLogoDisplayDimensions(hostedBy: GtpSessionModalHostedBy): {
+  width: number;
+  height: number;
+} {
+  const max = 96;
+  const w = hostedBy.logoWidth && hostedBy.logoWidth > 0 ? hostedBy.logoWidth : 48;
+  const h = hostedBy.logoHeight && hostedBy.logoHeight > 0 ? hostedBy.logoHeight : 48;
+  const scale = Math.min(1, max / Math.max(w, h));
+  return {
+    width: Math.max(1, Math.round(w * scale)),
+    height: Math.max(1, Math.round(h * scale)),
+  };
+}
+
+export function SessionModal({
+  session,
+  dayLabel,
+  hostedBy,
+  onClose,
+  onWorkshopClick,
+}: SessionModalProps) {
   const [copied, setCopied] = React.useState(false);
 
   // Lock body scroll when open
@@ -317,16 +341,32 @@ export function SessionModal({ session, dayLabel, onClose, onWorkshopClick }: Se
                     {/* ── Right column: Hosted By + Speakers / Workshops ── */}
                     <div className="flex flex-col gap-6">
 
-                      {/* Hosted By */}
+                      {/* Hosted By (copy + logo from gtp2026Programme) */}
                       <div>
-                        <p className="mb-3 text-sm font-semibold text-gray-700">Hosted By</p>
+                        <p className="mb-3 text-sm font-semibold text-gray-700">
+                          {hostedBy.sectionTitle}
+                        </p>
                         <div className="flex items-center gap-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-gray-100 bg-gray-50">
-                            <span className="text-xs font-bold text-gtp-dark-teal">SCPH</span>
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                            {hostedBy.logoUrl ? (
+                              <Image
+                                src={hostedBy.logoUrl}
+                                alt={hostedBy.logoAlt}
+                                {...hostedLogoDisplayDimensions(hostedBy)}
+                                className="max-h-12 max-w-12 object-contain"
+                                unoptimized={hostedBy.logoUrl.toLowerCase().includes(".svg")}
+                              />
+                            ) : (
+                              <span className="text-xs font-bold text-gtp-dark-teal">
+                                SCPH
+                              </span>
+                            )}
                           </div>
-                          <div className="text-xs text-gray-500 leading-relaxed">
-                            <p className="font-semibold text-gray-700">Sunway Centre for Planetary Health</p>
-                            <p>Sunway University, Kuala Lumpur</p>
+                          <div className="text-xs leading-relaxed text-gray-500">
+                            <p className="font-semibold text-gray-700">
+                              {hostedBy.name}
+                            </p>
+                            <p>{hostedBy.subtitle}</p>
                           </div>
                         </div>
                       </div>

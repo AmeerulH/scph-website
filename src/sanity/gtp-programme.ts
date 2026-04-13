@@ -53,9 +53,29 @@ export type GtpCarouselMeta = Record<
   { dateLabel: string; dayNumber: string }
 >;
 
+/** “Hosted by” block in the programme session detail modal (from `gtp2026Programme`). */
+export type GtpSessionModalHostedBy = {
+  sectionTitle: string;
+  logoUrl: string | null;
+  logoAlt: string;
+  logoWidth?: number;
+  logoHeight?: number;
+  name: string;
+  subtitle: string;
+};
+
+export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
+  sectionTitle: "Hosted By",
+  logoUrl: null,
+  logoAlt: "",
+  name: "Sunway Centre for Planetary Health",
+  subtitle: "Sunway University, Kuala Lumpur",
+};
+
 export type GtpProgrammePageData = {
   tabs: GtpProgrammeTab[];
   carouselMeta: GtpCarouselMeta;
+  sessionModalHostedBy: GtpSessionModalHostedBy;
   day1: Session[];
   day2: Session[];
   day3: Session[];
@@ -119,13 +139,37 @@ interface SanityProgrammeDayRow {
   sessions?: SanitySessionRow[];
 }
 
+interface SanitySessionModalHostedLogo {
+  alt?: string | null;
+  asset?: {
+    url?: string | null;
+    metadata?: {
+      dimensions?: { width?: number | null; height?: number | null } | null;
+    } | null;
+  } | null;
+}
+
 interface SanityGtpProgrammeDoc {
   _id?: string;
+  sessionModalHostedSectionTitle?: string | null;
+  sessionModalHostedName?: string | null;
+  sessionModalHostedSubtitle?: string | null;
+  sessionModalHostedLogo?: SanitySessionModalHostedLogo | null;
   days?: SanityProgrammeDayRow[];
 }
 
 const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Programme"][0]{
   _id,
+  sessionModalHostedSectionTitle,
+  sessionModalHostedName,
+  sessionModalHostedSubtitle,
+  sessionModalHostedLogo {
+    alt,
+    asset->{
+      url,
+      metadata { dimensions { width, height } }
+    }
+  },
   days[]{
     tabId,
     label,
@@ -160,10 +204,56 @@ function getStaticGtpProgramme(): GtpProgrammePageData {
   return {
     tabs: staticTabs.map((t) => ({ id: t.id, label: t.label })),
     carouselMeta: {...CAROUSEL_FALLBACK},
+    sessionModalHostedBy: { ...DEFAULT_SESSION_MODAL_HOSTED_BY },
     day1: staticDay1,
     day2: staticDay2,
     day3: staticDay3,
     day4: staticDay4,
+  };
+}
+
+function mapSessionModalHostedBy(
+  doc: SanityGtpProgrammeDoc | null,
+): GtpSessionModalHostedBy {
+  const d = DEFAULT_SESSION_MODAL_HOSTED_BY;
+  if (!doc) return d;
+
+  const sectionTitle =
+    typeof doc.sessionModalHostedSectionTitle === "string" &&
+    doc.sessionModalHostedSectionTitle.trim()
+      ? doc.sessionModalHostedSectionTitle.trim()
+      : d.sectionTitle;
+
+  const name =
+    typeof doc.sessionModalHostedName === "string" &&
+    doc.sessionModalHostedName.trim()
+      ? doc.sessionModalHostedName.trim()
+      : d.name;
+
+  const subtitle =
+    typeof doc.sessionModalHostedSubtitle === "string" &&
+    doc.sessionModalHostedSubtitle.trim()
+      ? doc.sessionModalHostedSubtitle.trim()
+      : d.subtitle;
+
+  const logo = doc.sessionModalHostedLogo;
+  const url =
+    typeof logo?.asset?.url === "string" && logo.asset.url.trim()
+      ? logo.asset.url.trim()
+      : null;
+  const altRaw =
+    typeof logo?.alt === "string" && logo.alt.trim() ? logo.alt.trim() : "";
+  const w = logo?.asset?.metadata?.dimensions?.width;
+  const h = logo?.asset?.metadata?.dimensions?.height;
+
+  return {
+    sectionTitle,
+    name,
+    subtitle,
+    logoUrl: url,
+    logoAlt: altRaw || (name ? `${name} logo` : "Host organisation logo"),
+    logoWidth: typeof w === "number" && w > 0 ? w : undefined,
+    logoHeight: typeof h === "number" && h > 0 ? h : undefined,
   };
 }
 
@@ -344,6 +434,7 @@ function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpPro
   const data: GtpProgrammePageData = {
     tabs: buildTabsFromSanityDays(doc.days),
     carouselMeta: buildCarouselMetaFromSanityDays(byTab),
+    sessionModalHostedBy: mapSessionModalHostedBy(doc),
     day1,
     day2,
     day3,

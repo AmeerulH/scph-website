@@ -59,7 +59,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 
 | npm script | Script file | Typical Sanity types / notes |
 |------------|-------------|------------------------------|
-| `import-gtp-programme` | `scripts/import-gtp-programme-to-sanity.ts` | `gtp2026Programme` (programme data) |
+| `import-gtp-programme` | `scripts/import-gtp-programme-to-sanity.ts` | `gtp2026Programme` (days/sessions; also seeds session modal “Hosted by” text—logo in Studio) |
 | `seed-gtp-get-involved-page` | `scripts/seed-gtp-get-involved-page.ts` | `gtp2026GetInvolvedPage` singleton (Get in Touch: FAQ link, address/hours/phone/email, socials, Google Maps embed URL) |
 | `seed-gtp-submissions-page` | `scripts/seed-gtp-submissions-page.ts` | `gtp2026SubmissionsPage` (+ nested form copy) |
 | `seed-gtp-highlight-speakers` | `scripts/seed-gtp-highlight-speakers.ts` | `gtp2026HighlightSpeaker` (multiple docs) |
