@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import type { Session, Workshop } from "./types";
 import { BreakStrip } from "./break-strip";
 import { ConcurrentBlock } from "./concurrent-block";
@@ -13,11 +14,14 @@ export function DayAgenda({
   sessions,
   highlightSession,
   dayLabel,
+  calendarTabId,
   sessionModalHostedBy,
 }: {
   sessions: Session[];
   highlightSession?: string;
   dayLabel?: string;
+  /** Active programme day tab — maps session times to calendar dates. */
+  calendarTabId: GtpProgrammeCalendarDayTab;
   sessionModalHostedBy: GtpSessionModalHostedBy;
 }) {
   const [selectedSession, setSelectedSession] = React.useState<Session | null>(null);
@@ -51,13 +55,20 @@ export function DayAgenda({
       <div className="space-y-4">
         {sessions.map((session, i) => {
           if (session.type === "break") {
-            return <BreakStrip key={i} session={session} />;
+            return (
+              <BreakStrip
+                key={i}
+                session={session}
+                calendarTabId={calendarTabId}
+              />
+            );
           }
           if (session.type === "concurrent" || session.type === "research") {
             return (
               <ConcurrentBlock
                 key={i}
                 session={session}
+                calendarTabId={calendarTabId}
                 onClick={() => setSelectedSession(session)}
                 onWorkshopClick={(w) => openWorkshop(w, session)}
               />
@@ -67,6 +78,7 @@ export function DayAgenda({
             <SessionCard
               key={i}
               session={session}
+              calendarTabId={calendarTabId}
               highlightSession={highlightSession}
               onClick={() => setSelectedSession(session)}
             />
@@ -77,6 +89,7 @@ export function DayAgenda({
       <SessionModal
         session={selectedSession}
         dayLabel={dayLabel}
+        calendarTabId={calendarTabId}
         hostedBy={sessionModalHostedBy}
         onClose={() => setSelectedSession(null)}
         onWorkshopClick={
@@ -89,6 +102,7 @@ export function DayAgenda({
       <WorkshopModal
         context={workshopContext}
         dayLabel={dayLabel}
+        calendarTabId={calendarTabId}
         hostedBy={sessionModalHostedBy}
         onClose={() => setWorkshopContext(null)}
       />

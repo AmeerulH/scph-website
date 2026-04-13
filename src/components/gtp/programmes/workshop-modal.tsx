@@ -14,6 +14,9 @@ import {
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
+import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
+import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -23,11 +26,13 @@ export type WorkshopModalContext = {
 export function WorkshopModal({
   context,
   dayLabel,
+  calendarTabId,
   hostedBy,
   onClose,
 }: {
   context: WorkshopModalContext | null;
   dayLabel?: string;
+  calendarTabId: GtpProgrammeCalendarDayTab;
   /** Same programme-level “Hosted by” block as the main session modal. */
   hostedBy: GtpSessionModalHostedBy;
   onClose: () => void;
@@ -47,6 +52,22 @@ export function WorkshopModal({
 
   const w = context?.workshop;
   const parent = context?.parent;
+
+  const workshopGoogleCalHref =
+    w && parent
+      ? buildProgrammeGoogleCalendarUrl({
+          tabId: calendarTabId,
+          session: parent,
+          title: w.title,
+          detailsPrefixLines: [
+            `Part of: ${parent.title}`,
+            ...(typeof w.objective === "string" && w.objective.trim()
+              ? [w.objective.trim()]
+              : []),
+          ],
+          includeSessionObjective: false,
+        })
+      : null;
 
   const modal =
     open && w && parent ? (
@@ -123,6 +144,15 @@ export function WorkshopModal({
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
                     <span className="italic wrap-anywhere">{getSessionVenueLine(parent)}</span>
                   </div>
+                  {workshopGoogleCalHref ? (
+                    <div className="pt-1">
+                      <AddToGoogleCalendarLink
+                        href={workshopGoogleCalHref}
+                        stopPropagation={false}
+                        className="text-sm"
+                      />
+                    </div>
+                  ) : null}
                 </div>
 
                 <SessionObjectiveBlock text={w.objective} className="mt-4" />

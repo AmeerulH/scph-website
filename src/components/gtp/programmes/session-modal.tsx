@@ -15,12 +15,16 @@ import {
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
+import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
+import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface SessionModalProps {
   session: Session | null;
   dayLabel?: string;
+  calendarTabId: GtpProgrammeCalendarDayTab;
   /** From `gtp2026Programme` in Sanity (session modal “Hosted by” block). */
   hostedBy: GtpSessionModalHostedBy;
   onClose: () => void;
@@ -47,6 +51,7 @@ function sessionExpectsSpeakerList(type: Session["type"]) {
 export function SessionModal({
   session,
   dayLabel,
+  calendarTabId,
   hostedBy,
   onClose,
   onWorkshopClick,
@@ -66,6 +71,10 @@ export function SessionModal({
   // Only render portal on client
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
+
+  const sessionGoogleCalHref = session
+    ? buildProgrammeGoogleCalendarUrl({ tabId: calendarTabId, session })
+    : null;
 
   const modal = (
     <AnimatePresence>
@@ -161,6 +170,15 @@ export function SessionModal({
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
                       <span className="italic wrap-anywhere">{getSessionVenueLine(session)}</span>
                     </div>
+                    {sessionGoogleCalHref ? (
+                      <div className="pt-1">
+                        <AddToGoogleCalendarLink
+                          href={sessionGoogleCalHref}
+                          stopPropagation={false}
+                          className="text-sm"
+                        />
+                      </div>
+                    ) : null}
                   </div>
 
                   {/* Format label */}

@@ -1,13 +1,16 @@
 import type { Workshop } from "./types";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
+import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { cn } from "@/lib/utils";
 
 export function WorkshopSubCard({
   w,
+  googleCalendarHref,
   onSelect,
 }: {
   w: Workshop;
+  googleCalendarHref?: string | null;
   /** Opens the workshop detail modal; click does not bubble to the parent concurrent block. */
   onSelect?: () => void;
 }) {
@@ -53,6 +56,11 @@ export function WorkshopSubCard({
       </div>
       {onSelect ? (
         <p className="mt-2 pl-9 text-xs font-semibold text-gtp-teal">View details</p>
+      ) : null}
+      {googleCalendarHref ? (
+        <div className="mt-2 pl-9">
+          <AddToGoogleCalendarLink href={googleCalendarHref} className="text-xs" />
+        </div>
       ) : null}
     </div>
   );

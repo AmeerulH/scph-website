@@ -1,16 +1,21 @@
 import { Clock, MapPin } from "lucide-react";
+import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { cn } from "@/lib/utils";
 import type { Session, Workshop } from "./types";
+import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { WorkshopSubCard } from "./workshop-sub-card";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 
 export function ConcurrentBlock({
   session,
+  calendarTabId,
   onClick,
   onWorkshopClick,
 }: {
   session: Session;
+  calendarTabId: GtpProgrammeCalendarDayTab;
   onClick?: () => void;
   onWorkshopClick?: (w: Workshop) => void;
 }) {
@@ -22,6 +27,24 @@ export function ConcurrentBlock({
     session.workshops?.filter((w) => w.title.startsWith("Research Session:")) ?? [];
 
   const hasBothTypes = workshopSessions.length > 0 && researchSessions.length > 0;
+
+  const blockGoogleCalHref = buildProgrammeGoogleCalendarUrl({
+    tabId: calendarTabId,
+    session,
+  });
+
+  function workshopGoogleCalHref(w: Workshop): string | null {
+    const extra: string[] = [`Part of: ${session.title}`];
+    const wo = typeof w.objective === "string" ? w.objective.trim() : "";
+    if (wo) extra.push(wo);
+    return buildProgrammeGoogleCalendarUrl({
+      tabId: calendarTabId,
+      session,
+      title: w.title,
+      detailsPrefixLines: extra,
+      includeSessionObjective: false,
+    });
+  }
 
   return (
     <div
@@ -79,6 +102,11 @@ export function ConcurrentBlock({
         >
           {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
         </span>
+        {blockGoogleCalHref ? (
+          <div className="flex w-full basis-full justify-end pt-1">
+            <AddToGoogleCalendarLink href={blockGoogleCalHref} className="text-xs" />
+          </div>
+        ) : null}
       </div>
 
       <div className="px-6 py-5">
@@ -102,6 +130,7 @@ export function ConcurrentBlock({
                   <WorkshopSubCard
                     key={w.number}
                     w={w}
+                    googleCalendarHref={workshopGoogleCalHref(w)}
                     onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
                   />
                 ))}
@@ -118,6 +147,7 @@ export function ConcurrentBlock({
                   <WorkshopSubCard
                     key={w.number}
                     w={w}
+                    googleCalendarHref={workshopGoogleCalHref(w)}
                     onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
                   />
                 ))}
@@ -131,6 +161,7 @@ export function ConcurrentBlock({
               <WorkshopSubCard
                 key={w.number}
                 w={w}
+                googleCalendarHref={workshopGoogleCalHref(w)}
                 onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
               />
             ))}

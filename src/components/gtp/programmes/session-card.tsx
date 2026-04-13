@@ -3,8 +3,11 @@
 import * as React from "react";
 import { Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import type { Session } from "./types";
 import { TYPE_META } from "./data";
+import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
@@ -12,10 +15,12 @@ import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 
 export function SessionCard({
   session,
+  calendarTabId,
   highlightSession,
   onClick,
 }: {
   session: Session;
+  calendarTabId: GtpProgrammeCalendarDayTab;
   highlightSession?: string;
   onClick?: () => void;
 }) {
@@ -32,6 +37,11 @@ export function SessionCard({
   const isSessionHighlighted =
     !!highlightSession &&
     session.title.toLowerCase() === highlightSession.toLowerCase();
+
+  const googleCalHref = buildProgrammeGoogleCalendarUrl({
+    tabId: calendarTabId,
+    session,
+  });
 
   // Scroll this card into view when it is the highlighted target
   React.useEffect(() => {
@@ -81,6 +91,11 @@ export function SessionCard({
           <MetaIcon className="h-3 w-3" />
           {meta.label}
         </span>
+        {googleCalHref ? (
+          <div className="flex w-full basis-full justify-end pt-1">
+            <AddToGoogleCalendarLink href={googleCalHref} className="text-xs" />
+          </div>
+        ) : null}
       </div>
 
       {/* Card body — title first; objective full width below so long copy expands the card naturally */}

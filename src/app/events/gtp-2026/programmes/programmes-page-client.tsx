@@ -451,6 +451,7 @@ export function ProgrammesPageClient({
                   sessions={currentSessions}
                   highlightSession={highlightSession ?? undefined}
                   dayLabel={currentDayLabel}
+                  calendarTabId={activeTab as Exclude<TabId, "pre">}
                   sessionModalHostedBy={sessionModalHostedBy}
                 />
               )}
