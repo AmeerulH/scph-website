@@ -30,11 +30,16 @@ const aboutLinks = [
   { label: "Meet The Team", href: "/about-us#team" },
 ];
 
+const communityLinks = [
+  { label: "Networks", href: "/network" },
+  { label: "Community hub", href: "/network/community-hub" },
+  { label: "Journalist workshops", href: "/network/journalist-workshops" },
+];
+
 const navLinks = [
   { label: "Programmes", href: "/programmes" },
   { label: "Research", href: "/research" },
   { label: "Media", href: "/media" },
-  { label: "Community", href: "/network" },
 ];
 
 const conferenceLinks = [
@@ -57,6 +62,7 @@ export function ScphNavbar() {
   const [scrolled, setScrolled] = React.useState(false);
   const [conferencesOpen, setConferencesOpen] = React.useState(false);
   const [aboutOpen, setAboutOpen] = React.useState(false);
+  const [communityOpen, setCommunityOpen] = React.useState(false);
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -65,8 +71,11 @@ export function ScphNavbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isActive = (href: string) =>
-    href === "/about-us" ? pathname.startsWith("/about-us") : pathname === href;
+  const isActive = (href: string) => {
+    if (href === "/about-us") return pathname.startsWith("/about-us");
+    if (href === "/network") return pathname.startsWith("/network");
+    return pathname === href;
+  };
   const closeSheet = () => setSheetOpen(false);
 
   return (
@@ -152,6 +161,40 @@ export function ScphNavbar() {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
+
+              {/* Community: main link + hover dropdown (after Media, as before) */}
+              <NavigationMenuItem>
+                <div className="relative group/community">
+                  <Link
+                    href="/network"
+                    className={cn(
+                      "flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                      pathname.startsWith("/network")
+                        ? "bg-scph-blue/10 text-scph-blue"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-scph-blue"
+                    )}
+                  >
+                    Community
+                    <ChevronDown className="h-4 w-4" />
+                  </Link>
+                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover/community:opacity-100 group-hover/community:visible transition-all duration-200 z-50">
+                    <div className="rounded-2xl border border-gray-100 bg-white shadow-xl p-2 w-64">
+                      <ul>
+                        {communityLinks.map(({ label, href }) => (
+                          <li key={label}>
+                            <Link
+                              href={href}
+                              className="flex rounded-xl px-4 py-3 text-sm font-medium text-gray-900 transition-colors hover:bg-scph-blue/5"
+                            >
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </NavigationMenuItem>
 
               {/* Conferences dropdown */}
               <NavigationMenuItem>
@@ -302,6 +345,58 @@ export function ScphNavbar() {
                   </Link>
                 </SheetClose>
               ))}
+
+              {/* Community: link + expandable sub-items (after Media, as before) */}
+              <div
+                className={cn(
+                  "flex items-center rounded-xl transition-colors",
+                  pathname.startsWith("/network")
+                    ? "bg-scph-blue/8"
+                    : "hover:bg-gray-50"
+                )}
+              >
+                <SheetClose asChild>
+                  <Link
+                    href="/network"
+                    onClick={closeSheet}
+                    className={cn(
+                      "flex-1 px-4 py-3 text-sm font-medium",
+                      pathname.startsWith("/network")
+                        ? "text-scph-blue"
+                        : "text-gray-700 hover:text-scph-blue"
+                    )}
+                  >
+                    Community
+                  </Link>
+                </SheetClose>
+                <button
+                  onClick={() => setCommunityOpen((p) => !p)}
+                  className="p-3 text-gray-500 hover:text-scph-blue"
+                  aria-label={communityOpen ? "Collapse Community menu" : "Expand Community menu"}
+                >
+                  <ChevronRight
+                    className={cn(
+                      "h-4 w-4 transition-transform duration-200",
+                      communityOpen && "rotate-90"
+                    )}
+                  />
+                </button>
+              </div>
+              {communityOpen && (
+                <div className="ml-4 flex flex-col gap-1 border-l-2 border-scph-blue/15 pl-4">
+                  {communityLinks.map(({ label, href }) => (
+                    <SheetClose asChild key={label}>
+                      <Link
+                        href={href}
+                        onClick={closeSheet}
+                        className="rounded-lg px-3 py-2.5 text-sm text-gray-600 transition-colors hover:text-scph-blue"
+                      >
+                        {label}
+                      </Link>
+                    </SheetClose>
+                  ))}
+                </div>
+              )}
 
               {/* Conferences expandable */}
               <button
