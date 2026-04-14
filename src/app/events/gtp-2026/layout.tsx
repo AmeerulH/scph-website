@@ -39,14 +39,6 @@ export default async function GtpLayout({
   const footerData = await getMergedGtpFooter();
   return (
     <>
-      {/* Preload forest background so browser fetches it during HTML parse,
-          before React renders the GtpForestHero Image component. */}
-      <link
-        rel="preload"
-        as="image"
-        href="/images/gtp/forest-bg.webp"
-        type="image/webp"
-      />
       <GtpNavbar />
       {/*
         Footer is outside <main>. Reserve minimum height so the footer does not sit
