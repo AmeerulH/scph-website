@@ -19,6 +19,8 @@ export default defineUnlighthouseConfig({
     robotsTxt: true,
     /** Marketing URLs are listed in sitemap; avoid crawling in-page links */
     crawler: false,
+    /** Scan every page — disable dynamic sampling so all 16 pages are audited */
+    dynamicSampling: false,
     samples: 1,
     exclude: [/^\/api\//],
   },

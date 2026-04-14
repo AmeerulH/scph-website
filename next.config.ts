@@ -7,9 +7,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
-  // Enable gzip/brotli compression for all responses
-  compress: true,
-
   async redirects() {
     return [
       {
@@ -56,8 +53,8 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Serve AVIF first (smaller), fallback to WebP
-    formats: ["image/avif", "image/webp"],
+    // WebP only — AVIF encoding is too slow on first request (hurts LCP)
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
