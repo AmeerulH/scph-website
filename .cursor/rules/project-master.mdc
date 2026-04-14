@@ -7,10 +7,10 @@ alwaysApply: true
 
 Before non-trivial work (new pages/sections, CMS fields, or large UI changes):
 
-1. **Read `AGENTS.md`** at the repository root for the full checklist and conventions.
+1. **Read `AGENTS.md`** at the repository root for the full checklist and conventions. Extended architecture, design, and performance guidance: **`Claude.md`** and **`docs/`** (see `docs/README.md`).
 
 2. **Sanity:** Editors own published content. Code defaults merge with CMS—changing defaults does not overwrite Studio. New CMS-backed surfaces need **schema deploy**, **data layer**, and usually a **seed script** + `package.json` script; update **`SANITY_TYPE_TO_PATHS`** in `src/app/api/revalidate/sanity/route.ts` when adding webhook revalidation for a new `_type`.
 
-3. **Quality:** Minimal diffs, match existing patterns, Server Components by default, `next/image` for media, keep performance/CWV in mind (target 90+ scores where realistic—see AGENTS.md).
+3. **Quality:** Minimal diffs, match existing patterns, Server Components by default, `next/image` for media. **Performance:** full-site Unlighthouse **Lighthouse Performance ≥ 80** per scanned URL (see `docs/performance.md`, `AGENTS.md` §7); use Vercel Speed Insights for real-user data.
 
 If `AGENTS.md` and this rule conflict, **prefer updating `AGENTS.md`** and keep this rule as a pointer.

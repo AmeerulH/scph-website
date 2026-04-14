@@ -4,17 +4,64 @@ Use this file as the **entry point** for AI-assisted work in this repository. It
 
 ---
 
-## Canonical markdown in this repo
+## Documentation map
+
+### Root markdown
 
 | File | Role |
 |------|------|
-| [`AGENTS.md`](AGENTS.md) | **Master reference**: stack, Sanity ownership, CMS checklist, seed inventory, Next.js standards, code quality, performance/CWV, quick file map. Read before non-trivial features, new sections, or CMS work. |
-| [`README.md`](README.md) | **Setup & ops**: install, dev/build, Studio, env vars, webhooks, editor notes, seed/import pointers. |
+| [`AGENTS.md`](AGENTS.md) | **Master reference**: stack, Sanity ownership, CMS checklist, seed inventory, Next.js standards, code quality, performance/CWV, Unlighthouse bar, quick file map. Read before non-trivial features, new sections, or CMS work. |
+| [`README.md`](README.md) | **Setup & ops**: install, dev/build, Studio, env vars, webhooks, editor notes, Unlighthouse commands, seed/import pointers. |
 | [`CONTENT_REFERENCE.md`](CONTENT_REFERENCE.md) | **SCPH marketing copy reference** (scraped legacy site). Use for tone/structure alignment when authoring or migrating SCPH-facing content—not a spec for code. |
+| [`Claude.md`](Claude.md) | This file—navigation for humans and AI. |
+
+### Engineering guides (`docs/`)
+
+| File | Role |
+|------|------|
+| [`docs/README.md`](docs/README.md) | Index and **recommended read order** for the guides below. |
+| [`docs/architecture.md`](docs/architecture.md) | Routes, layouts, Sanity data flow, component layout. |
+| [`docs/coding-guidelines.md`](docs/coding-guidelines.md) | Server Components, colocation, TypeScript at CMS boundaries. |
+| [`docs/code-quality.md`](docs/code-quality.md) | Lint/build, minimal diffs; points to performance for scans. |
+| [`docs/design-system.md`](docs/design-system.md) | Fonts, brand tokens, `ui/` primitives, `next/image`. |
+| [`docs/performance.md`](docs/performance.md) | Unlighthouse workflow, **Lighthouse Performance ≥ 80** per scanned URL, triage. |
+| [`docs/adr/README.md`](docs/adr/README.md) | Optional ADR convention when recording major technical decisions. |
+
+### Cursor project skills (`.cursor/skills/`)
+
+Short `@`-invokable skills; each links to the matching `docs/` file:
+
+- `architecture` → [`docs/architecture.md`](docs/architecture.md)
+- `coding-guidelines` → [`docs/coding-guidelines.md`](docs/coding-guidelines.md)
+- `code-quality` → [`docs/code-quality.md`](docs/code-quality.md)
+- `design-system` → [`docs/design-system.md`](docs/design-system.md)
+- `performance` → [`docs/performance.md`](docs/performance.md)
 
 Ignore duplicate copies under `.claude/worktrees/`; treat **repo-root** files as source of truth.
 
-Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-master.mdc) (always apply). If anything here conflicts with **`AGENTS.md`**, prefer updating **`AGENTS.md`** and aligning this file.
+Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-master.mdc) (always apply). If anything here conflicts with **`AGENTS.md`**, prefer updating **`AGENTS.md`** and aligning this file and `docs/`.
+
+---
+
+## When to read what
+
+| Situation | Start here |
+|-----------|------------|
+| CMS fields, seeds, merge/revalidation | [`AGENTS.md`](AGENTS.md) §2–4 |
+| New route or data flow | [`docs/architecture.md`](docs/architecture.md) → [`AGENTS.md`](AGENTS.md) as needed |
+| Implementing components / TS conventions | [`docs/coding-guidelines.md`](docs/coding-guidelines.md) |
+| PR hygiene, lint/build | [`docs/code-quality.md`](docs/code-quality.md) |
+| Typography, colours, UI primitives, images | [`docs/design-system.md`](docs/design-system.md) |
+| Perf regressions, heroes, client JS, full-site lab scores | [`docs/performance.md`](docs/performance.md) |
+| Env, Studio, running Unlighthouse | [`README.md`](README.md) |
+
+---
+
+## Performance bar (Unlighthouse)
+
+For **every URL** included in the default full-site Unlighthouse run (sitemap-driven), the **Lighthouse Performance category must be ≥ 80** (mobile scan: `npm run unlighthouse:scan`). Details, env vars, and triage: [`docs/performance.md`](docs/performance.md) and [`README.md`](README.md).
+
+Stretch: push **higher** scores on critical paths when feasible; lab scores complement **Vercel Speed Insights** (real users).
 
 ---
 
@@ -38,7 +85,7 @@ Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-mas
    - TypeScript: honest types at Sanity/GROQ boundaries.
 
 5. **Performance**
-   - Target strong **Lighthouse / CWV** where realistic (see **§7** in [`AGENTS.md`](AGENTS.md)): limit client JS, avoid huge unoptimised hero images, pair static/ISR with **revalidation** if you introduce caching.
+   - Meet the **Unlighthouse Performance ≥ 80** contract above; practices in **§7** of [`AGENTS.md`](AGENTS.md) and [`docs/performance.md`](docs/performance.md).
 
 ---
 

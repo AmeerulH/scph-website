@@ -103,7 +103,9 @@ Prefer **colocating** feature UI under `src/components/` with names that match d
 
 ## 7. Performance & Core Web Vitals
 
-**Goal:** Keep **Lighthouse performance and Core Web Vitals** in good shape (target **90+** where realistic for real content—not a guarantee on every run, but a design constraint).
+**Lab contract (Unlighthouse):** For every URL included in the default full-site Unlighthouse run (sitemap-driven), **Lighthouse Performance must be ≥ 80** on the mobile scan (`npm run unlighthouse:scan`). See `docs/performance.md` and `README.md` for how to run scans and triage regressions.
+
+**Stretch / field:** Keep **Core Web Vitals** and overall Lighthouse scores as high as is realistic for real content; push **above 80** on critical paths where feasible. **Vercel Speed Insights** reflects real users and complements lab scores—it is not the same as Lighthouse.
 
 Practices aligned with this repo:
 
@@ -114,7 +116,7 @@ Practices aligned with this repo:
 - **Lists and carousels** — Avoid unnecessary re-renders; use shared motion patterns conservatively (`prefers-reduced-motion` where already used).
 - **Third-party scripts** — Add only when needed; load lazily where possible.
 
-After significant UI or image changes, run **`npm run build`** locally and spot-check **Lighthouse** (or Vercel Speed Insights) on affected routes.
+After significant UI or image changes, run **`npm run build`** locally, spot-check **Lighthouse** (or Vercel Speed Insights) on affected routes, and re-run **Unlighthouse** when the change could affect many URLs.
 
 ---
 
@@ -131,7 +133,7 @@ After significant UI or image changes, run **`npm run build`** locally and spot-
 | Section block rendering | `src/components/sections/render-section-block.tsx` |
 | Studio schemas | `studio/schemaTypes/` |
 | Env & Studio setup | `README.md` |
-| Full-site Lighthouse (Unlighthouse) | `unlighthouse.config.ts`, `npm run unlighthouse:scan` — see `README.md` |
+| Full-site Lighthouse (Unlighthouse) | `unlighthouse.config.ts`, `npm run unlighthouse:scan`, `docs/performance.md` — see `README.md` |
 
 ---
 
