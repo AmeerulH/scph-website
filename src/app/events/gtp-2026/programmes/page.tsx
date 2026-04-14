@@ -73,22 +73,27 @@ function ProgrammeClientFallback() {
   );
 }
 
-export default async function ProgrammesPage() {
-  const programme = await getGtp2026Programme();
-
+export default function ProgrammesPage() {
   return (
     <>
       <ProgrammesHero />
       <Suspense fallback={<ProgrammeClientFallback />}>
-        <ProgrammesPageClient
-          tabs={programme.tabs}
-          sessionModalHostedBy={programme.sessionModalHostedBy}
-          day1={programme.day1}
-          day2={programme.day2}
-          day3={programme.day3}
-          day4={programme.day4}
-        />
+        <ProgrammesPageData />
       </Suspense>
     </>
+  );
+}
+
+async function ProgrammesPageData() {
+  const programme = await getGtp2026Programme();
+  return (
+    <ProgrammesPageClient
+      tabs={programme.tabs}
+      sessionModalHostedBy={programme.sessionModalHostedBy}
+      day1={programme.day1}
+      day2={programme.day2}
+      day3={programme.day3}
+      day4={programme.day4}
+    />
   );
 }

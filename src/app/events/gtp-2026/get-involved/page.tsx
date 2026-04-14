@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
@@ -71,15 +72,30 @@ function PartnershipSection({
   );
 }
 
-export default async function GtpGetInvolvedPage() {
-  const cms = await getGtp2026GetInvolvedPage().catch(() => null);
-  const copy = mergeGtpGetInvolvedCopy(cms);
-
+function GetInvolvedPageView({ copy }: { copy: GtpGetInvolvedResolvedCopy }) {
   return (
     <>
       <GtpForestHero title={copy.heroTitle} lede={copy.heroLede} />
       <GtpGetInvolvedContactSection contact={copy.contact} />
       <PartnershipSection partnership={copy.partnership} />
     </>
+  );
+}
+
+async function GetInvolvedLoaded() {
+  const cms = await getGtp2026GetInvolvedPage().catch(() => null);
+  const copy = mergeGtpGetInvolvedCopy(cms);
+  return <GetInvolvedPageView copy={copy} />;
+}
+
+export default function GtpGetInvolvedPage() {
+  return (
+    <Suspense
+      fallback={
+        <GetInvolvedPageView copy={mergeGtpGetInvolvedCopy(null)} />
+      }
+    >
+      <GetInvolvedLoaded />
+    </Suspense>
   );
 }

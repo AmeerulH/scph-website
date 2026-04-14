@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { ScphPageHero } from "@/components/sections/heroes";
@@ -206,22 +207,19 @@ function SignUpSection() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+type NetworkBands = ReturnType<typeof mergeScphNetworkPageBands>;
 
-export default async function NetworkPage() {
-  const networkCms = await getScphNetworkPage().catch(() => null);
-  const bands = mergeScphNetworkPageBands(networkCms);
+function NetworkCmsSections({ bands }: { bands: NetworkBands }) {
   const networkSections = bands.sections;
   const showOptionalNetworkCms = sectionBlocksMayRender(networkSections);
-  const c = bands.community;
+  if (!showOptionalNetworkCms) return null;
+  return <RenderSectionBlocks blocks={networkSections} />;
+}
 
+function NetworkBody({ bands }: { bands: NetworkBands }) {
+  const c = bands.community;
   return (
     <>
-      <ScphPageHero
-        eyebrow="Network"
-        title="Join the Planetary Health Community"
-        lede="The global planetary health community is a diverse group of people committed to contributing to a healthier future through policy reforms, research, innovative solutions, advocacy efforts, and more."
-      />
       <CommunitySection
         copyEyebrow={c.copyEyebrow}
         copyTitle={c.copyTitle}
@@ -230,9 +228,30 @@ export default async function NetworkPage() {
         benefitsTitle={c.benefitsTitle}
         benefitItems={c.benefitItems}
       />
-      {showOptionalNetworkCms ? (
-        <RenderSectionBlocks blocks={networkSections} />
-      ) : null}
+      <NetworkCmsSections bands={bands} />
+    </>
+  );
+}
+
+async function NetworkPageLoaded() {
+  const networkCms = await getScphNetworkPage().catch(() => null);
+  const bands = mergeScphNetworkPageBands(networkCms);
+  return <NetworkBody bands={bands} />;
+}
+
+export default function NetworkPage() {
+  return (
+    <>
+      <ScphPageHero
+        eyebrow="Network"
+        title="Join the Planetary Health Community"
+        lede="The global planetary health community is a diverse group of people committed to contributing to a healthier future through policy reforms, research, innovative solutions, advocacy efforts, and more."
+      />
+      <Suspense
+        fallback={<NetworkBody bands={mergeScphNetworkPageBands(null)} />}
+      >
+        <NetworkPageLoaded />
+      </Suspense>
       <SignUpSection />
     </>
   );

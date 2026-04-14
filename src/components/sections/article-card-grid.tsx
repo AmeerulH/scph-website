@@ -1,6 +1,5 @@
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { StaggerReveal } from "@/components/motion/StaggerReveal";
 
 export type ArticleCardItem = {
   /** Stable key from Sanity `_key` when present. */
@@ -25,10 +24,7 @@ export function ArticleCardGrid({
   readLabel = "Read Article",
 }: ArticleCardGridProps) {
   return (
-    <StaggerReveal
-      className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:py-0 md:pb-0 lg:grid-cols-3"
-      variant="long"
-    >
+    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:py-0 md:pb-0 lg:grid-cols-3">
       {items.map(({ _key, title, tag, excerpt, href }, index) => (
         <div
           key={_key ?? `${index}-${title}`}
@@ -57,6 +53,6 @@ export function ArticleCardGrid({
           </a>
         </div>
       ))}
-    </StaggerReveal>
+    </div>
   );
 }

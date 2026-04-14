@@ -3,6 +3,10 @@ import { cn } from "@/lib/utils";
 
 const FOREST_BG = "/images/gtp/forest-bg.webp";
 
+/** Tiny placeholder so the hero paints immediately while the forest image streams (LCP). */
+const FOREST_BG_BLUR =
+  "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthIAAAB//Z";
+
 const titleSizeClasses = {
   default: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl",
   compact: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
@@ -42,10 +46,12 @@ export function GtpForestHero({
         alt=""
         fill
         className="object-cover object-center"
-        sizes="100vw"
+        sizes="(max-width: 768px) 100vw, min(1600px, 100vw)"
         quality={40}
         priority
         fetchPriority="high"
+        placeholder="blur"
+        blurDataURL={FOREST_BG_BLUR}
       />
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />
 

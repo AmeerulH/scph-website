@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/shared/placeholder-page";
+import { Suspense } from "react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { GtpFaqSectionClient } from "@/components/gtp/gtp-faq-section-client";
@@ -26,13 +26,52 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-export default async function GtpFaqPage() {
+function FaqBodyFallback() {
+  return (
+    <SectionWrapper theme="gtp" background="default" className="pb-20">
+      <div
+        className="mx-auto max-w-3xl space-y-4"
+        aria-busy="true"
+        aria-label="Loading FAQ content"
+      >
+        <div className="h-10 w-48 rounded-lg bg-gtp-dark-teal/10" />
+        <div className="h-24 rounded-xl bg-gray-100" />
+        <div className="h-24 rounded-xl bg-gray-100" />
+        <div className="h-24 rounded-xl bg-gray-100" />
+      </div>
+    </SectionWrapper>
+  );
+}
+
+async function GtpFaqBody() {
   const groups = await getGtp2026FaqGroupsWithItems().catch(() => []);
 
   if (groups.length === 0) {
-    return <PlaceholderPage title="FAQ" theme="gtp" />;
+    return (
+      <SectionWrapper theme="gtp" background="default" className="pb-20">
+        <div className="mx-auto max-w-lg rounded-2xl border border-gtp-teal/20 bg-white p-10 text-center shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wider text-gtp-dark-teal/70">
+            Coming Soon
+          </p>
+          <h2 className="mt-3 font-heading text-2xl font-bold text-gtp-dark-teal">
+            FAQ
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            This section is currently being developed. Check back soon.
+          </p>
+        </div>
+      </SectionWrapper>
+    );
   }
 
+  return (
+    <SectionWrapper theme="gtp" background="default" className="pb-20">
+      <GtpFaqSectionClient groups={groups} />
+    </SectionWrapper>
+  );
+}
+
+export default function GtpFaqPage() {
   return (
     <>
       <GtpForestHero
@@ -40,9 +79,9 @@ export default async function GtpFaqPage() {
         lede="Practical information about Global Tipping Points Conference 2026 in Kuala Lumpur."
         bottomSpacing="spacious"
       />
-      <SectionWrapper theme="gtp" background="default" className="pb-20">
-        <GtpFaqSectionClient groups={groups} />
-      </SectionWrapper>
+      <Suspense fallback={<FaqBodyFallback />}>
+        <GtpFaqBody />
+      </Suspense>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -329,13 +330,15 @@ const organizationJsonLd = {
 /** Refetch home CMS slices on each request so production edits show without redeploying. */
 export const revalidate = 300;
 
-export default async function HomePage() {
-  const [homeDoc, highlightRows] = await Promise.all([
-    getScphHomePage().catch(() => null),
-    getGtp2026HighlightSpeakers().catch(() => []),
-  ]);
+async function HomeGtpHighlightSection() {
+  const highlightRows = await getGtp2026HighlightSpeakers().catch(() => []);
   const highlightSpeakersFromCms =
     highlightRows.length > 0 ? mapSanityHighlightToProps(highlightRows) : undefined;
+  return <Gtp2026HomeSection highlightSpeakers={highlightSpeakersFromCms} />;
+}
+
+export default async function HomePage() {
+  const homeDoc = await getScphHomePage().catch(() => null);
   const heroCopy = resolveScphHomeHero(homeDoc?.hero);
   const highlightedEvents = resolveScphHomeHighlightedEvents(
     homeDoc?.highlightedEvents,
@@ -369,7 +372,9 @@ export default async function HomePage() {
         <StatsRow items={homeStats} variant="blue-band" />
       )}
       <RenderSectionBlocks blocks={introSections ?? []} />
-      <Gtp2026HomeSection highlightSpeakers={highlightSpeakersFromCms} />
+      <Suspense fallback={<Gtp2026HomeSection />}>
+        <HomeGtpHighlightSection />
+      </Suspense>
       <Gtp2026HomeEventInquirySection />
       <AboutSection />
       <PriorityAreasSection />

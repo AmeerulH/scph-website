@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import {
   ArticleCardGrid,
@@ -6,12 +7,13 @@ import {
 } from "@/components/sections/article-card-grid";
 import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
 import { ScphPageHero } from "@/components/sections/heroes";
-import {
-  RenderSectionBlocks,
-} from "@/components/sections/render-section-block";
+import { RenderSectionBlocks } from "@/components/sections/render-section-block";
 import { sectionBlocksMayRender } from "@/sanity/section-block-types";
 import { getScphMediaPage } from "@/sanity/scph-pages";
-import { mergeScphMediaPage } from "@/sanity/scph-media-page-merge";
+import {
+  mergeScphMediaPage,
+  type MergedScphMediaPage,
+} from "@/sanity/scph-media-page-merge";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -79,9 +81,7 @@ function ArticlesSection({
   );
 }
 
-export default async function MediaPage() {
-  const mediaCms = await getScphMediaPage().catch(() => null);
-  const page = mergeScphMediaPage(mediaCms);
+function MediaPageView({ page }: { page: MergedScphMediaPage }) {
   const showIntroSections = sectionBlocksMayRender(page.sections);
 
   return (
@@ -104,5 +104,18 @@ export default async function MediaPage() {
         introNote={page.articlesIntroNote}
       />
     </>
+  );
+}
+
+async function MediaPageLoaded() {
+  const mediaCms = await getScphMediaPage().catch(() => null);
+  return <MediaPageView page={mergeScphMediaPage(mediaCms)} />;
+}
+
+export default function MediaPage() {
+  return (
+    <Suspense fallback={<MediaPageView page={mergeScphMediaPage(null)} />}>
+      <MediaPageLoaded />
+    </Suspense>
   );
 }

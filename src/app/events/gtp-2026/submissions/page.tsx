@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import {
   getGtp2026SubmissionsPage,
   mergeGtpSubmissionsCopy,
+  type GtpSubmissionsResolvedCopy,
 } from "@/sanity/gtp-stage2";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { GtpSubmissionsStaticSections } from "./submissions-static";
@@ -28,9 +30,7 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-export default async function GtpSubmissionsPage() {
-  const cms = await getGtp2026SubmissionsPage().catch(() => null);
-  const copy = mergeGtpSubmissionsCopy(cms);
+function GtpSubmissionsPageView({ copy }: { copy: GtpSubmissionsResolvedCopy }) {
   return (
     <>
       <GtpForestHero
@@ -41,5 +41,23 @@ export default async function GtpSubmissionsPage() {
       <GtpSubmissionsStaticSections copy={copy} />
       <SubmissionsFormsClient copy={copy} />
     </>
+  );
+}
+
+async function GtpSubmissionsLoaded() {
+  const cms = await getGtp2026SubmissionsPage().catch(() => null);
+  const copy = mergeGtpSubmissionsCopy(cms);
+  return <GtpSubmissionsPageView copy={copy} />;
+}
+
+export default function GtpSubmissionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <GtpSubmissionsPageView copy={mergeGtpSubmissionsCopy(null)} />
+      }
+    >
+      <GtpSubmissionsLoaded />
+    </Suspense>
   );
 }
