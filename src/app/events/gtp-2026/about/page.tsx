@@ -195,8 +195,18 @@ function WhatIsGtpSection({ content }: { content: GtpWhatIsBandContent }) {
 
 // ─── About Conference ─────────────────────────────────────────────────────────
 
+// Allow cdn.sanity.io and images.unsplash.com through the Next.js image
+// optimiser (both are listed in next.config remotePatterns). Only truly
+// unknown external domains should bypass optimisation.
+const OPTIMIZED_HOSTS = ["cdn.sanity.io", "images.unsplash.com"];
 function imgUnoptimized(src: string) {
-  return /^https?:\/\//i.test(src);
+  if (!src || !/^https?:\/\//i.test(src)) return false;
+  try {
+    const { hostname } = new URL(src);
+    return !OPTIMIZED_HOSTS.includes(hostname);
+  } catch {
+    return true;
+  }
 }
 
 function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
@@ -256,6 +266,7 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                quality={60}
                 unoptimized={imgUnoptimized(content.tallImageSrc)}
               />
             </div>
@@ -266,6 +277,7 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                quality={60}
                 unoptimized={imgUnoptimized(content.topRightImageSrc)}
               />
             </div>
@@ -276,6 +288,7 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                quality={60}
                 unoptimized={imgUnoptimized(content.bottomRightImageSrc)}
               />
             </div>

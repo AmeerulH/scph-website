@@ -28,15 +28,18 @@ export function AtmosphericReveal({
   const prefersReducedMotion = useReducedMotion();
   const variants = prefersReducedMotion ? atmosphericFadeReduced : atmosphericFade;
 
+  // When entrance is disabled (used in layouts to prevent CLS), render a plain
+  // div so Framer Motion is not bundled on pages that don't animate anything.
+  if (disableEntrance) {
+    return <div className={className}>{children}</div>;
+  }
+
   return (
     <motion.div
-      initial={disableEntrance ? false : variants.initial}
+      initial={variants.initial}
       animate={variants.animate}
       transition={variants.transition}
-      className={cn(
-        disableEntrance ? undefined : "contain-[layout_paint]",
-        className,
-      )}
+      className={cn("contain-[layout_paint]", className)}
     >
       {children}
     </motion.div>

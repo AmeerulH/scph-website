@@ -2,7 +2,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const DEFAULT_FOREST_BG =
-  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80";
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=55";
 
 export type ScphPageHeroProps = {
   eyebrow: string;
