@@ -52,3 +52,6 @@ nodal-episode-484712-m8-2778260f58b0.json
 
 # Generated Drive inventories (large; may include internal paths — regenerate locally)
 scripts/data/drive-inventory*.json
+
+# Local scratch / large Drive JSON exports (e.g. tmp/workshop-drive.json from DRIVE_OUTPUT)
+/tmp/

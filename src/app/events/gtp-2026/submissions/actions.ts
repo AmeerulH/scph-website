@@ -1,24 +1,10 @@
 "use server";
 
 import { google } from "googleapis";
+import { normalizeGooglePrivateKey } from "@/lib/google-drive-client";
 import { WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE } from "./form-value-constants";
 
 // ─── Google Sheets client ─────────────────────────────────────────────────────
-
-/** Env copy-paste: use the `private_key` value only — no JSON `"` quotes. Literal `\n` → real newlines. */
-function normalizeGooglePrivateKey(
-  raw: string | undefined,
-): string | undefined {
-  if (!raw) return undefined;
-  let k = raw.trim();
-  if (
-    (k.startsWith('"') && k.endsWith('"')) ||
-    (k.startsWith("'") && k.endsWith("'"))
-  ) {
-    k = k.slice(1, -1);
-  }
-  return k.replace(/\\n/g, "\n");
-}
 
 function getSheetsClient() {
   const privateKey = normalizeGooglePrivateKey(process.env.GOOGLE_PRIVATE_KEY);

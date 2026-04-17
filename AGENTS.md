@@ -75,7 +75,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-scph-section-pages` | `scripts/seed-scph-section-pages.ts` | Section shells (about / research / network style singletons) |
 | `seed-scph-media-page` | `scripts/seed-scph-media-page.ts` | `scphMediaPage` |
 | `seed-footers` | `scripts/seed-footers.ts` | `scphFooter`, `gtp2026Footer` (singletons; merge with code defaults in `src/sanity/footer.ts`) |
-| `inventory-drive-folder` | `scripts/inventory-drive-folder.ts` | **Not Sanity.** Recursively lists a Google Drive folder (MIME summary; `DRIVE_JSON=1` flat stdout; `DRIVE_SAVE=1` writes nested `tree` + `filesFlat` JSON under `scripts/data/`, gitignored). Uses `GOOGLE_*` + `DRIVE_FOLDER_ID` (see README). |
+| `inventory-drive-folder` | `scripts/inventory-drive-folder.ts` | **Not Sanity.** Recursively lists a Google Drive folder (MIME summary; `DRIVE_JSON=1` flat stdout; `DRIVE_SAVE=1` writes nested `tree` + `filesFlat` JSON under `scripts/data/`, gitignored). Uses `GOOGLE_*` + `DRIVE_FOLDER_ID`; Drive helpers live in `src/lib/google-drive-client.ts` (see README). |
 
 Many seeds support `DRY_RUN=1` to print JSON only—use before writing to a shared dataset.
 

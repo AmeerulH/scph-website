@@ -124,7 +124,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 
 ### Google Drive (utilities)
 
-- **Folder inventory** (recursive file list + MIME summary): `npm run inventory-drive-folder` — [`scripts/inventory-drive-folder.ts`](scripts/inventory-drive-folder.ts). Uses **`GOOGLE_CLIENT_EMAIL`** and **`GOOGLE_PRIVATE_KEY`** from `.env.local` (same as GTP submissions Sheets) with the **Drive API** scope `drive.readonly`. Set **`DRIVE_FOLDER_ID`** to the folder id from the Drive URL, or pass the id after `--`. Share the folder with the service account (Viewer). Optional: **`DRIVE_MAX_DEPTH`** (default 30), **`DRIVE_JSON=1`** prints a flat JSON array to stdout. **`DRIVE_SAVE=1`** writes `scripts/data/drive-inventory-<folderId>.json` (nested **`tree`** + **`filesFlat`**, gitignored); **`DRIVE_OUTPUT=relative/or/absolute/path.json`** overrides that path.
+- **Folder inventory** (recursive file list + MIME summary): `npm run inventory-drive-folder` — [`scripts/inventory-drive-folder.ts`](scripts/inventory-drive-folder.ts) uses shared helpers in [`src/lib/google-drive-client.ts`](src/lib/google-drive-client.ts). Uses **`GOOGLE_CLIENT_EMAIL`** and **`GOOGLE_PRIVATE_KEY`** from `.env.local` (same as GTP submissions Sheets) with the **Drive API** scope `drive.readonly`. Set **`DRIVE_FOLDER_ID`** to the folder id from the Drive URL, or pass the id after `--`. Share the folder with the service account (Viewer). Optional: **`DRIVE_MAX_DEPTH`** (default 30), **`DRIVE_JSON=1`** prints a flat JSON array to stdout. **`DRIVE_SAVE=1`** writes `scripts/data/drive-inventory-<folderId>.json` (nested **`tree`** + **`filesFlat`**, gitignored); **`DRIVE_OUTPUT=relative/or/absolute/path.json`** overrides that path.
 
 ### CMS sandbox
 

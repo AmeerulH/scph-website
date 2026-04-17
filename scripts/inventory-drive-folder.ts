@@ -4,6 +4,8 @@
  * Uses the same service account as GTP submissions / Sheets:
  *   GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY in `.env.local`.
  *
+ * Implementation delegates to [`src/lib/google-drive-client.ts`](../src/lib/google-drive-client.ts).
+ *
  * Prerequisites:
  *   - Drive API enabled for the GCP project tied to that service account.
  *   - The folder (and Shared Drive, if applicable) is shared with the service
@@ -21,61 +23,26 @@
  */
 
 import fs from "node:fs/promises";
-import { google } from "googleapis";
-import type { drive_v3 } from "googleapis";
 import * as dotenv from "dotenv";
 import * as path from "path";
+import {
+  driveGetFileMetadata,
+  driveWalkFolderTree,
+  getDriveReadonlyClient,
+  GOOGLE_DRIVE_FOLDER_MIME,
+  type DriveListedRow,
+  type DriveTreeFolder,
+} from "../src/lib/google-drive-client";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
-
-const FOLDER_MIME = "application/vnd.google-apps.folder";
-
-function normalizeGooglePrivateKey(
-  raw: string | undefined,
-): string | undefined {
-  if (!raw) return undefined;
-  let k = raw.trim();
-  if (
-    (k.startsWith('"') && k.endsWith('"')) ||
-    (k.startsWith("'") && k.endsWith("'"))
-  ) {
-    k = k.slice(1, -1);
-  }
-  return k.replace(/\\n/g, "\n");
-}
-
-type ListedRow = {
-  id: string;
-  name: string;
-  mimeType: string;
-  size: string | null;
-  path: string;
-};
-
-type TreeFile = {
-  type: "file";
-  id: string;
-  name: string;
-  mimeType: string;
-  size: string | null;
-};
-
-type TreeFolder = {
-  type: "folder";
-  id: string;
-  name: string;
-  children: TreeEntry[];
-};
-
-type TreeEntry = TreeFile | TreeFolder;
 
 type InventoryPayload = {
   generatedAt: string;
   rootFolderId: string;
   rootFolderName: string;
   maxDepth: number;
-  tree: TreeFolder;
-  filesFlat: ListedRow[];
+  tree: DriveTreeFolder;
+  filesFlat: DriveListedRow[];
 };
 
 function parseSizeBytes(s: string | null | undefined): number | null {
@@ -84,133 +51,7 @@ function parseSizeBytes(s: string | null | undefined): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-function getDriveClient(): drive_v3.Drive {
-  const privateKey = normalizeGooglePrivateKey(process.env.GOOGLE_PRIVATE_KEY);
-  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL?.trim();
-
-  if (!privateKey || !clientEmail) {
-    throw new Error(
-      "Missing GOOGLE_PRIVATE_KEY or GOOGLE_CLIENT_EMAIL in .env.local (same as GTP submissions).",
-    );
-  }
-
-  const auth = new google.auth.GoogleAuth({
-    credentials: { client_email: clientEmail, private_key: privateKey },
-    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
-  });
-
-  return google.drive({ version: "v3", auth });
-}
-
-async function listChildren(
-  drive: drive_v3.Drive,
-  parentId: string,
-): Promise<drive_v3.Schema$File[]> {
-  const out: drive_v3.Schema$File[] = [];
-  let pageToken: string | undefined;
-  const q = `'${parentId}' in parents and trashed = false`;
-
-  do {
-    const res = await drive.files.list({
-      q,
-      fields: "nextPageToken, files(id, name, mimeType, size, modifiedTime)",
-      pageSize: 1000,
-      pageToken,
-      supportsAllDrives: true,
-      includeItemsFromAllDrives: true,
-    });
-    const batch = res.data.files ?? [];
-    out.push(...batch);
-    pageToken = res.data.nextPageToken ?? undefined;
-  } while (pageToken);
-
-  return out;
-}
-
-async function getEntryMeta(drive: drive_v3.Drive, fileId: string) {
-  const res = await drive.files.get({
-    fileId,
-    fields: "id, name, mimeType",
-    supportsAllDrives: true,
-  });
-  return res.data;
-}
-
-function sortByName(a: { name?: string | null }, b: { name?: string | null }) {
-  return (a.name ?? "").localeCompare(b.name ?? "", undefined, {
-    sensitivity: "base",
-  });
-}
-
-/**
- * DFS: fills `filesFlat` with every non-folder item and returns a nested tree
- * (folders include all descendants).
- */
-async function walkFolderTree(
-  drive: drive_v3.Drive,
-  folderId: string,
-  folderName: string,
-  folderPath: string,
-  depth: number,
-  maxDepth: number,
-  filesFlat: ListedRow[],
-): Promise<TreeFolder> {
-  if (depth > maxDepth) {
-    console.warn(
-      `Skipping deeper than DRIVE_MAX_DEPTH=${maxDepth} under: ${folderPath}`,
-    );
-    return { type: "folder", id: folderId, name: folderName, children: [] };
-  }
-
-  const children = (await listChildren(drive, folderId)).sort(sortByName);
-  const treeChildren: TreeEntry[] = [];
-
-  for (const f of children) {
-    const id = f.id;
-    const name = f.name;
-    const mimeType = f.mimeType;
-    if (!id || !name || !mimeType) continue;
-
-    const childPath = `${folderPath}/${name}`;
-
-    if (mimeType === FOLDER_MIME) {
-      const subtree = await walkFolderTree(
-        drive,
-        id,
-        name,
-        childPath,
-        depth + 1,
-        maxDepth,
-        filesFlat,
-      );
-      treeChildren.push(subtree);
-    } else {
-      filesFlat.push({
-        id,
-        name,
-        mimeType,
-        size: f.size ?? null,
-        path: childPath,
-      });
-      treeChildren.push({
-        type: "file",
-        id,
-        name,
-        mimeType,
-        size: f.size ?? null,
-      });
-    }
-  }
-
-  return {
-    type: "folder",
-    id: folderId,
-    name: folderName,
-    children: treeChildren,
-  };
-}
-
-function summarizeMimeTypes(rows: ListedRow[]): Map<string, number> {
+function summarizeMimeTypes(rows: DriveListedRow[]): Map<string, number> {
   const m = new Map<string, number>();
   for (const r of rows) {
     m.set(r.mimeType, (m.get(r.mimeType) ?? 0) + 1);
@@ -268,15 +109,19 @@ function main() {
 }
 
 async function runInventory(folderId: string, maxDepth: number) {
-  const drive = getDriveClient();
-  const filesFlat: ListedRow[] = [];
+  const drive = getDriveReadonlyClient();
+  const filesFlat: DriveListedRow[] = [];
 
   let rootName = folderId;
-  let tree: TreeFolder;
+  let tree: DriveTreeFolder;
 
   try {
-    const meta = await getEntryMeta(drive, folderId);
-    if (meta.mimeType !== FOLDER_MIME) {
+    const meta = await driveGetFileMetadata(
+      drive,
+      folderId,
+      "id, name, mimeType",
+    );
+    if (meta.mimeType !== GOOGLE_DRIVE_FOLDER_MIME) {
       console.error(
         `Expected a folder id; got mimeType=${meta.mimeType ?? "(unknown)"}`,
       );
@@ -284,7 +129,7 @@ async function runInventory(folderId: string, maxDepth: number) {
     }
     rootName = meta.name ?? folderId;
 
-    tree = await walkFolderTree(
+    tree = await driveWalkFolderTree(
       drive,
       folderId,
       rootName,
@@ -292,6 +137,11 @@ async function runInventory(folderId: string, maxDepth: number) {
       0,
       maxDepth,
       filesFlat,
+      (p, d) => {
+        console.warn(
+          `Skipping deeper than DRIVE_MAX_DEPTH=${d} under: ${p}`,
+        );
+      },
     );
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -352,7 +202,7 @@ async function runInventory(folderId: string, maxDepth: number) {
       ...r,
       bytes: parseSizeBytes(r.size),
     }))
-    .filter((r): r is ListedRow & { bytes: number } => r.bytes != null)
+    .filter((r): r is DriveListedRow & { bytes: number } => r.bytes != null)
     .sort((a, b) => b.bytes - a.bytes)
     .slice(0, 15);
 
