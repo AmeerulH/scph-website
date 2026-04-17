@@ -31,6 +31,7 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   scphResearchPage: ["/research"],
   scphMediaPage: ["/media"],
   scphNetworkPage: ["/network"],
+  scphJournalistWorkshopsPage: ["/network/journalist-workshops"],
   scphEventsPage: ["/events"],
   scphProgrammesPage: ["/programmes"],
   scphProjectsPage: ["/projects"],

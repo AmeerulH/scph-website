@@ -68,11 +68,14 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-about-page` | `scripts/seed-gtp-about-page.ts` | `gtp2026AboutPage` singleton (full bands; shared builder `scripts/lib/gtp-about-page-seed-doc.ts`) |
 | `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
 | `seed-scph-meet-the-team-page` | `scripts/seed-scph-meet-the-team-page.ts` | `scphMeetTheTeamPage` |
+| `seed-scph-journalist-workshops-page` | `scripts/seed-scph-journalist-workshops-page.ts` | `scphJournalistWorkshopsPage` singleton shell (empty `workshops` until rows seed or Studio) |
+| `seed-scph-journalist-workshop-rows` | `scripts/seed-scph-journalist-workshop-rows.ts` | Patches `workshops[]` from [`scripts/data/journalist-workshops-seed.json`](scripts/data/journalist-workshops-seed.json); optional `JOURNALIST_WORKSHOP_ACCESS_CODES` (comma-separated, 7 values) |
 | `seed-scph-home-page` | `scripts/seed-scph-home-page.ts` | `scphHomePage` |
 | `seed-scph-events-programmes-projects-pages` | `scripts/seed-scph-events-programmes-projects-pages.ts` | `scphEventsPage`, `scphProgrammesPage`, `scphProjectsPage` |
 | `seed-scph-section-pages` | `scripts/seed-scph-section-pages.ts` | Section shells (about / research / network style singletons) |
 | `seed-scph-media-page` | `scripts/seed-scph-media-page.ts` | `scphMediaPage` |
 | `seed-footers` | `scripts/seed-footers.ts` | `scphFooter`, `gtp2026Footer` (singletons; merge with code defaults in `src/sanity/footer.ts`) |
+| `inventory-drive-folder` | `scripts/inventory-drive-folder.ts` | **Not Sanity.** Recursively lists a Google Drive folder (MIME summary; `DRIVE_JSON=1` flat stdout; `DRIVE_SAVE=1` writes nested `tree` + `filesFlat` JSON under `scripts/data/`, gitignored). Uses `GOOGLE_*` + `DRIVE_FOLDER_ID` (see README). |
 
 Many seeds support `DRY_RUN=1` to print JSON only—use before writing to a shared dataset.
 

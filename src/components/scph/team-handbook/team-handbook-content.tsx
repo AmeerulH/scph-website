@@ -73,10 +73,10 @@ const cmsPages = [
   },
   {
     route: "/network/journalist-workshops",
-    docType: "—",
+    docType: "scphJournalistWorkshopsPage",
     title: "Journalist workshops",
     notes:
-      "Code-only placeholder (under construction). Not yet a Studio document.",
+      "Singleton: page title/intro + workshops[] (title, slug, accessCode, driveFolderId, enabled, sortOrder). Unlock + Drive listing UI in later phases.",
   },
   {
     route: "/events",

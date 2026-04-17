@@ -32,6 +32,7 @@ import {gtp2026HighlightSpeakerType} from './gtp2026HighlightSpeakerType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
 import {scphFooterType} from './scphFooterType'
 import {scphHomePageType} from './scphHomePageType'
+import {scphJournalistWorkshopsPageType} from './scphJournalistWorkshopsPageType'
 import {scphMeetTheTeamPageType} from './scphMeetTheTeamPageType'
 import {scphSectionPageTypes} from './scphSectionsPageTypes'
 import {
@@ -85,5 +86,6 @@ export const schemaTypes = [
   gtp2026FooterType,
   scphHomePageType,
   scphMeetTheTeamPageType,
+  scphJournalistWorkshopsPageType,
   ...scphSectionPageTypes,
 ]
