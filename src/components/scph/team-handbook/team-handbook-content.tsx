@@ -76,7 +76,7 @@ const cmsPages = [
     docType: "scphJournalistWorkshopsPage",
     title: "Journalist workshops",
     notes:
-      "Singleton: page title/intro + workshops[] (title, slug, accessCode, driveFolderId, enabled, sortOrder). Unlock + Drive listing UI in later phases.",
+      "Singleton: page title/intro + workshops[] (title, slug, accessCode, driveFolderId, enabled, sortOrder). Public page: unlock form → session cookie; Drive tree + download/preview via `/api/scph/journalist-workshops/file`. Sign out: `POST /api/scph/journalist-workshops/logout`.",
   },
   {
     route: "/events",

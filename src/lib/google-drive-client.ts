@@ -106,7 +106,21 @@ export async function driveFileDescendantOfFolder(
         supportsAllDrives: true,
       });
       parents = res.data.parents ?? [];
-    } catch {
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        const e = err as {
+          code?: string | number;
+          message?: string;
+          response?: { status?: number };
+        };
+        console.error("[drive] descendant-walk files.get failed", {
+          fileId: id,
+          ancestorFolderId,
+          code: e?.code,
+          status: e?.response?.status,
+          message: e?.message,
+        });
+      }
       return false;
     }
 
@@ -117,6 +131,35 @@ export async function driveFileDescendantOfFolder(
     }
   }
 
+  if (process.env.NODE_ENV !== "production") {
+    console.warn("[drive] descendant-walk exhausted without match", {
+      startFileId: fileId,
+      ancestorFolderId,
+      visitedCount: seen.size,
+      apiCalls,
+    });
+    try {
+      const probe = await drive.files.get({
+        fileId,
+        fields:
+          "id,name,mimeType,driveId,parents,shortcutDetails,owners(emailAddress)",
+        supportsAllDrives: true,
+      });
+      console.warn("[drive] descendant-walk probe", {
+        startFileId: fileId,
+        ancestorFolderId,
+        driveId: probe.data.driveId ?? null,
+        parents: probe.data.parents ?? null,
+        mimeType: probe.data.mimeType,
+        isShortcut:
+          probe.data.mimeType === "application/vnd.google-apps.shortcut",
+        shortcutTargetId: probe.data.shortcutDetails?.targetId ?? null,
+        owners: probe.data.owners?.map((o) => o.emailAddress) ?? null,
+      });
+    } catch (err) {
+      console.warn("[drive] descendant-walk probe failed", err);
+    }
+  }
   return false;
 }
 
@@ -295,4 +338,55 @@ export async function driveExportPdfStream(
   fileId: string,
 ): Promise<Readable> {
   return driveExportStream(drive, fileId, "application/pdf");
+}
+
+// ---------------------------------------------------------------------------
+// Listing-based file membership (replaces parent-walk auth for shared folders)
+// ---------------------------------------------------------------------------
+
+type AllowlistEntry = { ids: Set<string>; expiresAt: number };
+const _allowlistCache = new Map<string, AllowlistEntry>();
+const ALLOWLIST_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+async function _collectIds(
+  drive: drive_v3.Drive,
+  folderId: string,
+  ids: Set<string>,
+  depth: number,
+): Promise<void> {
+  if (depth > 10) return;
+  const children = await driveListChildren(drive, folderId);
+  for (const f of children) {
+    if (!f.id) continue;
+    if (f.mimeType === GOOGLE_DRIVE_FOLDER_MIME) {
+      await _collectIds(drive, f.id, ids, depth + 1);
+    } else {
+      ids.add(f.id);
+    }
+  }
+}
+
+/**
+ * Returns the set of all non-folder file IDs reachable from `driveFolderId`.
+ * Result is cached for 5 minutes per folder, shared across sessions.
+ * Uses files.list (works with folder-share) instead of files.get(parents).
+ */
+export async function driveGetWorkshopAllowlist(
+  drive: drive_v3.Drive,
+  driveFolderId: string,
+): Promise<Set<string>> {
+  const now = Date.now();
+
+  const cached = _allowlistCache.get(driveFolderId);
+  if (cached && cached.expiresAt > now) return cached.ids;
+
+  // Prune stale entries
+  for (const [k, v] of _allowlistCache) {
+    if (v.expiresAt <= now) _allowlistCache.delete(k);
+  }
+
+  const ids = new Set<string>();
+  await _collectIds(drive, driveFolderId, ids, 0);
+  _allowlistCache.set(driveFolderId, { ids, expiresAt: now + ALLOWLIST_TTL_MS });
+  return ids;
 }

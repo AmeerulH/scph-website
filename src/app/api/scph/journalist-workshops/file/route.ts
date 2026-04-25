@@ -3,8 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import {
   driveExportPdfStream,
   driveExportStream,
-  driveFileDescendantOfFolder,
   driveGetFileMetadata,
+  driveGetWorkshopAllowlist,
   driveOpenMediaDownloadStream,
   driveResolveShortcutTargetId,
   getDriveReadonlyClient,
@@ -30,6 +30,20 @@ const DRIVE_FILE_ID_RE = /^[a-zA-Z0-9_-]+$/;
 
 function notFound() {
   return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+}
+
+function logJwFileDev(context: string, err: unknown) {
+  if (process.env.NODE_ENV === "production") return;
+  const e = err as {
+    code?: string | number;
+    message?: string;
+    response?: { status?: number };
+  };
+  console.error(`[jw-file] ${context}`, {
+    code: e?.code,
+    status: e?.response?.status,
+    message: e?.message,
+  });
 }
 
 function dispositionFilename(name: string): string {
@@ -76,6 +90,19 @@ export async function GET(req: NextRequest) {
 
   const rootId = session.driveFolderId;
 
+  // Build allowlist from listing (works with folder-share; parent-walk does not).
+  let allowedIds: Set<string>;
+  try {
+    allowedIds = await driveGetWorkshopAllowlist(drive, rootId);
+  } catch (err) {
+    logJwFileDev("allowlist (driveGetWorkshopAllowlist)", err);
+    return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
+  }
+
+  if (!allowedIds.has(fileIdRaw)) {
+    return notFound();
+  }
+
   let meta;
   try {
     meta = await driveGetFileMetadata(
@@ -83,7 +110,8 @@ export async function GET(req: NextRequest) {
       fileIdRaw,
       "id, name, mimeType, shortcutDetails",
     );
-  } catch {
+  } catch (err) {
+    logJwFileDev("metadata (initial files.get)", err);
     return notFound();
   }
 
@@ -97,14 +125,9 @@ export async function GET(req: NextRequest) {
   let downloadName = meta.name ?? "download";
 
   if (mime === GOOGLE_DRIVE_SHORTCUT_MIME) {
-    const shortcutInTree = await driveFileDescendantOfFolder(drive, fileIdRaw, rootId);
-    if (!shortcutInTree) return notFound();
-
+    // Shortcut is in the allowlist — resolve and serve target.
     const targetId = await driveResolveShortcutTargetId(drive, fileIdRaw);
     if (!targetId) return notFound();
-
-    const targetInTree = await driveFileDescendantOfFolder(drive, targetId, rootId);
-    if (!targetInTree) return notFound();
 
     try {
       const targetMeta = await driveGetFileMetadata(
@@ -115,16 +138,14 @@ export async function GET(req: NextRequest) {
       contentId = targetId;
       contentMime = targetMeta.mimeType ?? "";
       downloadName = targetMeta.name ?? downloadName;
-    } catch {
+    } catch (err) {
+      logJwFileDev("metadata (shortcut target files.get)", err);
       return notFound();
     }
 
     if (contentMime === GOOGLE_DRIVE_SHORTCUT_MIME) {
       return notFound();
     }
-  } else {
-    const inTree = await driveFileDescendantOfFolder(drive, fileIdRaw, rootId);
-    if (!inTree) return notFound();
   }
 
   if (contentMime === GOOGLE_DRIVE_FOLDER_MIME) {
@@ -159,7 +180,8 @@ export async function GET(req: NextRequest) {
       outMime =
         contentMime.length > 0 ? contentMime : "application/octet-stream";
     }
-  } catch {
+  } catch (err) {
+    logJwFileDev("stream (export or alt=media)", err);
     return notFound();
   }
 

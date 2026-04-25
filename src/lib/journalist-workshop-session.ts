@@ -3,6 +3,9 @@ import crypto from "node:crypto";
 /** HttpOnly cookie name for unlocked journalist workshop session (Phase 3+). */
 export const JOURNALIST_WORKSHOP_SESSION_COOKIE = "scph_jw_session";
 
+/** Drive folder / file ids from URLs (alphanumeric, underscore, hyphen). */
+const DRIVE_ID_RE = /^[a-zA-Z0-9_-]+$/;
+
 export type JournalistWorkshopSessionPayload = {
   /** Schema version for forward compatibility */
   v: 1;
@@ -55,10 +58,14 @@ export function verifyJournalistWorkshopSession(
   if (typeof o.slug !== "string" || typeof o.driveFolderId !== "string") return null;
   if (typeof o.exp !== "number") return null;
   if (o.exp < Math.floor(Date.now() / 1000)) return null;
+  const driveFolderId = o.driveFolderId.trim();
+  const slug = o.slug.trim();
+  if (!DRIVE_ID_RE.test(driveFolderId)) return null;
+  if (!slug) return null;
   return {
     v: 1,
-    slug: o.slug,
-    driveFolderId: o.driveFolderId,
+    slug,
+    driveFolderId,
     exp: o.exp,
   };
 }
