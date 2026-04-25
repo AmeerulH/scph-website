@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -31,8 +32,9 @@ const GOOGLE_DRIVE_DRAWING_MIME = "application/vnd.google-apps.drawing";
 // Helpers
 // ---------------------------------------------------------------------------
 
-function fileProxyHref(fileId: string): string {
-  return `/api/scph/journalist-workshops/file?fileId=${encodeURIComponent(fileId)}`;
+function fileProxyHref(fileId: string, download = false): string {
+  const base = `/api/scph/journalist-workshops/file?fileId=${encodeURIComponent(fileId)}`;
+  return download ? `${base}&dl=1` : base;
 }
 
 type PreviewKind = "pdf" | "image" | null;
@@ -120,7 +122,7 @@ function FileCard({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const href = fileProxyHref(file.id);
+  const href = fileProxyHref(file.id, true);
   const kind = previewKind(file.mimeType);
   const badge = fileBadge(file.mimeType);
   const size = formatSize(file.size);
@@ -236,7 +238,7 @@ function Breadcrumb({
 // Preview panel (slide-over from right)
 // ---------------------------------------------------------------------------
 
-type SelectedFile = DriveTreeFile & { href: string; kind: PreviewKind };
+type SelectedFile = DriveTreeFile & { href: string; downloadHref: string; kind: PreviewKind };
 
 function PreviewPanel({
   file,
@@ -253,17 +255,23 @@ function PreviewPanel({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  if (!file) return null;
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { setLoading(true); }, [file?.id]);
+
+  if (!file || !mounted) return null;
 
   const badge = fileBadge(file.mimeType);
   const size = formatSize(file.size);
   const displayName = file.name.replace(/\.[a-zA-Z0-9]{1,5}$/, "");
 
-  return (
+  return createPortal(
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-scph-blue/[0.06] backdrop-blur-[1px]"
+        className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden
       />
@@ -273,7 +281,7 @@ function PreviewPanel({
         role="dialog"
         aria-modal="true"
         aria-label={`Preview: ${file.name}`}
-        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-lg flex-col bg-white shadow-2xl shadow-black/10 animate-in slide-in-from-right duration-300"
+        className="fixed inset-y-0 right-0 z-[9999] flex w-full max-w-lg flex-col bg-white shadow-2xl shadow-black/10 animate-in slide-in-from-right duration-300"
       >
         {/* Panel header */}
         <div className="flex items-start justify-between gap-4 border-b border-border/50 px-5 py-4">
@@ -305,19 +313,38 @@ function PreviewPanel({
         </div>
 
         {/* Preview content */}
-        <div className="flex-1 overflow-hidden bg-muted/20">
+        <div className="relative flex-1 overflow-hidden bg-muted/20">
+          {/* Loading overlay */}
+          {loading && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-white">
+              <svg
+                className="h-8 w-8 animate-spin text-scph-blue/40"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+              <p className="text-xs text-muted-foreground">Loading preview…</p>
+            </div>
+          )}
           {file.kind === "pdf" ? (
             <iframe
+              key={file.href}
               title={`Preview: ${file.name}`}
               src={file.href}
               className="h-full w-full border-0 bg-white"
+              onLoad={() => setLoading(false)}
             />
           ) : file.kind === "image" ? (
             <div className="flex h-full items-center justify-center p-6">
               <img
+                key={file.href}
                 src={file.href}
                 alt={file.name}
                 className="max-h-full max-w-full rounded-lg object-contain shadow-sm"
+                onLoad={() => setLoading(false)}
               />
             </div>
           ) : null}
@@ -326,7 +353,7 @@ function PreviewPanel({
         {/* Panel footer */}
         <div className="border-t border-border/50 px-5 py-4">
           <a
-            href={file.href}
+            href={file.downloadHref}
             download
             className="inline-flex h-9 w-full items-center justify-center gap-2 rounded-full bg-scph-blue text-sm font-semibold text-white shadow-sm transition-colors hover:bg-scph-blue-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-scph-blue"
           >
@@ -335,7 +362,8 @@ function PreviewPanel({
           </a>
         </div>
       </div>
-    </>
+    </>,
+    document.body,
   );
 }
 
@@ -377,7 +405,7 @@ export function JournalistWorkshopsDriveTree({
   const selectFile = useCallback((file: DriveTreeFile) => {
     const kind = previewKind(file.mimeType);
     if (!kind) return;
-    setSelected({ ...file, href: fileProxyHref(file.id), kind });
+    setSelected({ ...file, href: fileProxyHref(file.id, false), downloadHref: fileProxyHref(file.id, true), kind });
   }, []);
 
   const closePreview = useCallback(() => setSelected(null), []);
@@ -405,10 +433,10 @@ export function JournalistWorkshopsDriveTree({
         {/* Header: workshop title + sign-out */}
         <div className="flex items-center justify-between gap-4 border-b border-scph-blue/8 bg-scph-blue/[0.03] px-5 py-5">
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-semibold text-scph-blue">
+            <p className="truncate text-lg font-bold text-scph-blue">
               {workshopTitle}
             </p>
-            <p className="text-[11px] text-muted-foreground">Workshop materials</p>
+            <p className="text-sm text-muted-foreground">Workshop materials</p>
           </div>
           <Button
             type="button"

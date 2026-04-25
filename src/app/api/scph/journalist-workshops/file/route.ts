@@ -73,6 +73,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
 
+  const forceDownload = req.nextUrl.searchParams.get("dl") === "1";
   const fileIdRaw = req.nextUrl.searchParams.get("fileId")?.trim();
   if (!fileIdRaw || !DRIVE_FILE_ID_RE.test(fileIdRaw)) {
     return NextResponse.json({ ok: false, error: "Bad request" }, { status: 400 });
@@ -187,7 +188,8 @@ export async function GET(req: NextRequest) {
 
   headers.set("Content-Type", outMime);
   const safe = dispositionFilename(downloadName);
-  headers.set("Content-Disposition", `attachment; filename="${safe}"`);
+  const disposition = forceDownload ? "attachment" : "inline";
+  headers.set("Content-Disposition", `${disposition}; filename="${safe}"`);
 
   const web = Readable.toWeb(nodeStream) as unknown as ReadableStream<Uint8Array>;
   return new Response(web, { status: 200, headers });

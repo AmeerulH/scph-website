@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loading-overlay";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -14,6 +15,7 @@ export function JournalistWorkshopsUnlockForm({ className }: Props) {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [navigating, setNavigating] = useState(false);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,6 +35,7 @@ export function JournalistWorkshopsUnlockForm({ className }: Props) {
       });
       if (res.ok) {
         setCode("");
+        setNavigating(true);
         router.refresh();
         return;
       }
@@ -49,6 +52,8 @@ export function JournalistWorkshopsUnlockForm({ className }: Props) {
   }
 
   return (
+    <>
+    {navigating && <FullPageLoadingOverlay variant="scph" label="Unlocking workshop materials" />}
     <form
       onSubmit={onSubmit}
       className={cn("space-y-4", className)}
@@ -82,5 +87,6 @@ export function JournalistWorkshopsUnlockForm({ className }: Props) {
         {pending ? "Checking…" : "Unlock materials"}
       </Button>
     </form>
+    </>
   );
 }
