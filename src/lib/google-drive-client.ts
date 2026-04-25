@@ -74,6 +74,52 @@ export async function driveListChildren(
   return out;
 }
 
+/** Max folders walked upward (shared drives / nested trees). */
+const DRIVE_PARENT_WALK_MAX = 80;
+
+/**
+ * True if `fileId` is a strict descendant of `ancestorFolderId` (walks parents; supports multi-parent).
+ * Returns false if `fileId` is the folder itself or unrelated.
+ */
+export async function driveFileDescendantOfFolder(
+  drive: drive_v3.Drive,
+  fileId: string,
+  ancestorFolderId: string,
+): Promise<boolean> {
+  if (!fileId || !ancestorFolderId || fileId === ancestorFolderId) return false;
+
+  const seen = new Set<string>();
+  const queue: string[] = [fileId];
+  let apiCalls = 0;
+
+  while (queue.length > 0 && apiCalls < DRIVE_PARENT_WALK_MAX) {
+    const id = queue.shift()!;
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    let parents: string[];
+    try {
+      apiCalls += 1;
+      const res = await drive.files.get({
+        fileId: id,
+        fields: "parents",
+        supportsAllDrives: true,
+      });
+      parents = res.data.parents ?? [];
+    } catch {
+      return false;
+    }
+
+    if (parents.includes(ancestorFolderId)) return true;
+
+    for (const p of parents) {
+      if (!seen.has(p)) queue.push(p);
+    }
+  }
+
+  return false;
+}
+
 export async function driveGetFileMetadata(
   drive: drive_v3.Drive,
   fileId: string,
@@ -223,15 +269,16 @@ export async function driveOpenMediaDownloadStream(
   return stream;
 }
 
-/** Export Google Docs / Sheets / Slides to PDF stream. */
-export async function driveExportPdfStream(
+/** Export Google Workspace file to a concrete MIME (e.g. PDF, PNG for drawings). */
+export async function driveExportStream(
   drive: drive_v3.Drive,
   fileId: string,
+  exportMimeType: string,
 ): Promise<Readable> {
   const res = await drive.files.export(
     {
       fileId,
-      mimeType: "application/pdf",
+      mimeType: exportMimeType,
     },
     { responseType: "stream" },
   );
@@ -240,4 +287,12 @@ export async function driveExportPdfStream(
     throw new Error("Drive export did not return a readable stream.");
   }
   return stream;
+}
+
+/** Export Google Docs / Sheets / Slides to PDF stream. */
+export async function driveExportPdfStream(
+  drive: drive_v3.Drive,
+  fileId: string,
+): Promise<Readable> {
+  return driveExportStream(drive, fileId, "application/pdf");
 }
