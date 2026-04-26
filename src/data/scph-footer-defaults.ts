@@ -71,6 +71,16 @@ export const scphFooterDefaultColumnCommunity: FooterLinkColumnResolved = {
   links: [
     { label: "Media Professional Network", href: "/network", openInNewTab: false },
     { label: "Youth Action Network", href: "/network", openInNewTab: false },
+    {
+      label: "Community hub",
+      href: "/network/community-hub",
+      openInNewTab: false,
+    },
+    {
+      label: "Journalist workshops",
+      href: "/network/journalist-workshops",
+      openInNewTab: false,
+    },
   ],
 };
 

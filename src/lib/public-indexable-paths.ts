@@ -10,6 +10,8 @@ export const SCPH_MARKETING_PATHS: readonly string[] = [
   "/events",
   "/media",
   "/network",
+  "/network/community-hub",
+  "/network/journalist-workshops",
   "/projects",
 ];
 

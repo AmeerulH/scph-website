@@ -65,6 +65,20 @@ const cmsPages = [
       "Community two-column copy + benefits list; optional blocks before signup form.",
   },
   {
+    route: "/network/community-hub",
+    docType: "—",
+    title: "Community hub",
+    notes:
+      "Code-only placeholder (coming soon). Not yet a Studio document; will gain CMS fields when content is ready.",
+  },
+  {
+    route: "/network/journalist-workshops",
+    docType: "scphJournalistWorkshopsPage",
+    title: "Journalist workshops",
+    notes:
+      "Singleton: page title/intro + workshops[] (title, slug, accessCode, driveFolderId, enabled, sortOrder). Public page: unlock form → session cookie; Drive tree + download/preview via `/api/scph/journalist-workshops/file`. Sign out: `POST /api/scph/journalist-workshops/logout`.",
+  },
+  {
     route: "/events",
     docType: "scphEventsPage",
     title: "Events",
@@ -357,7 +371,7 @@ export function TeamHandbookContent() {
             <tbody>
               {cmsPages.map((row) => (
                 <tr
-                  key={row.docType}
+                  key={`${row.route}:${row.docType}`}
                   className="border-b border-gray-100 last:border-0"
                 >
                   <td className="px-4 py-3 align-top">

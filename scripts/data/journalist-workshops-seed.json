@@ -1,0 +1,60 @@
+{
+  "workshops": [
+    {
+      "title": "1. Workshop April 01/24 Climate, Air Pollution and Health",
+      "slug": "workshop-01-apr-2024-climate-air-pollution-health",
+      "accessCode": "REPLACE-ME-WORKSHOP-01",
+      "driveFolderId": "16cnHTFMcO9MszyKZ4u1HYXNsLAIk-WYd",
+      "enabled": true,
+      "sortOrder": 0
+    },
+    {
+      "title": "2. Workshop Feb 01/25 Extreme Heat and Health",
+      "slug": "workshop-02-feb-2025-extreme-heat-health",
+      "accessCode": "REPLACE-ME-WORKSHOP-02",
+      "driveFolderId": "1xOIdFfOZ_no8Soq5nbpW1hHCxVoA2HR_",
+      "enabled": true,
+      "sortOrder": 1
+    },
+    {
+      "title": "3. Workshop June 02/25 Air and Plastic Pollution",
+      "slug": "workshop-03-jun-2025-air-plastic-pollution",
+      "accessCode": "REPLACE-ME-WORKSHOP-03",
+      "driveFolderId": "18Sq0jJI0QqgFXe5myjQQtbHtWjhQMNK2",
+      "enabled": true,
+      "sortOrder": 2
+    },
+    {
+      "title": "4. Workshop Sept 03/25 Intergovernmental Processes",
+      "slug": "workshop-04-sep-2025-intergovernmental-processes",
+      "accessCode": "REPLACE-ME-WORKSHOP-04",
+      "driveFolderId": "16v76dhoUnKbGso9KHjDjd1jL1Wswr5nr",
+      "enabled": true,
+      "sortOrder": 3
+    },
+    {
+      "title": "5. Workshop Jan 01/26 Misinformation/Disinformation",
+      "slug": "workshop-05-jan-2026-misinformation-disinformation",
+      "accessCode": "REPLACE-ME-WORKSHOP-05",
+      "driveFolderId": "1523k2cA6qWexjcsyF6tYGaDFh5oB89D2",
+      "enabled": true,
+      "sortOrder": 4
+    },
+    {
+      "title": "6. Workshop April 2/26 Heat and Health",
+      "slug": "workshop-06-apr-2026-heat-health",
+      "accessCode": "REPLACE-ME-WORKSHOP-06",
+      "driveFolderId": "1bJpNlE75RIaSLkwHXZo27xtZ2yI8dlbx",
+      "enabled": true,
+      "sortOrder": 5
+    },
+    {
+      "title": "Reading Materials",
+      "slug": "reading-materials",
+      "accessCode": "REPLACE-ME-READING-MATERIALS",
+      "driveFolderId": "1KQ654-pndTviETtI9mxjHVGx_jFe9I-l",
+      "enabled": true,
+      "sortOrder": 6
+    }
+  ]
+}
