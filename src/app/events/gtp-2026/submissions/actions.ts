@@ -182,7 +182,7 @@ export async function sendWorkshopSubmission(
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
-      range: "Workshop Submissions!A:S",
+      range: "Action Workshop Submissions!A:S",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [
