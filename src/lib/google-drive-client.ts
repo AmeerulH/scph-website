@@ -341,6 +341,33 @@ export async function driveExportPdfStream(
 }
 
 // ---------------------------------------------------------------------------
+// Service-account access token (cached ~55 min; used to proxy thumbnail URLs)
+// ---------------------------------------------------------------------------
+
+let _cachedToken: { token: string; expiresAt: number } | null = null;
+
+export async function getDriveAccessToken(): Promise<string> {
+  const now = Date.now();
+  if (_cachedToken && _cachedToken.expiresAt > now + 60_000) return _cachedToken.token;
+
+  const privateKey = normalizeGooglePrivateKey(process.env.GOOGLE_PRIVATE_KEY);
+  const clientEmail = process.env.GOOGLE_CLIENT_EMAIL?.trim();
+  if (!privateKey || !clientEmail) throw new Error("Missing Google credentials");
+
+  const auth = new google.auth.GoogleAuth({
+    credentials: { client_email: clientEmail, private_key: privateKey },
+    scopes: ["https://www.googleapis.com/auth/drive.readonly"],
+  });
+  const client = await auth.getClient();
+  const response = await (client as { getAccessToken: () => Promise<{ token?: string | null }> }).getAccessToken();
+  const token = response.token;
+  if (!token) throw new Error("Failed to get Drive access token");
+
+  _cachedToken = { token, expiresAt: now + 55 * 60 * 1000 };
+  return token;
+}
+
+// ---------------------------------------------------------------------------
 // Listing-based file membership (replaces parent-walk auth for shared folders)
 // ---------------------------------------------------------------------------
 

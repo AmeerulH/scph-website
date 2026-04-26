@@ -154,7 +154,7 @@ export async function GET(req: NextRequest) {
   }
 
   const headers = new Headers();
-  headers.set("Cache-Control", "private, no-store");
+  headers.set("Cache-Control", "private, max-age=300");
 
   let nodeStream: Readable;
   let outMime: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
@@ -35,6 +35,10 @@ const GOOGLE_DRIVE_DRAWING_MIME = "application/vnd.google-apps.drawing";
 function fileProxyHref(fileId: string, download = false): string {
   const base = `/api/scph/journalist-workshops/file?fileId=${encodeURIComponent(fileId)}`;
   return download ? `${base}&dl=1` : base;
+}
+
+function thumbnailHref(fileId: string): string {
+  return `/api/scph/journalist-workshops/thumbnail?fileId=${encodeURIComponent(fileId)}`;
 }
 
 type PreviewKind = "pdf" | "image" | null;
@@ -110,6 +114,171 @@ function FolderCard({
 }
 
 // ---------------------------------------------------------------------------
+// File type placeholder (non-previewable files)
+// ---------------------------------------------------------------------------
+
+function filePlaceholderSpec(mime: string): { bg: string; iconColor: string; icon: React.ReactElement } {
+  if (mime === GOOGLE_DRIVE_DOCUMENT_MIME) return {
+    bg: "bg-blue-50/60",
+    iconColor: "text-blue-300",
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-10 w-10" fill="none" aria-hidden>
+        <rect x="10" y="4" width="28" height="36" rx="3" fill="currentColor" opacity="0.2" />
+        <path d="M16 16h16M16 22h16M16 28h10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M30 4v10h8" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    ),
+  };
+  if (mime === GOOGLE_DRIVE_PRESENTATION_MIME) return {
+    bg: "bg-orange-50/60",
+    iconColor: "text-orange-300",
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-10 w-10" fill="none" aria-hidden>
+        <rect x="6" y="8" width="36" height="26" rx="3" fill="currentColor" opacity="0.2" />
+        <rect x="12" y="14" width="24" height="14" rx="1.5" fill="currentColor" opacity="0.15" />
+        <path d="M20 38l4-4 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="24" y1="34" x2="24" y2="40" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      </svg>
+    ),
+  };
+  if (mime === GOOGLE_DRIVE_SPREADSHEET_MIME) return {
+    bg: "bg-emerald-50/60",
+    iconColor: "text-emerald-300",
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-10 w-10" fill="none" aria-hidden>
+        <rect x="8" y="6" width="32" height="36" rx="3" fill="currentColor" opacity="0.2" />
+        <line x1="8" y1="18" x2="40" y2="18" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="8" y1="28" x2="40" y2="28" stroke="currentColor" strokeWidth="1.5" />
+        <line x1="24" y1="6" x2="24" y2="42" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    ),
+  };
+  // Generic file
+  return {
+    bg: "bg-gray-50/60",
+    iconColor: "text-gray-300",
+    icon: (
+      <svg viewBox="0 0 48 48" className="h-10 w-10" fill="none" aria-hidden>
+        <rect x="10" y="4" width="28" height="40" rx="3" fill="currentColor" opacity="0.2" />
+        <path d="M16 20h16M16 27h12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+        <path d="M30 4v10h8" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      </svg>
+    ),
+  };
+}
+
+function FilePlaceholder({ mime }: { mime: string }) {
+  const spec = filePlaceholderSpec(mime);
+  return (
+    <div className={cn("flex h-32 w-full items-center justify-center rounded-lg", spec.bg)}>
+      <span className={spec.iconColor}>{spec.icon}</span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Thumbnail zone (lazy image / hover-loaded PDF iframe)
+// ---------------------------------------------------------------------------
+
+function ThumbnailZone({
+  file,
+  onOpen,
+}: {
+  file: DriveTreeFile;
+  onOpen: () => void;
+}) {
+  const [inView, setInView] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); io.disconnect(); } },
+      { rootMargin: "150px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const kind = previewKind(file.mimeType);
+  const thumbSrc = thumbnailHref(file.id);
+
+  return (
+    <div
+      ref={containerRef}
+      role="button"
+      tabIndex={0}
+      aria-label={`Open preview of ${file.name}`}
+      onClick={onOpen}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(); } }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="relative h-32 w-full cursor-pointer overflow-hidden rounded-lg bg-muted/40 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-scph-blue"
+    >
+      {/* Skeleton shown until content loads */}
+      {!loaded && !failed && (
+        <div className="absolute inset-0 animate-pulse bg-muted/50" />
+      )}
+
+      {/* Fallback placeholder shown when thumbnail unavailable */}
+      {failed && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          {kind === "pdf" ? (
+            <svg viewBox="0 0 48 48" className="h-10 w-10 text-red-300/60" fill="none" aria-hidden>
+              <rect x="8" y="4" width="32" height="40" rx="3" fill="currentColor" opacity="0.25" />
+              <path d="M16 18h16M16 24h16M16 30h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <path d="M28 4v10h12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 48 48" className="h-10 w-10 text-violet-300/60" fill="none" aria-hidden>
+              <rect x="6" y="6" width="36" height="36" rx="4" fill="currentColor" opacity="0.15" />
+              <path d="M6 30l10-10 8 8 6-6 12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="16" cy="18" r="3" fill="currentColor" opacity="0.4" />
+            </svg>
+          )}
+        </div>
+      )}
+
+      {/* Drive thumbnail — single <img> for both images and PDFs */}
+      {inView && !failed && (
+        <img
+          src={thumbSrc}
+          alt=""
+          aria-hidden
+          className={cn(
+            "h-full w-full object-cover transition-opacity duration-300",
+            loaded ? "opacity-100" : "opacity-0",
+          )}
+          onLoad={() => setLoaded(true)}
+          onError={() => { setLoaded(false); setFailed(true); }}
+        />
+      )}
+
+      {/* Hover overlay with "Preview" hint */}
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center justify-center transition-all duration-150",
+          hovered ? "bg-black/30" : "bg-transparent",
+        )}
+      >
+        <span
+          className={cn(
+            "rounded-full bg-white/95 px-3 py-1 text-[11px] font-semibold text-foreground shadow-sm transition-all duration-150",
+            hovered ? "scale-100 opacity-100" : "scale-90 opacity-0",
+          )}
+        >
+          Open preview
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // File card
 // ---------------------------------------------------------------------------
 
@@ -122,23 +291,29 @@ function FileCard({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const href = fileProxyHref(file.id, true);
+  const downloadHref = fileProxyHref(file.id, true);
   const kind = previewKind(file.mimeType);
   const badge = fileBadge(file.mimeType);
   const size = formatSize(file.size);
   const canPreview = kind !== null;
-  // Strip extension from display name for cleanliness
   const displayName = file.name.replace(/\.[a-zA-Z0-9]{1,5}$/, "");
 
   return (
     <div
       className={cn(
-        "group flex flex-col gap-3 rounded-xl border p-4 transition-all duration-200",
+        "group flex flex-col gap-3 rounded-xl border p-3 transition-all duration-200",
         isSelected
           ? "border-scph-blue bg-white/90 shadow-lg shadow-scph-blue/10 ring-2 ring-scph-blue/20"
           : "border-scph-blue/10 bg-white/70 hover:-translate-y-1 hover:border-scph-blue/30 hover:bg-white/90 hover:shadow-lg hover:shadow-scph-blue/8",
       )}
     >
+      {/* Thumbnail for previewable files; type placeholder for the rest */}
+      {canPreview ? (
+        <ThumbnailZone file={file} onOpen={onClick} />
+      ) : (
+        <FilePlaceholder mime={file.mimeType} />
+      )}
+
       {/* Badge row */}
       <div className="flex items-center justify-between gap-2">
         <span
@@ -172,7 +347,7 @@ function FileCard({
       {/* Actions */}
       <div className="mt-auto flex items-center gap-2 pt-1">
         <a
-          href={href}
+          href={downloadHref}
           download
           className="inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold text-scph-blue ring-1 ring-scph-blue/30 transition-colors hover:bg-scph-blue hover:text-white hover:ring-transparent focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-scph-blue"
           aria-label={`Download ${file.name}`}
