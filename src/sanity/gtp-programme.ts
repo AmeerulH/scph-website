@@ -104,6 +104,8 @@ interface SanityWorkshopRow {
   number?: string;
   title?: string;
   objective?: string;
+  speakers?: SanitySpeakerRow[];
+  speakerCount?: number;
 }
 
 interface SanitySpeakerRow {
@@ -189,7 +191,18 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         sessionRole,
         "imageUrl": image.asset->url
       },
-      workshops[]{ number, title, objective },
+      workshops[]{
+        number,
+        title,
+        objective,
+        speakerCount,
+        speakers[]{
+          name,
+          designation,
+          sessionRole,
+          "imageUrl": image.asset->url
+        }
+      },
       breakLabel,
       breakIcon,
       isEvening,
@@ -315,9 +328,23 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   const number = typeof row.number === "string" ? row.number.trim() : "";
   const title = typeof row.title === "string" ? row.title.trim() : "";
   if (!number || !title) return null;
-  const objective =
-    typeof row.objective === "string" && row.objective.trim() ? row.objective.trim() : undefined;
-  return objective ? { number, title, objective } : { number, title };
+
+  const workshop: Workshop = { number, title };
+
+  if (typeof row.objective === "string" && row.objective.trim()) {
+    workshop.objective = row.objective.trim();
+  }
+
+  if (Array.isArray(row.speakers) && row.speakers.length > 0) {
+    const speakers = row.speakers.map(mapSpeaker).filter((s): s is Speaker => s !== null);
+    if (speakers.length > 0) workshop.speakers = speakers;
+  }
+
+  if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
+    workshop.speakerCount = row.speakerCount;
+  }
+
+  return workshop;
 }
 
 function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {

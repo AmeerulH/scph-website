@@ -4,6 +4,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X, Clock, MapPin, UserCircle2 } from "lucide-react";
+import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Session, Workshop } from "./types";
@@ -161,16 +162,53 @@ export function WorkshopModal({
                   <ProgrammeModalShareRegisterColumn shareTitle={w.title} />
                   <div className="flex flex-col gap-6">
                     <ProgrammeModalHostedByBlock hostedBy={hostedBy} />
-                    <div>
-                      <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
-                      <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
-                        <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
-                        <div>
-                          <p className="text-sm font-medium text-gray-600">To be confirmed</p>
-                          <p className="text-xs text-gray-400">Speaker details coming soon</p>
+                    {w.speakers && w.speakers.length > 0 ? (
+                      <div>
+                        <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
+                        <div className="space-y-3">
+                          {w.speakers.map((sp, i) => (
+                            <div key={`${sp.name}-${i}`} className="flex items-center gap-3">
+                              <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} />
+                              <div className="min-w-0">
+                                {sp.sessionRole?.trim() ? (
+                                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                                    {sp.sessionRole.trim()}
+                                  </p>
+                                ) : null}
+                                <p className="text-sm font-semibold text-gray-800">{sp.name}</p>
+                                {sp.designation && (
+                                  <p className="text-xs leading-relaxed text-gtp-teal">
+                                    {sp.designation}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div>
+                        <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
+                        <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
+                          <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
+                          <div>
+                            {(w.speakerCount ?? 0) > 0 ? (
+                              <>
+                                <p className="text-sm font-medium text-gray-600">To be confirmed</p>
+                                <p className="text-xs text-gray-400">
+                                  Approx. {w.speakerCount} speaker{w.speakerCount !== 1 ? "s" : ""} planned
+                                </p>
+                              </>
+                            ) : (
+                              <>
+                                <p className="text-sm font-medium text-gray-600">To be confirmed</p>
+                                <p className="text-xs text-gray-400">Speaker details coming soon</p>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

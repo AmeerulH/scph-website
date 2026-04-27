@@ -25,6 +25,19 @@ export const programmeWorkshopType = defineType({
       rows: 4,
       description: 'Optional. Shown for this parallel slot on the programme page.',
     }),
+    defineField({
+      name: 'speakers',
+      title: 'Speakers',
+      type: 'array',
+      of: [{type: 'programmeSpeaker'}],
+      description: 'Named speakers for this parallel slot. If empty, use Speaker count (TBC) below.',
+    }),
+    defineField({
+      name: 'speakerCount',
+      title: 'Speaker count (TBC)',
+      type: 'number',
+      description: 'Shown when speakers are not yet confirmed.',
+    }),
   ],
   preview: {
     select: {title: 'title', number: 'number'},

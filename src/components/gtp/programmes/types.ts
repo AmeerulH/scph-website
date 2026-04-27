@@ -36,6 +36,8 @@ export interface Workshop {
   number: string;
   title: string;
   objective?: string;
+  speakers?: Speaker[];
+  speakerCount?: number;
 }
 
 export interface Session {

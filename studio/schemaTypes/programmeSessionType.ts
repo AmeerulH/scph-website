@@ -71,13 +71,17 @@ export const programmeSessionType = defineType({
       title: 'Speakers',
       type: 'array',
       of: [{type: 'programmeSpeaker'}],
-      description: 'Named speakers. If empty, use Speaker count (TBC) below.',
+      description: 'Named speakers. If empty, use Speaker count (TBC) below. Not shown for parallel sessions — add speakers to each individual workshop slot instead.',
+      hidden: ({parent}) =>
+        parent?.type === 'concurrent' || parent?.type === 'research',
     }),
     defineField({
       name: 'speakerCount',
       title: 'Speaker count (TBC)',
       type: 'number',
-      description: 'Shown when speakers are not yet confirmed.',
+      description: 'Shown when speakers are not yet confirmed. Not used for parallel sessions — set speaker count on each individual workshop slot instead.',
+      hidden: ({parent}) =>
+        parent?.type === 'concurrent' || parent?.type === 'research',
     }),
     defineField({
       name: 'workshops',
