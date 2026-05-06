@@ -8,10 +8,11 @@ interface SnackbarProps {
   show: boolean;
   message: string;
   onClose: () => void;
+  /** Omit for manual-dismiss only. Pass ms value for auto-dismiss. */
   duration?: number;
 }
 
-export function Snackbar({ show, message, onClose, duration = 4000 }: SnackbarProps) {
+export function Snackbar({ show, message, onClose, duration }: SnackbarProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function Snackbar({ show, message, onClose, duration = 4000 }: SnackbarPr
   }, []);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show || !duration) return;
     const t = setTimeout(onClose, duration);
     return () => clearTimeout(t);
   }, [show, duration, onClose]);
