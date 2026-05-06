@@ -127,6 +127,7 @@ interface SanitySessionRow {
   workshops?: SanityWorkshopRow[];
   breakLabel?: string;
   breakIcon?: string;
+  workshopNote?: string;
   isEvening?: boolean;
   venueType?: string;
   venueLine?: string;
@@ -205,6 +206,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       },
       breakLabel,
       breakIcon,
+      workshopNote,
       isEvening,
       venueType,
       venueLine,
@@ -398,6 +400,10 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     session.breakIcon = row.breakIcon;
   }
 
+  if (typeof row.workshopNote === "string" && row.workshopNote.trim()) {
+    session.workshopNote = row.workshopNote.trim();
+  }
+
   if (row.isEvening === true) session.isEvening = true;
 
   if (typeof row.venueType === "string" && VENUE_TYPES.has(row.venueType as ProgrammeVenueType)) {
@@ -442,6 +448,19 @@ function buildTabsFromSanityDays(days: SanityProgrammeDayRow[]): GtpProgrammeTab
   });
 }
 
+/** CMS value wins; static data.tsx value is the code-level default. */
+function applyStaticWorkshopNotes(sessions: Session[], staticSessions: Session[]): Session[] {
+  const notes = new Map(
+    staticSessions.filter((s) => s.workshopNote).map((s) => [s.time, s.workshopNote!]),
+  );
+  if (notes.size === 0) return sessions;
+  return sessions.map((s) => {
+    if (s.workshopNote) return s;
+    const note = notes.get(s.time);
+    return note ? { ...s, workshopNote: note } : s;
+  });
+}
+
 function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpProgrammePageData | null {
   if (!doc?.days?.length) return null;
 
@@ -454,8 +473,8 @@ function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpPro
   const devLog = process.env.NODE_ENV === "development";
 
   const day1 = mapDaySessions(byTab.get("day1")?.sessions, devLog);
-  const day2 = mapDaySessions(byTab.get("day2")?.sessions, devLog);
-  const day3 = mapDaySessions(byTab.get("day3")?.sessions, devLog);
+  const day2 = applyStaticWorkshopNotes(mapDaySessions(byTab.get("day2")?.sessions, devLog), staticDay2);
+  const day3 = applyStaticWorkshopNotes(mapDaySessions(byTab.get("day3")?.sessions, devLog), staticDay3);
   const day4 = mapDaySessions(byTab.get("day4")?.sessions, devLog);
 
   const data: GtpProgrammePageData = {

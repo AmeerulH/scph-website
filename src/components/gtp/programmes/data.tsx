@@ -320,6 +320,7 @@ export const day2: Session[] = [
     title: "Coffee Break",
     breakLabel: "Coffee Break",
     breakIcon: "coffee",
+    workshopNote: "Action Workshops also run concurrently during this break",
   },
   {
     time: "11:10 – 12:40",
@@ -433,6 +434,7 @@ export const day2: Session[] = [
     title: "Coffee Break",
     breakLabel: "Coffee Break",
     breakIcon: "coffee",
+    workshopNote: "Action Workshops also run concurrently during this break",
   },
   {
     time: "16:00 – 16:30",
@@ -500,6 +502,7 @@ export const day3: Session[] = [
     title: "Coffee Break",
     breakLabel: "Coffee Break",
     breakIcon: "coffee",
+    workshopNote: "Action Workshops also run concurrently during this break",
   },
   {
     time: "12:00 – 13:00",
@@ -616,6 +619,7 @@ export const day3: Session[] = [
     title: "Coffee Break",
     breakLabel: "Coffee Break",
     breakIcon: "coffee",
+    workshopNote: "Action Workshops also run concurrently during this break",
   },
   {
     time: "16:00 – 16:30",

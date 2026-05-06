@@ -56,6 +56,8 @@ export interface Session {
   workshops?: Workshop[];
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";
+  /** Temp: concurrent workshop notice for team review (Day 2 & 3 coffee breaks) */
+  workshopNote?: string;
   isEvening?: boolean;
   /** CMS: categorisation for venue (optional). */
   venueType?: ProgrammeVenueType;

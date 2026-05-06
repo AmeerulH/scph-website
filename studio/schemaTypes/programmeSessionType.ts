@@ -96,6 +96,14 @@ export const programmeSessionType = defineType({
       description: 'Optional override for break rows (e.g. Coffee Break).',
     }),
     defineField({
+      name: 'workshopNote',
+      title: 'Concurrent workshop notice',
+      type: 'string',
+      description:
+        'When set, shows an inline badge on the break strip (e.g. "Action Workshops also run during this break"). Leave empty to hide.',
+      hidden: ({parent}) => parent?.type !== 'break',
+    }),
+    defineField({
       name: 'breakIcon',
       title: 'Break icon',
       type: 'string',

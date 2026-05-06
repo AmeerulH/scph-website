@@ -55,13 +55,7 @@ export function DayAgenda({
       <div className="space-y-4">
         {sessions.map((session, i) => {
           if (session.type === "break") {
-            return (
-              <BreakStrip
-                key={i}
-                session={session}
-                calendarTabId={calendarTabId}
-              />
-            );
+            return <BreakStrip key={i} session={session} />;
           }
           if (session.type === "concurrent" || session.type === "research") {
             return (
