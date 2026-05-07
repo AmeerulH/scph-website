@@ -120,13 +120,13 @@ export function SessionCard({
                 <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} sizeClassName="h-8 w-8" />
                 <div className="min-w-0">
                   {sp.sessionRole?.trim() ? (
-                    <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
                       {sp.sessionRole.trim()}
                     </p>
                   ) : null}
-                  <p className="truncate text-xs font-semibold text-gray-800">{sp.name}</p>
+                  <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
                   {sp.designation && (
-                    <p className="truncate text-xs text-gray-400">{sp.designation}</p>
+                    <p className="text-xs text-gray-400">{sp.designation}</p>
                   )}
                 </div>
               </div>
