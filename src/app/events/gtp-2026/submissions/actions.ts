@@ -1,8 +1,40 @@
 "use server";
 
 import { google } from "googleapis";
+import nodemailer from "nodemailer";
 import { normalizeGooglePrivateKey } from "@/lib/google-drive-client";
 import { WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE } from "./form-value-constants";
+
+// ─── Email client ─────────────────────────────────────────────────────────────
+
+function getMailTransporter() {
+  const user = process.env.GMAIL_USER?.trim();
+  const pass = process.env.GMAIL_APP_PASSWORD?.trim();
+  if (!user || !pass) return null;
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass },
+  });
+}
+
+async function sendConfirmationEmail(
+  to: string,
+  name: string,
+  subject: string,
+  bodyHtml: string,
+) {
+  const transporter = getMailTransporter();
+  if (!transporter) {
+    console.warn("Email not configured — skipping confirmation email.");
+    return;
+  }
+  await transporter.sendMail({
+    from: `"GTP 2026" <${process.env.GMAIL_USER}>`,
+    to,
+    subject,
+    html: bodyHtml,
+  });
+}
 
 // ─── Google Sheets client ─────────────────────────────────────────────────────
 
@@ -103,6 +135,17 @@ export async function sendAbstractSubmission(
         ],
       },
     });
+
+    sendConfirmationEmail(
+      fields.email,
+      fields.fullName,
+      "GTP 2026 — Abstract Submission Received",
+      `<p>Dear ${fields.fullName},</p>
+<p>Thank you for submitting your abstract to the <strong>Global Tipping Points Conference 2026 (GTP 2026)</strong>.</p>
+<p>We have received your submission titled <em>${fields.abstractTitle}</em> and our team will review it shortly. You will be notified of the outcome in due course.</p>
+<p>If you have any questions, please reach out to us via the contact details provided on the submission page.</p>
+<p>Best regards,<br/>The GTP 2026 Organising Committee</p>`,
+    ).catch((err) => console.error("Abstract confirmation email error:", err));
 
     return { success: true };
   } catch (err) {
@@ -212,6 +255,17 @@ export async function sendWorkshopSubmission(
         ],
       },
     });
+
+    sendConfirmationEmail(
+      fields.email,
+      fields.fullName,
+      "GTP 2026 — Action Workshop Submission Received",
+      `<p>Dear ${fields.fullName},</p>
+<p>Thank you for submitting your Action Workshop proposal to the <strong>Global Tipping Points Conference 2026 (GTP 2026)</strong>.</p>
+<p>We have received your proposal titled <em>${fields.sessionTitle}</em> and our team will review it shortly. You will be notified of the outcome in due course.</p>
+<p>If you have any questions, please reach out to us via the contact details provided on the submission page.</p>
+<p>Best regards,<br/>The GTP 2026 Organising Committee</p>`,
+    ).catch((err) => console.error("Workshop confirmation email error:", err));
 
     return { success: true };
   } catch (err) {

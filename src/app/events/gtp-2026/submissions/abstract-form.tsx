@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CalendarDays, Info } from "lucide-react";
@@ -8,7 +8,7 @@ import { FullPageLoadingOverlay } from "@/components/navigation/full-page-loadin
 import type { GtpAbstractFormCopy } from "@/sanity/gtp-submissions-form-defaults";
 import { sendAbstractSubmission } from "./actions";
 import { CountrySelect } from "./country-select";
-import { Snackbar } from "./snackbar";
+import { SubmissionSuccessModal } from "./submission-success-modal";
 
 function countWords(text: string): number {
   return text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
@@ -291,7 +291,7 @@ function AbstractFormContent({
 }: {
   abstractForm: GtpAbstractFormCopy;
   themeTitles: string[];
-  onSuccess: () => void;
+  onSuccess: (email: string) => void;
 }) {
   const [state, formAction, isPending] = useActionState(
     sendAbstractSubmission,
@@ -305,14 +305,21 @@ function AbstractFormContent({
   }
 
   useEffect(() => {
-    if (state?.success) onSuccess();
+    if (state?.success) {
+      const email = formRef.current?.querySelector<HTMLInputElement>('input[name="email"]')?.value ?? "";
+      onSuccess(email);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state?.success]);
 
   return (
     <form
       ref={formRef}
-      action={formAction}
+      onSubmit={(e) => {
+        e.preventDefault();
+        const data = new FormData(e.currentTarget);
+        startTransition(() => { formAction(data); });
+      }}
       onChange={handleChange}
       className="space-y-6"
     >
@@ -457,10 +464,12 @@ export function AbstractForm({
   themeTitles: string[];
 }) {
   const [resetKey, setResetKey] = useState(0);
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [submittedEmail, setSubmittedEmail] = useState("");
 
-  function handleSuccess() {
-    setShowSnackbar(true);
+  function handleSuccess(email: string) {
+    setSubmittedEmail(email);
+    setShowSuccess(true);
     setResetKey((k) => k + 1);
   }
 
@@ -472,10 +481,11 @@ export function AbstractForm({
         themeTitles={themeTitles}
         onSuccess={handleSuccess}
       />
-      <Snackbar
-        show={showSnackbar}
+      <SubmissionSuccessModal
+        show={showSuccess}
         message={abstractForm.successSnackbarMessage}
-        onClose={() => setShowSnackbar(false)}
+        email={submittedEmail}
+        onClose={() => setShowSuccess(false)}
       />
     </>
   );
