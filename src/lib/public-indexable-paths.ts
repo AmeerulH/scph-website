@@ -13,6 +13,7 @@ export const SCPH_MARKETING_PATHS: readonly string[] = [
   "/network/community-hub",
   "/network/journalist-workshops",
   "/projects",
+  "/planetary-health",
 ];
 
 export const GTP_2026_MARKETING_PATHS: readonly string[] = [
