@@ -146,6 +146,47 @@ const PARTNERS_BAND_SEED = {
   noticeLinkHref: DEFAULT_SCPH_HOME_PARTNERS_COPY.noticeLinkHref,
 };
 
+const ABOUT_SECTION_SEED = {
+  _type: "scphHomeAboutSection" as const,
+  enabled: true,
+  eyebrow: "About Us",
+  title: "Sunway Centre for Planetary Health",
+  body: 'Sunway Centre for Planetary Health is a \u201cThink-and-Do\u201d tank, committed to research and advocacy that advances planetary health through three priority areas: healthy cities, health-centred decarbonisation, and driving an education revolution. Established in 2021.',
+  ctaLabel: "Learn More",
+  ctaHref: "/about-us",
+};
+
+const PRIORITY_AREAS_SECTION_SEED = {
+  _type: "scphHomePrioritiesSection" as const,
+  enabled: true,
+  sectionTitle: "Three Key Priorities",
+  sectionSubtitle: "Our Focus Areas",
+  linkHref: "/programmes",
+  cards: [
+    {
+      _type: "scphHomePriorityCard" as const,
+      _key: "priority-healthy-cities",
+      title: "Healthy Cities",
+      description:
+        "Advancing urban health through research, policy advocacy, and community engagement. We explore how city design, green spaces, and urban planning can drive healthier populations.",
+    },
+    {
+      _type: "scphHomePriorityCard" as const,
+      _key: "priority-decarbonisation",
+      title: "Health-Centred Decarbonisation",
+      description:
+        "Integrating health considerations into climate action and decarbonisation strategies. Clean energy transitions can deliver significant co-benefits for human health.",
+    },
+    {
+      _type: "scphHomePriorityCard" as const,
+      _key: "priority-education",
+      title: "Driving an Education Revolution",
+      description:
+        "Reimagining education systems to equip the next generation with the knowledge, values, and skills needed to protect and restore planetary health.",
+    },
+  ],
+};
+
 function buildDocument() {
   return {
     _id: DOC_ID,
@@ -155,9 +196,13 @@ function buildDocument() {
     highlightedEvents: HIGHLIGHTED_EVENTS_SEED,
     statsRow: STATS_ROW,
     introSections: [] as const,
+    aboutSection: ABOUT_SECTION_SEED,
+    priorityAreasSection: PRIORITY_AREAS_SECTION_SEED,
     roadmapSection: ROADMAP_SECTION,
     nphapSection: NPHAP_SECTION,
     partnersBand: PARTNERS_BAND_SEED,
+    showGtpSection: true,
+    showGtpInquirySection: true,
   };
 }
 

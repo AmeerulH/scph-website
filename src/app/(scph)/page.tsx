@@ -30,7 +30,11 @@ import {
   getGtp2026HighlightSpeakers,
   mapSanityHighlightToProps,
 } from "@/sanity/gtp-stage1";
-import { getScphHomePage } from "@/sanity/queries";
+import {
+  getScphHomePage,
+  type ScphHomeAboutSectionData,
+  type ScphHomePrioritiesSectionData,
+} from "@/sanity/queries";
 import {
   resolveScphHomeHero,
   resolveScphHomeHighlightedEvents,
@@ -77,7 +81,23 @@ function cmsHomeProseCtaUsable(
 
 // ─── About Section ───────────────────────────────────────────────────────────
 
-function AboutSection() {
+const DEFAULT_ABOUT = {
+  eyebrow: "About Us",
+  title: "Sunway Centre for Planetary Health",
+  body: 'Sunway Centre for Planetary Health is a \u201cThink-and-Do\u201d tank, committed to research and advocacy that advances planetary health through three priority areas: healthy cities, health-centred decarbonisation, and driving an education revolution. Established in 2021.',
+  ctaLabel: "Learn More",
+  ctaHref: "/about-us",
+};
+
+function AboutSection({ cms }: { cms?: ScphHomeAboutSectionData }) {
+  if (cms?.enabled === false) return null;
+  const eyebrow = cms?.eyebrow?.trim() || DEFAULT_ABOUT.eyebrow;
+  const title = cms?.title?.trim() || DEFAULT_ABOUT.title;
+  const body = cms?.body?.trim() || DEFAULT_ABOUT.body;
+  const ctaLabel = cms?.ctaLabel?.trim() || DEFAULT_ABOUT.ctaLabel;
+  const ctaHref = cms?.ctaHref?.trim() || DEFAULT_ABOUT.ctaHref;
+  const isExternal = /^https?:\/\//i.test(ctaHref);
+
   return (
     <SectionWrapper theme="scph" background="default">
       <TwoColumnTextImages
@@ -87,25 +107,25 @@ function AboutSection() {
             <div className="mb-4 flex items-center gap-3 text-scph-dark-green">
               <span className="h-px w-8 shrink-0 bg-current opacity-60" />
               <span className="text-sm font-semibold uppercase tracking-[0.15em]">
-                About Us
+                {eyebrow}
               </span>
             </div>
             <h2 className="font-heading text-4xl font-bold leading-tight text-scph-blue md:text-5xl">
-              Sunway Centre for Planetary Health
+              {title}
             </h2>
             <div className="mt-4 h-1 w-20 rounded-full bg-scph-green" />
-            <p className="mt-6 text-lg leading-relaxed text-gray-600">
-              Sunway Centre for Planetary Health is a &ldquo;Think-and-Do&rdquo; tank,
-              committed to research and advocacy that advances planetary health
-              through three priority areas: healthy cities, health-centred
-              decarbonisation, and driving an education revolution. Established
-              in 2021.
-            </p>
+            <p className="mt-6 text-lg leading-relaxed text-gray-600">{body}</p>
             <MagneticButton className="mt-8">
               <Button variant="scph" size="lg" asChild>
-                <Link href="/about-us">
-                  Learn More <ArrowRight />
-                </Link>
+                {isExternal ? (
+                  <a href={ctaHref} target="_blank" rel="noopener noreferrer">
+                    {ctaLabel} <ArrowRight />
+                  </a>
+                ) : (
+                  <Link href={ctaHref}>
+                    {ctaLabel} <ArrowRight />
+                  </Link>
+                )}
               </Button>
             </MagneticButton>
           </>
@@ -130,7 +150,7 @@ function AboutSection() {
 
 // ─── Priority Areas ──────────────────────────────────────────────────────────
 
-const priorities = [
+const DEFAULT_PRIORITIES = [
   {
     id: "healthy-cities",
     icon: Building2,
@@ -163,19 +183,33 @@ const priorities = [
   },
 ];
 
-function PriorityAreasSection() {
+function PriorityAreasSection({ cms }: { cms?: ScphHomePrioritiesSectionData }) {
+  if (cms?.enabled === false) return null;
+  const sectionTitle = cms?.sectionTitle?.trim() || "Three Key Priorities";
+  const sectionSubtitle = cms?.sectionSubtitle?.trim() || "Our Focus Areas";
+  const linkHref = cms?.linkHref?.trim() || "/programmes";
+
+  const resolvedPriorities = DEFAULT_PRIORITIES.map((p, i) => {
+    const cmsCard = cms?.cards?.[i];
+    return {
+      ...p,
+      title: cmsCard?.title?.trim() || p.title,
+      description: cmsCard?.description?.trim() || p.description,
+    };
+  });
+
   return (
     <SectionWrapper
-      title="Three Key Priorities"
-      subtitle="Our Focus Areas"
+      title={sectionTitle}
+      subtitle={sectionSubtitle}
       theme="scph"
       background="muted"
     >
       <IconCardGrid
         variant="scph-priority"
         gridClassName="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 py-4 pb-2 [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:py-0 md:pb-0"
-        items={priorities}
-        linkHref="/programmes"
+        items={resolvedPriorities}
+        linkHref={linkHref}
       />
     </SectionWrapper>
   );
@@ -345,11 +379,16 @@ export default async function HomePage() {
   );
   const cmsStats = homeDoc?.statsRow;
   const introSections = homeDoc?.introSections ?? null;
+  const cmsAbout = homeDoc?.aboutSection ?? null;
+  const cmsPriorities = homeDoc?.priorityAreasSection ?? null;
   const cmsRoadmap = homeDoc?.roadmapSection;
   const cmsNphap = homeDoc?.nphapSection;
   const partnersBand = mergeScphHomePartnersBand(homeDoc?.partnersBand);
   const showPartnersSection =
     partnersBand.showBand && scphHomePartnersHasQualifyingLogos(partnersBand);
+  // Default to showing GTP sections when the document doesn't exist yet
+  const showGtpSection = homeDoc?.showGtpSection ?? true;
+  const showGtpInquirySection = homeDoc?.showGtpInquirySection ?? true;
 
   return (
     <>
@@ -372,12 +411,8 @@ export default async function HomePage() {
         <StatsRow items={homeStats} variant="blue-band" />
       )}
       <RenderSectionBlocks blocks={introSections ?? []} />
-      <Suspense fallback={<Gtp2026HomeSection />}>
-        <HomeGtpHighlightSection />
-      </Suspense>
-      <Gtp2026HomeEventInquirySection />
-      <AboutSection />
-      <PriorityAreasSection />
+      <AboutSection cms={cmsAbout} />
+      <PriorityAreasSection cms={cmsPriorities} />
       {cmsHomeProseCtaUsable(cmsRoadmap) ? (
         <RenderSectionBlock
           block={{
@@ -403,6 +438,12 @@ export default async function HomePage() {
       {showPartnersSection ? (
         <ScphHomePartnersSection band={partnersBand} />
       ) : null}
+      {showGtpSection && (
+        <Suspense fallback={<Gtp2026HomeSection />}>
+          <HomeGtpHighlightSection />
+        </Suspense>
+      )}
+      {showGtpInquirySection && <Gtp2026HomeEventInquirySection />}
     </>
   );
 }

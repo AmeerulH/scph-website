@@ -49,14 +49,41 @@ export async function getTeamMembers(): Promise<SanityTeamMember[]> {
   return client.fetch(teamMembersQuery);
 }
 
+export type ScphHomeAboutSectionData = {
+  enabled?: boolean | null;
+  eyebrow?: string | null;
+  title?: string | null;
+  body?: string | null;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
+} | null;
+
+export type ScphHomePriorityCardData = {
+  _key: string;
+  title?: string | null;
+  description?: string | null;
+};
+
+export type ScphHomePrioritiesSectionData = {
+  enabled?: boolean | null;
+  sectionTitle?: string | null;
+  sectionSubtitle?: string | null;
+  linkHref?: string | null;
+  cards?: ScphHomePriorityCardData[] | null;
+} | null;
+
 export type ScphHomePageData = {
   hero: ScphHomeHeroSanity;
   highlightedEvents: ScphHomeHighlightedEventSanity[] | null;
   statsRow: SectionStatsRowBlock | null;
   introSections: SectionBlock[] | null;
+  aboutSection: ScphHomeAboutSectionData;
+  priorityAreasSection: ScphHomePrioritiesSectionData;
   roadmapSection: SectionProseCtaBlock | null;
   nphapSection: SectionProseCtaBlock | null;
   partnersBand: ScphHomePartnersBandRaw;
+  showGtpSection: boolean | null;
+  showGtpInquirySection: boolean | null;
 };
 
 const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
@@ -64,6 +91,8 @@ const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
   highlightedEvents,
   statsRow,
   introSections,
+  aboutSection,
+  priorityAreasSection,
   roadmapSection,
   nphapSection,
   partnersBand {
@@ -78,7 +107,9 @@ const scphHomePageQuery = `*[_type == "scphHomePage"][0] {
     noticeBeforeLink,
     noticeLinkText,
     noticeLinkHref
-  }
+  },
+  showGtpSection,
+  showGtpInquirySection
 }`;
 
 /** First `scphHomePage` document, or `null` if none / fetch error callers should handle. */

@@ -1,6 +1,11 @@
 import {scphHomeHeroType} from './scphHomeHeroType'
 import {scphHomeHighlightedEventType} from './scphHomeHighlightedEventType'
 import {scphHomePartnersBandType} from './scphHomePartnersBandType'
+import {scphHomeAboutSectionType} from './scphHomeAboutSectionType'
+import {
+  scphHomePriorityCardType,
+  scphHomePrioritiesSectionType,
+} from './scphHomePrioritiesSectionType'
 import {sectionCtaLinkType} from './sectionCtaLinkType'
 import {sectionProseCtaType} from './sectionProseCtaType'
 import {sectionRichTextType} from './sectionRichTextType'
@@ -21,11 +26,14 @@ export const sectionObjectTypes = [
   sectionProseCtaType,
 ]
 
-/** Embedded objects for `scphHomePage` hero + events strip + partners */
+/** Embedded objects for `scphHomePage` hero + events strip + partners + body sections */
 export const scphHomeObjectTypes = [
   scphHomeHeroType,
   scphHomeHighlightedEventType,
   scphHomePartnersBandType,
+  scphHomeAboutSectionType,
+  scphHomePriorityCardType,
+  scphHomePrioritiesSectionType,
 ]
 
 /** For `of: [...]` on a sections field */

@@ -45,14 +45,27 @@ export const scphHomePageType = defineType({
       type: 'array',
       of: [...sectionBlockMembers],
       description:
-        'Optional blocks between the stats row and the GTP promo (e.g. rich text or CTA sections).',
+        'Optional blocks between the stats row and the About section (e.g. rich text or CTA sections).',
+    }),
+    defineField({
+      name: 'aboutSection',
+      title: 'About section',
+      type: 'scphHomeAboutSection',
+      description: 'The "About Us" two-column section. Toggle visibility and edit copy here.',
+    }),
+    defineField({
+      name: 'priorityAreasSection',
+      title: 'Priority areas section',
+      type: 'scphHomePrioritiesSection',
+      description:
+        'The "Three Key Priorities" card grid. Toggle visibility and edit card titles/descriptions here.',
     }),
     defineField({
       name: 'roadmapSection',
       title: 'Roadmap section',
       type: 'sectionProseCta',
       description:
-        'Optional. When set and visible, replaces the default “Planetary Health Roadmap” block after priorities.',
+        'Optional. When set and visible, replaces the default "Planetary Health Roadmap" block.',
     }),
     defineField({
       name: 'nphapSection',
@@ -67,6 +80,21 @@ export const scphHomePageType = defineType({
       type: 'scphHomePartnersBand',
       description:
         'Partner logos marquee and footer notice. Reuses the same logo object type as GTP About sponsors.',
+    }),
+    defineField({
+      name: 'showGtpSection',
+      title: 'Show GTP promo section',
+      type: 'boolean',
+      description:
+        'Show or hide the "New Reality / What are Global Tipping Points" and Speaker Highlights bands.',
+      initialValue: true,
+    }),
+    defineField({
+      name: 'showGtpInquirySection',
+      title: 'Show GTP "Get in Touch" section',
+      type: 'boolean',
+      description: 'Show or hide the GTP event inquiry contact form.',
+      initialValue: true,
     }),
   ],
   preview: {
