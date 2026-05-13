@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { PILLARS, type PillarId } from "./data";
 import { TableauEmbed } from "./tableau-embed";
 
@@ -120,6 +122,22 @@ export function PlanetaryHealthTabs() {
                 ))}
               </div>
             </div>
+
+            {/* Download */}
+            <Button
+              variant="scph"
+              size="sm"
+              onClick={() =>
+                window.open(
+                  `https://public.tableau.com/views/${pillar.workbook}/${pillar.csvSheet}.csv`,
+                  "_blank"
+                )
+              }
+              className="gap-1.5 w-full"
+            >
+              <Download className="size-3.5" />
+              Download Data
+            </Button>
 
           </div>
         </div>
