@@ -27,7 +27,7 @@ export default function PlanetaryHealthPage() {
         lede="Country-level scores across environmental, societal, and human health — based on PDC 2025 data."
         variant="solid-blue"
       />
-      <SectionWrapper theme="scph" scrollReveal={false}>
+      <SectionWrapper theme="scph" scrollReveal={false} className="overflow-x-hidden">
         <PlanetaryHealthTabs />
       </SectionWrapper>
     </>

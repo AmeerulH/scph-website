@@ -17,9 +17,9 @@ export const PILLARS: Pillar[] = [
     id: "environmental",
     label: "Environmental Health",
     color: "#59A14F",
-    vizId: "viz1778594301422",
+    vizId: "viz1778679237191",
     workbook: "PlanetaryHealthIndexWorldMap",
-    sheet: "EnvironmentalHealth",
+    sheet: "EnvironmentalHealthDashboard",
     description:
       "Environmental Health measures the overall well-being of Earth's natural systems — including ecosystem quality, biodiversity, soil, air, and water. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: ["Environmental Health", "Natural Hazards", "Biodiversity"],
@@ -34,9 +34,9 @@ export const PILLARS: Pillar[] = [
     id: "societal",
     label: "Societal Health",
     color: "#007BFF",
-    vizId: "viz1778594352204",
+    vizId: "viz1778679135686",
     workbook: "PlanetaryHealthIndexWorldMap",
-    sheet: "SocietalHealth",
+    sheet: "SocietalHealthDashboard",
     description:
       "Societal Health captures structural and institutional conditions that shape human resilience — including governance quality, economic prosperity, conflict exposure, and disaster preparedness. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: [
@@ -56,10 +56,10 @@ export const PILLARS: Pillar[] = [
   {
     id: "human",
     label: "Human Health",
-    color: "#E6CA3E",
-    vizId: "viz1778594369201",
+    color: "#92720A",
+    vizId: "viz1778679210007",
     workbook: "PlanetaryHealthIndexWorldMap",
-    sheet: "HumanHealth",
+    sheet: "HumanHealthDashboard",
     description:
       "Human Health reflects population health outcomes and healthcare system capacity — covering infectious disease burden, women and children's health, and access to care. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: [

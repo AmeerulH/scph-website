@@ -1,60 +1,83 @@
 "use client";
 
 import * as React from "react";
-import Script from "next/script";
 import { PILLARS, type PillarId } from "./data";
 
 type Props = { activePillar: PillarId };
 
+function calcHeight(w: number) {
+  return w > 500 ? Math.round(w * 0.75) : 500;
+}
+
 export function TableauEmbed({ activePillar }: Props) {
   const containerRef = React.useRef<HTMLDivElement>(null);
-
-  const sizeVizes = React.useCallback(() => {
-    const width = containerRef.current?.offsetWidth;
-    if (!width) return;
-    const height = Math.round(width * 0.75);
-    PILLARS.forEach(({ vizId }) => {
-      const obj = document
-        .getElementById(vizId)
-        ?.querySelector<HTMLObjectElement>("object");
-      if (obj) {
-        obj.style.width = "100%";
-        obj.style.height = `${height}px`;
-      }
-    });
-  }, []);
+  const scriptInjected = React.useRef(false);
+  const [maxHeight, setMaxHeight] = React.useState<number | undefined>(undefined);
 
   React.useEffect(() => {
-    sizeVizes();
-    const ro = new ResizeObserver(sizeVizes);
+    if (scriptInjected.current) return;
+    scriptInjected.current = true;
+
+    // Set dimensions on objects before inserting viz_v1.js —
+    // Tableau reads these on load, so order matters.
+    PILLARS.forEach(({ vizId }) => {
+      const divElement = document.getElementById(vizId);
+      if (!divElement) return;
+      const vizElement = divElement.querySelector<HTMLObjectElement>("object");
+      if (!vizElement) return;
+      const w = divElement.offsetWidth || containerRef.current?.offsetWidth || 800;
+      vizElement.style.width = "100%";
+      vizElement.style.height = `${calcHeight(w)}px`;
+    });
+
+    // Initial max-height clamp
+    const w = containerRef.current?.offsetWidth ?? 800;
+    setMaxHeight(calcHeight(w));
+
+    // Insert viz_v1.js once
+    const firstDiv = document.getElementById(PILLARS[0].vizId);
+    const firstObj = firstDiv?.querySelector("object");
+    if (firstObj) {
+      const script = document.createElement("script");
+      script.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+      firstObj.parentNode!.insertBefore(script, firstObj);
+    }
+
+    // Keep object heights + container max-height in sync on resize
+    const ro = new ResizeObserver(() => {
+      const width = containerRef.current?.offsetWidth;
+      if (!width) return;
+      const h = calcHeight(width);
+      setMaxHeight(h);
+      PILLARS.forEach(({ vizId }) => {
+        const obj = document
+          .getElementById(vizId)
+          ?.querySelector<HTMLObjectElement>("object");
+        if (obj) {
+          obj.style.width = "100%";
+          obj.style.height = `${h}px`;
+        }
+      });
+    });
+
     if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, [sizeVizes]);
+  }, []);
 
   return (
     <div
       ref={containerRef}
       className="relative w-full overflow-hidden rounded-xl"
-      style={{ aspectRatio: "4 / 3" }}
+      // maxHeight clamps Tableau's iframe (which it hardcodes to 727px on mobile)
+      // overflow-hidden clips anything beyond it
+      style={maxHeight !== undefined ? { maxHeight } : undefined}
     >
-      {/* Loaded once; Next.js deduplicates by id across re-renders */}
-      <Script
-        id="tableau-api"
-        src="https://public.tableau.com/javascripts/api/viz_v1.js"
-        strategy="afterInteractive"
-        onLoad={sizeVizes}
-      />
-
       {PILLARS.map((p) => (
         <div
           key={p.id}
-          className="absolute inset-0"
-          style={{
-            visibility: p.id === activePillar ? "visible" : "hidden",
-          }}
+          style={{ display: p.id === activePillar ? "block" : "none" }}
         >
-          {/* ID must match what Tableau's bootstrap script references */}
-          <div id={p.vizId} style={{ position: "relative", width: "100%", height: "100%" }}>
+          <div id={p.vizId} style={{ position: "relative", width: "100%" }}>
             <noscript>
               <a href="#">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -65,11 +88,6 @@ export function TableauEmbed({ activePillar }: Props) {
                 />
               </a>
             </noscript>
-            {/*
-             * Tableau's viz_v1.js scans the DOM for <object class="tableauViz"> and
-             * bootstraps each viz via the <param> children below.
-             * display:none is the documented initial state — the API makes it visible.
-             */}
             <object className="tableauViz" style={{ display: "none" }}>
               <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
               <param name="embed_code_version" value="3" />

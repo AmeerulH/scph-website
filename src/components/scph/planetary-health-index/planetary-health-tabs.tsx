@@ -13,7 +13,7 @@ export function PlanetaryHealthTabs() {
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex border-b border-border">
+      <div className="flex overflow-x-auto border-b border-border">
         {PILLARS.map((p) => (
           <button
             key={p.id}
@@ -21,7 +21,7 @@ export function PlanetaryHealthTabs() {
             aria-selected={active === p.id}
             onClick={() => setActive(p.id)}
             className={cn(
-              "relative px-6 py-3.5 text-sm font-medium transition-colors duration-150 focus-visible:outline-none",
+              "relative shrink-0 whitespace-nowrap px-4 py-3.5 text-sm font-medium transition-colors duration-150 focus-visible:outline-none sm:px-6",
               active === p.id
                 ? "text-[var(--tab-color)]"
                 : "text-muted-foreground hover:text-foreground"
@@ -47,7 +47,7 @@ export function PlanetaryHealthTabs() {
 
       {/* Tab content */}
       <div className="pt-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
 
           {/* Left: map */}
           <TableauEmbed activePillar={active} />
