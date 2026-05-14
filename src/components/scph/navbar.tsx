@@ -40,7 +40,6 @@ const navLinks = [
   { label: "Programmes", href: "/programmes" },
   { label: "Research", href: "/research" },
   { label: "Media", href: "/media" },
-  { label: "Project", href: "/planetary-health" },
 ];
 
 const conferenceLinks = [
