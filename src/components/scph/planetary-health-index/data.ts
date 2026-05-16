@@ -1,5 +1,15 @@
 export type PillarId = "environmental" | "societal" | "human";
 
+export type MobileViz = {
+  vizId: string;
+  /** For shared/path embeds (Environmental uses this) */
+  path?: string;
+  /** For named embeds — "workbook/sheet" (Societal & Human use this) */
+  name?: string;
+  staticImage: string;
+  rssImage: string;
+};
+
 export type Pillar = {
   id: PillarId;
   label: string;
@@ -7,11 +17,13 @@ export type Pillar = {
   vizId: string;
   workbook: string;
   sheet: string;
-  /** Original worksheet name used for CSV download (dashboards don't support CSV export) */
+  /** Original worksheet name for CSV download (dashboards don't support CSV export) */
   csvSheet: string;
   description: string;
   subIndices: string[];
   stats: { label: string; value: string }[];
+  /** Dedicated mobile dashboard — served below 500px viewport width */
+  mobileViz: MobileViz;
 };
 
 export const PILLARS: Pillar[] = [
@@ -32,6 +44,12 @@ export const PILLARS: Pillar[] = [
       { label: "Highest score", value: "0.85" },
       { label: "Lowest score", value: "0.13" },
     ],
+    mobileViz: {
+      vizId: "viz1778943622373",
+      path: "shared/NJCDXH998",
+      staticImage: "https://public.tableau.com/static/images/NJ/NJCDXH998/1.png",
+      rssImage: "https://public.tableau.com/static/images/NJ/NJCDXH998/1_rss.png",
+    },
   },
   {
     id: "societal",
@@ -56,6 +74,14 @@ export const PILLARS: Pillar[] = [
       { label: "Highest score", value: "0.88" },
       { label: "Lowest score", value: "0.08" },
     ],
+    mobileViz: {
+      vizId: "viz1778943788642",
+      name: "PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2",
+      staticImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2/1.png",
+      rssImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2/1_rss.png",
+    },
   },
   {
     id: "human",
@@ -79,5 +105,13 @@ export const PILLARS: Pillar[] = [
       { label: "Highest score", value: "0.91" },
       { label: "Lowest score", value: "0.11" },
     ],
+    mobileViz: {
+      vizId: "viz1778943799208",
+      name: "PlanetaryHealthIndexWorldMap/HumanHealthDashboard2",
+      staticImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/HumanHealthDashboard2/1.png",
+      rssImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/HumanHealthDashboard2/1_rss.png",
+    },
   },
 ];
