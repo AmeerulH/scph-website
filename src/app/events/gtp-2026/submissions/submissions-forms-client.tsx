@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, CalendarCheck } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import type { GtpSubmissionsResolvedCopy } from "@/sanity/gtp-stage2";
 import { AbstractForm } from "./abstract-form";
+import {
+  WORKSHOP_SUBMISSIONS_CLOSED,
+  WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE,
+} from "./form-value-constants";
 import { WorkshopForm } from "./workshop-form";
 
 type TabId = "abstract" | "workshop";
@@ -67,17 +71,25 @@ export function SubmissionsFormsClient({
               <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
                 {active.label}
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
-                Deadline:{" "}
-                <span className="font-semibold text-gray-700">
-                  {active.deadline}
-                </span>
-              </p>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                {activeTab === "abstract"
-                  ? copy.abstractFormIntro
-                  : copy.workshopFormIntro}
-              </p>
+              {activeTab === "workshop" && WORKSHOP_SUBMISSIONS_CLOSED ? (
+                <p className="mt-1 text-sm font-semibold text-gray-700">
+                  Submissions closed
+                </p>
+              ) : (
+                <>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Deadline:{" "}
+                    <span className="font-semibold text-gray-700">
+                      {active.deadline}
+                    </span>
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                    {activeTab === "abstract"
+                      ? copy.abstractFormIntro
+                      : copy.workshopFormIntro}
+                  </p>
+                </>
+              )}
             </div>
             <div className="p-6 sm:p-8">
               {activeTab === "abstract" ? (
@@ -85,6 +97,18 @@ export function SubmissionsFormsClient({
                   abstractForm={copy.abstractForm}
                   themeTitles={copy.themes.map((t) => t.title)}
                 />
+              ) : WORKSHOP_SUBMISSIONS_CLOSED ? (
+                <div className="flex flex-col items-center py-4 text-center">
+                  <span
+                    className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gtp-teal/10 text-gtp-teal ring-1 ring-gtp-teal/20"
+                    aria-hidden
+                  >
+                    <CalendarCheck className="h-8 w-8" strokeWidth={1.75} />
+                  </span>
+                  <p className="max-w-md text-base leading-relaxed text-gray-700">
+                    {WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE}
+                  </p>
+                </div>
               ) : (
                 <WorkshopForm
                   workshopForm={copy.workshopForm}

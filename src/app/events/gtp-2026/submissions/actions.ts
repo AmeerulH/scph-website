@@ -3,7 +3,11 @@
 import { google } from "googleapis";
 import nodemailer from "nodemailer";
 import { normalizeGooglePrivateKey } from "@/lib/google-drive-client";
-import { WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE } from "./form-value-constants";
+import {
+  WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE,
+  WORKSHOP_SUBMISSIONS_CLOSED,
+  WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE,
+} from "./form-value-constants";
 
 // ─── Email client ─────────────────────────────────────────────────────────────
 
@@ -160,6 +164,10 @@ export async function sendWorkshopSubmission(
   _prevState: SubmissionFormState,
   formData: FormData,
 ): Promise<SubmissionFormState> {
+  if (WORKSHOP_SUBMISSIONS_CLOSED) {
+    return { error: WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE };
+  }
+
   const fields = {
     email: formData.get("email") as string,
     fullName: formData.get("fullName") as string,
