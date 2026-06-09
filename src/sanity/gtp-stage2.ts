@@ -244,8 +244,12 @@ type SanitySubmissionsRaw = {
   ctaSubtitle?: string | null;
   abstractTabLabel?: string | null;
   abstractDeadline?: string | null;
+  abstractSubmissionsClosed?: boolean | null;
+  abstractSubmissionsClosedMessage?: string | null;
   workshopTabLabel?: string | null;
   workshopDeadline?: string | null;
+  workshopSubmissionsClosed?: boolean | null;
+  workshopSubmissionsClosedMessage?: string | null;
   abstractFormIntro?: string | null;
   workshopFormIntro?: string | null;
   backToTopLabel?: string | null;
@@ -270,8 +274,12 @@ const submissionsQuery = `*[_type == "gtp2026SubmissionsPage"][0]{
   ctaSubtitle,
   abstractTabLabel,
   abstractDeadline,
+  abstractSubmissionsClosed,
+  abstractSubmissionsClosedMessage,
   workshopTabLabel,
   workshopDeadline,
+  workshopSubmissionsClosed,
+  workshopSubmissionsClosedMessage,
   abstractFormIntro,
   workshopFormIntro,
   backToTopLabel,
@@ -444,8 +452,22 @@ export function mergeGtpSubmissionsCopy(
     ctaSubtitle: cms.ctaSubtitle?.trim() || d.ctaSubtitle,
     abstractTabLabel: cms.abstractTabLabel?.trim() || d.abstractTabLabel,
     abstractDeadline: cms.abstractDeadline?.trim() || d.abstractDeadline,
+    abstractSubmissionsClosed:
+      typeof cms.abstractSubmissionsClosed === "boolean"
+        ? cms.abstractSubmissionsClosed
+        : d.abstractSubmissionsClosed,
+    abstractSubmissionsClosedMessage:
+      cms.abstractSubmissionsClosedMessage?.trim() ||
+      d.abstractSubmissionsClosedMessage,
     workshopTabLabel: cms.workshopTabLabel?.trim() || d.workshopTabLabel,
     workshopDeadline: cms.workshopDeadline?.trim() || d.workshopDeadline,
+    workshopSubmissionsClosed:
+      typeof cms.workshopSubmissionsClosed === "boolean"
+        ? cms.workshopSubmissionsClosed
+        : d.workshopSubmissionsClosed,
+    workshopSubmissionsClosedMessage:
+      cms.workshopSubmissionsClosedMessage?.trim() ||
+      d.workshopSubmissionsClosedMessage,
     abstractFormIntro: cms.abstractFormIntro?.trim() || d.abstractFormIntro,
     workshopFormIntro: cms.workshopFormIntro?.trim() || d.workshopFormIntro,
     backToTopLabel: cms.backToTopLabel?.trim() || d.backToTopLabel,

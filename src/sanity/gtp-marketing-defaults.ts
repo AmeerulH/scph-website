@@ -171,8 +171,12 @@ export type GtpSubmissionsResolvedCopy = {
   ctaSubtitle: string;
   abstractTabLabel: string;
   abstractDeadline: string;
+  abstractSubmissionsClosed: boolean;
+  abstractSubmissionsClosedMessage: string;
   workshopTabLabel: string;
   workshopDeadline: string;
+  workshopSubmissionsClosed: boolean;
+  workshopSubmissionsClosedMessage: string;
   abstractFormIntro: string;
   workshopFormIntro: string;
   backToTopLabel: string;
@@ -265,8 +269,14 @@ export const DEFAULT_SUBMISSIONS: GtpSubmissionsResolvedCopy = {
   ctaSubtitle: "Select a submission type below and complete the form.",
   abstractTabLabel: "Abstract Submission",
   abstractDeadline: "15 May 2026, 23:59 (GMT+8)",
+  abstractSubmissionsClosed: true,
+  abstractSubmissionsClosedMessage:
+    "Submission is now closed for Research Abstracts. Research abstract acceptance notification: 22 June 2026",
   workshopTabLabel: "Action Workshop Proposal Submission",
   workshopDeadline: "8 May 2026, 23:59 (GMT+8)",
+  workshopSubmissionsClosed: true,
+  workshopSubmissionsClosedMessage:
+    "Submission is now closed for Action Workshops. Notification of acceptance: 5 June 2026",
   abstractFormIntro:
     "Complete all required fields. The presenting author must submit this form.",
   workshopFormIntro:

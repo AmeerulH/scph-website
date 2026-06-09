@@ -112,6 +112,21 @@ export const gtp2026SubmissionsPageType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'abstractSubmissionsClosed',
+      title: 'Abstract form — submissions closed',
+      type: 'boolean',
+      initialValue: true,
+      description:
+        'When on, the abstract tab shows a closed message instead of the form. Publish to update the live site.',
+    }),
+    defineField({
+      name: 'abstractSubmissionsClosedMessage',
+      title: 'Abstract form — closed message',
+      type: 'text',
+      rows: 3,
+      description: 'Shown in the abstract tab when submissions are closed.',
+    }),
+    defineField({
       name: 'workshopTabLabel',
       title: 'Workshop tab label',
       type: 'string',
@@ -120,6 +135,21 @@ export const gtp2026SubmissionsPageType = defineType({
       name: 'workshopDeadline',
       title: 'Workshop deadline line',
       type: 'string',
+    }),
+    defineField({
+      name: 'workshopSubmissionsClosed',
+      title: 'Workshop form — submissions closed',
+      type: 'boolean',
+      initialValue: true,
+      description:
+        'When on, the workshop tab shows a closed message instead of the form. Publish to update the live site.',
+    }),
+    defineField({
+      name: 'workshopSubmissionsClosedMessage',
+      title: 'Workshop form — closed message',
+      type: 'text',
+      rows: 3,
+      description: 'Shown in the workshop tab when submissions are closed.',
     }),
     defineField({
       name: 'abstractFormIntro',

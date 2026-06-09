@@ -285,9 +285,9 @@ export function TeamHandbookGtpSections() {
             rather than renaming IDs.
           </li>
           <li>
-            <strong>Submissions page</strong> — Form labels, help text, and
-            legal copy live in one large document. Avoid duplicate fields;
-            contact devs if a new section is needed.
+            <strong>Submissions page</strong> — Form labels, help text, closed
+            form toggles and messages, and legal copy live in one large document.
+            Avoid duplicate fields; contact devs if a new section is needed.
           </li>
         </ol>
 

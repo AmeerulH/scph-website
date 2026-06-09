@@ -5,10 +5,6 @@ import { ArrowUp, CalendarCheck } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import type { GtpSubmissionsResolvedCopy } from "@/sanity/gtp-stage2";
 import { AbstractForm } from "./abstract-form";
-import {
-  WORKSHOP_SUBMISSIONS_CLOSED,
-  WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE,
-} from "./form-value-constants";
 import { WorkshopForm } from "./workshop-form";
 
 type TabId = "abstract" | "workshop";
@@ -71,7 +67,8 @@ export function SubmissionsFormsClient({
               <h3 className="font-heading text-lg font-bold text-gtp-dark-teal">
                 {active.label}
               </h3>
-              {activeTab === "workshop" && WORKSHOP_SUBMISSIONS_CLOSED ? (
+              {(activeTab === "abstract" && copy.abstractSubmissionsClosed) ||
+              (activeTab === "workshop" && copy.workshopSubmissionsClosed) ? (
                 <p className="mt-1 text-sm font-semibold text-gray-700">
                   Submissions closed
                 </p>
@@ -92,12 +89,7 @@ export function SubmissionsFormsClient({
               )}
             </div>
             <div className="p-6 sm:p-8">
-              {activeTab === "abstract" ? (
-                <AbstractForm
-                  abstractForm={copy.abstractForm}
-                  themeTitles={copy.themes.map((t) => t.title)}
-                />
-              ) : WORKSHOP_SUBMISSIONS_CLOSED ? (
+              {activeTab === "abstract" && copy.abstractSubmissionsClosed ? (
                 <div className="flex flex-col items-center py-4 text-center">
                   <span
                     className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gtp-teal/10 text-gtp-teal ring-1 ring-gtp-teal/20"
@@ -106,7 +98,24 @@ export function SubmissionsFormsClient({
                     <CalendarCheck className="h-8 w-8" strokeWidth={1.75} />
                   </span>
                   <p className="max-w-md text-base leading-relaxed text-gray-700">
-                    {WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE}
+                    {copy.abstractSubmissionsClosedMessage}
+                  </p>
+                </div>
+              ) : activeTab === "abstract" ? (
+                <AbstractForm
+                  abstractForm={copy.abstractForm}
+                  themeTitles={copy.themes.map((t) => t.title)}
+                />
+              ) : copy.workshopSubmissionsClosed ? (
+                <div className="flex flex-col items-center py-4 text-center">
+                  <span
+                    className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gtp-teal/10 text-gtp-teal ring-1 ring-gtp-teal/20"
+                    aria-hidden
+                  >
+                    <CalendarCheck className="h-8 w-8" strokeWidth={1.75} />
+                  </span>
+                  <p className="max-w-md text-base leading-relaxed text-gray-700">
+                    {copy.workshopSubmissionsClosedMessage}
                   </p>
                 </div>
               ) : (

@@ -4,9 +4,11 @@ import { google } from "googleapis";
 import nodemailer from "nodemailer";
 import { normalizeGooglePrivateKey } from "@/lib/google-drive-client";
 import {
+  getGtp2026SubmissionsPage,
+  mergeGtpSubmissionsCopy,
+} from "@/sanity/gtp-stage2";
+import {
   WORKSHOP_CONFLICT_HAS_CONFLICTS_VALUE,
-  WORKSHOP_SUBMISSIONS_CLOSED,
-  WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE,
 } from "./form-value-constants";
 
 // ─── Email client ─────────────────────────────────────────────────────────────
@@ -70,6 +72,13 @@ export async function sendAbstractSubmission(
   _prevState: SubmissionFormState,
   formData: FormData,
 ): Promise<SubmissionFormState> {
+  const copy = mergeGtpSubmissionsCopy(
+    await getGtp2026SubmissionsPage().catch(() => null),
+  );
+  if (copy.abstractSubmissionsClosed) {
+    return { error: copy.abstractSubmissionsClosedMessage };
+  }
+
   const fields = {
     email: formData.get("email") as string,
     fullName: formData.get("fullName") as string,
@@ -164,8 +173,11 @@ export async function sendWorkshopSubmission(
   _prevState: SubmissionFormState,
   formData: FormData,
 ): Promise<SubmissionFormState> {
-  if (WORKSHOP_SUBMISSIONS_CLOSED) {
-    return { error: WORKSHOP_SUBMISSIONS_CLOSED_MESSAGE };
+  const copy = mergeGtpSubmissionsCopy(
+    await getGtp2026SubmissionsPage().catch(() => null),
+  );
+  if (copy.workshopSubmissionsClosed) {
+    return { error: copy.workshopSubmissionsClosedMessage };
   }
 
   const fields = {
