@@ -362,7 +362,7 @@ const organizationJsonLd = {
 };
 
 /** Refetch home CMS slices on each request so production edits show without redeploying. */
-export const revalidate = 300;
+export const revalidate = 3600;
 
 async function HomeGtpHighlightSection() {
   const highlightRows = await getGtp2026HighlightSpeakers().catch(() => []);

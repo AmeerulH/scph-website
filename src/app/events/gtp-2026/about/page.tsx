@@ -77,7 +77,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch programme from Sanity on every request (no ISR cache). */
-export const revalidate = 60;
+export const revalidate = 3600;
 
 const gtpSite = getSiteUrlString();
 const eventJsonLd = {
