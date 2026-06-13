@@ -116,7 +116,10 @@ export function TableauEmbed({ activePillar }: Props) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt={p.label}
-                    src={`https://public.tableau.com/static/images/Pl/${p.workbook}/${p.sheet}/1_rss.png`}
+                    src={
+                      p.rssImage ??
+                      `https://public.tableau.com/static/images/Pl/${p.workbook}/${p.sheet}/1_rss.png`
+                    }
                     style={{ border: "none" }}
                   />
                 </a>
@@ -124,13 +127,22 @@ export function TableauEmbed({ activePillar }: Props) {
               <object className="tableauViz" style={{ display: "none" }}>
                 <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
                 <param name="embed_code_version" value="3" />
-                <param name="site_root" value="" />
-                <param name="name" value={`${p.workbook}/${p.sheet}`} />
-                <param name="tabs" value="no" />
+                {p.path ? (
+                  <param name="path" value={p.path} />
+                ) : (
+                  <>
+                    <param name="site_root" value="" />
+                    <param name="name" value={`${p.workbook}/${p.sheet}`} />
+                    <param name="tabs" value="no" />
+                  </>
+                )}
                 <param name="toolbar" value="yes" />
                 <param
                   name="static_image"
-                  value={`https://public.tableau.com/static/images/Pl/${p.workbook}/${p.sheet}/1.png`}
+                  value={
+                    p.staticImage ??
+                    `https://public.tableau.com/static/images/Pl/${p.workbook}/${p.sheet}/1.png`
+                  }
                 />
                 <param name="animate_transition" value="yes" />
                 <param name="display_static_image" value="yes" />

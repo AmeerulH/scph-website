@@ -2,7 +2,7 @@ export type PillarId = "environmental" | "societal" | "human";
 
 export type MobileViz = {
   vizId: string;
-  /** For shared/path embeds (Environmental uses this) */
+  /** For shared/path embeds */
   path?: string;
   /** For named embeds — "workbook/sheet" (Societal & Human use this) */
   name?: string;
@@ -17,6 +17,11 @@ export type Pillar = {
   vizId: string;
   workbook: string;
   sheet: string;
+  /** For shared/path desktop embeds (Societal uses this) */
+  path?: string;
+  /** Override static image for path-based desktop embeds */
+  staticImage?: string;
+  rssImage?: string;
   /** Original worksheet name for CSV download (dashboards don't support CSV export) */
   csvSheet: string;
   description: string;
@@ -31,8 +36,8 @@ export const PILLARS: Pillar[] = [
     id: "environmental",
     label: "Environmental Health",
     color: "#59A14F",
-    vizId: "viz1778679237191",
-    workbook: "PlanetaryHealthIndexWorldMap",
+    vizId: "viz1781335208197",
+    workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "EnvironmentalHealthDashboard",
     csvSheet: "EnvironmentalHealth",
     description:
@@ -45,18 +50,20 @@ export const PILLARS: Pillar[] = [
       { label: "Lowest score", value: "0.13" },
     ],
     mobileViz: {
-      vizId: "viz1778943622373",
-      path: "shared/NJCDXH998",
-      staticImage: "https://public.tableau.com/static/images/NJ/NJCDXH998/1.png",
-      rssImage: "https://public.tableau.com/static/images/NJ/NJCDXH998/1_rss.png",
+      vizId: "viz1781335278548",
+      name: "PlanetaryHealthIndexWorldMap_17810135781890/EnvironmentalHealthDashboard2",
+      staticImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/EnvironmentalHealthDashboard2/1.png",
+      rssImage:
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/EnvironmentalHealthDashboard2/1_rss.png",
     },
   },
   {
     id: "societal",
     label: "Societal Health",
     color: "#007BFF",
-    vizId: "viz1778679135686",
-    workbook: "PlanetaryHealthIndexWorldMap",
+    vizId: "viz1781336238219",
+    workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "SocietalHealthDashboard",
     csvSheet: "SocietalHealth",
     description:
@@ -75,20 +82,20 @@ export const PILLARS: Pillar[] = [
       { label: "Lowest score", value: "0.08" },
     ],
     mobileViz: {
-      vizId: "viz1778943788642",
-      name: "PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2",
+      vizId: "viz1781335425310",
+      name: "PlanetaryHealthIndexWorldMap_17810135781890/SocietalHealthDashboard2",
       staticImage:
-        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2/1.png",
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/SocietalHealthDashboard2/1.png",
       rssImage:
-        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/SocietalHealthDashboard2/1_rss.png",
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/SocietalHealthDashboard2/1_rss.png",
     },
   },
   {
     id: "human",
     label: "Human Health",
     color: "#92720A",
-    vizId: "viz1778679210007",
-    workbook: "PlanetaryHealthIndexWorldMap",
+    vizId: "viz1781335559078",
+    workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "HumanHealthDashboard",
     csvSheet: "HumanHealth",
     description:
@@ -106,12 +113,12 @@ export const PILLARS: Pillar[] = [
       { label: "Lowest score", value: "0.11" },
     ],
     mobileViz: {
-      vizId: "viz1778943799208",
-      name: "PlanetaryHealthIndexWorldMap/HumanHealthDashboard2",
+      vizId: "viz1781335571147",
+      name: "PlanetaryHealthIndexWorldMap_17810135781890/HumanHealthDashboard2",
       staticImage:
-        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/HumanHealthDashboard2/1.png",
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/HumanHealthDashboard2/1.png",
       rssImage:
-        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap/HumanHealthDashboard2/1_rss.png",
+        "https://public.tableau.com/static/images/Pl/PlanetaryHealthIndexWorldMap_17810135781890/HumanHealthDashboard2/1_rss.png",
     },
   },
 ];
