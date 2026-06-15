@@ -363,3 +363,43 @@ export async function getGtp2026FaqGroupsWithItems(): Promise<
     },
   ];
 }
+
+// ─── Speakers page — full roster (separate from highlight speakers) ───────────
+
+const speakersRosterQuery = `*[_type == "gtp2026Speaker"] | order(order asc, name asc) {
+  _id,
+  name,
+  role,
+  organisation,
+  bio,
+  session,
+  sessionDate,
+  photoClassName,
+  photoUnoptimized,
+  "imageUrl": image.asset->url,
+  sessions[] { title, date }
+}`;
+
+export async function getGtp2026Speakers(): Promise<SanityHighlightSpeakerRaw[]> {
+  return client.fetch(speakersRosterQuery);
+}
+
+// ─── Speakers page hero copy ──────────────────────────────────────────────────
+
+export type SanityGtp2026SpeakersPageRaw = {
+  heroLabel?: string | null;
+  heroHeading?: string | null;
+  heroDescription?: string | null;
+  heroDateLocation?: string | null;
+};
+
+const speakersPageQuery = `*[_type == "gtp2026SpeakersPage"][0]{
+  heroLabel,
+  heroHeading,
+  heroDescription,
+  heroDateLocation
+}`;
+
+export async function getGtp2026SpeakersPage(): Promise<SanityGtp2026SpeakersPageRaw | null> {
+  return client.fetch(speakersPageQuery);
+}

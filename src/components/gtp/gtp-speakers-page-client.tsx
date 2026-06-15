@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Plus } from "lucide-react";
 import { GtpSpeakerModal } from "@/components/gtp/gtp-speaker-modal";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { getSpeakerInitials } from "@/components/gtp/gtp-speaker-highlight";
 import { cn } from "@/lib/utils";
 import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
+import type { SanityGtp2026SpeakersPageRaw } from "@/sanity/gtp-stage1";
 
 // ─── Decorative shape primitives ──────────────────────────────────────────────
 
@@ -137,7 +138,44 @@ function SpeakersPageCard({
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
-function SpeakersHero() {
+const HERO_DEFAULTS = {
+  heroLabel: "Global Tipping Points 2026",
+  heroHeading: "Our Speakers",
+  heroDescription:
+    "GTP 2026 brings together leading scientists, policymakers, and innovators from across the globe. Over four days in Kuala Lumpur, they will share breakthroughs, challenge assumptions, and chart a course for positive tipping points on climate, biodiversity, and planetary health.",
+  heroDateLocation: "12–15 October 2026 · Kuala Lumpur, Malaysia",
+} as const;
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+function fadeUp(delay: number, y = 22, duration = 0.65) {
+  return {
+    initial: { opacity: 0, y },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration, ease: EASE, delay },
+  };
+}
+
+function fadeIn(delay: number, duration = 0.6) {
+  return {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration, ease: EASE, delay },
+  };
+}
+
+function SpeakersHero({ cms }: { cms: SanityGtp2026SpeakersPageRaw | null }) {
+  const reduced = useReducedMotion();
+  const label = cms?.heroLabel?.trim() || HERO_DEFAULTS.heroLabel;
+  const heading = cms?.heroHeading?.trim() || HERO_DEFAULTS.heroHeading;
+  const description = cms?.heroDescription?.trim() || HERO_DEFAULTS.heroDescription;
+  const dateLocation = cms?.heroDateLocation?.trim() || HERO_DEFAULTS.heroDateLocation;
+
+  const up = (delay: number, y = 22, duration = 0.65) =>
+    reduced ? {} : fadeUp(delay, y, duration);
+  const fi = (delay: number, duration = 0.6) =>
+    reduced ? {} : fadeIn(delay, duration);
+
   return (
     <div className="relative h-screen overflow-hidden bg-gtp-dark-teal">
       {/* Dot grid texture */}
@@ -145,47 +183,114 @@ function SpeakersHero() {
         className="pointer-events-none absolute inset-0 opacity-[0.04]"
         aria-hidden="true"
         style={{
-          backgroundImage:
-            "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
           backgroundSize: "28px 28px",
         }}
       />
 
       {/* ── Decorative shapes ── */}
 
-      {/* Orange circle — top right, partially cropped */}
-      <div
-        className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-gtp-orange opacity-90 sm:h-56 sm:w-56"
+      {/* Orange circle — top right, continuous float after entry */}
+      <motion.div
+        className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-gtp-orange sm:h-56 sm:w-56"
         aria-hidden="true"
+        initial={reduced ? false : { scale: 0, opacity: 0 }}
+        animate={reduced ? {} : { scale: 1, opacity: 0.9, y: [0, -10, 0] }}
+        transition={reduced ? {} : {
+          scale: { duration: 0.75, ease: EASE, delay: 0.08 },
+          opacity: { duration: 0.75, ease: EASE, delay: 0.08 },
+          y: { duration: 7, ease: "easeInOut", repeat: Infinity, delay: 0.9 },
+        }}
       />
 
-      {/* Triangle outline — right side, mid */}
-      <TriangleOutline className="pointer-events-none absolute right-[6%] top-[35%] h-14 w-14 text-gtp-teal/50" />
+      {/* Triangle — fades in with rotation, slow drift after */}
+      <motion.div
+        className="pointer-events-none absolute right-[6%] top-[35%]"
+        aria-hidden="true"
+        initial={reduced ? false : { opacity: 0, rotate: -30 }}
+        animate={reduced ? {} : { opacity: 1, rotate: [0, 6, 0, -6, 0] }}
+        transition={reduced ? {} : {
+          opacity: { duration: 0.6, ease: EASE, delay: 0.5 },
+          rotate: { duration: 9, ease: "easeInOut", repeat: Infinity, delay: 1.1 },
+        }}
+      >
+        <TriangleOutline className="h-14 w-14 text-gtp-teal/50" />
+      </motion.div>
 
-      {/* Diagonal bars — lower left */}
-      <DiagonalBars className="pointer-events-none absolute bottom-16 left-[52%] h-14 w-8 text-white/20" />
+      {/* Diagonal bars — slide in from right */}
+      <motion.div
+        className="pointer-events-none absolute bottom-16 left-[52%]"
+        aria-hidden="true"
+        {...(reduced ? {} : {
+          initial: { opacity: 0, x: 20 },
+          animate: { opacity: 1, x: 0 },
+          transition: { duration: 0.55, ease: EASE, delay: 0.78 },
+        })}
+      >
+        <DiagonalBars className="h-14 w-8 text-white/20" />
+      </motion.div>
 
-      {/* Squiggle — bottom right of image */}
-      <SquiggleLine className="pointer-events-none absolute bottom-20 left-[48%] w-28 text-gtp-teal/30" />
+      {/* Squiggle — centre-bottom, drifts horizontally */}
+      <motion.div
+        className="pointer-events-none absolute bottom-20 left-[48%]"
+        aria-hidden="true"
+        initial={reduced ? false : { opacity: 0, x: -16 }}
+        animate={reduced ? {} : { opacity: 1, x: [0, 5, 0] }}
+        transition={reduced ? {} : {
+          opacity: { duration: 0.5, ease: EASE, delay: 0.68 },
+          x: { duration: 8, ease: "easeInOut", repeat: Infinity, delay: 1.2 },
+        }}
+      >
+        <SquiggleLine className="w-28 text-gtp-teal/30" />
+      </motion.div>
 
-      {/* Squiggle — right side lower */}
-      <SquiggleLine className="pointer-events-none absolute bottom-16 right-[5%] w-24 rotate-12 text-gtp-green/35" />
+      {/* Squiggle — bottom right, drifts */}
+      <motion.div
+        className="pointer-events-none absolute bottom-16 right-[5%] rotate-12"
+        aria-hidden="true"
+        initial={reduced ? false : { opacity: 0, x: 16 }}
+        animate={reduced ? {} : { opacity: 1, x: [0, -5, 0] }}
+        transition={reduced ? {} : {
+          opacity: { duration: 0.5, ease: EASE, delay: 0.74 },
+          x: { duration: 9, ease: "easeInOut", repeat: Infinity, delay: 1.4 },
+        }}
+      >
+        <SquiggleLine className="w-24 text-gtp-green/35" />
+      </motion.div>
 
-      {/* Green dot cluster — above text col */}
-      <div
+      {/* Green dot 1 */}
+      <motion.div
         className="pointer-events-none absolute right-[28%] top-10 h-3 w-3 rounded-full bg-gtp-green/50"
         aria-hidden="true"
+        {...(reduced ? {} : {
+          initial: { scale: 0, opacity: 0 },
+          animate: { scale: 1, opacity: 1 },
+          transition: { duration: 0.4, ease: EASE, delay: 0.45 },
+        })}
       />
-      <div
+      {/* Green dot 2 */}
+      <motion.div
         className="pointer-events-none absolute right-[26%] top-16 h-2 w-2 rounded-full bg-gtp-green/35"
         aria-hidden="true"
+        {...(reduced ? {} : {
+          initial: { scale: 0, opacity: 0 },
+          animate: { scale: 1, opacity: 1 },
+          transition: { duration: 0.4, ease: EASE, delay: 0.54 },
+        })}
       />
 
       {/* ── Full-height content grid ── */}
       <div className="grid h-full lg:grid-cols-2">
 
-        {/* Left: full-bleed microphone image */}
-        <div className="relative hidden lg:block">
+        {/* Left: full-bleed microphone image — slides in from left */}
+        <motion.div
+          className="relative hidden lg:block"
+          {...(reduced ? {} : {
+            initial: { opacity: 0, x: -60 },
+            animate: { opacity: 1, x: 0 },
+            transition: { duration: 0.95, ease: EASE, delay: 0 },
+          })}
+        >
           <Image
             src="/images/gtp/speakers/speaker-mic-hero.jpg"
             alt="Speaker at microphone"
@@ -195,37 +300,49 @@ function SpeakersHero() {
             sizes="50vw"
             quality={90}
           />
-          {/* Fade right edge into dark teal */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-gtp-dark-teal" />
-          {/* Subtle bottom vignette */}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gtp-dark-teal/50 via-transparent to-transparent" />
-        </div>
+        </motion.div>
 
-        {/* Right: text — vertically centered */}
+        {/* Right: text — staggered fade-up */}
         <div className="flex flex-col justify-center px-8 lg:px-16 xl:px-20">
-          <p className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-gtp-teal">
-            Global Tipping Points 2026
-          </p>
+          <motion.p
+            className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-gtp-teal"
+            {...up(0.28, 14, 0.55)}
+          >
+            {label}
+          </motion.p>
 
-          <h1 className="font-heading mt-4 text-5xl font-bold leading-[1.05] text-white sm:text-6xl lg:text-7xl">
-            Our
-            <br />
-            Speakers
-          </h1>
+          <motion.h1
+            className="font-heading mt-4 text-5xl font-bold leading-[1.05] text-white sm:text-6xl lg:text-7xl"
+            {...up(0.42, 36, 0.75)}
+          >
+            {heading}
+          </motion.h1>
 
-          <div className="mt-6 h-px w-16 bg-gtp-teal" />
+          <motion.div
+            className="mt-6 h-px w-16 bg-gtp-teal"
+            style={{ transformOrigin: "left center" }}
+            {...(reduced ? {} : {
+              initial: { scaleX: 0, opacity: 0 },
+              animate: { scaleX: 1, opacity: 1 },
+              transition: { duration: 0.5, ease: EASE, delay: 0.6 },
+            })}
+          />
 
-          <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-white/70 sm:text-lg">
-            GTP 2026 brings together leading scientists, policymakers, and
-            innovators from across the globe. Over four days in Kuala Lumpur,
-            they will share breakthroughs, challenge assumptions, and chart a
-            course for positive tipping points on climate, biodiversity, and
-            planetary health.
-          </p>
+          <motion.p
+            className="mt-6 max-w-[46ch] text-base leading-relaxed text-white/70 sm:text-lg"
+            {...up(0.7, 20, 0.6)}
+          >
+            {description}
+          </motion.p>
 
-          <p className="mt-4 max-w-[42ch] text-sm leading-relaxed text-white/45">
-            12–15 October 2026 · Kuala Lumpur, Malaysia
-          </p>
+          <motion.p
+            className="mt-4 max-w-[42ch] text-sm leading-relaxed text-white/45"
+            {...fi(0.84)}
+          >
+            {dateLocation}
+          </motion.p>
         </div>
       </div>
     </div>
@@ -328,14 +445,16 @@ function SpeakersGrid({
 
 export function GtpSpeakersPageClient({
   speakers,
+  pageCms,
 }: {
   speakers: GtpHighlightSpeaker[];
+  pageCms: SanityGtp2026SpeakersPageRaw | null;
 }) {
   const [selected, setSelected] = useState<GtpHighlightSpeaker | null>(null);
 
   return (
     <>
-      <SpeakersHero />
+      <SpeakersHero cms={pageCms} />
       <SpeakersGrid speakers={speakers} onSelect={setSelected} />
 
       <AnimatePresence>

@@ -15,6 +15,8 @@
     "seed-gtp-faq-items": "npx tsx scripts/seed-gtp-faq-items.ts",
     "seed-gtp-about-page": "npx tsx scripts/seed-gtp-about-page.ts",
     "seed-gtp-media-bizforum-pages": "npx tsx scripts/seed-gtp-media-bizforum-pages.ts",
+    "seed-gtp-speakers-page": "npx tsx scripts/seed-gtp-speakers-page.ts",
+    "migrate-highlight-speakers-to-speakers": "npx tsx scripts/migrate-highlight-speakers-to-speakers.ts",
     "seed-scph-meet-the-team-page": "npx tsx scripts/seed-scph-meet-the-team-page.ts",
     "seed-scph-journalist-workshops-page": "npx tsx scripts/seed-scph-journalist-workshops-page.ts",
     "seed-scph-journalist-workshop-rows": "npx tsx scripts/seed-scph-journalist-workshop-rows.ts",

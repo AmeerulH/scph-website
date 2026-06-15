@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {
-  getGtp2026HighlightSpeakers,
+  getGtp2026Speakers,
+  getGtp2026SpeakersPage,
   mapSanityHighlightToProps,
 } from "@/sanity/gtp-stage1";
 import { gtpHighlightSpeakers } from "@/data/gtp-highlight-speakers";
@@ -28,9 +29,13 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 export default async function SpeakersPage() {
-  const rows = await getGtp2026HighlightSpeakers().catch(() => []);
+  const [rows, pageCms] = await Promise.all([
+    getGtp2026Speakers().catch(() => []),
+    getGtp2026SpeakersPage().catch(() => null),
+  ]);
+
   const speakers =
     rows.length > 0 ? mapSanityHighlightToProps(rows) : gtpHighlightSpeakers;
 
-  return <GtpSpeakersPageClient speakers={speakers} />;
+  return <GtpSpeakersPageClient speakers={speakers} pageCms={pageCms} />;
 }
