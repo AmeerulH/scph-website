@@ -44,6 +44,7 @@ import {
   GTP_EXPLORE_VERTICAL_BG_CLASSNAMES,
 } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
+import { GtpRatesExcursionsSection } from "@/components/gtp/gtp-rates-excursions-section";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import {
   PartnerLogoPlaceholder,
@@ -845,6 +846,7 @@ export default async function GtpAboutPage() {
           countdownInitial={countdownInitial}
         />
       ) : null}
+      {/* <GtpRatesExcursionsSection /> */}{/* TODO: unhide once team review done */}
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}

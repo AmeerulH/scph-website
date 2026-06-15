@@ -34,6 +34,7 @@ const navItems: NavItem[] = [
     href: "/events/gtp-2026/organising-committee",
   },
   { label: "Programme", href: "/events/gtp-2026/programmes" },
+  { label: "Speakers", href: "/events/gtp-2026/speakers" },
   {
     label: "Get Involved",
     parentHref: "/events/gtp-2026/get-involved",
