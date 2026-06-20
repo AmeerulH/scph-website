@@ -257,23 +257,33 @@ export type GtpAboutSponsorLogoEntry = {
   href?: string;
 };
 
-export type GtpAboutSponsorsBandCopy = {
+export type GtpAboutLogoMarqueeBandCopy = {
   enabled: boolean;
   title: string;
   subtitle: string;
-  /** When non-empty, marquee uses these instead of PIK + placeholders. */
-  sponsorLogos: GtpAboutSponsorLogoEntry[];
+  /** When non-empty, marquee uses these instead of fallback placeholders. */
+  logos: GtpAboutSponsorLogoEntry[];
   noticeBeforeLink: string;
   noticeLinkText: string;
   noticeLinkHref: string;
 };
 
-export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutSponsorsBandCopy = {
+export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutLogoMarqueeBandCopy = {
   enabled: true,
-  title: "Building a Global Coalition",
-  subtitle: "Our Sponsors & Partners",
-  sponsorLogos: [],
-  noticeBeforeLink: "Partner and sponsor logos coming soon. Interested in partnering? ",
+  title: "Backing the Conference",
+  subtitle: "Our Sponsors",
+  logos: [],
+  noticeBeforeLink: "Sponsor logos coming soon. Interested in sponsoring? ",
+  noticeLinkText: "Get in touch →",
+  noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
+};
+
+export const DEFAULT_GTP_PARTNERS_BAND: GtpAboutLogoMarqueeBandCopy = {
+  enabled: true,
+  title: "Collaborating for Impact",
+  subtitle: "Our Partners",
+  logos: [],
+  noticeBeforeLink: "Partner logos coming soon. Interested in partnering? ",
   noticeLinkText: "Get in touch →",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
 };
@@ -294,16 +304,24 @@ export type GtpAboutPageResolved = {
   quotes: GtpAboutQuotesBandCopy;
   gallery: GtpAboutGalleryBandCopy;
   eventInquiry: GtpAboutEventInquiryCopy;
-  sponsors: GtpAboutSponsorsBandCopy;
+  sponsors: GtpAboutLogoMarqueeBandCopy;
+  partners: GtpAboutLogoMarqueeBandCopy;
 };
 
-/** At least one sponsor row with logo URL + name (public sponsors band gate). */
-export function gtpAboutSponsorsBandHasQualifyingLogos(
-  band: GtpAboutSponsorsBandCopy,
+/** At least one logo row with URL + name (optional public band gate). */
+export function gtpAboutLogoMarqueeBandHasQualifyingLogos(
+  band: GtpAboutLogoMarqueeBandCopy,
 ): boolean {
-  return band.sponsorLogos.some(
+  return band.logos.some(
     (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
   );
+}
+
+/** @deprecated Use gtpAboutLogoMarqueeBandHasQualifyingLogos */
+export function gtpAboutSponsorsBandHasQualifyingLogos(
+  band: GtpAboutLogoMarqueeBandCopy,
+): boolean {
+  return gtpAboutLogoMarqueeBandHasQualifyingLogos(band);
 }
 
 export { DEFAULT_GTP_WHAT_IS_BAND };

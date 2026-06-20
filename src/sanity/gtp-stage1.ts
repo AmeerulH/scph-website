@@ -151,6 +151,19 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     noticeBeforeLink,
     noticeLinkText,
     noticeLinkHref
+  },
+  partnersBand {
+    enabled,
+    title,
+    subtitle,
+    partners[] {
+      name,
+      href,
+      "logoUrl": logo.asset->url
+    },
+    noticeBeforeLink,
+    noticeLinkText,
+    noticeLinkHref
   }
 }`;
 

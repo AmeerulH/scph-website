@@ -280,7 +280,7 @@ export const gtpAboutSponsorLogoType = defineType({
 
 export const gtpAboutSponsorsBandType = defineType({
   name: 'gtpAboutSponsorsBand',
-  title: 'Sponsors & partners',
+  title: 'Sponsors band',
   type: 'object',
   fields: [
     gtpAboutVisibleOnSiteField(),
@@ -288,11 +288,36 @@ export const gtpAboutSponsorsBandType = defineType({
     defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
     defineField({
       name: 'sponsors',
-      title: 'Sponsor / partner logos',
+      title: 'Sponsor logos',
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
-      description:
-        'The public site shows this band only when visibility is on and at least one row has logo + name. Add rows in Studio (image + name + optional URL).',
+      description: 'Add rows in Studio (image + name + optional URL). Empty rows show placeholder marquee.',
+    }),
+    defineField({
+      name: 'noticeBeforeLink',
+      title: 'Notice (before link)',
+      type: 'text',
+      rows: 2,
+    }),
+    defineField({name: 'noticeLinkText', title: 'Link text', type: 'string'}),
+    defineField({name: 'noticeLinkHref', title: 'Link URL', type: 'string'}),
+  ],
+})
+
+export const gtpAboutPartnersBandType = defineType({
+  name: 'gtpAboutPartnersBand',
+  title: 'Partners band',
+  type: 'object',
+  fields: [
+    gtpAboutVisibleOnSiteField(),
+    defineField({name: 'title', title: 'Section title', type: 'string'}),
+    defineField({name: 'subtitle', title: 'Eyebrow', type: 'string'}),
+    defineField({
+      name: 'partners',
+      title: 'Partner logos',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      description: 'Add rows in Studio (image + name + optional URL). Empty rows show placeholder marquee.',
     }),
     defineField({
       name: 'noticeBeforeLink',
@@ -318,4 +343,5 @@ export const gtpAboutPageBandObjectTypes = [
   gtpAboutEventInquiryBandType,
   gtpAboutSponsorLogoType,
   gtpAboutSponsorsBandType,
+  gtpAboutPartnersBandType,
 ]

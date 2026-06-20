@@ -17,17 +17,15 @@ import { GtpAboutHeroStack } from "@/components/gtp/gtp-about-hero-stack";
 import type {
   GtpAboutEventInquiryCopy,
   GtpAboutGalleryBandCopy,
+  GtpAboutLogoMarqueeBandCopy,
   GtpAboutQuotesBandCopy,
   GtpAboutSpeakersChromeCopy,
-  GtpAboutSponsorLogoEntry,
-  GtpAboutSponsorsBandCopy,
   GtpAboutThemeIconKey,
   GtpAboutThemesBandCopy,
   GtpAboutWhyMattersCopy,
   GtpWhatIsBandContent,
 } from "@/data/gtp-about-page-defaults";
 import { mergeGtpAboutPage } from "@/sanity/gtp-about-page-merge";
-import { gtpAboutSponsorsBandHasQualifyingLogos } from "@/data/gtp-about-page-defaults";
 import {
   getGtp2026AboutPage,
   getGtp2026HighlightSpeakers,
@@ -44,13 +42,14 @@ import {
   GTP_EXPLORE_VERTICAL_BG_CLASSNAMES,
 } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
+import { GtpViewAllSpeakersCta } from "@/components/gtp/gtp-view-all-speakers-cta";
+import {
+  GtpLogoMarqueeBand,
+  GtpPikPartnerLogo,
+} from "@/components/gtp/gtp-logo-marquee-band";
 import { GtpRatesExcursionsSection } from "@/components/gtp/gtp-rates-excursions-section";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
-import {
-  PartnerLogoPlaceholder,
-  PartnerMarquee,
-} from "@/components/sections/partner-marquee";
-import { PlaceholderNotice } from "@/components/sections/placeholder-notice";
+import { PartnerLogoPlaceholder } from "@/components/sections/partner-marquee";
 import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { cn } from "@/lib/utils";
@@ -366,6 +365,7 @@ function SpeakersSection({
       background="default"
     >
       <GtpSpeakersHighlightInner staggerVariant="long" speakers={speakers} />
+      <GtpViewAllSpeakersCta />
     </SectionWrapper>
   );
 }
@@ -395,139 +395,54 @@ function EventInquirySection({
   );
 }
 
-// ─── Sponsors & Partners ──────────────────────────────────────────────────────
+// ─── Sponsors & partners ──────────────────────────────────────────────────────
 
-function PikPartnerLogo() {
-  return (
-    <a
-      href="https://www.pik-potsdam.de/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="mr-4 flex h-20 w-44 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-white px-3 py-2 shadow-sm transition-opacity hover:opacity-90"
-      aria-label="Potsdam Institute for Climate Impact Research (opens in new tab)"
-    >
-      <Image
-        src="/images/gtp/logos/pik-logo.png"
-        alt="Potsdam Institute for Climate Impact Research (PIK)"
-        width={160}
-        height={56}
-        className="h-11 w-auto max-w-[10rem] object-contain"
-      />
-    </a>
-  );
-}
-
-const sponsorRowSlots = [
+const PARTNER_FALLBACK_ROW_SLOTS = [
   "pik",
   ...Array.from({ length: 7 }, (_, i) => `ph-${i}`),
 ] as const;
 
-/** When using CMS logos, pad with placeholders up to this many slots per row (legacy PIK strip width). */
-const SPONSOR_ROW_MIN_SLOTS = sponsorRowSlots.length;
-
-function GtpSponsorLogoCell({ entry }: { entry: GtpAboutSponsorLogoEntry }) {
-  const remote = imgUnoptimized(entry.logoUrl);
-  const card = (
-    <span className="flex h-full w-full items-center justify-center px-2">
-      <Image
-        src={entry.logoUrl}
-        alt={entry.name}
-        width={160}
-        height={56}
-        className="h-11 w-auto max-w-[10rem] object-contain"
-        unoptimized={remote}
-      />
-    </span>
-  );
-  const shellClass =
-    "mr-4 flex h-20 w-44 shrink-0 items-center justify-center rounded-xl border border-gray-100 bg-white px-3 py-2 shadow-sm transition-opacity hover:opacity-90";
-
-  const href = entry.href?.trim();
-  if (href) {
-    const internal = href.startsWith("/") || href.startsWith("#");
-    if (internal) {
-      return (
-        <Link href={href} className={shellClass}>
-          {card}
-        </Link>
-      );
-    }
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={shellClass}
-        aria-label={`${entry.name} (opens in new tab)`}
-      >
-        {card}
-      </a>
-    );
-  }
-
-  return <div className={shellClass}>{card}</div>;
-}
-
-function SponsorsSection({ band }: { band: GtpAboutSponsorsBandCopy }) {
-  const cmsLogos = band.sponsorLogos.filter((x) => x.logoUrl?.trim() && x.name?.trim());
-  const useCmsMarquee = cmsLogos.length > 0;
-  const placeholderPadCount = useCmsMarquee
-    ? Math.max(0, SPONSOR_ROW_MIN_SLOTS - cmsLogos.length)
-    : 0;
-
+function SponsorsBandSection({ band }: { band: GtpAboutLogoMarqueeBandCopy }) {
   return (
-    <SectionWrapper
+    <GtpLogoMarqueeBand
+      variant="sponsors"
       title={band.title}
       subtitle={band.subtitle}
-      theme="gtp"
-      background="default"
-    >
-      {/*
-        Vertical padding so card shadows aren’t clipped by overflow-hidden (needed for horizontal mask).
-      */}
-      <PartnerMarquee
-        maskClassName="px-1 py-3 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] sm:py-4"
-        forwardStripClassName="mb-5"
-        renderRow={(slot) => (
-          <>
-            {useCmsMarquee ? (
-              <>
-                {cmsLogos.map((entry, i) => (
-                  <GtpSponsorLogoCell
-                    key={`${slot}-${entry.name}-${i}`}
-                    entry={entry}
-                  />
-                ))}
-                {Array.from({ length: placeholderPadCount }, (_, i) => (
-                  <PartnerLogoPlaceholder
-                    key={`${slot}-cms-pad-${i}`}
-                    elevated
-                  />
-                ))}
-              </>
-            ) : (
-              sponsorRowSlots.map((id) =>
-                id === "pik" ? (
-                  <PikPartnerLogo key={`${slot}-${id}`} />
-                ) : (
-                  <PartnerLogoPlaceholder key={`${slot}-${id}`} elevated />
-                ),
-              )
-            )}
-          </>
-        )}
-      />
+      logos={band.logos}
+      noticeBeforeLink={band.noticeBeforeLink}
+      noticeLinkText={band.noticeLinkText}
+      noticeLinkHref={band.noticeLinkHref}
+    />
+  );
+}
 
-      <PlaceholderNotice>
-        {band.noticeBeforeLink}
-        <Link
-          href={band.noticeLinkHref}
-          className="font-semibold text-gtp-dark-teal hover:underline"
-        >
-          {band.noticeLinkText}
-        </Link>
-      </PlaceholderNotice>
-    </SectionWrapper>
+function PartnersBandSection({ band }: { band: GtpAboutLogoMarqueeBandCopy }) {
+  return (
+    <GtpLogoMarqueeBand
+      variant="partners"
+      title={band.title}
+      subtitle={band.subtitle}
+      logos={band.logos}
+      noticeBeforeLink={band.noticeBeforeLink}
+      noticeLinkText={band.noticeLinkText}
+      noticeLinkHref={band.noticeLinkHref}
+      renderFallbackRow={(slot) => (
+        <>
+          {PARTNER_FALLBACK_ROW_SLOTS.map((id) =>
+            id === "pik" ? (
+              <GtpPikPartnerLogo key={`${slot}-${id}`} />
+            ) : (
+              <PartnerLogoPlaceholder
+                key={`${slot}-${id}`}
+                elevated
+                label="Partner Logo"
+                className="border-gtp-teal/15 bg-white ring-1 ring-gtp-teal/10"
+              />
+            ),
+          )}
+        </>
+      )}
+    />
   );
 }
 
@@ -823,9 +738,6 @@ export default async function GtpAboutPage() {
   const aboutSections = aboutCms?.sections ?? null;
   const showAboutCmsBands = gtpAboutCmsSectionsRender(aboutSections);
   const about = mergeGtpAboutPage(aboutCms);
-  const showSponsorsSection =
-    about.sponsors.enabled &&
-    gtpAboutSponsorsBandHasQualifyingLogos(about.sponsors);
   const speakersList =
     highlightRows.length > 0
       ? mapSanityHighlightToProps(highlightRows)
@@ -846,7 +758,7 @@ export default async function GtpAboutPage() {
           countdownInitial={countdownInitial}
         />
       ) : null}
-      {/* <GtpRatesExcursionsSection /> */}{/* TODO: unhide once team review done */}
+      <GtpRatesExcursionsSection />
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}
@@ -869,7 +781,12 @@ export default async function GtpAboutPage() {
       {about.eventInquiry.enabled ? (
         <EventInquirySection content={about.eventInquiry} />
       ) : null}
-      {showSponsorsSection ? <SponsorsSection band={about.sponsors} /> : null}
+      {about.sponsors.enabled ? (
+        <SponsorsBandSection band={about.sponsors} />
+      ) : null}
+      {about.partners.enabled ? (
+        <PartnersBandSection band={about.partners} />
+      ) : null}
     </>
   );
 }

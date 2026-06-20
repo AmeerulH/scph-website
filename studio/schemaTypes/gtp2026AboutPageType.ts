@@ -73,8 +73,14 @@ export const gtp2026AboutPageType = defineType({
     }),
     defineField({
       name: 'sponsorsBand',
-      title: 'Sponsors & partners',
+      title: 'Sponsors',
       type: 'gtpAboutSponsorsBand',
+      options: {collapsible: true, collapsed: true},
+    }),
+    defineField({
+      name: 'partnersBand',
+      title: 'Partners',
+      type: 'gtpAboutPartnersBand',
       options: {collapsible: true, collapsed: true},
     }),
   ],

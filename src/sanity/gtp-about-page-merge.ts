@@ -9,7 +9,7 @@ import type {
   GtpAboutQuotesBandCopy,
   GtpAboutSpeakersChromeCopy,
   GtpAboutSponsorLogoEntry,
-  GtpAboutSponsorsBandCopy,
+  GtpAboutLogoMarqueeBandCopy,
   GtpAboutThemeCardCopy,
   GtpAboutThemeIconKey,
   GtpAboutThemesBandCopy,
@@ -22,6 +22,7 @@ import {
   DEFAULT_GTP_QUOTES_BAND,
   DEFAULT_GTP_SPEAKERS_CHROME,
   DEFAULT_GTP_SPONSORS_BAND,
+  DEFAULT_GTP_PARTNERS_BAND,
   DEFAULT_GTP_THEMES_BAND,
   DEFAULT_GTP_WHY_MATTERS,
 } from "@/data/gtp-about-page-defaults";
@@ -152,6 +153,16 @@ export type GtpAboutSponsorsBandRaw = {
   noticeLinkHref?: string | null;
 } | null;
 
+export type GtpAboutPartnersBandRaw = {
+  enabled?: boolean | null;
+  title?: string | null;
+  subtitle?: string | null;
+  partners?: GtpAboutSponsorLogoRaw[] | null;
+  noticeBeforeLink?: string | null;
+  noticeLinkText?: string | null;
+  noticeLinkHref?: string | null;
+} | null;
+
 export type GtpAboutPageDocumentRaw = {
   sections?: SectionBlock[] | null;
   whatIsBand?: GtpAboutWhatIsBandRaw | null;
@@ -163,6 +174,7 @@ export type GtpAboutPageDocumentRaw = {
   galleryBand?: GtpAboutGalleryBandRaw;
   eventInquiryBand?: GtpAboutEventInquiryBandRaw;
   sponsorsBand?: GtpAboutSponsorsBandRaw;
+  partnersBand?: GtpAboutPartnersBandRaw;
 };
 
 /** On-site register route is deprecated; hero primary CTA must open Sunway Events. */
@@ -385,20 +397,27 @@ function mergeSponsorLogo(
   return entry;
 }
 
-function mergeSponsors(raw: GtpAboutSponsorsBandRaw): GtpAboutSponsorsBandCopy {
-  const d = DEFAULT_GTP_SPONSORS_BAND;
-  if (!raw) return d;
-  const sponsorLogos = (raw.sponsors ?? [])
+function mergeLogoMarqueeBand(
+  raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
+  defaults: GtpAboutLogoMarqueeBandCopy,
+  logosKey: "sponsors" | "partners",
+): GtpAboutLogoMarqueeBandCopy {
+  if (!raw) return defaults;
+  const rawLogos =
+    logosKey === "sponsors"
+      ? (raw as GtpAboutSponsorsBandRaw)?.sponsors
+      : (raw as GtpAboutPartnersBandRaw)?.partners;
+  const logos = (rawLogos ?? [])
     .map(mergeSponsorLogo)
     .filter((x): x is GtpAboutSponsorLogoEntry => x != null);
   return {
     enabled: raw.enabled !== false,
-    title: s(raw.title, d.title),
-    subtitle: s(raw.subtitle, d.subtitle),
-    sponsorLogos,
-    noticeBeforeLink: s(raw.noticeBeforeLink, d.noticeBeforeLink),
-    noticeLinkText: s(raw.noticeLinkText, d.noticeLinkText),
-    noticeLinkHref: s(raw.noticeLinkHref, d.noticeLinkHref),
+    title: s(raw.title, defaults.title),
+    subtitle: s(raw.subtitle, defaults.subtitle),
+    logos,
+    noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
+    noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
+    noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),
   };
 }
 
@@ -414,6 +433,15 @@ export function mergeGtpAboutPage(
     quotes: mergeQuotes(doc?.quotesBand ?? null),
     gallery: mergeGallery(doc?.galleryBand ?? null),
     eventInquiry: mergeEventInquiry(doc?.eventInquiryBand ?? null),
-    sponsors: mergeSponsors(doc?.sponsorsBand ?? null),
+    sponsors: mergeLogoMarqueeBand(
+      doc?.sponsorsBand ?? null,
+      DEFAULT_GTP_SPONSORS_BAND,
+      "sponsors",
+    ),
+    partners: mergeLogoMarqueeBand(
+      doc?.partnersBand ?? null,
+      DEFAULT_GTP_PARTNERS_BAND,
+      "partners",
+    ),
   };
 }

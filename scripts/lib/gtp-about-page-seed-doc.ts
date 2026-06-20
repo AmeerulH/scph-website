@@ -15,6 +15,7 @@ import {
   DEFAULT_GTP_QUOTES_BAND,
   DEFAULT_GTP_SPEAKERS_CHROME,
   DEFAULT_GTP_SPONSORS_BAND,
+  DEFAULT_GTP_PARTNERS_BAND,
   DEFAULT_GTP_THEMES_BAND,
   DEFAULT_GTP_WHAT_IS_BAND,
   DEFAULT_GTP_WHY_MATTERS,
@@ -81,7 +82,7 @@ async function buildPikSponsorEntries(
   const logo = await uploadImage(client, pik.logoPublicPath, pik.name);
   if (!logo) {
     console.warn(
-      "   ⚠️  PIK logo missing; sponsorsBand.sponsors will be empty (site falls back to JSX strip).",
+      "   ⚠️  PIK logo missing; partnersBand.partners will be empty (site falls back to JSX strip).",
     );
     return [];
   }
@@ -105,6 +106,7 @@ export async function buildGtpAboutPageSeedDocument(
   const what = DEFAULT_GTP_WHAT_IS_BAND;
   const why = DEFAULT_GTP_WHY_MATTERS;
   const sponsors = await buildPikSponsorEntries(client, dryRun);
+  const partners = sponsors;
 
   return {
     _id: GTP_ABOUT_PAGE_DOCUMENT_ID,
@@ -190,7 +192,15 @@ export async function buildGtpAboutPageSeedDocument(
       noticeBeforeLink: DEFAULT_GTP_SPONSORS_BAND.noticeBeforeLink,
       noticeLinkText: DEFAULT_GTP_SPONSORS_BAND.noticeLinkText,
       noticeLinkHref: DEFAULT_GTP_SPONSORS_BAND.noticeLinkHref,
-      sponsors,
+      sponsors: [],
+    },
+    partnersBand: {
+      title: DEFAULT_GTP_PARTNERS_BAND.title,
+      subtitle: DEFAULT_GTP_PARTNERS_BAND.subtitle,
+      noticeBeforeLink: DEFAULT_GTP_PARTNERS_BAND.noticeBeforeLink,
+      noticeLinkText: DEFAULT_GTP_PARTNERS_BAND.noticeLinkText,
+      noticeLinkHref: DEFAULT_GTP_PARTNERS_BAND.noticeLinkHref,
+      partners,
     },
     sections: [],
   };

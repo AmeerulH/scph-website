@@ -6,6 +6,7 @@ import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { GtpSiteExploreCardsGrid } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
+import { GtpViewAllSpeakersCta } from "@/components/gtp/gtp-view-all-speakers-cta";
 import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
 import { gtpHighlightSpeakers } from "@/data/gtp-highlight-speakers";
 import { ContactForm } from "@/app/events/gtp-2026/get-involved/contact-form";
@@ -150,6 +151,7 @@ export function Gtp2026HomeSection({
         id="gtp-2026-speakers"
       >
         <GtpSpeakersHighlightInner staggerVariant="long" speakers={speakers} />
+        <GtpViewAllSpeakersCta theme="scph" />
       </SectionWrapper>
     </>
   );

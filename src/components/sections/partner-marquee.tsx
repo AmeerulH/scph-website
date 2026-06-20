@@ -46,11 +46,13 @@ export type PartnerLogoPlaceholderProps = {
   className?: string;
   /** Adds shadow-sm (GTP sponsors strip). */
   elevated?: boolean;
+  label?: string;
 };
 
 export function PartnerLogoPlaceholder({
   className,
   elevated,
+  label = "Partner Logo",
 }: PartnerLogoPlaceholderProps) {
   return (
     <div
@@ -60,7 +62,7 @@ export function PartnerLogoPlaceholder({
         className,
       )}
     >
-      <span className="text-xs font-medium text-gray-400">Partner Logo</span>
+      <span className="text-xs font-medium text-gray-400">{label}</span>
     </div>
   );
 }
