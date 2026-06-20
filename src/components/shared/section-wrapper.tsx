@@ -63,6 +63,9 @@ export function SectionWrapper({
         : "bg-white";
 
   const isDark = background === "dark";
+  const isGtpDark = isDark && theme === "gtp";
+  const isGtpDefault = !isDark && theme === "gtp" && background !== "muted";
+  const isGtpMuted = !isDark && theme === "gtp" && background === "muted";
 
   const content = (
     <>
@@ -108,11 +111,57 @@ export function SectionWrapper({
   return (
     <section
       id={id}
-      className={cn("py-20 px-4 md:px-6 lg:px-8 md:py-28", bgClass, className)}
+      className={cn(
+        "py-20 px-4 md:px-6 lg:px-8 md:py-28",
+        (isGtpDark || isGtpDefault || isGtpMuted) && "relative overflow-hidden",
+        bgClass,
+        className,
+      )}
     >
+      {isGtpDark && (
+        <>
+          {/* Dot-grid texture — same pattern as the hero */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.055]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, white 1.5px, transparent 1.5px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+          {/* Teal radial bloom — upper-left quadrant */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_12%_25%,rgba(0,156,180,0.28),transparent_52%)]" />
+          {/* Green radial bloom — lower-right quadrant */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_88%_80%,rgba(134,188,37,0.11),transparent_48%)]" />
+        </>
+      )}
+
+      {/* ── Light GTP sections: default (white) ──────────────────────── */}
+      {isGtpDefault && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(155deg, rgba(0,156,180,0.04) 0%, transparent 48%, rgba(134,188,37,0.03) 100%)",
+          }}
+        />
+      )}
+
+      {/* ── Light GTP sections: muted (slate-100) ────────────────────── */}
+      {isGtpMuted && (
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(335deg, rgba(219,93,0,0.03) 0%, transparent 48%, rgba(0,156,180,0.04) 100%)",
+          }}
+        />
+      )}
+
       <div
         className={cn(
           "mx-auto max-w-7xl overflow-visible",
+          (isGtpDark || isGtpDefault || isGtpMuted) && "relative z-10",
           contentClassName,
         )}
       >

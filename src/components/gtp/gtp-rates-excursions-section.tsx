@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, MapPin, ExternalLink } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
@@ -15,7 +16,9 @@ type CardData = {
   ctaHref: string;
   address?: string;
   mapsHref?: string;
-  /** Inline CSS background value — swap for next/image once real photos are provided. */
+  /** Real photo path — if set, renders next/image; otherwise falls back to `background` gradient. */
+  imageSrc?: string;
+  /** Inline CSS background value fallback when no imageSrc provided. */
   background: string;
 };
 
@@ -32,7 +35,7 @@ const CARDS: CardData[] = [
       "Jalan 11/15, Bandar Sunway, 47500 Petaling Jaya, Selangor, Malaysia",
     mapsHref:
       "https://maps.google.com/maps?q=Sunway+Lagoon+Hotel,+Jalan+11/15,+Bandar+Sunway,+47500+Petaling+Jaya",
-    // TODO: replace with next/image once hotel photos are provided
+    imageSrc: "/images/gtp/sunway-lagoon-hotel.jpg",
     background: "radial-gradient(ellipse at top left, #1a7a96 0%, #0a3d4d 100%)",
   },
   {
@@ -120,8 +123,25 @@ function CarouselCard({
   return (
     <div
       className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl"
-      style={{ background: card.background }}
+      style={card.imageSrc ? undefined : { background: card.background }}
     >
+      {/* Real photo */}
+      {card.imageSrc && (
+        <Image
+          src={card.imageSrc}
+          alt={card.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 512px"
+          priority={card.id === "sunway-lagoon-hotel"}
+        />
+      )}
+
+      {/* Gradient fallback bg when no image */}
+      {!card.imageSrc && (
+        <div className="absolute inset-0" style={{ background: card.background }} />
+      )}
+
       {/* Type badge */}
       <div className="relative z-10 p-5 pb-0">
         <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/90">
@@ -131,12 +151,13 @@ function CarouselCard({
 
       {/* Bottom info panel */}
       <div
-        className="relative z-10 mt-auto p-5 pt-16"
+        className="relative z-10 mt-auto pt-12"
         style={{
           background:
-            "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)",
+            "linear-gradient(to top, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)",
         }}
       >
+        <div className="bg-black/30 p-4 backdrop-blur-sm ring-1 ring-white/10">
         <h3 className="font-heading text-xl font-bold leading-tight text-white md:text-2xl">
           {card.title}
         </h3>
@@ -146,6 +167,7 @@ function CarouselCard({
           ) : (
             <ExcursionCard card={card} />
           ))}
+        </div>
       </div>
     </div>
   );
