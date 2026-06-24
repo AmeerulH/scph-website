@@ -144,6 +144,8 @@ const HERO_DEFAULTS = {
   heroDescription:
     "GTP 2026 brings together leading scientists, policymakers, and innovators from across the globe. Over four days in Kuala Lumpur, they will share breakthroughs, challenge assumptions, and chart a course for positive tipping points on climate, biodiversity, and planetary health.",
   heroDateLocation: "12–15 October 2026 · Kuala Lumpur, Malaysia",
+  heroImageSrc: "/images/gtp/speakers/speaker-mic-hero.jpg",
+  heroImageAlt: "Speaker at microphone",
 } as const;
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -170,6 +172,11 @@ function SpeakersHero({ cms }: { cms: SanityGtp2026SpeakersPageRaw | null }) {
   const heading = cms?.heroHeading?.trim() || HERO_DEFAULTS.heroHeading;
   const description = cms?.heroDescription?.trim() || HERO_DEFAULTS.heroDescription;
   const dateLocation = cms?.heroDateLocation?.trim() || HERO_DEFAULTS.heroDateLocation;
+  const cmsHeroImageUrl = cms?.heroImageUrl?.trim() ?? "";
+  const heroImageSrc = cmsHeroImageUrl || HERO_DEFAULTS.heroImageSrc;
+  const heroImageAlt =
+    cms?.heroImageAlt?.trim() ||
+    (cmsHeroImageUrl ? heading : HERO_DEFAULTS.heroImageAlt);
 
   const up = (delay: number, y = 22, duration = 0.65) =>
     reduced ? {} : fadeUp(delay, y, duration);
@@ -279,12 +286,11 @@ function SpeakersHero({ cms }: { cms: SanityGtp2026SpeakersPageRaw | null }) {
         })}
       />
 
-      {/* ── Full-height content grid ── */}
-      <div className="grid h-full lg:grid-cols-2">
+      {/* ── Full-height content grid: photo left, copy right (lg+) ── */}
+      <div className="grid h-full min-h-0 lg:grid-cols-2">
 
-        {/* Left: full-bleed microphone image — slides in from left */}
         <motion.div
-          className="relative hidden lg:block"
+          className="relative hidden h-full min-h-[280px] w-full lg:order-1 lg:block"
           {...(reduced ? {} : {
             initial: { opacity: 0, x: -60 },
             animate: { opacity: 1, x: 0 },
@@ -292,20 +298,20 @@ function SpeakersHero({ cms }: { cms: SanityGtp2026SpeakersPageRaw | null }) {
           })}
         >
           <Image
-            src="/images/gtp/speakers/speaker-mic-hero.jpg"
-            alt="Speaker at microphone"
+            src={heroImageSrc}
+            alt={heroImageAlt}
             fill
             priority
             className="object-cover object-center"
             sizes="50vw"
-            quality={90}
+            quality={75}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-gtp-dark-teal" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gtp-dark-teal/50 via-transparent to-transparent" />
         </motion.div>
 
-        {/* Right: text — staggered fade-up */}
-        <div className="flex flex-col justify-center px-8 lg:px-16 xl:px-20">
+        {/* Right column — text */}
+        <div className="flex flex-col justify-center px-8 lg:order-2 lg:px-16 xl:px-20">
           <motion.p
             className="font-sans text-xs font-semibold uppercase tracking-[0.2em] text-gtp-teal"
             {...up(0.28, 14, 0.55)}

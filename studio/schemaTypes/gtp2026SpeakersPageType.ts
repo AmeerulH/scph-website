@@ -40,6 +40,21 @@ export const gtp2026SpeakersPageType = defineType({
       type: 'string',
       description: 'e.g. "12–15 October 2026 · Kuala Lumpur, Malaysia"',
     }),
+    defineField({
+      name: 'heroImage',
+      title: 'Hero — left photo (desktop)',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Full-bleed photo on the left of the hero (large screens only). When empty or unpublished, the site uses the default black-and-white microphone photo.',
+    }),
+    defineField({
+      name: 'heroImageAlt',
+      title: 'Hero — photo alt text',
+      type: 'string',
+      description:
+        'Accessibility label when a custom hero photo is uploaded. Defaults to “Speaker at microphone” when using the built-in fallback.',
+    }),
   ],
   preview: {
     select: {title: 'internalTitle'},

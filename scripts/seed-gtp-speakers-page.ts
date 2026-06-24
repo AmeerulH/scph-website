@@ -2,6 +2,8 @@
  * Repo defaults → Sanity `gtp2026SpeakersPage` singleton
  *
  * Seeds the hero copy for /events/gtp-2026/speakers.
+ * Hero photo is optional in Studio; when missing, the site uses
+ * `public/images/gtp/speakers/speaker-mic-hero.jpg`.
  * Idempotent: fixed _id `gtp2026SpeakersPage` with createOrReplace.
  *
  * Prerequisites: SANITY_API_TOKEN in .env.local (Editor+).

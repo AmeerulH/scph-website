@@ -73,6 +73,13 @@ const gtpCmsPages = [
     notes: "Marketing-style sections for the biz forum page.",
   },
   {
+    route: "/events/gtp-2026/speakers",
+    docTypes: "gtp2026SpeakersPage",
+    title: "Speakers page",
+    notes:
+      "Singleton `gtp2026SpeakersPage` (fixed id). Hero copy + **Hero — left photo** (desktop, left column). Custom upload replaces the default black-and-white microphone image when published. Speaker cards come from `gtp2026HighlightSpeaker` documents.",
+  },
+  {
     route: "/events/gtp-2026/faq",
     docTypes: "gtp2026FaqGroup",
     title: "FAQ",

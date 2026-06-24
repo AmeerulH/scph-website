@@ -421,13 +421,17 @@ export type SanityGtp2026SpeakersPageRaw = {
   heroHeading?: string | null;
   heroDescription?: string | null;
   heroDateLocation?: string | null;
+  heroImageUrl?: string | null;
+  heroImageAlt?: string | null;
 };
 
 const speakersPageQuery = `*[_type == "gtp2026SpeakersPage"][0]{
   heroLabel,
   heroHeading,
   heroDescription,
-  heroDateLocation
+  heroDateLocation,
+  "heroImageUrl": heroImage.asset->url,
+  heroImageAlt
 }`;
 
 export async function getGtp2026SpeakersPage(): Promise<SanityGtp2026SpeakersPageRaw | null> {
