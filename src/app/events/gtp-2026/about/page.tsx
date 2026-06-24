@@ -761,9 +761,6 @@ export default async function GtpAboutPage() {
           countdownInitial={countdownInitial}
         />
       ) : null}
-      {accommodationBand.enabled ? (
-        <GtpRatesExcursionsSection band={accommodationBand} />
-      ) : null}
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}
@@ -782,6 +779,9 @@ export default async function GtpAboutPage() {
       {about.quotes.enabled ? <QuoteSection band={about.quotes} /> : null}
       {about.gallery.enabled ? (
         <GallerySection band={about.gallery} />
+      ) : null}
+      {accommodationBand.enabled ? (
+        <GtpRatesExcursionsSection band={accommodationBand} />
       ) : null}
       {about.eventInquiry.enabled ? (
         <EventInquirySection content={about.eventInquiry} />
