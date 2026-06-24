@@ -65,4 +65,8 @@ export interface Session {
   venueLine?: string;
   /** CMS: modal “Format:” text; when empty, site derives from session type. */
   formatLabel?: string;
+  /** What's On carousel: resolved image URL (Sanity CDN or local `/public` path). */
+  carouselBackgroundImageUrl?: string;
+  /** What's On carousel: alt when a background image is shown. */
+  carouselBackgroundImageAlt?: string;
 }

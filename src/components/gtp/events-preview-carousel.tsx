@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Clock, UserCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,8 @@ function EventCard({ session }: { session: GtpFeaturedCarouselSession }) {
   const MetaIcon = meta.Icon;
   const gradient =
     TYPE_GRADIENTS[session.type] ?? "from-gtp-dark-teal to-gtp-teal";
+  const backgroundImageUrl = session.carouselBackgroundImageUrl?.trim();
+  const hasBackgroundImage = Boolean(backgroundImageUrl);
 
   const href = `/events/gtp-2026/programmes?tab=${session.tabId}&session=${encodeURIComponent(session.title)}`;
 
@@ -28,20 +31,34 @@ function EventCard({ session }: { session: GtpFeaturedCarouselSession }) {
       // Portrait shape: taller than wide. Scale-up on hover, z-index lifted so it renders above siblings.
       className="group relative h-80 w-60 shrink-0 overflow-hidden rounded-2xl shadow-lg transition-all duration-300 ease-out hover:z-10 hover:scale-105 hover:shadow-2xl"
     >
-      {/* Full-card gradient background */}
-      <div className={cn("absolute inset-0 bg-linear-to-br", gradient)}>
-        {/* Dot grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.13]"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, white 1.5px, transparent 1.5px)",
-            backgroundSize: "28px 28px",
-          }}
-        />
-        {/* Radial glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_40%,rgba(255,255,255,0.18),transparent_65%)]" />
-      </div>
+      {hasBackgroundImage ? (
+        <>
+          <Image
+            src={backgroundImageUrl!}
+            alt={
+              session.carouselBackgroundImageAlt?.trim() || session.title
+            }
+            fill
+            className="object-cover"
+            sizes="240px"
+          />
+          <div className="absolute inset-0 bg-black/15" />
+        </>
+      ) : (
+        <div className={cn("absolute inset-0 bg-linear-to-br", gradient)}>
+          {/* Dot grid overlay */}
+          <div
+            className="absolute inset-0 opacity-[0.13]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle, white 1.5px, transparent 1.5px)",
+              backgroundSize: "28px 28px",
+            }}
+          />
+          {/* Radial glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_40%,rgba(255,255,255,0.18),transparent_65%)]" />
+        </div>
+      )}
 
       {/* Day + date chip — top-left */}
       <div className="absolute left-3 top-3 z-10">

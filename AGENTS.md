@@ -66,6 +66,8 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-committee-members` | `scripts/seed-gtp-committee-members.ts` | `gtp2026CommitteeMember` |
 | `seed-gtp-faq-items` | `scripts/seed-gtp-faq-items.ts` | `gtp2026FaqGroup` (tab docs with embedded `gtp2026FaqAccordionItem` rows in `scripts/data/gtp-faq-seed.json`) |
 | `seed-gtp-about-page` | `scripts/seed-gtp-about-page.ts` | `gtp2026AboutPage` singleton (full bands; shared builder `scripts/lib/gtp-about-page-seed-doc.ts`) |
+| `seed-gtp-about-gallery-images` | `scripts/seed-gtp-about-gallery-images.ts` | Alias — patches all About image bands (same as `seed-gtp-about-page-images`) |
+| `seed-gtp-about-page-images` | `scripts/seed-gtp-about-page-images.ts` | Patches `gtp2026AboutPage` gallery + why-matters + quote photos (published + draft); removes legacy `*Src` fields |
 | `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
 | `seed-scph-meet-the-team-page` | `scripts/seed-scph-meet-the-team-page.ts` | `scphMeetTheTeamPage` |
 | `seed-scph-journalist-workshops-page` | `scripts/seed-scph-journalist-workshops-page.ts` | `scphJournalistWorkshopsPage` singleton shell (empty `workshops` until rows seed or Studio) |

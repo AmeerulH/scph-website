@@ -132,6 +132,10 @@ interface SanitySessionRow {
   venueType?: string;
   venueLine?: string;
   formatLabel?: string;
+  carouselBackgroundImage?: {
+    alt?: string | null;
+    asset?: { url?: string | null } | null;
+  } | null;
 }
 
 interface SanityProgrammeDayRow {
@@ -210,7 +214,11 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       isEvening,
       venueType,
       venueLine,
-      formatLabel
+      formatLabel,
+      carouselBackgroundImage {
+        alt,
+        asset->{ url }
+      }
     }
   }
 }`;
@@ -416,6 +424,20 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
 
   if (typeof row.formatLabel === "string" && row.formatLabel.trim()) {
     session.formatLabel = row.formatLabel.trim();
+  }
+
+  const carouselBg = row.carouselBackgroundImage;
+  const carouselUrl =
+    typeof carouselBg?.asset?.url === "string" && carouselBg.asset.url.trim()
+      ? carouselBg.asset.url.trim()
+      : undefined;
+  if (carouselUrl) {
+    session.carouselBackgroundImageUrl = carouselUrl;
+    const altRaw =
+      typeof carouselBg?.alt === "string" && carouselBg.alt.trim()
+        ? carouselBg.alt.trim()
+        : "";
+    session.carouselBackgroundImageAlt = altRaw || title;
   }
 
   return session;

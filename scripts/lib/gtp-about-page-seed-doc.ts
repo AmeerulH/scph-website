@@ -46,7 +46,7 @@ async function uploadImage(
       filename: path.basename(localPath),
       contentType: `image/${ext === "jpg" ? "jpeg" : ext}`,
     });
-    console.log(`   ✅ Sponsor logo uploaded (${label}): ${asset._id}`);
+    console.log(`   ✅ Image uploaded (${label}): ${asset._id}`);
     return {
       _type: "image",
       asset: { _type: "reference", _ref: asset._id },
@@ -56,6 +56,202 @@ async function uploadImage(
     console.warn(`   ⚠️  Image upload failed (${label}): ${msg}`);
     return null;
   }
+}
+
+async function buildGallerySlides(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>[]> {
+  const slides: Record<string, unknown>[] = [];
+
+  for (let i = 0; i < DEFAULT_GTP_GALLERY_BAND.slides.length; i++) {
+    const slide = DEFAULT_GTP_GALLERY_BAND.slides[i];
+    const alt = slide.alt;
+
+    if (dryRun) {
+      slides.push({
+        _type: "gtpAboutGallerySlide",
+        _key: `gallery-slide-${i}`,
+        alt,
+        _dryRunNote: "image would upload from public",
+        imagePath: slide.src,
+      });
+      continue;
+    }
+
+    if (!client) continue;
+
+    const image = await uploadImage(client, slide.src, slide.alt);
+    if (!image) {
+      console.warn(`   ⚠️  Gallery slide skipped (upload failed): ${slide.alt}`);
+      continue;
+    }
+
+    slides.push({
+      _type: "gtpAboutGallerySlide",
+      _key: `gallery-slide-${i}`,
+      alt,
+      image,
+    });
+  }
+
+  return slides;
+}
+
+/** Upload gallery bento images and return Sanity slide rows (`image` + `alt`, no `src`). */
+export async function buildGtpAboutGallerySlidesForSanity(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>[]> {
+  return buildGallerySlides(client, dryRun);
+}
+
+async function buildWhyMattersImageFields(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>> {
+  const why = DEFAULT_GTP_WHY_MATTERS;
+  const fields: Record<string, unknown> = {
+    tallImageAlt: why.tallImageAlt,
+    topRightImageAlt: why.topRightImageAlt,
+    bottomRightImageAlt: why.bottomRightImageAlt,
+  };
+
+  if (dryRun) {
+    return {
+      ...fields,
+      _dryRunTallImagePath: why.tallImageSrc,
+      _dryRunTopRightImagePath: why.topRightImageSrc,
+      _dryRunBottomRightImagePath: why.bottomRightImageSrc,
+    };
+  }
+
+  if (!client) return fields;
+
+  const tallImage = await uploadImage(client, why.tallImageSrc, why.tallImageAlt);
+  const topRightImage = await uploadImage(
+    client,
+    why.topRightImageSrc,
+    why.topRightImageAlt,
+  );
+  const bottomRightImage = await uploadImage(
+    client,
+    why.bottomRightImageSrc,
+    why.bottomRightImageAlt,
+  );
+
+  if (tallImage) fields.tallImage = tallImage;
+  if (topRightImage) fields.topRightImage = topRightImage;
+  if (bottomRightImage) fields.bottomRightImage = bottomRightImage;
+
+  return fields;
+}
+
+async function buildQuoteCards(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>[]> {
+  const quotes: Record<string, unknown>[] = [];
+
+  for (let i = 0; i < DEFAULT_GTP_QUOTES_BAND.quotes.length; i++) {
+    const q = DEFAULT_GTP_QUOTES_BAND.quotes[i];
+    const row: Record<string, unknown> = {
+      _type: "gtpAboutQuoteCard",
+      _key: `quote-${i}`,
+      name: q.name,
+      designation: q.designation,
+      quote: q.quote,
+      ...(q.avatarObjectClass ? { avatarObjectClass: q.avatarObjectClass } : {}),
+      ...(q.avatarScaleClass ? { avatarScaleClass: q.avatarScaleClass } : {}),
+    };
+
+    if (dryRun) {
+      row._dryRunPhotoPath = q.photoSrc;
+      quotes.push(row);
+      continue;
+    }
+
+    if (!client) continue;
+
+    const photo = await uploadImage(client, q.photoSrc, q.name);
+    if (!photo) {
+      console.warn(`   ⚠️  Quote photo skipped (upload failed): ${q.name}`);
+      continue;
+    }
+    row.photo = photo;
+    quotes.push(row);
+  }
+
+  return quotes;
+}
+
+/** Legacy string-path fields removed when migrating to Sanity image assets. */
+export const GTP_ABOUT_LEGACY_IMAGE_FIELD_PATHS = [
+  "whyMattersBand.tallImageSrc",
+  "whyMattersBand.topRightImageSrc",
+  "whyMattersBand.bottomRightImageSrc",
+] as const;
+
+/** Flat Sanity patch `.set()` payload for gallery, why-matters photos, and quote photos. */
+export async function buildGtpAboutPageImagePatchSet(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>> {
+  const slides = await buildGallerySlides(client, dryRun);
+  const whyImages = await buildWhyMattersImageFields(client, dryRun);
+  const quotes = await buildQuoteCards(client, dryRun);
+
+  const setPatch: Record<string, unknown> = {
+    "galleryBand.slides": slides,
+    "quotesBand.quotes": quotes,
+  };
+
+  for (const [key, value] of Object.entries(whyImages)) {
+    if (key.startsWith("_dryRun")) continue;
+    setPatch[`whyMattersBand.${key}`] = value;
+  }
+
+  return setPatch;
+}
+
+export async function patchGtpAboutPageImages(
+  client: SanityClient,
+  dryRun: boolean,
+): Promise<string[]> {
+  const setPatch = await buildGtpAboutPageImagePatchSet(client, dryRun);
+
+  if (dryRun) {
+    console.log(
+      JSON.stringify(
+        {
+          set: setPatch,
+          unset: [...GTP_ABOUT_LEGACY_IMAGE_FIELD_PATHS],
+        },
+        null,
+        2,
+      ),
+    );
+    return [];
+  }
+
+  const patchIds = [GTP_ABOUT_PAGE_DOCUMENT_ID];
+  const draftId = `drafts.${GTP_ABOUT_PAGE_DOCUMENT_ID}`;
+  const draftExists = await client.fetch<boolean>(
+    `defined(*[_id == $id][0]._id)`,
+    { id: draftId },
+  );
+  if (draftExists) patchIds.push(draftId);
+
+  for (const id of patchIds) {
+    await client
+      .patch(id)
+      .set(setPatch)
+      .unset([...GTP_ABOUT_LEGACY_IMAGE_FIELD_PATHS])
+      .commit({ autoGenerateArrayKeys: true });
+    console.log(`Patched About page images on ${id}`);
+  }
+
+  return patchIds;
 }
 
 async function buildPikSponsorEntries(
@@ -141,12 +337,7 @@ export async function buildGtpAboutPageSeedDocument(
       body: why.bodyParagraphs.join("\n\n"),
       ctaLabel: why.ctaLabel,
       ctaHref: why.ctaHref,
-      tallImageSrc: why.tallImageSrc,
-      topRightImageSrc: why.topRightImageSrc,
-      bottomRightImageSrc: why.bottomRightImageSrc,
-      tallImageAlt: why.tallImageAlt,
-      topRightImageAlt: why.topRightImageAlt,
-      bottomRightImageAlt: why.bottomRightImageAlt,
+      ...(await buildWhyMattersImageFields(client, dryRun)),
     },
     themesBand: {
       title: DEFAULT_GTP_THEMES_BAND.title,
@@ -163,16 +354,7 @@ export async function buildGtpAboutPageSeedDocument(
     quotesBand: {
       title: DEFAULT_GTP_QUOTES_BAND.title,
       subtitle: DEFAULT_GTP_QUOTES_BAND.subtitle,
-      quotes: DEFAULT_GTP_QUOTES_BAND.quotes.map((q) => ({
-        name: q.name,
-        designation: q.designation,
-        quote: q.quote,
-        photoSrc: q.photoSrc,
-        ...(q.avatarObjectClass
-          ? { avatarObjectClass: q.avatarObjectClass }
-          : {}),
-        ...(q.avatarScaleClass ? { avatarScaleClass: q.avatarScaleClass } : {}),
-      })),
+      quotes: await buildQuoteCards(client, dryRun),
     },
     galleryBand: {
       title: DEFAULT_GTP_GALLERY_BAND.title,
@@ -180,10 +362,7 @@ export async function buildGtpAboutPageSeedDocument(
       footerText: DEFAULT_GTP_GALLERY_BAND.footerText,
       footerLinkLabel: DEFAULT_GTP_GALLERY_BAND.footerLinkLabel,
       footerLinkHref: DEFAULT_GTP_GALLERY_BAND.footerLinkHref,
-      slides: DEFAULT_GTP_GALLERY_BAND.slides.map((s) => ({
-        src: s.src,
-        alt: s.alt,
-      })),
+      slides: await buildGallerySlides(client, dryRun),
     },
     eventInquiryBand: { ...DEFAULT_GTP_EVENT_INQUIRY },
     sponsorsBand: {

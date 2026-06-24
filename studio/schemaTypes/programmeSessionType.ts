@@ -156,6 +156,22 @@ export const programmeSessionType = defineType({
       description:
         'Shown after “Format:” in the session modal (e.g. “Public Session”). Leave empty to use the default for this session type.',
     }),
+    defineField({
+      name: 'carouselBackgroundImage',
+      title: "What's On carousel background",
+      type: 'image',
+      options: { hotspot: true },
+      description:
+        "Optional image for this session's card in the About/home What's On carousel. When set, replaces the default type-based colour gradient. Leave empty to use the colour scheme.",
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          description: 'Describe the image for accessibility.',
+        }),
+      ],
+    }),
   ],
   preview: {
     select: {title: 'title', time: 'time', type: 'type', venueLine: 'venueLine'},

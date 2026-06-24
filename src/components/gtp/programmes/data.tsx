@@ -121,6 +121,10 @@ export const day1: Session[] = [
     objective: agendaObjectiveForSessionTitle(
       "Opening of Global Tipping Points Conference 2026",
     ),
+    carouselBackgroundImageUrl:
+      "/images/gtp/carousel/opening-conference-2026.png",
+    carouselBackgroundImageAlt:
+      "Opening of Global Tipping Points Conference 2026 promotional graphic",
   },
   {
     time: "09:30 – 11:00",

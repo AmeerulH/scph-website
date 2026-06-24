@@ -18,14 +18,17 @@
  *   DRY_RUN=1 npx tsx scripts/import-gtp-programme-to-sanity.ts   # print JSON only
  */
 
-import {createClient} from '@sanity/client'
+import {createClient, type SanityClient} from '@sanity/client'
 import * as dotenv from 'dotenv'
+import * as fs from 'fs'
 import * as path from 'path'
 
 import {day1, day2, day3, day4, TABS} from '../src/components/gtp/programmes/data'
 import type {Session, Speaker, Workshop} from '../src/components/gtp/programmes/types'
 
 dotenv.config({path: path.join(process.cwd(), '.env.local')})
+
+const PUBLIC_DIR = path.join(process.cwd(), 'public')
 
 const CAROUSEL: Record<
   string,
@@ -79,7 +82,57 @@ function mapWorkshop(w: Workshop) {
   }
 }
 
-function mapSession(s: Session) {
+async function uploadCarouselBackgroundImage(
+  client: SanityClient,
+  session: Session,
+): Promise<
+  | {
+      _type: 'image'
+      asset: { _type: 'reference'; _ref: string }
+      alt?: string
+    }
+  | undefined
+> {
+  const src = session.carouselBackgroundImageUrl?.trim()
+  if (!src?.startsWith('/')) return undefined
+
+  const localPath = path.join(PUBLIC_DIR, src.replace(/^\//, ''))
+  if (!fs.existsSync(localPath)) {
+    console.warn(`   ⚠️  Carousel background not found, skipping: ${localPath}`)
+    return undefined
+  }
+
+  const alt = session.carouselBackgroundImageAlt?.trim()
+
+  if (process.env.DRY_RUN) {
+    return {
+      _type: 'image',
+      asset: { _type: 'reference', _ref: 'dry-run-carousel-background' },
+      ...(alt ? { alt } : {}),
+    }
+  }
+
+  const ext = path.extname(localPath).replace('.', '') || 'jpg'
+  const fileStream = fs.createReadStream(localPath)
+
+  try {
+    const asset = await client.assets.upload('image', fileStream, {
+      filename: path.basename(localPath),
+      contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
+    })
+    console.log(`   ✅ Carousel background uploaded for ${session.title}: ${asset._id}`)
+    return {
+      _type: 'image',
+      asset: { _type: 'reference', _ref: asset._id },
+      ...(alt ? { alt } : {}),
+    }
+  } catch (err) {
+    console.warn(`   ⚠️  Carousel background upload failed for ${session.title}:`, err)
+    return undefined
+  }
+}
+
+async function mapSession(client: SanityClient, s: Session) {
   const row: Record<string, unknown> = {
     _type: 'programmeSession',
     time: s.time,
@@ -98,32 +151,39 @@ function mapSession(s: Session) {
   if (s.venueType) row.venueType = s.venueType
   if (s.venueLine?.trim()) row.venueLine = s.venueLine.trim()
   if (s.formatLabel?.trim()) row.formatLabel = s.formatLabel.trim()
+
+  const carouselBackgroundImage = await uploadCarouselBackgroundImage(client, s)
+  if (carouselBackgroundImage) row.carouselBackgroundImage = carouselBackgroundImage
+
   return row
 }
 
-function buildDays(appendTestSession: boolean) {
-  return TABS.map((tab) => {
-    const carousel = CAROUSEL[tab.id] ?? {}
-    let sessionsRaw = tab.id === 'pre' ? [] : DAY_SESSIONS[tab.id] ?? []
-    if (appendTestSession && tab.id === 'day1') {
-      sessionsRaw = [...sessionsRaw, SANITY_CONNECTION_TEST_SESSION]
-    }
-    return {
-      _type: 'programmeDay' as const,
-      tabId: tab.id,
-      label: tab.label,
-      ...(carousel.carouselDateLabel
-        ? {carouselDateLabel: carousel.carouselDateLabel}
-        : {}),
-      ...(carousel.carouselDayLabel
-        ? {carouselDayLabel: carousel.carouselDayLabel}
-        : {}),
-      sessions: sessionsRaw.map(mapSession),
-    }
-  })
+async function buildDays(client: SanityClient, appendTestSession: boolean) {
+  return Promise.all(
+    TABS.map(async (tab) => {
+      const carousel = CAROUSEL[tab.id] ?? {}
+      let sessionsRaw = tab.id === 'pre' ? [] : DAY_SESSIONS[tab.id] ?? []
+      if (appendTestSession && tab.id === 'day1') {
+        sessionsRaw = [...sessionsRaw, SANITY_CONNECTION_TEST_SESSION]
+      }
+      const sessions = await Promise.all(sessionsRaw.map((s) => mapSession(client, s)))
+      return {
+        _type: 'programmeDay' as const,
+        tabId: tab.id,
+        label: tab.label,
+        ...(carousel.carouselDateLabel
+          ? {carouselDateLabel: carousel.carouselDateLabel}
+          : {}),
+        ...(carousel.carouselDayLabel
+          ? {carouselDayLabel: carousel.carouselDayLabel}
+          : {}),
+        sessions,
+      }
+    }),
+  )
 }
 
-function buildDocument() {
+async function buildDocument(client: SanityClient) {
   const appendTest = shouldAppendTestSession()
   return {
     _id: 'gtp2026Programme',
@@ -132,35 +192,35 @@ function buildDocument() {
     sessionModalHostedSectionTitle: 'Hosted By',
     sessionModalHostedName: 'Sunway Centre for Planetary Health',
     sessionModalHostedSubtitle: 'Sunway University, Kuala Lumpur',
-    days: buildDays(appendTest),
+    days: await buildDays(client, appendTest),
   }
 }
 
 async function main() {
-  const doc = buildDocument()
-
-  if (process.env.DRY_RUN) {
-    console.log(JSON.stringify(doc, null, 2))
-    return
-  }
-
+  const dataset = process.env.SANITY_DATASET ?? 'production'
   const token = process.env.SANITY_API_TOKEN
-  if (!token) {
+
+  if (!process.env.DRY_RUN && !token) {
     console.error(
       'SANITY_API_TOKEN is not set. Add it to .env.local (see import-team-to-sanity.js).',
     )
     process.exit(1)
   }
 
-  const dataset = process.env.SANITY_DATASET ?? 'production'
-
   const client = createClient({
     projectId: 'y0tkemxm',
     dataset,
     apiVersion: '2024-01-01',
-    token,
+    token: token || undefined,
     useCdn: false,
   })
+
+  const doc = await buildDocument(client)
+
+  if (process.env.DRY_RUN) {
+    console.log(JSON.stringify(doc, null, 2))
+    return
+  }
 
   await client.transaction().createOrReplace(doc).commit({autoGenerateArrayKeys: true})
   console.log(
