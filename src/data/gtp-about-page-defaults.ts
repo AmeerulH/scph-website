@@ -6,6 +6,7 @@
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import type { GtpWhatIsBandContent } from "./gtp-about-what-is-defaults";
 import { DEFAULT_GTP_WHAT_IS_BAND } from "./gtp-about-what-is-defaults";
+import type { GtpAccommodationActivitiesBandCopy } from "./gtp-accommodation-activities-defaults";
 
 export type { GtpWhatIsBandContent } from "./gtp-about-what-is-defaults";
 
@@ -297,6 +298,7 @@ export const GTP_ABOUT_PIK_SPONSOR_SEED = {
 
 export type GtpAboutPageResolved = {
   hero: GtpAboutHeroCopy;
+  accommodationActivities: GtpAccommodationActivitiesBandCopy;
   whatIs: GtpWhatIsBandContent;
   whyMatters: GtpAboutWhyMattersCopy;
   themes: GtpAboutThemesBandCopy;

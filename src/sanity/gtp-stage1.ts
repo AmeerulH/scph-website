@@ -81,6 +81,23 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     importantDatesEyebrow,
     importantDates[]{ label, dateText }
   },
+  accommodationActivitiesBand {
+    enabled,
+    title,
+    subtitle,
+    intro,
+    cards[] {
+      categoryLabel,
+      title,
+      description,
+      primaryCtaLabel,
+      primaryCtaHref,
+      mapsHref,
+      address,
+      backgroundGradient,
+      "imageUrl": image.asset->url
+    }
+  },
   whatIsBand {
     enabled,
     eyebrow,

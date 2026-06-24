@@ -22,6 +22,12 @@ export const gtp2026AboutPageType = defineType({
       options: {collapsible: true, collapsed: true},
     }),
     defineField({
+      name: 'accommodationActivitiesBand',
+      title: 'Accommodation and Activities (carousel)',
+      type: 'gtpAboutAccommodationActivitiesBand',
+      options: {collapsible: true, collapsed: false},
+    }),
+    defineField({
       name: 'sections',
       title: 'Extra sections (under hero)',
       type: 'array',

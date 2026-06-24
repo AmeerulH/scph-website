@@ -6,71 +6,23 @@ import { ChevronLeft, ChevronRight, MapPin, ExternalLink } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/section-wrapper";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { GtpAccommodationActivityCardCopy } from "@/data/gtp-accommodation-activities-defaults";
+import type { GtpAccommodationActivitiesBandCopy } from "@/data/gtp-accommodation-activities-defaults";
+import { DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND } from "@/data/gtp-accommodation-activities-defaults";
 
-type CardData = {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  ctaLabel: string;
-  ctaHref: string;
-  address?: string;
-  mapsHref?: string;
-  /** Real photo path — if set, renders next/image; otherwise falls back to `background` gradient. */
-  imageSrc?: string;
-  /** Inline CSS background value fallback when no imageSrc provided. */
-  background: string;
-};
+function FeaturedCardContent({ card }: { card: GtpAccommodationActivityCardCopy }) {
+  const primaryHref = card.primaryCtaHref?.trim() ?? "";
+  const primaryDisabled = !primaryHref || primaryHref === "#";
+  const mapsHref = card.mapsHref?.trim();
 
-const CARDS: CardData[] = [
-  {
-    id: "sunway-lagoon-hotel",
-    type: "Official Hotel",
-    title: "Sunway Lagoon Hotel",
-    description:
-      "Preferred delegate rates. Check-in 9 Oct · Check-out 18 Oct 2026.",
-    ctaLabel: "Book Now",
-    ctaHref: "https://reservations.travelclick.com/110621?RatePlanId=11226966",
-    address:
-      "Jalan 11/15, Bandar Sunway, 47500 Petaling Jaya, Selangor, Malaysia",
-    mapsHref:
-      "https://maps.google.com/maps?q=Sunway+Lagoon+Hotel,+Jalan+11/15,+Bandar+Sunway,+47500+Petaling+Jaya",
-    imageSrc: "/images/gtp/sunway-lagoon-hotel.jpg",
-    background: "radial-gradient(ellipse at top left, #1a7a96 0%, #0a3d4d 100%)",
-  },
-  {
-    id: "excursion-1",
-    type: "Day Excursion",
-    title: "Coming Soon",
-    description:
-      "Excursion trip details will be announced. Applications open to all registered delegates.",
-    ctaLabel: "Stay Tuned",
-    ctaHref: "#",
-    // TODO: replace with next/image once excursion photos are provided
-    background: "radial-gradient(ellipse at top right, #3a6e14 0%, #1c3a08 100%)",
-  },
-  {
-    id: "excursion-2",
-    type: "Day Excursion",
-    title: "Coming Soon",
-    description:
-      "Excursion trip details will be announced. Applications open to all registered delegates.",
-    ctaLabel: "Stay Tuned",
-    ctaHref: "#",
-    // TODO: replace with next/image once excursion photos are provided
-    background: "radial-gradient(ellipse at bottom left, #7a3200 0%, #3d1800 100%)",
-  },
-];
-
-function HotelCard({ card }: { card: CardData }) {
   return (
     <>
       <p className="mt-2 text-sm leading-relaxed text-white/75">
         {card.description}
       </p>
-      {card.address && (
+      {card.address && mapsHref ? (
         <a
-          href={card.mapsHref}
+          href={mapsHref}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-3 flex items-start gap-2 text-xs text-white/55 transition-colors hover:text-white/80"
@@ -78,36 +30,27 @@ function HotelCard({ card }: { card: CardData }) {
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span>{card.address}</span>
         </a>
-      )}
+      ) : null}
       <div className="mt-5 flex flex-wrap gap-3">
-        <Button variant="gtpSecondary" size="sm" asChild>
-          <a href={card.ctaHref} target="_blank" rel="noopener noreferrer">
-            {card.ctaLabel}
-            <ExternalLink className="ml-2 h-3.5 w-3.5" />
-          </a>
-        </Button>
-        {card.mapsHref && (
-          <Button variant="gtpOutline" size="sm" asChild>
-            <a href={card.mapsHref} target="_blank" rel="noopener noreferrer">
-              Open in Maps
+        {primaryDisabled ? (
+          <Button variant="gtpOutline" size="sm" disabled>
+            {card.primaryCtaLabel}
+          </Button>
+        ) : (
+          <Button variant="gtpSecondary" size="sm" asChild>
+            <a href={primaryHref} target="_blank" rel="noopener noreferrer">
+              {card.primaryCtaLabel}
+              <ExternalLink className="ml-2 h-3.5 w-3.5" />
             </a>
           </Button>
         )}
-      </div>
-    </>
-  );
-}
-
-function ExcursionCard({ card }: { card: CardData }) {
-  return (
-    <>
-      <p className="mt-2 text-sm leading-relaxed text-white/75">
-        {card.description}
-      </p>
-      <div className="mt-5">
-        <Button variant="gtpOutline" size="sm" disabled={card.ctaHref === "#"}>
-          {card.ctaLabel}
-        </Button>
+        {mapsHref ? (
+          <Button variant="gtpOutline" size="sm" asChild>
+            <a href={mapsHref} target="_blank" rel="noopener noreferrer">
+              Open in Maps
+            </a>
+          </Button>
+        ) : null}
       </div>
     </>
   );
@@ -117,39 +60,38 @@ function CarouselCard({
   card,
   isFeatured,
 }: {
-  card: CardData;
+  card: GtpAccommodationActivityCardCopy;
   isFeatured: boolean;
 }) {
+  const imageUrl = card.imageUrl?.trim();
+
   return (
     <div
       className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl"
-      style={card.imageSrc ? undefined : { background: card.background }}
+      style={imageUrl ? undefined : { background: card.backgroundGradient }}
     >
-      {/* Real photo */}
-      {card.imageSrc && (
+      {imageUrl ? (
         <Image
-          src={card.imageSrc}
+          src={imageUrl}
           alt={card.title}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 512px"
           priority={card.id === "sunway-lagoon-hotel"}
         />
+      ) : (
+        <div
+          className="absolute inset-0"
+          style={{ background: card.backgroundGradient }}
+        />
       )}
 
-      {/* Gradient fallback bg when no image */}
-      {!card.imageSrc && (
-        <div className="absolute inset-0" style={{ background: card.background }} />
-      )}
-
-      {/* Type badge */}
       <div className="relative z-10 p-5 pb-0">
         <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/90">
-          {card.type}
+          {card.categoryLabel}
         </span>
       </div>
 
-      {/* Bottom info panel */}
       <div
         className="relative z-10 mt-auto pt-12"
         style={{
@@ -158,61 +100,65 @@ function CarouselCard({
         }}
       >
         <div className="bg-black/30 p-4 backdrop-blur-sm ring-1 ring-white/10">
-        <h3 className="font-heading text-xl font-bold leading-tight text-white md:text-2xl">
-          {card.title}
-        </h3>
-        {isFeatured &&
-          (card.type === "Official Hotel" ? (
-            <HotelCard card={card} />
-          ) : (
-            <ExcursionCard card={card} />
-          ))}
+          <h3 className="font-heading text-xl font-bold leading-tight text-white md:text-2xl">
+            {card.title}
+          </h3>
+          {isFeatured ? <FeaturedCardContent card={card} /> : null}
         </div>
       </div>
     </div>
   );
 }
 
-export function GtpRatesExcursionsSection() {
+export function GtpRatesExcursionsSection({
+  band = DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND,
+}: {
+  band?: GtpAccommodationActivitiesBandCopy;
+}) {
+  const cards = band.cards ?? [];
   const [current, setCurrent] = useState(0);
 
   const prev = useCallback(
-    () => setCurrent((i) => (i - 1 + CARDS.length) % CARDS.length),
-    [],
+    () => setCurrent((i) => (i - 1 + cards.length) % cards.length),
+    [cards.length],
   );
   const next = useCallback(
-    () => setCurrent((i) => (i + 1) % CARDS.length),
-    [],
+    () => setCurrent((i) => (i + 1) % cards.length),
+    [cards.length],
   );
+
+  if (cards.length === 0) return null;
+
+  const safeCurrent = current >= cards.length ? 0 : current;
 
   return (
     <SectionWrapper
-      title="Special Rates & Excursion Trips"
-      subtitle="Plan Your Stay"
+      title={band.title}
+      subtitle={band.subtitle.trim() ? band.subtitle : undefined}
       theme="gtp"
       background="dark"
       id="rates-excursions"
       scrollReveal={false}
     >
-      <p className="mb-10 max-w-xl text-lg leading-relaxed text-white/70">
-        Let us inspire your visit to Malaysia
-      </p>
+      {band.intro.trim() ? (
+        <p className="mb-10 max-w-xl text-lg leading-relaxed text-white/70">
+          {band.intro}
+        </p>
+      ) : null}
 
-      {/* Carousel */}
       <div
         className="relative"
         role="region"
-        aria-label="Rates and excursion trips carousel"
+        aria-label="Accommodation and activities carousel"
         onKeyDown={(e) => {
           if (e.key === "ArrowLeft") prev();
           if (e.key === "ArrowRight") next();
         }}
         tabIndex={0}
       >
-        {/* Cards track — overflow-visible so flanking cards peek out */}
         <div className="relative mx-auto h-[440px] w-full max-w-lg overflow-visible md:h-[480px]">
-          {CARDS.map((card, i) => {
-            const offset = i - current;
+          {cards.map((card, i) => {
+            const offset = i - safeCurrent;
             const absOffset = Math.abs(offset);
 
             if (absOffset > 1) return null;
@@ -239,7 +185,6 @@ export function GtpRatesExcursionsSection() {
           })}
         </div>
 
-        {/* Navigation */}
         <div className="mt-8 flex items-center justify-center gap-6">
           <button
             onClick={prev}
@@ -250,16 +195,16 @@ export function GtpRatesExcursionsSection() {
           </button>
 
           <div className="flex gap-2" role="tablist" aria-label="Carousel position">
-            {CARDS.map((card, i) => (
+            {cards.map((card, i) => (
               <button
                 key={card.id}
                 role="tab"
-                aria-selected={i === current}
+                aria-selected={i === safeCurrent}
                 aria-label={`Go to ${card.title}`}
                 onClick={() => setCurrent(i)}
                 className={cn(
                   "h-2 rounded-full transition-all duration-300",
-                  i === current
+                  i === safeCurrent
                     ? "w-6 bg-gtp-teal"
                     : "w-2 bg-white/30 hover:bg-white/50",
                 )}

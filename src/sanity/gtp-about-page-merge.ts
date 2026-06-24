@@ -26,6 +26,13 @@ import {
   DEFAULT_GTP_THEMES_BAND,
   DEFAULT_GTP_WHY_MATTERS,
 } from "@/data/gtp-about-page-defaults";
+import type {
+  GtpAccommodationActivityCardCopy,
+  GtpAccommodationActivitiesBandCopy,
+} from "@/data/gtp-accommodation-activities-defaults";
+import {
+  DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND,
+} from "@/data/gtp-accommodation-activities-defaults";
 import type { SectionBlock } from "@/sanity/section-block-types";
 import type { GtpAboutWhatIsBandRaw } from "@/sanity/gtp-about-what-is-merge";
 import { mergeGtpWhatIsBand } from "@/sanity/gtp-about-what-is-merge";
@@ -163,6 +170,26 @@ export type GtpAboutPartnersBandRaw = {
   noticeLinkHref?: string | null;
 } | null;
 
+export type GtpAboutAccommodationCardRaw = {
+  categoryLabel?: string | null;
+  title?: string | null;
+  description?: string | null;
+  primaryCtaLabel?: string | null;
+  primaryCtaHref?: string | null;
+  mapsHref?: string | null;
+  address?: string | null;
+  imageUrl?: string | null;
+  backgroundGradient?: string | null;
+} | null;
+
+export type GtpAboutAccommodationActivitiesBandRaw = {
+  enabled?: boolean | null;
+  title?: string | null;
+  subtitle?: string | null;
+  intro?: string | null;
+  cards?: GtpAboutAccommodationCardRaw[] | null;
+} | null;
+
 export type GtpAboutPageDocumentRaw = {
   sections?: SectionBlock[] | null;
   whatIsBand?: GtpAboutWhatIsBandRaw | null;
@@ -172,6 +199,7 @@ export type GtpAboutPageDocumentRaw = {
   speakersChrome?: GtpAboutSpeakersChromeRaw;
   quotesBand?: GtpAboutQuotesBandRaw;
   galleryBand?: GtpAboutGalleryBandRaw;
+  accommodationActivitiesBand?: GtpAboutAccommodationActivitiesBandRaw;
   eventInquiryBand?: GtpAboutEventInquiryBandRaw;
   sponsorsBand?: GtpAboutSponsorsBandRaw;
   partnersBand?: GtpAboutPartnersBandRaw;
@@ -397,6 +425,69 @@ function mergeSponsorLogo(
   return entry;
 }
 
+function slugFromCardTitle(title: string): string {
+  return title
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function mergeAccommodationCard(
+  raw: GtpAboutAccommodationCardRaw,
+  fallback: GtpAccommodationActivityCardCopy,
+): GtpAccommodationActivityCardCopy {
+  if (!raw) return fallback;
+  const title = s(raw.title, fallback.title);
+  const imageUrl = raw.imageUrl?.trim() || fallback.imageUrl;
+  const card: GtpAccommodationActivityCardCopy = {
+    id: slugFromCardTitle(title) || fallback.id,
+    categoryLabel: s(raw.categoryLabel, fallback.categoryLabel),
+    title,
+    description: s(raw.description, fallback.description),
+    primaryCtaLabel: s(raw.primaryCtaLabel, fallback.primaryCtaLabel),
+    primaryCtaHref: s(raw.primaryCtaHref, fallback.primaryCtaHref),
+    backgroundGradient: s(
+      raw.backgroundGradient,
+      fallback.backgroundGradient,
+    ),
+  };
+  const mapsHref = raw.mapsHref?.trim() || fallback.mapsHref;
+  if (mapsHref) card.mapsHref = mapsHref;
+  const address = raw.address?.trim() || fallback.address;
+  if (address) card.address = address;
+  if (imageUrl) card.imageUrl = imageUrl;
+  return card;
+}
+
+function mergeAccommodationActivities(
+  raw: GtpAboutAccommodationActivitiesBandRaw,
+): GtpAccommodationActivitiesBandCopy {
+  const d = DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND;
+  if (!raw) return d;
+
+  const rawCards = raw.cards ?? [];
+  const cards =
+    rawCards.length > 0
+      ? rawCards.map((row, i) =>
+          mergeAccommodationCard(
+            row,
+            d.cards[i] ?? d.cards[d.cards.length - 1],
+          ),
+        )
+      : d.cards;
+
+  const subtitleRaw = raw.subtitle?.trim() ?? "";
+  return {
+    enabled: raw.enabled !== false,
+    title: s(raw.title, d.title),
+    subtitle: subtitleRaw,
+    intro: s(raw.intro, d.intro),
+    cards,
+  };
+}
+
 function mergeLogoMarqueeBand(
   raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
   defaults: GtpAboutLogoMarqueeBandCopy,
@@ -426,6 +517,9 @@ export function mergeGtpAboutPage(
 ): GtpAboutPageResolved {
   return {
     hero: mergeHero(doc?.heroBand ?? null),
+    accommodationActivities: mergeAccommodationActivities(
+      doc?.accommodationActivitiesBand ?? null,
+    ),
     whatIs: mergeGtpWhatIsBand(doc?.whatIsBand),
     whyMatters: mergeWhyMatters(doc?.whyMattersBand ?? null),
     themes: mergeThemes(doc?.themesBand ?? null),

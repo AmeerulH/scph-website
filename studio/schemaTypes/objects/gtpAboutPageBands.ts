@@ -330,6 +330,127 @@ export const gtpAboutPartnersBandType = defineType({
   ],
 })
 
+export const gtpAboutAccommodationCardType = defineType({
+  name: 'gtpAboutAccommodationCard',
+  title: 'Carousel card',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'categoryLabel',
+      title: 'Category badge',
+      type: 'string',
+      description: 'e.g. Official Hotel, Shopping Mall, Theme Park',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'title',
+      title: 'Title',
+      type: 'string',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'primaryCtaLabel',
+      title: 'Primary button label',
+      type: 'string',
+      description: 'e.g. Book Now, Explore now',
+    }),
+    defineField({
+      name: 'primaryCtaHref',
+      title: 'Primary button URL',
+      type: 'url',
+      validation: (rule) =>
+        rule.uri({allowRelative: false, scheme: ['http', 'https']}),
+    }),
+    defineField({
+      name: 'mapsHref',
+      title: 'Open in Maps URL',
+      type: 'url',
+      description: 'Google Maps (or other maps) link. Leave empty to hide the Maps button.',
+      validation: (rule) =>
+        rule.uri({allowRelative: false, scheme: ['http', 'https']}),
+    }),
+    defineField({
+      name: 'address',
+      title: 'Address line',
+      type: 'string',
+      description: 'Optional. Shown with a map pin (e.g. hotel address).',
+    }),
+    defineField({
+      name: 'image',
+      title: 'Card photo',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Recommended ~1200×900 px or larger (4:3). Without an image, the gradient fallback below is used.',
+      fields: [
+        defineField({
+          name: 'alt',
+          type: 'string',
+          title: 'Alt text',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'backgroundGradient',
+      title: 'Gradient fallback (no photo)',
+      type: 'string',
+      description:
+        'CSS background value when no image is uploaded (e.g. radial-gradient(ellipse at top left, #1a7a96 0%, #0a3d4d 100%)).',
+    }),
+  ],
+  preview: {
+    select: {title: 'title', category: 'categoryLabel', media: 'image'},
+    prepare({title, category, media}) {
+      return {
+        title: title ?? 'Carousel card',
+        subtitle: category,
+        media,
+      }
+    },
+  },
+})
+
+export const gtpAboutAccommodationActivitiesBandType = defineType({
+  name: 'gtpAboutAccommodationActivitiesBand',
+  title: 'Accommodation and Activities',
+  type: 'object',
+  fields: [
+    gtpAboutVisibleOnSiteField(),
+    defineField({
+      name: 'title',
+      title: 'Section title',
+      type: 'string',
+      initialValue: 'Accommodation and Activities',
+    }),
+    defineField({
+      name: 'subtitle',
+      title: 'Eyebrow (optional)',
+      type: 'string',
+      description: 'Small label above the title. Leave empty to hide.',
+    }),
+    defineField({
+      name: 'intro',
+      title: 'Intro paragraph',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'cards',
+      title: 'Carousel cards',
+      type: 'array',
+      of: [{type: 'gtpAboutAccommodationCard'}],
+      description:
+        'Drag rows to set carousel order. The featured (centre) card shows full details and buttons.',
+    }),
+  ],
+})
+
 export const gtpAboutPageBandObjectTypes = [
   gtpAboutHeroBandType,
   gtpAboutWhyMattersBandType,
@@ -340,6 +461,8 @@ export const gtpAboutPageBandObjectTypes = [
   gtpAboutQuotesBandType,
   gtpAboutGallerySlideType,
   gtpAboutGalleryBandType,
+  gtpAboutAccommodationCardType,
+  gtpAboutAccommodationActivitiesBandType,
   gtpAboutEventInquiryBandType,
   gtpAboutSponsorLogoType,
   gtpAboutSponsorsBandType,

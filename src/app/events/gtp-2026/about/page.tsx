@@ -26,6 +26,7 @@ import type {
   GtpWhatIsBandContent,
 } from "@/data/gtp-about-page-defaults";
 import { mergeGtpAboutPage } from "@/sanity/gtp-about-page-merge";
+import { DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND } from "@/data/gtp-accommodation-activities-defaults";
 import {
   getGtp2026AboutPage,
   getGtp2026HighlightSpeakers,
@@ -738,6 +739,8 @@ export default async function GtpAboutPage() {
   const aboutSections = aboutCms?.sections ?? null;
   const showAboutCmsBands = gtpAboutCmsSectionsRender(aboutSections);
   const about = mergeGtpAboutPage(aboutCms);
+  const accommodationBand =
+    about.accommodationActivities ?? DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND;
   const speakersList =
     highlightRows.length > 0
       ? mapSanityHighlightToProps(highlightRows)
@@ -758,7 +761,9 @@ export default async function GtpAboutPage() {
           countdownInitial={countdownInitial}
         />
       ) : null}
-      <GtpRatesExcursionsSection />
+      {accommodationBand.enabled ? (
+        <GtpRatesExcursionsSection band={accommodationBand} />
+      ) : null}
       {showAboutCmsBands ? (
         <RenderSectionBlocks blocks={aboutSections ?? []} />
       ) : null}

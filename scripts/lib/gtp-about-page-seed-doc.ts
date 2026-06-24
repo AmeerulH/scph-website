@@ -21,6 +21,7 @@ import {
   DEFAULT_GTP_WHY_MATTERS,
   GTP_ABOUT_PIK_SPONSOR_SEED,
 } from "../../src/data/gtp-about-page-defaults";
+import { DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND } from "../../src/data/gtp-accommodation-activities-defaults";
 
 export const GTP_ABOUT_PAGE_DOCUMENT_ID = "gtp2026AboutPage";
 
@@ -104,6 +105,91 @@ export async function buildGtpAboutGallerySlidesForSanity(
   dryRun: boolean,
 ): Promise<Record<string, unknown>[]> {
   return buildGallerySlides(client, dryRun);
+}
+
+async function buildAccommodationCards(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>[]> {
+  const rows: Record<string, unknown>[] = [];
+
+  for (let i = 0; i < DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND.cards.length; i++) {
+    const card = DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND.cards[i];
+    const row: Record<string, unknown> = {
+      _type: "gtpAboutAccommodationCard",
+      _key: card.id,
+      categoryLabel: card.categoryLabel,
+      title: card.title,
+      description: card.description,
+      primaryCtaLabel: card.primaryCtaLabel,
+      primaryCtaHref: card.primaryCtaHref,
+      backgroundGradient: card.backgroundGradient,
+    };
+    if (card.mapsHref) row.mapsHref = card.mapsHref;
+    if (card.address) row.address = card.address;
+
+    if (dryRun) {
+      if (card.imageUrl) row._dryRunImagePath = card.imageUrl;
+      rows.push(row);
+      continue;
+    }
+
+    if (!client) continue;
+
+    if (card.imageUrl?.startsWith("/")) {
+      const image = await uploadImage(client, card.imageUrl, card.title);
+      if (image) row.image = image;
+    }
+
+    rows.push(row);
+  }
+
+  return rows;
+}
+
+export async function buildGtpAboutAccommodationActivitiesBandForSanity(
+  client: SanityClient | null,
+  dryRun: boolean,
+): Promise<Record<string, unknown>> {
+  const d = DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND;
+  return {
+    enabled: d.enabled,
+    title: d.title,
+    subtitle: d.subtitle,
+    intro: d.intro,
+    cards: await buildAccommodationCards(client, dryRun),
+  };
+}
+
+/** Patch accommodation carousel on published + draft `gtp2026AboutPage`. */
+export async function patchGtpAboutAccommodationActivitiesBand(
+  client: SanityClient,
+  dryRun: boolean,
+): Promise<string[]> {
+  const band = await buildGtpAboutAccommodationActivitiesBandForSanity(client, dryRun);
+
+  if (dryRun) {
+    console.log(JSON.stringify({ accommodationActivitiesBand: band }, null, 2));
+    return [];
+  }
+
+  const patchIds = [GTP_ABOUT_PAGE_DOCUMENT_ID];
+  const draftId = `drafts.${GTP_ABOUT_PAGE_DOCUMENT_ID}`;
+  const draftExists = await client.fetch<boolean>(
+    `defined(*[_id == $id][0]._id)`,
+    { id: draftId },
+  );
+  if (draftExists) patchIds.push(draftId);
+
+  for (const id of patchIds) {
+    await client
+      .patch(id)
+      .set({ accommodationActivitiesBand: band })
+      .commit({ autoGenerateArrayKeys: true });
+    console.log(`Patched accommodationActivitiesBand on ${id}`);
+  }
+
+  return patchIds;
 }
 
 async function buildWhyMattersImageFields(
@@ -320,6 +406,10 @@ export async function buildGtpAboutPageSeedDocument(
         })),
       };
     })(),
+    accommodationActivitiesBand: await buildGtpAboutAccommodationActivitiesBandForSanity(
+      client,
+      dryRun,
+    ),
     whatIsBand: {
       eyebrow: what.eyebrow,
       title: what.title,
