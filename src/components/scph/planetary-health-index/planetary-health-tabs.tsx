@@ -4,6 +4,7 @@ import * as React from "react";
 import { Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { PLANETARY_HEALTH_ASSESSMENT_METHODOLOGY } from "./copy";
 import { PILLARS, type PillarId } from "./data";
 import { TableauEmbed } from "./tableau-embed";
 
@@ -50,14 +51,9 @@ export function PlanetaryHealthTabs() {
       {/* Tab content */}
       <div className="pt-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
-
-          {/* Left: map */}
           <TableauEmbed activePillar={active} />
 
-          {/* Right: info panel */}
           <div className="flex flex-col gap-4">
-
-            {/* About */}
             <div className="rounded-xl bg-muted p-4">
               <p
                 className="mb-2 text-xs font-semibold uppercase tracking-widest"
@@ -70,7 +66,6 @@ export function PlanetaryHealthTabs() {
               </p>
             </div>
 
-            {/* Sub-indices */}
             <div className="rounded-xl bg-muted p-4">
               <p
                 className="mb-3 text-xs font-semibold uppercase tracking-widest"
@@ -95,7 +90,6 @@ export function PlanetaryHealthTabs() {
               </div>
             </div>
 
-            {/* Global snapshot */}
             <div className="rounded-xl bg-muted p-4">
               <p
                 className="mb-3 text-xs font-semibold uppercase tracking-widest"
@@ -123,23 +117,22 @@ export function PlanetaryHealthTabs() {
               </div>
             </div>
 
-            {/* Download */}
-            <Button
-              variant="scph"
-              size="sm"
-              onClick={() =>
-                window.open(
-                  `https://public.tableau.com/views/${pillar.workbook}/${pillar.csvSheet}.csv`,
-                  "_blank"
-                )
-              }
-              className="gap-1.5 w-full"
-            >
-              <Download className="size-3.5" />
-              Download Data
+            <Button variant="scph" size="sm" className="w-full gap-1.5" asChild>
+              <a href={pillar.csvDownloadPath} download>
+                <Download className="size-3.5" />
+                Download Data
+              </a>
             </Button>
-
           </div>
+        </div>
+
+        <div className="mt-6 rounded-xl bg-muted p-4 md:p-6">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-scph-blue">
+            Methodology
+          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {PLANETARY_HEALTH_ASSESSMENT_METHODOLOGY}
+          </p>
         </div>
       </div>
     </div>

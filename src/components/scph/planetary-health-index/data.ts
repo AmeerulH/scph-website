@@ -24,6 +24,8 @@ export type Pillar = {
   rssImage?: string;
   /** Original worksheet name for CSV download (dashboards don't support CSV export) */
   csvSheet: string;
+  /** Static CSV served from /public for direct download */
+  csvDownloadPath: string;
   description: string;
   subIndices: string[];
   stats: { label: string; value: string }[];
@@ -40,6 +42,7 @@ export const PILLARS: Pillar[] = [
     workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "EnvironmentalHealthDashboard",
     csvSheet: "EnvironmentalHealth",
+    csvDownloadPath: "/data/planetary-health/EnvironmentalHealth.csv",
     description:
       "Environmental Health measures the overall well-being of Earth's natural systems — including ecosystem quality, biodiversity, soil, air, and water. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: ["Environmental Health", "Natural Hazards", "Biodiversity"],
@@ -66,6 +69,7 @@ export const PILLARS: Pillar[] = [
     workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "SocietalHealthDashboard",
     csvSheet: "SocietalHealth",
+    csvDownloadPath: "/data/planetary-health/SocietalHealth.csv",
     description:
       "Societal Health captures structural and institutional conditions that shape human resilience — including governance quality, economic prosperity, conflict exposure, and disaster preparedness. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: [
@@ -98,6 +102,7 @@ export const PILLARS: Pillar[] = [
     workbook: "PlanetaryHealthIndexWorldMap_17810135781890",
     sheet: "HumanHealthDashboard",
     csvSheet: "HumanHealth",
+    csvDownloadPath: "/data/planetary-health/HumanHealth.csv",
     description:
       "Human Health reflects population health outcomes and healthcare system capacity — covering infectious disease burden, women and children's health, and access to care. Scores range from 0 (lowest) to 1 (highest).",
     subIndices: [
