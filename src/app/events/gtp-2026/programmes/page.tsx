@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch programme from Sanity on every request (no ISR cache). */
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 /**
  * Approximates the client programme shell layout so the Suspense swap does not

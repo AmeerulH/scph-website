@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch committee from Sanity on every request (no ISR cache). */
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const staticCochairs: CoChairProps[] = gtpStaticCoChairs;
 

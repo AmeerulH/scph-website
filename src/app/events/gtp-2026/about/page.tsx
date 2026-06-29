@@ -78,7 +78,7 @@ export const metadata: Metadata = {
 };
 
 /** Refetch programme from Sanity on every request (no ISR cache). */
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 const gtpSite = getSiteUrlString();
 const eventJsonLd = {

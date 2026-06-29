@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function ProjectsPage() {
   const cms = await getScphProjectsPage().catch(() => null);

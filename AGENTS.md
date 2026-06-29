@@ -118,8 +118,7 @@ Practices aligned with this repo:
 - **Server-render** by default; limit client JS and large `"use client"` trees.
 - **`next/image`** for Sanity and static assets with sensible sizes and formats; avoid huge unoptimised images in hero sections.
 - **Fonts** — Use the established font setup from root layout; avoid redundant webfont loads.
-- **Dynamic routes** — Many Sanity-backed pages use `export const dynamic = "force-dynamic"` so content is fresh; if you introduce **static/ISR** caching, pair with **revalidation** (`revalidatePath` / webhook) so editors are not surprised.
-- **ISR interval** — CMS marketing pages use **3600s** ISR fallback (`CMS_PAGE_REVALIDATE_SECONDS` in `src/lib/cms-page-revalidate.ts`; each page exports `revalidate = 3600` as a literal—Next.js cannot read imported segment config). **Sanity webhooks** are the primary freshness path. Avoid short TTLs (e.g. 60s)—they inflate Vercel ISR Writes on the Hobby tier.
+- **Dynamic routes** — Sanity-backed marketing pages use `export const dynamic = "force-dynamic"` so published CMS edits appear on the next request without a webhook. If you introduce **static/ISR** caching later, pair with **revalidation** (`revalidatePath` / webhook) so editors are not surprised.
 - **Lists and carousels** — Avoid unnecessary re-renders; use shared motion patterns conservatively (`prefers-reduced-motion` where already used).
 - **Third-party scripts** — Add only when needed; load lazily where possible.
 
