@@ -27,7 +27,7 @@ import {
   RenderSectionBlocks,
 } from "@/components/sections/render-section-block";
 import {
-  getGtp2026HighlightSpeakers,
+  getGtp2026AboutSpeakers,
   mapSanityHighlightToProps,
 } from "@/sanity/gtp-stage1";
 import {
@@ -365,9 +365,11 @@ const organizationJsonLd = {
 export const dynamic = "force-dynamic";
 
 async function HomeGtpHighlightSection() {
-  const highlightRows = await getGtp2026HighlightSpeakers().catch(() => []);
+  const aboutSpeakerRows = await getGtp2026AboutSpeakers().catch(() => []);
   const highlightSpeakersFromCms =
-    highlightRows.length > 0 ? mapSanityHighlightToProps(highlightRows) : undefined;
+    aboutSpeakerRows.length > 0
+      ? mapSanityHighlightToProps(aboutSpeakerRows)
+      : undefined;
   return <Gtp2026HomeSection highlightSpeakers={highlightSpeakersFromCms} />;
 }
 

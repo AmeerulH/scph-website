@@ -5,6 +5,7 @@ import { Clock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
+import { normalizeProgrammeSessionTitle } from "@/lib/gtp-programme-session-link";
 import type { Session } from "./types";
 import { TYPE_META } from "./data";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -36,7 +37,8 @@ export function SessionCard({
 
   const isSessionHighlighted =
     !!highlightSession &&
-    session.title.toLowerCase() === highlightSession.toLowerCase();
+    normalizeProgrammeSessionTitle(session.title).toLowerCase() ===
+      normalizeProgrammeSessionTitle(highlightSession).toLowerCase();
 
   const googleCalHref = buildProgrammeGoogleCalendarUrl({
     tabId: calendarTabId,

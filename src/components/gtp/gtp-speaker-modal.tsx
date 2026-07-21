@@ -3,9 +3,11 @@
 import { useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 import { CalendarDays, Presentation, X } from "lucide-react";
 import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
+import { buildProgrammeSessionHref } from "@/lib/gtp-programme-session-link";
 import { cn } from "@/lib/utils";
 
 function getSpeakerInitials(name: string) {
@@ -55,11 +57,17 @@ function SessionMetaItem({
   icon: Icon,
   label,
   value,
+  href,
+  onNavigate,
 }: {
   icon: typeof Presentation;
   label: string;
   value: string;
+  href?: string | null;
+  onNavigate?: () => void;
 }) {
+  const valueClassName = "mt-0.5 text-sm font-medium leading-snug text-gtp-dark-teal";
+
   return (
     <div className="flex min-w-0 flex-1 items-start gap-3">
       <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gtp-teal/10 text-gtp-teal">
@@ -69,9 +77,20 @@ function SessionMetaItem({
         <p className="text-[11px] font-semibold uppercase tracking-wide text-gtp-dark-teal/45">
           {label}
         </p>
-        <p className="mt-0.5 text-sm font-medium leading-snug text-gtp-dark-teal">
-          {value}
-        </p>
+        {href ? (
+          <Link
+            href={href}
+            onClick={onNavigate}
+            className={cn(
+              valueClassName,
+              "text-gtp-teal underline-offset-2 transition-colors hover:underline",
+            )}
+          >
+            {value}
+          </Link>
+        ) : (
+          <p className={valueClassName}>{value}</p>
+        )}
       </div>
     </div>
   );
@@ -177,26 +196,34 @@ export function GtpSpeakerModal({
                 Speaking sessions
               </p>
             ) : null}
-            {sessionRows.map((row, i) => (
-              <div
-                key={`${row.title}-${i}`}
-                className={cn(
-                  "flex flex-col gap-4 sm:flex-row sm:gap-6",
-                  i > 0 && "border-t border-gtp-dark-teal/8 pt-4",
-                )}
-              >
-                <SessionMetaItem
-                  icon={Presentation}
-                  label="Session"
-                  value={row.title}
-                />
-                <SessionMetaItem
-                  icon={CalendarDays}
-                  label="Date & time"
-                  value={row.date}
-                />
-              </div>
-            ))}
+            {sessionRows.map((row, i) => {
+              const programmeHref = buildProgrammeSessionHref({
+                title: row.title,
+                date: row.date,
+              });
+              return (
+                <div
+                  key={`${row.title}-${i}`}
+                  className={cn(
+                    "flex flex-col gap-4 sm:flex-row sm:gap-6",
+                    i > 0 && "border-t border-gtp-dark-teal/8 pt-4",
+                  )}
+                >
+                  <SessionMetaItem
+                    icon={Presentation}
+                    label="Session"
+                    value={row.title}
+                    href={programmeHref}
+                    onNavigate={onClose}
+                  />
+                  <SessionMetaItem
+                    icon={CalendarDays}
+                    label="Date & time"
+                    value={row.date}
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <div className="mt-6 border-t border-gtp-dark-teal/8 pt-6">

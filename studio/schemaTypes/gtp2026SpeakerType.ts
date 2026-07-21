@@ -13,7 +13,24 @@ export const gtp2026SpeakerType = defineType({
       name: 'order',
       title: 'Sort order',
       type: 'number',
-      description: 'Lower numbers appear first in the grid.',
+      description: 'Lower numbers appear first on the Speakers page grid.',
+      initialValue: 0,
+    }),
+    defineField({
+      name: 'showOnAboutPage',
+      title: 'Show on About / GTP home',
+      type: 'boolean',
+      description:
+        'When on, this speaker appears in the curated grid on the GTP About page (and the SCPH home GTP speakers band). The Speakers page always shows the full roster.',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'aboutSortOrder',
+      title: 'About page sort order',
+      type: 'number',
+      description:
+        'Lower numbers appear first on About / GTP home when “Show on About / GTP home” is on. Independent of Speakers page sort order.',
+      hidden: ({parent}) => parent?.showOnAboutPage !== true,
       initialValue: 0,
     }),
     defineField({
@@ -68,11 +85,23 @@ export const gtp2026SpeakerType = defineType({
     }),
   ],
   preview: {
-    select: {title: 'name', media: 'image', order: 'order'},
-    prepare({title, media, order}) {
+    select: {
+      title: 'name',
+      media: 'image',
+      order: 'order',
+      showOnAboutPage: 'showOnAboutPage',
+      aboutSortOrder: 'aboutSortOrder',
+    },
+    prepare({title, media, order, showOnAboutPage, aboutSortOrder}) {
+      const bits = [
+        order != null ? `Speakers #${order}` : null,
+        showOnAboutPage
+          ? `About${aboutSortOrder != null ? ` #${aboutSortOrder}` : ''}`
+          : null,
+      ].filter(Boolean)
       return {
         title: title ?? 'Speaker',
-        subtitle: order != null ? `Order ${order}` : undefined,
+        subtitle: bits.length > 0 ? bits.join(' · ') : undefined,
         media,
       }
     },

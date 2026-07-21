@@ -29,7 +29,7 @@ import { mergeGtpAboutPage } from "@/sanity/gtp-about-page-merge";
 import { DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND } from "@/data/gtp-accommodation-activities-defaults";
 import {
   getGtp2026AboutPage,
-  getGtp2026HighlightSpeakers,
+  getGtp2026AboutSpeakers,
   gtpAboutCmsSectionsRender,
   mapSanityHighlightToProps,
 } from "@/sanity/gtp-stage1";
@@ -730,10 +730,10 @@ function QuoteSection({ band }: { band: GtpAboutQuotesBandCopy }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function GtpAboutPage() {
-  const [programme, aboutCms, highlightRows] = await Promise.all([
+  const [programme, aboutCms, aboutSpeakerRows] = await Promise.all([
     getGtp2026Programme(),
     getGtp2026AboutPage().catch(() => null),
-    getGtp2026HighlightSpeakers().catch(() => []),
+    getGtp2026AboutSpeakers().catch(() => []),
   ]);
   const carouselSessions = buildGtpCarouselSessions(programme);
   const aboutSections = aboutCms?.sections ?? null;
@@ -742,8 +742,8 @@ export default async function GtpAboutPage() {
   const accommodationBand =
     about.accommodationActivities ?? DEFAULT_GTP_ACCOMMODATION_ACTIVITIES_BAND;
   const speakersList =
-    highlightRows.length > 0
-      ? mapSanityHighlightToProps(highlightRows)
+    aboutSpeakerRows.length > 0
+      ? mapSanityHighlightToProps(aboutSpeakerRows)
       : gtpHighlightSpeakers;
 
   const countdownInitial = getGtpCountdownSnapshot();

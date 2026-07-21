@@ -35,10 +35,17 @@ const gtpCmsPages = [
   },
   {
     route: "/events/gtp-2026/about",
-    docTypes: "gtp2026HighlightSpeaker",
-    title: "Highlight speakers (cards)",
+    docTypes: "gtp2026Speaker",
+    title: "About speakers (curated)",
     notes:
-      "Multiple documents, ordered for the About page speaker strip. Add/edit photos, names, bios in Studio.",
+      "Uses the full roster type `gtp2026Speaker`. Toggle **Show on About / GTP home** and set **About page sort order** on each speaker. Speakers page always shows everyone; About / SCPH home GTP band only show toggled-on speakers (with sessions for programme deep links).",
+  },
+  {
+    route: "/events/gtp-2026/about",
+    docTypes: "gtp2026HighlightSpeaker",
+    title: "Highlight speakers (legacy)",
+    notes:
+      "Older About-only speaker documents. Prefer `gtp2026Speaker` + **Show on About / GTP home**. Kept for Studio history; site About/home now read the roster toggle.",
   },
   {
     route: "/events/gtp-2026/programmes",
@@ -77,7 +84,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026SpeakersPage",
     title: "Speakers page",
     notes:
-      "Singleton `gtp2026SpeakersPage` (fixed id). Hero copy + **Hero — left photo** (desktop, left column). Custom upload replaces the default black-and-white microphone image when published. Speaker cards come from `gtp2026HighlightSpeaker` documents.",
+      "Singleton `gtp2026SpeakersPage` (fixed id). Hero copy + **Hero — left photo** (desktop, left column). Custom upload replaces the default black-and-white microphone image when published. Speaker cards come from `gtp2026Speaker` documents (full roster).",
   },
   {
     route: "/events/gtp-2026/faq",

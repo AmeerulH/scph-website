@@ -410,8 +410,29 @@ const speakersRosterQuery = `*[_type == "gtp2026Speaker"] | order(order asc, nam
   sessions[] { title, date }
 }`;
 
+/** Curated subset for GTP About + SCPH home GTP band (`showOnAboutPage`). */
+const aboutSpeakersQuery = `*[_type == "gtp2026Speaker" && showOnAboutPage == true] | order(aboutSortOrder asc, order asc, name asc) {
+  _id,
+  name,
+  role,
+  organisation,
+  bio,
+  session,
+  sessionDate,
+  photoClassName,
+  photoUnoptimized,
+  "imageUrl": image.asset->url,
+  sessions[] { title, date }
+}`;
+
 export async function getGtp2026Speakers(): Promise<SanityHighlightSpeakerRaw[]> {
   return client.fetch(speakersRosterQuery);
+}
+
+export async function getGtp2026AboutSpeakers(): Promise<
+  SanityHighlightSpeakerRaw[]
+> {
+  return client.fetch(aboutSpeakersQuery);
 }
 
 // ─── Speakers page hero copy ──────────────────────────────────────────────────
