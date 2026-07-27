@@ -364,7 +364,7 @@ async function buildPikSponsorEntries(
   const logo = await uploadImage(client, pik.logoPublicPath, pik.name);
   if (!logo) {
     console.warn(
-      "   ⚠️  PIK logo missing; partnersBand.partners will be empty (site falls back to JSX strip).",
+      "   ⚠️  PIK logo missing; partnersBand.partners will be empty.",
     );
     return [];
   }
@@ -469,7 +469,7 @@ export async function buildGtpAboutPageSeedDocument(
       noticeBeforeLink: DEFAULT_GTP_PARTNERS_BAND.noticeBeforeLink,
       noticeLinkText: DEFAULT_GTP_PARTNERS_BAND.noticeLinkText,
       noticeLinkHref: DEFAULT_GTP_PARTNERS_BAND.noticeLinkHref,
-      partners,
+      partners: partners.map((row) => ({ ...row, tier: "gold" })),
     },
     sections: [],
   };

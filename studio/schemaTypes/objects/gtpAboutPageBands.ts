@@ -257,6 +257,22 @@ export const gtpAboutSponsorLogoType = defineType({
       description: 'Used for alt text and accessibility labels.',
     }),
     defineField({
+      name: 'tier',
+      title: 'Tier',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Platinum', value: 'platinum'},
+          {title: 'Gold', value: 'gold'},
+          {title: 'Silver', value: 'silver'},
+          {title: 'Bronze', value: 'bronze'},
+        ],
+        layout: 'radio',
+      },
+      description:
+        'GTP About: required for the logo to appear on the site. Leave empty to hide it. (Ignored on SCPH home partners.)',
+    }),
+    defineField({
       name: 'logo',
       title: 'Logo image',
       type: 'image',
@@ -271,12 +287,46 @@ export const gtpAboutSponsorLogoType = defineType({
     }),
   ],
   preview: {
-    select: {title: 'name', media: 'logo'},
-    prepare({title, media}) {
-      return {title: title ?? 'Sponsor', media}
+    select: {title: 'name', tier: 'tier', media: 'logo'},
+    prepare({title, tier, media}) {
+      const tierLabel =
+        tier === 'platinum'
+          ? 'Platinum'
+          : tier === 'gold'
+            ? 'Gold'
+            : tier === 'silver'
+              ? 'Silver'
+              : tier === 'bronze'
+                ? 'Bronze'
+                : 'No tier (hidden on site)'
+      return {title: title ?? 'Sponsor', subtitle: tierLabel, media}
     },
   },
 })
+
+const GTP_LOGO_TIER_MAX = 5
+
+function validateLogosMaxPerTier(
+  logos: Array<{tier?: string} | undefined> | undefined,
+): true | string {
+  if (!logos?.length) return true
+  const counts: Record<string, number> = {
+    platinum: 0,
+    gold: 0,
+    silver: 0,
+    bronze: 0,
+  }
+  for (const row of logos) {
+    const t = row?.tier
+    if (t && t in counts) counts[t] += 1
+  }
+  for (const [tier, count] of Object.entries(counts)) {
+    if (count > GTP_LOGO_TIER_MAX) {
+      return `At most ${GTP_LOGO_TIER_MAX} logos per tier (${tier} has ${count}).`
+    }
+  }
+  return true
+}
 
 export const gtpAboutSponsorsBandType = defineType({
   name: 'gtpAboutSponsorsBand',
@@ -291,7 +341,37 @@ export const gtpAboutSponsorsBandType = defineType({
       title: 'Sponsor logos',
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
-      description: 'Add rows in Studio (image + name + optional URL). Empty rows show placeholder marquee.',
+      description:
+        'Set Tier on each logo (Platinum–Bronze). Logos without a tier stay hidden on the site. Max 5 per tier.',
+      validation: (rule) => rule.custom(validateLogosMaxPerTier),
+    }),
+    defineField({
+      name: 'platinum',
+      title: 'Platinum (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'gold',
+      title: 'Gold (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'silver',
+      title: 'Silver (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'bronze',
+      title: 'Bronze (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
     }),
     defineField({
       name: 'noticeBeforeLink',
@@ -317,7 +397,37 @@ export const gtpAboutPartnersBandType = defineType({
       title: 'Partner logos',
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
-      description: 'Add rows in Studio (image + name + optional URL). Empty rows show placeholder marquee.',
+      description:
+        'Set Tier on each logo (Platinum–Bronze). Logos without a tier stay hidden on the site. Max 5 per tier.',
+      validation: (rule) => rule.custom(validateLogosMaxPerTier),
+    }),
+    defineField({
+      name: 'platinum',
+      title: 'Platinum (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'gold',
+      title: 'Gold (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'silver',
+      title: 'Silver (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
+    }),
+    defineField({
+      name: 'bronze',
+      title: 'Bronze (legacy list)',
+      type: 'array',
+      of: [{type: 'gtpAboutSponsorLogo'}],
+      hidden: true,
     }),
     defineField({
       name: 'noticeBeforeLink',

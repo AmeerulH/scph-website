@@ -9,7 +9,9 @@ import type {
   GtpAboutQuotesBandCopy,
   GtpAboutSpeakersChromeCopy,
   GtpAboutSponsorLogoEntry,
-  GtpAboutLogoMarqueeBandCopy,
+  GtpAboutLogoTiersBandCopy,
+  GtpAboutLogoTiers,
+  GtpLogoTierKey,
   GtpAboutThemeCardCopy,
   GtpAboutThemeIconKey,
   GtpAboutThemesBandCopy,
@@ -25,6 +27,7 @@ import {
   DEFAULT_GTP_PARTNERS_BAND,
   DEFAULT_GTP_THEMES_BAND,
   DEFAULT_GTP_WHY_MATTERS,
+  GTP_LOGO_TIER_KEYS,
 } from "@/data/gtp-about-page-defaults";
 import type {
   GtpAccommodationActivityCardCopy,
@@ -148,12 +151,17 @@ export type GtpAboutSponsorLogoRaw = {
   name?: string | null;
   href?: string | null;
   logoUrl?: string | null;
+  tier?: string | null;
 } | null;
 
 export type GtpAboutSponsorsBandRaw = {
   enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
+  platinum?: GtpAboutSponsorLogoRaw[] | null;
+  gold?: GtpAboutSponsorLogoRaw[] | null;
+  silver?: GtpAboutSponsorLogoRaw[] | null;
+  bronze?: GtpAboutSponsorLogoRaw[] | null;
   sponsors?: GtpAboutSponsorLogoRaw[] | null;
   noticeBeforeLink?: string | null;
   noticeLinkText?: string | null;
@@ -164,6 +172,10 @@ export type GtpAboutPartnersBandRaw = {
   enabled?: boolean | null;
   title?: string | null;
   subtitle?: string | null;
+  platinum?: GtpAboutSponsorLogoRaw[] | null;
+  gold?: GtpAboutSponsorLogoRaw[] | null;
+  silver?: GtpAboutSponsorLogoRaw[] | null;
+  bronze?: GtpAboutSponsorLogoRaw[] | null;
   partners?: GtpAboutSponsorLogoRaw[] | null;
   noticeBeforeLink?: string | null;
   noticeLinkText?: string | null;
@@ -414,14 +426,23 @@ function mergeEventInquiry(
 
 function mergeSponsorLogo(
   raw: GtpAboutSponsorLogoRaw,
-): GtpAboutSponsorLogoEntry | null {
+): (GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey }) | null {
   if (!raw) return null;
   const logoUrl = raw.logoUrl?.trim();
   const name = raw.name?.trim();
   if (!logoUrl || !name) return null;
   const href = raw.href?.trim();
-  const entry: GtpAboutSponsorLogoEntry = { name, logoUrl };
+  const tierRaw = raw.tier?.trim();
+  const tier =
+    tierRaw && (GTP_LOGO_TIER_KEYS as readonly string[]).includes(tierRaw)
+      ? (tierRaw as GtpLogoTierKey)
+      : undefined;
+  const entry: GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey } = {
+    name,
+    logoUrl,
+  };
   if (href) entry.href = href;
+  if (tier) entry.tier = tier;
   return entry;
 }
 
@@ -488,24 +509,62 @@ function mergeAccommodationActivities(
   };
 }
 
-function mergeLogoMarqueeBand(
+function emptyMergedLogoTiers(): GtpAboutLogoTiers {
+  return {
+    platinum: [],
+    gold: [],
+    silver: [],
+    bronze: [],
+  };
+}
+
+function pushLogoIntoTiers(
+  tiers: GtpAboutLogoTiers,
+  entry: GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey },
+) {
+  if (!entry.tier) return;
+  const list = tiers[entry.tier];
+  if (list.length >= 5) return;
+  list.push({
+    name: entry.name,
+    logoUrl: entry.logoUrl,
+    ...(entry.href ? { href: entry.href } : {}),
+  });
+}
+
+function mergeLogoTiersBand(
   raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
-  defaults: GtpAboutLogoMarqueeBandCopy,
+  defaults: GtpAboutLogoTiersBandCopy,
   logosKey: "sponsors" | "partners",
-): GtpAboutLogoMarqueeBandCopy {
+): GtpAboutLogoTiersBandCopy {
   if (!raw) return defaults;
-  const rawLogos =
+
+  const tiers = emptyMergedLogoTiers();
+
+  const flatLogos =
     logosKey === "sponsors"
       ? (raw as GtpAboutSponsorsBandRaw)?.sponsors
       : (raw as GtpAboutPartnersBandRaw)?.partners;
-  const logos = (rawLogos ?? [])
-    .map(mergeSponsorLogo)
-    .filter((x): x is GtpAboutSponsorLogoEntry => x != null);
+
+  for (const row of flatLogos ?? []) {
+    const entry = mergeSponsorLogo(row);
+    if (entry) pushLogoIntoTiers(tiers, entry);
+  }
+
+  // Short-lived per-tier arrays from the first schema pass (if any).
+  for (const key of GTP_LOGO_TIER_KEYS) {
+    for (const row of raw[key] ?? []) {
+      const entry = mergeSponsorLogo(row);
+      if (!entry) continue;
+      pushLogoIntoTiers(tiers, { ...entry, tier: entry.tier ?? key });
+    }
+  }
+
   return {
     enabled: raw.enabled !== false,
     title: s(raw.title, defaults.title),
     subtitle: s(raw.subtitle, defaults.subtitle),
-    logos,
+    tiers,
     noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
     noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
     noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),
@@ -527,12 +586,12 @@ export function mergeGtpAboutPage(
     quotes: mergeQuotes(doc?.quotesBand ?? null),
     gallery: mergeGallery(doc?.galleryBand ?? null),
     eventInquiry: mergeEventInquiry(doc?.eventInquiryBand ?? null),
-    sponsors: mergeLogoMarqueeBand(
+    sponsors: mergeLogoTiersBand(
       doc?.sponsorsBand ?? null,
       DEFAULT_GTP_SPONSORS_BAND,
       "sponsors",
     ),
-    partners: mergeLogoMarqueeBand(
+    partners: mergeLogoTiersBand(
       doc?.partnersBand ?? null,
       DEFAULT_GTP_PARTNERS_BAND,
       "partners",

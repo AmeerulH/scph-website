@@ -17,7 +17,7 @@ import { GtpAboutHeroStack } from "@/components/gtp/gtp-about-hero-stack";
 import type {
   GtpAboutEventInquiryCopy,
   GtpAboutGalleryBandCopy,
-  GtpAboutLogoMarqueeBandCopy,
+  GtpAboutLogoTiersBandCopy,
   GtpAboutQuotesBandCopy,
   GtpAboutSpeakersChromeCopy,
   GtpAboutThemeIconKey,
@@ -44,13 +44,9 @@ import {
 } from "@/components/gtp/gtp-site-explore-cards";
 import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highlight";
 import { GtpViewAllSpeakersCta } from "@/components/gtp/gtp-view-all-speakers-cta";
-import {
-  GtpLogoMarqueeBand,
-  GtpPikPartnerLogo,
-} from "@/components/gtp/gtp-logo-marquee-band";
+import { GtpLogoTiersBand } from "@/components/gtp/gtp-logo-tiers-band";
 import { GtpRatesExcursionsSection } from "@/components/gtp/gtp-rates-excursions-section";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
-import { PartnerLogoPlaceholder } from "@/components/sections/partner-marquee";
 import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
 import { cn } from "@/lib/utils";
@@ -398,53 +394,12 @@ function EventInquirySection({
 
 // ─── Sponsors & partners ──────────────────────────────────────────────────────
 
-const PARTNER_FALLBACK_ROW_SLOTS = [
-  "pik",
-  ...Array.from({ length: 7 }, (_, i) => `ph-${i}`),
-] as const;
-
-function SponsorsBandSection({ band }: { band: GtpAboutLogoMarqueeBandCopy }) {
-  return (
-    <GtpLogoMarqueeBand
-      variant="sponsors"
-      title={band.title}
-      subtitle={band.subtitle}
-      logos={band.logos}
-      noticeBeforeLink={band.noticeBeforeLink}
-      noticeLinkText={band.noticeLinkText}
-      noticeLinkHref={band.noticeLinkHref}
-    />
-  );
+function SponsorsBandSection({ band }: { band: GtpAboutLogoTiersBandCopy }) {
+  return <GtpLogoTiersBand variant="sponsors" band={band} />;
 }
 
-function PartnersBandSection({ band }: { band: GtpAboutLogoMarqueeBandCopy }) {
-  return (
-    <GtpLogoMarqueeBand
-      variant="partners"
-      title={band.title}
-      subtitle={band.subtitle}
-      logos={band.logos}
-      noticeBeforeLink={band.noticeBeforeLink}
-      noticeLinkText={band.noticeLinkText}
-      noticeLinkHref={band.noticeLinkHref}
-      renderFallbackRow={(slot) => (
-        <>
-          {PARTNER_FALLBACK_ROW_SLOTS.map((id) =>
-            id === "pik" ? (
-              <GtpPikPartnerLogo key={`${slot}-${id}`} />
-            ) : (
-              <PartnerLogoPlaceholder
-                key={`${slot}-${id}`}
-                elevated
-                label="Partner Logo"
-                className="border-gtp-teal/15 bg-white ring-1 ring-gtp-teal/10"
-              />
-            ),
-          )}
-        </>
-      )}
-    />
-  );
+function PartnersBandSection({ band }: { band: GtpAboutLogoTiersBandCopy }) {
+  return <GtpLogoTiersBand variant="partners" band={band} />;
 }
 
 // ─── Gallery ──────────────────────────────────────────────────────────────────

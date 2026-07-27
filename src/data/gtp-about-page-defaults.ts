@@ -258,34 +258,67 @@ export type GtpAboutSponsorLogoEntry = {
   href?: string;
 };
 
-export type GtpAboutLogoMarqueeBandCopy = {
+export const GTP_LOGO_TIER_KEYS = [
+  "platinum",
+  "gold",
+  "silver",
+  "bronze",
+] as const;
+
+export type GtpLogoTierKey = (typeof GTP_LOGO_TIER_KEYS)[number];
+
+export const GTP_LOGO_TIER_LABELS: Record<GtpLogoTierKey, string> = {
+  platinum: "Platinum",
+  gold: "Gold",
+  silver: "Silver",
+  bronze: "Bronze",
+};
+
+export type GtpAboutLogoTiers = Record<
+  GtpLogoTierKey,
+  GtpAboutSponsorLogoEntry[]
+>;
+
+export type GtpAboutLogoTiersBandCopy = {
   enabled: boolean;
   title: string;
   subtitle: string;
-  /** When non-empty, marquee uses these instead of fallback placeholders. */
-  logos: GtpAboutSponsorLogoEntry[];
+  /** Only logos in these tiers render; unassigned / legacy flat lists are ignored. */
+  tiers: GtpAboutLogoTiers;
   noticeBeforeLink: string;
   noticeLinkText: string;
   noticeLinkHref: string;
 };
 
-export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutLogoMarqueeBandCopy = {
+/** @deprecated Use GtpAboutLogoTiersBandCopy */
+export type GtpAboutLogoMarqueeBandCopy = GtpAboutLogoTiersBandCopy;
+
+function emptyLogoTiers(): GtpAboutLogoTiers {
+  return {
+    platinum: [],
+    gold: [],
+    silver: [],
+    bronze: [],
+  };
+}
+
+export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutLogoTiersBandCopy = {
   enabled: true,
   title: "Backing the Conference",
   subtitle: "Our Sponsors",
-  logos: [],
-  noticeBeforeLink: "Sponsor logos coming soon. Interested in sponsoring? ",
-  noticeLinkText: "Get in touch →",
+  tiers: emptyLogoTiers(),
+  noticeBeforeLink: "Interested in sponsoring?",
+  noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
 };
 
-export const DEFAULT_GTP_PARTNERS_BAND: GtpAboutLogoMarqueeBandCopy = {
+export const DEFAULT_GTP_PARTNERS_BAND: GtpAboutLogoTiersBandCopy = {
   enabled: true,
   title: "Collaborating for Impact",
   subtitle: "Our Partners",
-  logos: [],
-  noticeBeforeLink: "Partner logos coming soon. Interested in partnering? ",
-  noticeLinkText: "Get in touch →",
+  tiers: emptyLogoTiers(),
+  noticeBeforeLink: "Interested in partnering?",
+  noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
 };
 
@@ -306,24 +339,31 @@ export type GtpAboutPageResolved = {
   quotes: GtpAboutQuotesBandCopy;
   gallery: GtpAboutGalleryBandCopy;
   eventInquiry: GtpAboutEventInquiryCopy;
-  sponsors: GtpAboutLogoMarqueeBandCopy;
-  partners: GtpAboutLogoMarqueeBandCopy;
+  sponsors: GtpAboutLogoTiersBandCopy;
+  partners: GtpAboutLogoTiersBandCopy;
 };
 
-/** At least one logo row with URL + name (optional public band gate). */
-export function gtpAboutLogoMarqueeBandHasQualifyingLogos(
-  band: GtpAboutLogoMarqueeBandCopy,
+/** At least one tiered logo with URL + name. */
+export function gtpAboutLogoTiersBandHasQualifyingLogos(
+  band: GtpAboutLogoTiersBandCopy,
 ): boolean {
-  return band.logos.some(
-    (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
+  return GTP_LOGO_TIER_KEYS.some((key) =>
+    band.tiers[key].some((x) => Boolean(x.logoUrl?.trim() && x.name?.trim())),
   );
 }
 
-/** @deprecated Use gtpAboutLogoMarqueeBandHasQualifyingLogos */
-export function gtpAboutSponsorsBandHasQualifyingLogos(
-  band: GtpAboutLogoMarqueeBandCopy,
+/** @deprecated Use gtpAboutLogoTiersBandHasQualifyingLogos */
+export function gtpAboutLogoMarqueeBandHasQualifyingLogos(
+  band: GtpAboutLogoTiersBandCopy,
 ): boolean {
-  return gtpAboutLogoMarqueeBandHasQualifyingLogos(band);
+  return gtpAboutLogoTiersBandHasQualifyingLogos(band);
+}
+
+/** @deprecated Use gtpAboutLogoTiersBandHasQualifyingLogos */
+export function gtpAboutSponsorsBandHasQualifyingLogos(
+  band: GtpAboutLogoTiersBandCopy,
+): boolean {
+  return gtpAboutLogoTiersBandHasQualifyingLogos(band);
 }
 
 export { DEFAULT_GTP_WHAT_IS_BAND };
