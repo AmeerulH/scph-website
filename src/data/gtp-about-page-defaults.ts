@@ -283,8 +283,10 @@ export type GtpAboutLogoTiersBandCopy = {
   enabled: boolean;
   title: string;
   subtitle: string;
-  /** Only logos in these tiers render; unassigned / legacy flat lists are ignored. */
+  /** Sponsors: logos appear only when assigned to a tier. */
   tiers: GtpAboutLogoTiers;
+  /** Partners: flat list of every logo (tiers unused). Sponsors: empty. */
+  logos: GtpAboutSponsorLogoEntry[];
   noticeBeforeLink: string;
   noticeLinkText: string;
   noticeLinkHref: string;
@@ -307,6 +309,7 @@ export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutLogoTiersBandCopy = {
   title: "Backing the Conference",
   subtitle: "Our Sponsors",
   tiers: emptyLogoTiers(),
+  logos: [],
   noticeBeforeLink: "Interested in sponsoring?",
   noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
@@ -317,6 +320,7 @@ export const DEFAULT_GTP_PARTNERS_BAND: GtpAboutLogoTiersBandCopy = {
   title: "Collaborating for Impact",
   subtitle: "Our Partners",
   tiers: emptyLogoTiers(),
+  logos: [],
   noticeBeforeLink: "Interested in partnering?",
   noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
@@ -343,10 +347,13 @@ export type GtpAboutPageResolved = {
   partners: GtpAboutLogoTiersBandCopy;
 };
 
-/** At least one tiered logo with URL + name. */
+/** At least one displayable logo (tiered sponsors or flat partners). */
 export function gtpAboutLogoTiersBandHasQualifyingLogos(
   band: GtpAboutLogoTiersBandCopy,
 ): boolean {
+  if (band.logos.some((x) => Boolean(x.logoUrl?.trim() && x.name?.trim()))) {
+    return true;
+  }
   return GTP_LOGO_TIER_KEYS.some((key) =>
     band.tiers[key].some((x) => Boolean(x.logoUrl?.trim() && x.name?.trim())),
   );

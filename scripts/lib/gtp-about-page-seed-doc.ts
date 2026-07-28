@@ -349,7 +349,7 @@ async function buildPikSponsorEntries(
   if (dryRun) {
     return [
       {
-        _type: "gtpAboutSponsorLogo",
+        _type: "gtpAboutPartnerLogo",
         _key: "seed-pik",
         name: pik.name,
         href: pik.href,
@@ -371,7 +371,7 @@ async function buildPikSponsorEntries(
 
   return [
     {
-      _type: "gtpAboutSponsorLogo",
+      _type: "gtpAboutPartnerLogo",
       _key: "seed-pik",
       name: pik.name,
       href: pik.href,
@@ -469,7 +469,7 @@ export async function buildGtpAboutPageSeedDocument(
       noticeBeforeLink: DEFAULT_GTP_PARTNERS_BAND.noticeBeforeLink,
       noticeLinkText: DEFAULT_GTP_PARTNERS_BAND.noticeLinkText,
       noticeLinkHref: DEFAULT_GTP_PARTNERS_BAND.noticeLinkHref,
-      partners: partners.map((row) => ({ ...row, tier: "gold" })),
+      partners,
     },
     sections: [],
   };

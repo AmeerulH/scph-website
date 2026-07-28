@@ -201,31 +201,26 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     partners[] {
       name,
       href,
-      tier,
       "logoUrl": logo.asset->url
     },
     platinum[] {
       name,
       href,
-      tier,
       "logoUrl": logo.asset->url
     },
     gold[] {
       name,
       href,
-      tier,
       "logoUrl": logo.asset->url
     },
     silver[] {
       name,
       href,
-      tier,
       "logoUrl": logo.asset->url
     },
     bronze[] {
       name,
       href,
-      tier,
       "logoUrl": logo.asset->url
     },
     noticeBeforeLink,

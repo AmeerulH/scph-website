@@ -424,28 +424,6 @@ function mergeEventInquiry(
   };
 }
 
-function mergeSponsorLogo(
-  raw: GtpAboutSponsorLogoRaw,
-): (GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey }) | null {
-  if (!raw) return null;
-  const logoUrl = raw.logoUrl?.trim();
-  const name = raw.name?.trim();
-  if (!logoUrl || !name) return null;
-  const href = raw.href?.trim();
-  const tierRaw = raw.tier?.trim();
-  const tier =
-    tierRaw && (GTP_LOGO_TIER_KEYS as readonly string[]).includes(tierRaw)
-      ? (tierRaw as GtpLogoTierKey)
-      : undefined;
-  const entry: GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey } = {
-    name,
-    logoUrl,
-  };
-  if (href) entry.href = href;
-  if (tier) entry.tier = tier;
-  return entry;
-}
-
 function slugFromCardTitle(title: string): string {
   return title
     .normalize("NFD")
@@ -509,6 +487,32 @@ function mergeAccommodationActivities(
   };
 }
 
+function mergeLogoEntry(
+  raw: GtpAboutSponsorLogoRaw,
+): GtpAboutSponsorLogoEntry | null {
+  if (!raw) return null;
+  const logoUrl = raw.logoUrl?.trim();
+  const name = raw.name?.trim();
+  if (!logoUrl || !name) return null;
+  const href = raw.href?.trim();
+  const entry: GtpAboutSponsorLogoEntry = { name, logoUrl };
+  if (href) entry.href = href;
+  return entry;
+}
+
+function mergeSponsorLogo(
+  raw: GtpAboutSponsorLogoRaw,
+): (GtpAboutSponsorLogoEntry & { tier?: GtpLogoTierKey }) | null {
+  const base = mergeLogoEntry(raw);
+  if (!base || !raw) return null;
+  const tierRaw = raw.tier?.trim();
+  const tier =
+    tierRaw && (GTP_LOGO_TIER_KEYS as readonly string[]).includes(tierRaw)
+      ? (tierRaw as GtpLogoTierKey)
+      : undefined;
+  return tier ? { ...base, tier } : base;
+}
+
 function emptyMergedLogoTiers(): GtpAboutLogoTiers {
   return {
     platinum: [],
@@ -532,14 +536,20 @@ function pushLogoIntoTiers(
   });
 }
 
-function mergeLogoTiersBand(
-  raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
-  defaults: GtpAboutLogoTiersBandCopy,
+function collectFlatLogos(
+  raw: NonNullable<GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw>,
   logosKey: "sponsors" | "partners",
-): GtpAboutLogoTiersBandCopy {
-  if (!raw) return defaults;
+): GtpAboutSponsorLogoEntry[] {
+  const out: GtpAboutSponsorLogoEntry[] = [];
+  const seen = new Set<string>();
 
-  const tiers = emptyMergedLogoTiers();
+  const push = (entry: GtpAboutSponsorLogoEntry | null) => {
+    if (!entry) return;
+    const key = `${entry.name}::${entry.logoUrl}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(entry);
+  };
 
   const flatLogos =
     logosKey === "sponsors"
@@ -547,11 +557,46 @@ function mergeLogoTiersBand(
       : (raw as GtpAboutPartnersBandRaw)?.partners;
 
   for (const row of flatLogos ?? []) {
+    push(mergeLogoEntry(row));
+  }
+
+  for (const key of GTP_LOGO_TIER_KEYS) {
+    for (const row of raw[key] ?? []) {
+      push(mergeLogoEntry(row));
+    }
+  }
+
+  return out;
+}
+
+function mergeLogoTiersBand(
+  raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
+  defaults: GtpAboutLogoTiersBandCopy,
+  logosKey: "sponsors" | "partners",
+): GtpAboutLogoTiersBandCopy {
+  if (!raw) return defaults;
+
+  if (logosKey === "partners") {
+    return {
+      enabled: raw.enabled !== false,
+      title: s(raw.title, defaults.title),
+      subtitle: s(raw.subtitle, defaults.subtitle),
+      tiers: emptyMergedLogoTiers(),
+      logos: collectFlatLogos(raw, "partners"),
+      noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
+      noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
+      noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),
+    };
+  }
+
+  const tiers = emptyMergedLogoTiers();
+  const flatLogos = (raw as GtpAboutSponsorsBandRaw)?.sponsors;
+
+  for (const row of flatLogos ?? []) {
     const entry = mergeSponsorLogo(row);
     if (entry) pushLogoIntoTiers(tiers, entry);
   }
 
-  // Short-lived per-tier arrays from the first schema pass (if any).
   for (const key of GTP_LOGO_TIER_KEYS) {
     for (const row of raw[key] ?? []) {
       const entry = mergeSponsorLogo(row);
@@ -565,6 +610,7 @@ function mergeLogoTiersBand(
     title: s(raw.title, defaults.title),
     subtitle: s(raw.subtitle, defaults.subtitle),
     tiers,
+    logos: [],
     noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
     noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
     noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),

@@ -349,16 +349,33 @@ function TierHeader({
   );
 }
 
-function GtpLogoTierCell({ entry }: { entry: GtpAboutSponsorLogoEntry }) {
+function GtpLogoTierCell({
+  entry,
+  sleek,
+}: {
+  entry: GtpAboutSponsorLogoEntry;
+  /** Partners: larger slots + multiply so white logo mats disappear on light grounds. */
+  sleek?: boolean;
+}) {
   const remote = imgUnoptimized(entry.logoUrl);
   const image = (
-    <span className="flex h-16 w-44 items-center justify-center sm:h-20 sm:w-52">
+    <span
+      className={cn(
+        "flex items-center justify-center",
+        sleek
+          ? "h-20 w-48 sm:h-24 sm:w-56 md:h-26 md:w-60"
+          : "h-16 w-44 sm:h-20 sm:w-52",
+      )}
+    >
       <Image
         src={entry.logoUrl}
         alt={entry.name}
-        width={220}
-        height={80}
-        className="max-h-full max-w-full object-contain"
+        width={sleek ? 260 : 220}
+        height={sleek ? 104 : 80}
+        className={cn(
+          "max-h-full max-w-full object-contain",
+          sleek && "mix-blend-multiply",
+        )}
         unoptimized={remote}
       />
     </span>
@@ -367,8 +384,12 @@ function GtpLogoTierCell({ entry }: { entry: GtpAboutSponsorLogoEntry }) {
   const href = entry.href?.trim();
   if (href) {
     const internal = href.startsWith("/") || href.startsWith("#");
-    const className =
-      "inline-flex items-center justify-center opacity-90 transition-opacity hover:opacity-100";
+    const className = cn(
+      "inline-flex items-center justify-center transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+      sleek
+        ? "opacity-80 hover:opacity-100 hover:-translate-y-0.5"
+        : "opacity-90 hover:opacity-100",
+    );
     if (internal) {
       return (
         <Link href={href} className={className} aria-label={entry.name}>
@@ -394,9 +415,132 @@ function GtpLogoTierCell({ entry }: { entry: GtpAboutSponsorLogoEntry }) {
   );
 }
 
+function LogoGrid({
+  logos,
+  reduceMotion,
+  emptyBorderClassName,
+  sleek,
+}: {
+  logos: GtpAboutSponsorLogoEntry[];
+  reduceMotion: boolean;
+  emptyBorderClassName: string;
+  sleek?: boolean;
+}) {
+  if (logos.length === 0) {
+    return (
+      <motion.div
+        className={cn(
+          "flex justify-center py-2 sm:py-3",
+          sleek ? "mt-0" : "mt-10 sm:mt-12",
+        )}
+        initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+        whileInView={
+          reduceMotion ? undefined : { opacity: 1, y: 0 }
+        }
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+      >
+        <p
+          className={cn(
+            "inline-flex w-fit items-center justify-center rounded-full border border-dashed px-6 py-2.5 text-center text-sm tracking-wide text-gray-400 sm:px-7 sm:py-3 sm:text-[0.9375rem]",
+            emptyBorderClassName,
+          )}
+        >
+          Coming soon
+        </p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.ul
+      className={cn(
+        "flex list-none flex-wrap items-center justify-center p-0",
+        sleek
+          ? "gap-x-12 gap-y-10 py-2 sm:gap-x-16 sm:gap-y-12 md:gap-x-20"
+          : "mt-10 gap-x-10 gap-y-8 py-2 sm:mt-12 sm:gap-x-12 sm:py-3",
+      )}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.25 }}
+      variants={{
+        hidden: {},
+        show: {
+          transition: {
+            staggerChildren: reduceMotion ? 0 : sleek ? 0.1 : 0.08,
+            delayChildren: reduceMotion ? 0 : sleek ? 0.12 : 0.28,
+          },
+        },
+      }}
+    >
+      {logos.map((entry, i) => (
+        <motion.li
+          key={`${entry.name}-${i}`}
+          variants={{
+            hidden: reduceMotion
+              ? { opacity: 0 }
+              : sleek
+                ? { opacity: 0, y: 14 }
+                : { opacity: 0, y: 18, scale: 0.88, rotate: -2 },
+            show: {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              rotate: 0,
+              transition: sleek
+                ? { duration: 0.55, ease: [0.22, 1, 0.36, 1] }
+                : {
+                    type: "spring",
+                    stiffness: 160,
+                    damping: 16,
+                  },
+            },
+          }}
+        >
+          <GtpLogoTierCell entry={entry} sleek={sleek} />
+        </motion.li>
+      ))}
+    </motion.ul>
+  );
+}
+
+function PartnersLogoStage({
+  logos,
+  reduceMotion,
+}: {
+  logos: GtpAboutSponsorLogoEntry[];
+  reduceMotion: boolean;
+}) {
+  return (
+    <div className="relative mx-auto w-full max-w-5xl py-6 sm:py-8 md:py-10">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-gtp-teal/30 to-transparent sm:inset-x-16"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-[18%] top-0 h-16 bg-[radial-gradient(ellipse_at_center,rgba(0,156,180,0.07),transparent_70%)] sm:h-20"
+      />
+      <LogoGrid
+        logos={logos}
+        reduceMotion={reduceMotion}
+        emptyBorderClassName="border-gtp-teal/25 bg-white/60"
+        sleek
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-8 bottom-0 h-px bg-linear-to-r from-transparent via-gtp-teal/30 to-transparent sm:inset-x-16"
+      />
+    </div>
+  );
+}
+
 export function GtpLogoTiersBand({ variant, band }: GtpLogoTiersBandProps) {
   const styles = variantStyles[variant];
   const reduceMotion = useReducedMotion();
+  const partnerLogos = band.logos.filter(
+    (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
+  );
   const tiers = GTP_LOGO_TIER_KEYS.map((key) => ({
     key,
     label: GTP_LOGO_TIER_LABELS[key],
@@ -438,92 +582,47 @@ export function GtpLogoTiersBand({ variant, band }: GtpLogoTiersBandProps) {
       subtitle={band.subtitle}
       theme="gtp"
       background={styles.background}
+      className={
+        variant === "partners"
+          ? "py-28 md:py-36 lg:py-40"
+          : undefined
+      }
     >
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 sm:gap-12">
-        {tiers.map((tier) => (
-          <div key={tier.key} className="w-full">
-            <TierHeader
-              tier={tier.key}
-              label={tier.label}
-              chipClassName={styles.chipClassName}
-              ruleClassName={styles.ruleClassName}
-              reduceMotion={reduceMotion}
-            />
-            {tier.logos.length > 0 ? (
-              <motion.ul
-                className="mt-10 flex list-none flex-wrap items-center justify-center gap-x-10 gap-y-8 p-0 py-2 sm:mt-12 sm:gap-x-12 sm:py-3"
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.25 }}
-                variants={{
-                  hidden: {},
-                  show: {
-                    transition: {
-                      staggerChildren: reduceMotion ? 0 : 0.08,
-                      delayChildren: reduceMotion ? 0 : 0.28,
-                    },
-                  },
-                }}
-              >
-                {tier.logos.map((entry, i) => (
-                  <motion.li
-                    key={`${tier.key}-${entry.name}-${i}`}
-                    variants={{
-                      hidden: reduceMotion
-                        ? { opacity: 0 }
-                        : { opacity: 0, y: 18, scale: 0.88, rotate: -2 },
-                      show: {
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                        rotate: 0,
-                        transition: {
-                          type: "spring",
-                          stiffness: 160,
-                          damping: 16,
-                        },
-                      },
-                    }}
-                  >
-                    <GtpLogoTierCell entry={entry} />
-                  </motion.li>
-                ))}
-              </motion.ul>
-            ) : (
-              <motion.div
-                className="mt-10 flex justify-center py-2 sm:mt-12 sm:py-3"
-                initial={
-                  reduceMotion ? false : { opacity: 0, y: 12, scale: 0.94 }
-                }
-                whileInView={
-                  reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }
-                }
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{
-                  type: "spring",
-                  ...scphSpring,
-                  delay: 0.25,
-                }}
-              >
-                <p
-                  className={cn(
-                    "inline-flex w-fit items-center justify-center rounded-full border border-dashed px-6 py-2.5 text-center text-sm tracking-wide text-gray-400 sm:px-7 sm:py-3 sm:text-[0.9375rem]",
-                    variant === "partners"
-                      ? "border-gtp-teal/25 bg-white/60"
-                      : "border-gtp-dark-teal/15 bg-gray-50/80",
-                  )}
-                >
-                  Coming soon
-                </p>
-              </motion.div>
-            )}
-          </div>
-        ))}
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-5xl flex-col",
+          variant === "partners" ? "gap-4 sm:gap-6" : "gap-10 sm:gap-12",
+        )}
+      >
+        {variant === "partners" ? (
+          <PartnersLogoStage
+            logos={partnerLogos}
+            reduceMotion={Boolean(reduceMotion)}
+          />
+        ) : (
+          tiers.map((tier) => (
+            <div key={tier.key} className="w-full">
+              <TierHeader
+                tier={tier.key}
+                label={tier.label}
+                chipClassName={styles.chipClassName}
+                ruleClassName={styles.ruleClassName}
+                reduceMotion={reduceMotion}
+              />
+              <LogoGrid
+                logos={tier.logos}
+                reduceMotion={Boolean(reduceMotion)}
+                emptyBorderClassName="border-gtp-dark-teal/15 bg-gray-50/80"
+              />
+            </div>
+          ))
+        )}
       </div>
 
       <motion.div
         className={cn(
-          "relative mx-auto mt-14 w-full max-w-5xl overflow-hidden rounded-2xl bg-gradient-to-br px-6 py-10 text-center sm:mt-16 sm:px-10 sm:py-12",
+          "relative mx-auto w-full max-w-5xl overflow-hidden rounded-2xl bg-linear-to-br px-6 py-10 text-center sm:px-10 sm:py-12",
+          variant === "partners" ? "mt-16 sm:mt-20 md:mt-24" : "mt-14 sm:mt-16",
           styles.stripClassName,
         )}
         initial={

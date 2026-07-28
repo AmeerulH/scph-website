@@ -246,7 +246,7 @@ export const gtpAboutEventInquiryBandType = defineType({
 
 export const gtpAboutSponsorLogoType = defineType({
   name: 'gtpAboutSponsorLogo',
-  title: 'Sponsor / partner logo',
+  title: 'Sponsor logo',
   type: 'object',
   fields: [
     defineField({
@@ -270,7 +270,7 @@ export const gtpAboutSponsorLogoType = defineType({
         layout: 'radio',
       },
       description:
-        'GTP About: required for the logo to appear on the site. Leave empty to hide it. (Ignored on SCPH home partners.)',
+        'Sponsors only. Required for the logo to appear on the site. Leave empty to hide it.',
     }),
     defineField({
       name: 'logo',
@@ -300,6 +300,41 @@ export const gtpAboutSponsorLogoType = defineType({
                 ? 'Bronze'
                 : 'No tier (hidden on site)'
       return {title: title ?? 'Sponsor', subtitle: tierLabel, media}
+    },
+  },
+})
+
+/** Partners band logos — no tier tagging. */
+export const gtpAboutPartnerLogoType = defineType({
+  name: 'gtpAboutPartnerLogo',
+  title: 'Partner logo',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Partner name',
+      type: 'string',
+      validation: (rule) => rule.required(),
+      description: 'Used for alt text and accessibility labels.',
+    }),
+    defineField({
+      name: 'logo',
+      title: 'Logo image',
+      type: 'image',
+      options: {hotspot: true},
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'href',
+      title: 'Website URL',
+      type: 'url',
+      description: 'Optional. When set, the logo links here (opens in a new tab).',
+    }),
+  ],
+  preview: {
+    select: {title: 'name', media: 'logo'},
+    prepare({title, media}) {
+      return {title: title ?? 'Partner', media}
     },
   },
 })
@@ -396,10 +431,13 @@ export const gtpAboutPartnersBandType = defineType({
       name: 'partners',
       title: 'Partner logos',
       type: 'array',
-      of: [{type: 'gtpAboutSponsorLogo'}],
+      of: [
+        {type: 'gtpAboutPartnerLogo'},
+        // Legacy rows saved as sponsor logos (may still have a tier field; site ignores it).
+        {type: 'gtpAboutSponsorLogo'},
+      ],
       description:
-        'Set Tier on each logo (Platinum–Bronze). Logos without a tier stay hidden on the site. Max 5 per tier.',
-      validation: (rule) => rule.custom(validateLogosMaxPerTier),
+        'All partner logos appear on the site. No tier tagging. Prefer “Partner logo” when adding new rows.',
     }),
     defineField({
       name: 'platinum',
@@ -575,6 +613,7 @@ export const gtpAboutPageBandObjectTypes = [
   gtpAboutAccommodationActivitiesBandType,
   gtpAboutEventInquiryBandType,
   gtpAboutSponsorLogoType,
+  gtpAboutPartnerLogoType,
   gtpAboutSponsorsBandType,
   gtpAboutPartnersBandType,
 ]
