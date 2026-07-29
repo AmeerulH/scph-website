@@ -14,6 +14,15 @@ import type {
 import { PreConferencePlaceholder } from "@/components/gtp/programmes/pre-conference-placeholder";
 import { DayAgenda } from "@/components/gtp/programmes/day-agenda";
 import type { Session, SessionType } from "@/components/gtp/programmes/types";
+import {
+  collectSpeakers,
+  filterSessionsWithSpeaker,
+  findSpeakerAppearances,
+  speakerExistsInProgramme,
+  type SpeakerAppearance,
+  type ThemeFilterId,
+} from "@/components/gtp/programmes/programme-speaker-filter";
+import { ProgrammeSpeakerSelect } from "@/components/gtp/programmes/programme-speaker-select";
 
 // ─── Filter config ─────────────────────────────────────────────────────────────
 
@@ -76,15 +85,35 @@ function FilterBar({
   onTypeChange,
   selectedTheme,
   onThemeChange,
+  speakerOptions,
+  selectedSpeaker,
+  onSpeakerChange,
 }: {
   selectedType: SessionType | "all";
   onTypeChange: (t: SessionType | "all") => void;
   selectedTheme: ThemeId;
   onThemeChange: (t: ThemeId) => void;
+  speakerOptions: ReturnType<typeof collectSpeakers>;
+  selectedSpeaker: string | null;
+  onSpeakerChange: (name: string | null) => void;
 }) {
   return (
     <div className="flex justify-center px-4 pb-3">
       <div className="w-full max-w-4xl space-y-2 rounded-2xl border border-white/10 bg-gtp-dark-teal/50 px-4 py-3 shadow-lg backdrop-blur-xl">
+        {/* Speaker filter — first so it stays visible and has room for the menu */}
+        <div className="space-y-1.5">
+          <span className="text-xs font-semibold uppercase tracking-widest text-white/50">
+            Speaker
+          </span>
+          <ProgrammeSpeakerSelect
+            options={speakerOptions}
+            value={selectedSpeaker}
+            onChange={onSpeakerChange}
+          />
+        </div>
+
+        <div className="h-px bg-white/10" />
+
         {/* Type filters */}
         <div className="flex items-center gap-3">
           <span className="shrink-0 text-xs font-semibold uppercase tracking-widest text-white/50">
@@ -167,100 +196,213 @@ function FilterSidebar({
   onTypeChange,
   selectedTheme,
   onThemeChange,
+  speakerOptions,
+  selectedSpeaker,
+  onSpeakerChange,
 }: {
   selectedType: SessionType | "all";
   onTypeChange: (t: SessionType | "all") => void;
   selectedTheme: ThemeId;
   onThemeChange: (t: ThemeId) => void;
+  speakerOptions: ReturnType<typeof collectSpeakers>;
+  selectedSpeaker: string | null;
+  onSpeakerChange: (name: string | null) => void;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-gtp-dark-teal/40 p-4 shadow-lg backdrop-blur-sm">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/70">
-        Filters
-      </p>
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-gtp-dark-teal/40 shadow-lg backdrop-blur-sm">
+      {/* Pinned header — stays visible while Type/Theme scroll */}
+      <div className="shrink-0 p-4 pb-0">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/70">
+          Filters
+        </p>
 
-      {/* Type section */}
-      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
-        Type
-      </p>
-      <div className="flex flex-col gap-0.5">
-        {FILTERABLE_TYPES.map((type) => {
-          const label =
-            type === "all" ? "All Sessions" : TYPE_META[type as SessionType].label;
-          return (
+        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+          Speaker
+        </p>
+        <ProgrammeSpeakerSelect
+          options={speakerOptions}
+          value={selectedSpeaker}
+          onChange={onSpeakerChange}
+        />
+
+        <div className="mt-4 h-px bg-white/10" />
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.25)_transparent]">
+        {/* Type section */}
+        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+          Type
+        </p>
+        <div className="flex flex-col gap-0.5">
+          {FILTERABLE_TYPES.map((type) => {
+            const label =
+              type === "all" ? "All Sessions" : TYPE_META[type as SessionType].label;
+            return (
+              <SidebarFilterRow
+                key={type}
+                active={selectedType === type}
+                onClick={() => onTypeChange(type)}
+              >
+                {label}
+              </SidebarFilterRow>
+            );
+          })}
+        </div>
+
+        <div className="my-4 h-px bg-white/10" />
+
+        {/* Theme section */}
+        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
+          Theme
+        </p>
+        <div className="flex flex-col gap-0.5">
+          {THEMES.map(({ id, label }) => (
             <SidebarFilterRow
-              key={type}
-              active={selectedType === type}
-              onClick={() => onTypeChange(type)}
+              key={id}
+              active={selectedTheme === id}
+              onClick={() => onThemeChange(id)}
             >
               {label}
             </SidebarFilterRow>
-          );
-        })}
-      </div>
-
-      <div className="my-4 h-px bg-white/10" />
-
-      {/* Theme section */}
-      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
-        Theme
-      </p>
-      <div className="flex flex-col gap-0.5">
-        {THEMES.map(({ id, label }) => (
-          <SidebarFilterRow
-            key={id}
-            active={selectedTheme === id}
-            onClick={() => onThemeChange(id)}
-          >
-            {label}
-          </SidebarFilterRow>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Speaker appearance jump list (empty state + below filtered agenda) ───────
 
-function sessionMatchesTheme(session: Session, theme: ThemeId): boolean {
-  if (theme === "all") return true;
-  return session.theme === theme;
+function SpeakerAppearancesList({
+  appearances,
+  onJumpToDay,
+}: {
+  appearances: SpeakerAppearance[];
+  onJumpToDay: (tabId: SpeakerAppearance["tabId"]) => void;
+}) {
+  return (
+    <ul className="mt-5 w-full max-w-lg space-y-2 text-left">
+      {appearances.map((a) => (
+        <li key={`${a.tabId}-${a.time}-${a.sessionTitle}`}>
+          <button
+            type="button"
+            onClick={() => onJumpToDay(a.tabId)}
+            className="w-full rounded-xl border border-gtp-teal/20 bg-white px-4 py-3 text-left shadow-sm transition-colors hover:border-gtp-teal/45 hover:bg-gtp-teal/5"
+          >
+            <span className="block text-xs font-semibold uppercase tracking-wide text-gtp-teal">
+              {a.dayLabel}
+            </span>
+            <span className="mt-1 block text-sm font-semibold text-gtp-dark-teal">
+              {a.time} · {a.sessionTitle}
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
-function filterSessions(
-  sessions: Session[],
-  type: SessionType | "all",
-  theme: ThemeId,
-): Session[] {
-  let filtered = sessions;
+function SpeakerAlsoOnOtherDays({
+  speakerName,
+  appearances,
+  onJumpToDay,
+}: {
+  speakerName: string;
+  appearances: SpeakerAppearance[];
+  onJumpToDay: (tabId: SpeakerAppearance["tabId"]) => void;
+}) {
+  if (appearances.length === 0) return null;
 
-  if (type !== "all") {
-    const hasMatch = filtered.some(
-      (s) => s.type !== "break" && s.type !== "reconvening" && s.type === type,
-    );
-    if (!hasMatch) return [];
-    filtered = filtered.filter(
-      (s) => s.type === type || s.type === "break" || s.type === "reconvening",
+  return (
+    <div className="mt-10 flex flex-col items-center border-t border-gray-200/80 pt-10 text-center">
+      <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+        Also speaking on other days
+      </p>
+      <p className="mt-2 max-w-md text-sm text-gray-400">
+        {speakerName} also appears elsewhere in the programme:
+      </p>
+      <SpeakerAppearancesList appearances={appearances} onJumpToDay={onJumpToDay} />
+    </div>
+  );
+}
+
+// ─── Empty states ─────────────────────────────────────────────────────────────
+
+function SpeakerFilterEmpty({
+  speakerName,
+  otherAppearances,
+  inProgramme,
+  hasTypeOrThemeFilter,
+  onClear,
+  onJumpToDay,
+}: {
+  speakerName: string;
+  otherAppearances: SpeakerAppearance[];
+  inProgramme: boolean;
+  hasTypeOrThemeFilter: boolean;
+  onClear: () => void;
+  onJumpToDay: (tabId: SpeakerAppearance["tabId"]) => void;
+}) {
+  if (!inProgramme) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+          Not in the published programme
+        </p>
+        <p className="mt-2 max-w-md text-sm text-gray-400">
+          {speakerName} isn&apos;t listed as a speaker on the current programme.
+        </p>
+        <button
+          onClick={onClear}
+          className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
+        >
+          Clear filters
+        </button>
+      </div>
     );
   }
 
-  if (theme !== "all") {
-    const hasMatch = filtered.some(
-      (s) =>
-        s.type !== "break" &&
-        s.type !== "reconvening" &&
-        sessionMatchesTheme(s, theme),
-    );
-    if (!hasMatch) return [];
-    filtered = filtered.filter(
-      (s) =>
-        s.type === "break" ||
-        s.type === "reconvening" ||
-        sessionMatchesTheme(s, theme),
+  if (otherAppearances.length > 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+          Not on this day
+        </p>
+        <p className="mt-2 max-w-md text-sm text-gray-400">
+          {speakerName} appears elsewhere in the programme:
+        </p>
+        <SpeakerAppearancesList
+          appearances={otherAppearances}
+          onJumpToDay={onJumpToDay}
+        />
+        <button
+          onClick={onClear}
+          className="mt-6 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
+        >
+          Clear filters
+        </button>
+      </div>
     );
   }
 
-  return filtered;
+  return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+        No sessions match
+      </p>
+      <p className="mt-2 max-w-md text-sm text-gray-400">
+        {hasTypeOrThemeFilter
+          ? `Nothing on the programme matches ${speakerName} with these type and theme filters. Try clearing Type or Theme.`
+          : `Nothing on the programme matches ${speakerName} with the current filters.`}
+      </p>
+      <button
+        onClick={onClear}
+        className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
+      >
+        Clear filters
+      </button>
+    </div>
+  );
 }
 
 // ─── Client body (useSearchParams — must be inside Suspense in parent) ───────
@@ -297,6 +439,7 @@ export function ProgrammesPageClient({
   const [activeTab, setActiveTab] = React.useState<TabId>(initialTab);
   const [selectedType, setSelectedType] = React.useState<SessionType | "all">("all");
   const [selectedTheme, setSelectedTheme] = React.useState<ThemeId>("all");
+  const [selectedSpeaker, setSelectedSpeaker] = React.useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [highlightSession, setHighlightSession] = React.useState<string | null>(initialSession);
 
@@ -310,7 +453,27 @@ export function ProgrammesPageClient({
     return () => clearTimeout(id);
   }, [highlightSession]);
 
-  const hasActiveFilter = selectedType !== "all" || selectedTheme !== "all";
+  const dayMap: Record<Exclude<TabId, "pre">, Session[]> = React.useMemo(
+    () => ({ day1, day2, day3, day4 }),
+    [day1, day2, day3, day4],
+  );
+
+  const speakerOptions = React.useMemo(
+    () => collectSpeakers([...day1, ...day2, ...day3, ...day4]),
+    [day1, day2, day3, day4],
+  );
+
+  const dayBuckets = React.useMemo(() => {
+    const ids: Exclude<TabId, "pre">[] = ["day1", "day2", "day3", "day4"];
+    return ids.map((tabId) => ({
+      tabId,
+      dayLabel: tabs.find((t) => t.id === tabId)?.label ?? tabId,
+      sessions: dayMap[tabId],
+    }));
+  }, [dayMap, tabs]);
+
+  const hasActiveFilter =
+    selectedType !== "all" || selectedTheme !== "all" || selectedSpeaker !== null;
 
   function scrollToAnchor() {
     if (anchorRef.current) {
@@ -339,17 +502,43 @@ export function ProgrammesPageClient({
     scrollToAnchor();
   }
 
-  const dayMap: Record<Exclude<TabId, "pre">, Session[]> = {
-    day1,
-    day2,
-    day3,
-    day4,
-  };
+  function handleSpeakerChange(name: string | null) {
+    setSelectedSpeaker(name);
+    scrollToAnchor();
+  }
+
+  function clearAllFilters() {
+    setSelectedType("all");
+    setSelectedTheme("all");
+    setSelectedSpeaker(null);
+    scrollToAnchor();
+  }
+
+  const themeFilter = selectedTheme as ThemeFilterId;
 
   const currentSessions =
     activeTab !== "pre"
-      ? filterSessions(dayMap[activeTab], selectedType, selectedTheme)
+      ? filterSessionsWithSpeaker(
+          dayMap[activeTab],
+          selectedType,
+          themeFilter,
+          selectedSpeaker,
+        )
       : [];
+
+  const otherAppearances =
+    selectedSpeaker && activeTab !== "pre"
+      ? findSpeakerAppearances(
+          dayBuckets.filter((d) => d.tabId !== activeTab),
+          selectedSpeaker,
+          selectedType,
+          themeFilter,
+        )
+      : [];
+
+  const speakerInProgramme = selectedSpeaker
+    ? speakerExistsInProgramme(speakerOptions, selectedSpeaker)
+    : true;
 
   const currentDayLabel = tabs.find((t) => t.id === activeTab)?.label;
 
@@ -418,6 +607,9 @@ export function ProgrammesPageClient({
                 onTypeChange={handleTypeChange}
                 selectedTheme={selectedTheme}
                 onThemeChange={handleThemeChange}
+                speakerOptions={speakerOptions}
+                selectedSpeaker={selectedSpeaker}
+                onSpeakerChange={handleSpeakerChange}
               />
             </motion.div>
           )}
@@ -426,55 +618,85 @@ export function ProgrammesPageClient({
 
       {/* Tab content */}
       <div className="min-h-screen bg-slate-100">
-        <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 pb-10 pt-0 md:px-6 lg:px-8">
           <div className="flex gap-8">
-            {/* ── Desktop sticky sidebar ── */}
+            {/*
+              Desktop sidebar sits level with day tabs: pull up by tab-strip height
+              (-mt-16) and stick at the same top-18 as the day filter pill.
+            */}
             {activeTab !== "pre" && (
-              <aside className="hidden lg:block w-52 shrink-0">
-                <div className="sticky top-[140px] max-h-[calc(100vh-156px)] overflow-y-auto rounded-2xl [&::-webkit-scrollbar]:hidden">
-                  <FilterSidebar
-                    selectedType={selectedType}
-                    onTypeChange={handleTypeChange}
-                    selectedTheme={selectedTheme}
-                    onThemeChange={handleThemeChange}
-                  />
+              <aside className="relative z-30 hidden w-56 shrink-0 -mt-16 lg:block">
+                <div className="sticky top-18 flex h-[calc(100vh-5rem)] flex-col pt-3">
+                  <div className="min-h-0 flex-1">
+                    <FilterSidebar
+                      selectedType={selectedType}
+                      onTypeChange={handleTypeChange}
+                      selectedTheme={selectedTheme}
+                      onThemeChange={handleThemeChange}
+                      speakerOptions={speakerOptions}
+                      selectedSpeaker={selectedSpeaker}
+                      onSpeakerChange={handleSpeakerChange}
+                    />
+                  </div>
                 </div>
               </aside>
             )}
 
             {/* ── Main content ── */}
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 pt-6 lg:pt-8">
               {activeTab === "pre" && <PreConferencePlaceholder />}
 
               {activeTab !== "pre" && currentSessions.length > 0 && (
-                <DayAgenda
-                  sessions={currentSessions}
-                  highlightSession={highlightSession ?? undefined}
-                  dayLabel={currentDayLabel}
-                  calendarTabId={activeTab as Exclude<TabId, "pre">}
-                  sessionModalHostedBy={sessionModalHostedBy}
+                <>
+                  <DayAgenda
+                    sessions={currentSessions}
+                    highlightSession={highlightSession ?? undefined}
+                    highlightSpeaker={selectedSpeaker ?? undefined}
+                    dayLabel={currentDayLabel}
+                    calendarTabId={activeTab as Exclude<TabId, "pre">}
+                    sessionModalHostedBy={sessionModalHostedBy}
+                  />
+                  {selectedSpeaker ? (
+                    <SpeakerAlsoOnOtherDays
+                      speakerName={selectedSpeaker}
+                      appearances={otherAppearances}
+                      onJumpToDay={(tabId) => handleTabClick(tabId)}
+                    />
+                  ) : null}
+                </>
+              )}
+
+              {activeTab !== "pre" && currentSessions.length === 0 && selectedSpeaker && (
+                <SpeakerFilterEmpty
+                  speakerName={selectedSpeaker}
+                  otherAppearances={otherAppearances}
+                  inProgramme={speakerInProgramme}
+                  hasTypeOrThemeFilter={
+                    selectedType !== "all" || selectedTheme !== "all"
+                  }
+                  onClear={clearAllFilters}
+                  onJumpToDay={(tabId) => handleTabClick(tabId)}
                 />
               )}
 
-              {activeTab !== "pre" && currentSessions.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-24 text-center">
-                  <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
-                    No sessions match this filter
-                  </p>
-                  <p className="mt-2 text-sm text-gray-400">
-                    Try a different session type, theme, or day.
-                  </p>
-                  <button
-                    onClick={() => {
-                      handleTypeChange("all");
-                      handleThemeChange("all");
-                    }}
-                    className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
-                  >
-                    Clear filters
-                  </button>
-                </div>
-              )}
+              {activeTab !== "pre" &&
+                currentSessions.length === 0 &&
+                !selectedSpeaker && (
+                  <div className="flex flex-col items-center justify-center py-24 text-center">
+                    <p className="font-heading text-lg font-semibold text-gtp-dark-teal/50">
+                      No sessions match this filter
+                    </p>
+                    <p className="mt-2 text-sm text-gray-400">
+                      Try a different session type, theme, or day.
+                    </p>
+                    <button
+                      onClick={clearAllFilters}
+                      className="mt-5 rounded-full bg-gtp-teal/10 px-5 py-2 text-sm font-semibold text-gtp-teal transition-colors hover:bg-gtp-teal/20"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
         </div>

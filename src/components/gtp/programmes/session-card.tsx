@@ -13,16 +13,20 @@ import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
+import { normalizeSpeakerName } from "./programme-speaker-filter";
 
 export function SessionCard({
   session,
   calendarTabId,
   highlightSession,
+  highlightSpeaker,
   onClick,
 }: {
   session: Session;
   calendarTabId: GtpProgrammeCalendarDayTab;
   highlightSession?: string;
+  /** When set, emphasize matching speaker rows and mute the rest. */
+  highlightSpeaker?: string;
   onClick?: () => void;
 }) {
   const meta = TYPE_META[session.type];
@@ -114,25 +118,44 @@ export function SessionCard({
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {namedSpeakers.map((sp, idx) => (
-              <div
-                key={`${sp.name}-${idx}`}
-                className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
-              >
-                <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} sizeClassName="h-8 w-8" />
-                <div className="min-w-0">
-                  {sp.sessionRole?.trim() ? (
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                      {sp.sessionRole.trim()}
-                    </p>
-                  ) : null}
-                  <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
-                  {sp.designation && (
-                    <p className="text-xs text-gray-400">{sp.designation}</p>
+            {namedSpeakers.map((sp, idx) => {
+              const speakerKey = highlightSpeaker
+                ? normalizeSpeakerName(highlightSpeaker)
+                : "";
+              const isMatched =
+                !!speakerKey && normalizeSpeakerName(sp.name) === speakerKey;
+              const isMuted = !!speakerKey && !isMatched;
+              return (
+                <div
+                  key={`${sp.name}-${idx}`}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors duration-200",
+                    isMatched
+                      ? "border-gtp-teal bg-gtp-teal/10 ring-2 ring-gtp-teal/25"
+                      : isMuted
+                        ? "border-gray-100 bg-gray-50/60 opacity-45"
+                        : "border-gray-100 bg-gray-50",
                   )}
+                >
+                  <ProgrammeSpeakerAvatar
+                    imageUrl={sp.imageUrl}
+                    name={sp.name}
+                    sizeClassName="h-8 w-8"
+                  />
+                  <div className="min-w-0">
+                    {sp.sessionRole?.trim() ? (
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                        {sp.sessionRole.trim()}
+                      </p>
+                    ) : null}
+                    <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
+                    {sp.designation && (
+                      <p className="text-xs text-gray-400">{sp.designation}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

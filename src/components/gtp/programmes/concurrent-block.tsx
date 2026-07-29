@@ -13,11 +13,13 @@ export function ConcurrentBlock({
   calendarTabId,
   onClick,
   onWorkshopClick,
+  highlightSpeaker,
 }: {
   session: Session;
   calendarTabId: GtpProgrammeCalendarDayTab;
   onClick?: () => void;
   onWorkshopClick?: (w: Workshop) => void;
+  highlightSpeaker?: string;
 }) {
   const isResearch = session.type === "research";
 
@@ -132,6 +134,7 @@ export function ConcurrentBlock({
                     w={w}
                     googleCalendarHref={workshopGoogleCalHref(w)}
                     onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+                    highlightSpeaker={highlightSpeaker}
                   />
                 ))}
               </div>
@@ -149,6 +152,7 @@ export function ConcurrentBlock({
                     w={w}
                     googleCalendarHref={workshopGoogleCalHref(w)}
                     onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+                    highlightSpeaker={highlightSpeaker}
                   />
                 ))}
               </div>
@@ -163,6 +167,7 @@ export function ConcurrentBlock({
                 w={w}
                 googleCalendarHref={workshopGoogleCalHref(w)}
                 onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
+                highlightSpeaker={highlightSpeaker}
               />
             ))}
           </div>

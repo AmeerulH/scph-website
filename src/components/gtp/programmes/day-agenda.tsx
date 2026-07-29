@@ -13,12 +13,14 @@ import { WorkshopModal, type WorkshopModalContext } from "./workshop-modal";
 export function DayAgenda({
   sessions,
   highlightSession,
+  highlightSpeaker,
   dayLabel,
   calendarTabId,
   sessionModalHostedBy,
 }: {
   sessions: Session[];
   highlightSession?: string;
+  highlightSpeaker?: string;
   dayLabel?: string;
   /** Active programme day tab — maps session times to calendar dates. */
   calendarTabId: GtpProgrammeCalendarDayTab;
@@ -65,6 +67,7 @@ export function DayAgenda({
                 calendarTabId={calendarTabId}
                 onClick={() => setSelectedSession(session)}
                 onWorkshopClick={(w) => openWorkshop(w, session)}
+                highlightSpeaker={highlightSpeaker}
               />
             );
           }
@@ -74,6 +77,7 @@ export function DayAgenda({
               session={session}
               calendarTabId={calendarTabId}
               highlightSession={highlightSession}
+              highlightSpeaker={highlightSpeaker}
               onClick={() => setSelectedSession(session)}
             />
           );
