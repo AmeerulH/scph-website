@@ -62,18 +62,30 @@ export function SessionCard({
   return (
     <div
       ref={cardRef}
+      style={
+        {
+          "--programme-session-colour": meta.colour,
+          "--programme-session-gradient": meta.cardGradient,
+          "--programme-session-speaker-gradient": meta.speakerGradient,
+        } as React.CSSProperties
+      }
       className={cn(
-        "rounded-2xl border bg-white shadow-sm transition-all duration-500",
+        "programme-session-card overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-500",
         isSessionHighlighted
           ? "border-gtp-teal ring-2 ring-gtp-teal/30 shadow-md"
           : "border-gray-100",
-        onClick && "cursor-pointer hover:shadow-md hover:border-gtp-teal/30",
+        onClick && cn("cursor-pointer", meta.hoverContainerClass),
       )}
       onClick={onClick}
     >
       {/* Card header strip */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-gray-100 px-6 py-4">
-        <div className="flex items-center gap-2 text-gtp-dark-teal/60">
+      <div
+        className={cn(
+          "programme-session-header flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-gray-100 px-6 py-4",
+          meta.headerClass,
+        )}
+      >
+        <div className={cn("flex items-center gap-2", meta.headerTextClass)}>
           <Clock className="h-4 w-4" />
           <span className="text-sm font-semibold">{session.time}</span>
           {session.durationMins && (
@@ -82,16 +94,21 @@ export function SessionCard({
             </span>
           )}
         </div>
-        <div className="flex min-w-0 max-w-full items-start gap-1.5 text-gray-400">
+        <div
+          className={cn(
+            "flex min-w-0 max-w-full items-start gap-1.5",
+            meta.headerTextClass,
+          )}
+        >
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          <span className="text-xs italic wrap-anywhere">
+          <span className="text-xs font-medium wrap-anywhere">
             {getSessionVenueLine(session)}
           </span>
         </div>
         <span
           className={cn(
             "ml-auto flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
-            meta.badgeClass
+            meta.headerBadgeClass,
           )}
         >
           <MetaIcon className="h-3 w-3" />
@@ -99,13 +116,16 @@ export function SessionCard({
         </span>
         {googleCalHref ? (
           <div className="flex w-full basis-full justify-end pt-1">
-            <AddToGoogleCalendarLink href={googleCalHref} className="text-xs" />
+            <AddToGoogleCalendarLink
+              href={googleCalHref}
+              className={cn("text-xs", meta.headerTextClass)}
+            />
           </div>
         ) : null}
       </div>
 
       {/* Card body — title first; objective full width below so long copy expands the card naturally */}
-      <div className="px-6 py-5">
+      <div className="programme-session-body px-6 py-5">
         <h3 className="font-heading text-lg font-bold leading-snug text-gtp-dark-teal">
           {session.title}
         </h3>
@@ -129,12 +149,12 @@ export function SessionCard({
                 <div
                   key={`${sp.name}-${idx}`}
                   className={cn(
-                    "flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors duration-200",
+                    "programme-session-speaker flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors duration-200",
                     isMatched
                       ? "border-gtp-teal bg-gtp-teal/10 ring-2 ring-gtp-teal/25"
                       : isMuted
                         ? "border-gray-100 bg-gray-50/60 opacity-45"
-                        : "border-gray-100 bg-gray-50",
+                        : meta.speakerClass,
                   )}
                 >
                   <ProgrammeSpeakerAvatar
@@ -163,7 +183,10 @@ export function SessionCard({
         {placeholderCount > 0 && (
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {Array.from({ length: placeholderCount }).map((_, i) => (
-              <SpeakerPlaceholder key={i} />
+              <SpeakerPlaceholder
+                key={i}
+                className={cn("programme-session-speaker", meta.speakerClass)}
+              />
             ))}
           </div>
         )}

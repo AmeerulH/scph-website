@@ -227,3 +227,13 @@
     animation: none;
   }
 }
+
+/* Programme sessions use an inherited format colour over an otherwise white surface. */
+.programme-session-body {
+  background-color: oklch(1 0 0);
+}
+
+.programme-session-speaker {
+  background-color: oklch(1 0 0);
+  background-image: var(--programme-session-speaker-gradient);
+}

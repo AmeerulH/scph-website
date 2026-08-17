@@ -29,58 +29,183 @@ export type TabId = (typeof TABS)[number]["id"];
 
 // ─── Type badge config ────────────────────────────────────────────────────────
 
+function formatSurface(rgb: string) {
+  return {
+    cardGradient: `linear-gradient(to bottom right, rgb(${rgb} / 0.16), rgb(${rgb} / 0.06) 55%, oklch(1 0 0))`,
+    speakerGradient: `linear-gradient(to right, rgb(${rgb} / 0.14), oklch(1 0 0) 74%)`,
+  };
+}
+
 export const TYPE_META: Record<
   SessionType,
-  { label: string; badgeClass: string; Icon: React.ElementType }
+  {
+    label: string;
+    badgeClass: string;
+    headerClass: string;
+    headerTextClass: string;
+    headerBadgeClass: string;
+    colour: string;
+    cardGradient: string;
+    speakerGradient: string;
+    bodyClass: string;
+    containerClass: string;
+    hoverContainerClass: string;
+    speakerClass: string;
+    Icon: React.ElementType;
+  }
 > = {
   opening: {
     label: "Opening",
     badgeClass: "bg-gtp-dark-teal/10 text-gtp-dark-teal",
+    headerClass: "bg-gtp-dark-teal/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-dark-teal)",
+    bodyClass:
+      "bg-linear-to-b from-gtp-dark-teal/25 via-gtp-dark-teal/10 to-white",
+    containerClass:
+      "bg-linear-to-b from-gtp-dark-teal/15 via-gtp-dark-teal/[0.04] to-transparent",
+    hoverContainerClass: "hover:border-gtp-dark-teal-light",
+    speakerClass:
+      "border-gtp-dark-teal/15 bg-white bg-linear-to-r from-gtp-dark-teal/10 to-transparent",
+    ...formatSurface("13 77 94"),
     Icon: Star,
   },
   plenary: {
     label: "Plenary",
     badgeClass: "bg-gtp-teal/15 text-gtp-teal-dark",
+    headerClass: "bg-gtp-teal/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-teal)",
+    bodyClass: "bg-linear-to-b from-gtp-teal/25 via-gtp-teal/10 to-white",
+    containerClass: "bg-linear-to-b from-gtp-teal/15 via-gtp-teal/[0.04] to-transparent",
+    hoverContainerClass: "hover:border-gtp-teal-light",
+    speakerClass:
+      "border-gtp-teal/15 bg-white bg-linear-to-r from-gtp-teal/10 to-transparent",
+    ...formatSurface("0 156 180"),
     Icon: Layers,
   },
   lightning: {
     label: "Lightning Talk",
     badgeClass: "bg-gtp-orange/10 text-gtp-orange",
+    headerClass: "bg-gtp-orange/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-orange)",
+    bodyClass: "bg-linear-to-b from-gtp-orange/25 via-gtp-orange/10 to-white",
+    containerClass:
+      "bg-linear-to-b from-gtp-orange/15 via-gtp-orange/[0.04] to-transparent",
+    hoverContainerClass: "hover:border-gtp-orange-light",
+    speakerClass:
+      "border-gtp-orange/15 bg-white bg-linear-to-r from-gtp-orange/10 to-transparent",
+    ...formatSurface("219 93 0"),
     Icon: Zap,
   },
   fireside: {
     label: "Fireside Chat",
     badgeClass: "bg-gtp-green/15 text-gtp-dark-green",
+    headerClass: "bg-gtp-green/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-green)",
+    bodyClass: "bg-linear-to-b from-gtp-green/25 via-gtp-green/10 to-white",
+    containerClass: "bg-linear-to-b from-gtp-green/15 via-gtp-green/[0.04] to-transparent",
+    hoverContainerClass: "hover:border-gtp-green-light",
+    speakerClass:
+      "border-gtp-green/15 bg-white bg-linear-to-r from-gtp-green/10 to-transparent",
+    ...formatSurface("134 188 37"),
     Icon: MessageSquare,
   },
   reconvening: {
     label: "Reconvening",
     badgeClass: "bg-gray-100 text-gray-500",
+    headerClass: "bg-slate-200",
+    headerTextClass: "text-slate-900/85",
+    headerBadgeClass: "bg-white/50 text-slate-900",
+    colour: "oklch(0.66 0.025 250)",
+    bodyClass: "bg-linear-to-b from-slate-200 via-slate-100 to-white",
+    containerClass: "bg-linear-to-b from-slate-100 via-slate-50 to-transparent",
+    hoverContainerClass: "hover:border-slate-300",
+    speakerClass: "border-slate-200 bg-white bg-linear-to-r from-slate-100 to-transparent",
+    ...formatSurface("100 116 139"),
     Icon: RefreshCw,
   },
   concurrent: {
     label: "Action Workshops",
     badgeClass: "bg-gtp-teal/10 text-gtp-dark-teal",
+    headerClass: "bg-gtp-teal/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-teal)",
+    bodyClass: "bg-linear-to-b from-gtp-teal/20 via-gtp-teal/8 to-white",
+    containerClass: "bg-linear-to-b from-gtp-teal/10 via-gtp-teal/[0.025] to-transparent",
+    hoverContainerClass: "hover:border-gtp-teal-light",
+    speakerClass:
+      "border-gtp-teal/10 bg-white bg-linear-to-r from-gtp-teal/[0.075] to-transparent",
+    ...formatSurface("0 156 180"),
     Icon: Users,
   },
   research: {
     label: "Research Sessions",
     badgeClass: "bg-gtp-orange/10 text-gtp-orange",
+    headerClass: "bg-gtp-orange/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-orange)",
+    bodyClass: "bg-linear-to-b from-gtp-orange/20 via-gtp-orange/8 to-white",
+    containerClass:
+      "bg-linear-to-b from-gtp-orange/10 via-gtp-orange/[0.025] to-transparent",
+    hoverContainerClass: "hover:border-gtp-orange-light",
+    speakerClass:
+      "border-gtp-orange/10 bg-white bg-linear-to-r from-gtp-orange/[0.075] to-transparent",
+    ...formatSurface("219 93 0"),
     Icon: BookOpen,
   },
   special: {
     label: "Special Event",
     badgeClass: "bg-gtp-green/10 text-gtp-dark-green",
+    headerClass: "bg-gtp-green/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-green)",
+    bodyClass: "bg-linear-to-b from-gtp-green/20 via-gtp-green/8 to-white",
+    containerClass: "bg-linear-to-b from-gtp-green/10 via-gtp-green/[0.025] to-transparent",
+    hoverContainerClass: "hover:border-gtp-green-light",
+    speakerClass:
+      "border-gtp-green/10 bg-white bg-linear-to-r from-gtp-green/[0.075] to-transparent",
+    ...formatSurface("134 188 37"),
     Icon: Film,
   },
   closing: {
     label: "Closing",
     badgeClass: "bg-gtp-dark-teal/10 text-gtp-dark-teal",
+    headerClass: "bg-gtp-dark-teal/40",
+    headerTextClass: "text-gtp-dark-teal/85",
+    headerBadgeClass: "bg-white/50 text-gtp-dark-teal",
+    colour: "var(--color-gtp-dark-teal)",
+    bodyClass:
+      "bg-linear-to-b from-gtp-dark-teal/25 via-gtp-dark-teal/10 to-white",
+    containerClass:
+      "bg-linear-to-b from-gtp-dark-teal/15 via-gtp-dark-teal/[0.04] to-transparent",
+    hoverContainerClass: "hover:border-gtp-dark-teal-light",
+    speakerClass:
+      "border-gtp-dark-teal/15 bg-white bg-linear-to-r from-gtp-dark-teal/10 to-transparent",
+    ...formatSurface("13 77 94"),
     Icon: Star,
   },
   break: {
     label: "Break",
     badgeClass: "bg-gray-100 text-gray-400",
+    headerClass: "bg-gray-200",
+    headerTextClass: "text-gray-700",
+    headerBadgeClass: "bg-white/50 text-gray-700",
+    colour: "oklch(0.72 0.015 250)",
+    bodyClass: "bg-linear-to-b from-gray-200 via-gray-100 to-white",
+    containerClass: "bg-linear-to-b from-gray-100 via-gray-50 to-transparent",
+    hoverContainerClass: "hover:border-gray-400",
+    speakerClass: "border-gray-200 bg-white bg-linear-to-r from-gray-100 to-transparent",
+    ...formatSurface("107 114 128"),
     Icon: Coffee,
   },
 };
