@@ -429,6 +429,9 @@ export function ProgrammesPageClient({
 
   const tabIds = new Set(tabs.map((t) => t.id));
   const tabParam = searchParams.get("tab");
+  const isValidTabParam = Boolean(
+    tabParam && tabIds.has(tabParam as TabId),
+  );
   const initialTab: TabId =
     tabParam && tabIds.has(tabParam as TabId)
       ? (tabParam as TabId)
@@ -448,6 +451,13 @@ export function ProgrammesPageClient({
 
   const tabStripRef = React.useRef<HTMLDivElement>(null);
   const anchorRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (isValidTabParam && tabParam) {
+      setActiveTab(tabParam as TabId);
+    }
+    setHighlightSession(initialSession);
+  }, [initialSession, isValidTabParam, tabParam]);
 
   // Auto-clear session highlight after 4 seconds
   React.useEffect(() => {

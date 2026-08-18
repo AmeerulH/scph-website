@@ -15,6 +15,12 @@ import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { normalizeSpeakerName } from "./programme-speaker-filter";
 
+function programmeSessionReference(title: string): string | null {
+  const normalized = normalizeProgrammeSessionTitle(title).toLowerCase();
+  const match = normalized.match(/\b(plenary|opening|closing)\s*(\d+)\b/);
+  return match ? `${match[1]} ${match[2]}` : null;
+}
+
 export function SessionCard({
   session,
   calendarTabId,
@@ -41,10 +47,22 @@ export function SessionCard({
       ? session.speakerCount
       : 0;
 
-  const isSessionHighlighted =
-    !!highlightSession &&
-    normalizeProgrammeSessionTitle(session.title).toLowerCase() ===
+  const isSessionHighlighted = (() => {
+    if (!highlightSession) return false;
+    const sessionTitle = normalizeProgrammeSessionTitle(session.title).toLowerCase();
+    const highlightedTitle =
       normalizeProgrammeSessionTitle(highlightSession).toLowerCase();
+
+    if (sessionTitle === highlightedTitle) return true;
+
+    const sessionReference = programmeSessionReference(session.title);
+    const highlightedReference = programmeSessionReference(highlightSession);
+    return Boolean(
+      sessionReference &&
+        highlightedReference &&
+        sessionReference === highlightedReference,
+    );
+  })();
 
   const googleCalHref = buildProgrammeGoogleCalendarUrl({
     tabId: calendarTabId,
@@ -54,9 +72,16 @@ export function SessionCard({
   // Scroll this card into view when it is the highlighted target
   React.useEffect(() => {
     if (!isSessionHighlighted || !cardRef.current) return;
-    // Small delay so the tab switch + render completes before scrolling
+    // Wait for the tab switch + render, then centre the target below fixed chrome.
     const id = setTimeout(() => {
-      cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      const card = cardRef.current;
+      if (!card) return;
+
+      const top =
+        card.getBoundingClientRect().top +
+        window.scrollY -
+        (window.innerHeight - card.offsetHeight) / 2;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     }, 300);
     return () => clearTimeout(id);
   }, [isSessionHighlighted]);
