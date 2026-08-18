@@ -78,8 +78,11 @@ const SHARE_FALLBACK_URL =
 /** Share row, copy link, registration note, and CTA — shared across programme modals. */
 export function ProgrammeModalShareRegisterColumn({
   shareTitle,
+  hostedBy,
 }: {
   shareTitle: string;
+  /** When present, render host details alongside share controls. */
+  hostedBy?: GtpSessionModalHostedBy;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -99,9 +102,10 @@ export function ProgrammeModalShareRegisterColumn({
 
   return (
     <div className="flex flex-col gap-4">
-      <div>
-        <p className="mb-3 text-sm font-semibold text-gray-700">Share:</p>
-        <div className="flex flex-wrap items-center gap-2">
+      <div className={cn(hostedBy && "grid grid-cols-1 gap-6 sm:grid-cols-2")}>
+        <div>
+          <p className="mb-3 text-sm font-semibold text-gray-700">Share:</p>
+          <div className="flex flex-wrap items-center gap-2">
           <a
             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
             target="_blank"
@@ -145,35 +149,37 @@ export function ProgrammeModalShareRegisterColumn({
           >
             <Mail className="h-4 w-4" />
           </a>
-        </div>
-
-        <div className="mt-3 flex items-center gap-2">
-          <div className="min-w-0 flex-1 truncate rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-500">
-            {pageUrl}
           </div>
-          <button
-            type="button"
-            onClick={handleCopyLink}
-            className={cn(
-              "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
-              copied
-                ? "bg-gtp-green text-white"
-                : "bg-gtp-teal text-white hover:bg-gtp-teal-dark",
-            )}
-          >
-            {copied ? (
-              <>
-                <Check className="h-3.5 w-3.5" />
-                Copied
-              </>
-            ) : (
-              <>
-                <Copy className="h-3.5 w-3.5" />
-                Copy Link
-              </>
-            )}
-          </button>
+
+          <div className="mt-3 flex items-center gap-2">
+            <div className="min-w-0 flex-1 truncate rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-500">
+              {pageUrl}
+            </div>
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              className={cn(
+                "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-colors",
+                copied
+                  ? "bg-gtp-green text-white"
+                  : "bg-gtp-teal text-white hover:bg-gtp-teal-dark",
+              )}
+            >
+              {copied ? (
+                <>
+                  <Check className="h-3.5 w-3.5" />
+                  Copied
+                </>
+              ) : (
+                <>
+                  <Copy className="h-3.5 w-3.5" />
+                  Copy Link
+                </>
+              )}
+            </button>
+          </div>
         </div>
+        {hostedBy ? <ProgrammeModalHostedByBlock hostedBy={hostedBy} /> : null}
       </div>
 
       <div className="rounded-xl border border-gtp-teal/20 bg-gtp-teal/5 px-4 py-3">

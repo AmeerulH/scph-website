@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { normalizeProgrammeSessionTitle } from "@/lib/gtp-programme-session-link";
-import type { Session } from "./types";
+import type { Session, Speaker } from "./types";
 import { TYPE_META } from "./data";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
@@ -21,6 +21,7 @@ export function SessionCard({
   highlightSession,
   highlightSpeaker,
   onClick,
+  onSpeakerClick,
 }: {
   session: Session;
   calendarTabId: GtpProgrammeCalendarDayTab;
@@ -28,6 +29,7 @@ export function SessionCard({
   /** When set, emphasize matching speaker rows and mute the rest. */
   highlightSpeaker?: string;
   onClick?: () => void;
+  onSpeakerClick?: (speaker: Speaker) => void;
 }) {
   const meta = TYPE_META[session.type];
   const MetaIcon = meta.Icon;
@@ -146,10 +148,17 @@ export function SessionCard({
                 !!speakerKey && normalizeSpeakerName(sp.name) === speakerKey;
               const isMuted = !!speakerKey && !isMatched;
               return (
-                <div
+                <button
+                  type="button"
                   key={`${sp.name}-${idx}`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSpeakerClick?.(sp);
+                  }}
                   className={cn(
-                    "programme-session-speaker flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors duration-200",
+                    "programme-session-speaker flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-colors duration-200",
+                    onSpeakerClick &&
+                      "cursor-pointer hover:brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal/45",
                     isMatched
                       ? "border-gtp-teal bg-gtp-teal/10 ring-2 ring-gtp-teal/25"
                       : isMuted
@@ -173,7 +182,7 @@ export function SessionCard({
                       <p className="text-xs text-gray-400">{sp.designation}</p>
                     )}
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

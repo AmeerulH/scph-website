@@ -23,6 +23,7 @@ import {
   type ThemeFilterId,
 } from "@/components/gtp/programmes/programme-speaker-filter";
 import { ProgrammeSpeakerSelect } from "@/components/gtp/programmes/programme-speaker-select";
+import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
 
 // ─── Filter config ─────────────────────────────────────────────────────────────
 
@@ -414,6 +415,7 @@ export function ProgrammesPageClient({
   day2,
   day3,
   day4,
+  speakerProfiles,
 }: {
   tabs: GtpProgrammeTab[];
   sessionModalHostedBy: GtpSessionModalHostedBy;
@@ -421,6 +423,7 @@ export function ProgrammesPageClient({
   day2: Session[];
   day3: Session[];
   day4: Session[];
+  speakerProfiles: GtpHighlightSpeaker[];
 }) {
   const searchParams = useSearchParams();
 
@@ -655,6 +658,7 @@ export function ProgrammesPageClient({
                     dayLabel={currentDayLabel}
                     calendarTabId={activeTab as Exclude<TabId, "pre">}
                     sessionModalHostedBy={sessionModalHostedBy}
+                    speakerProfiles={speakerProfiles}
                   />
                   {selectedSpeaker ? (
                     <SpeakerAlsoOnOtherDays

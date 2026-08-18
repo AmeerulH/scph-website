@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProgrammesHero } from "@/components/gtp/programmes/programmes-hero";
 import { getGtp2026Programme } from "@/sanity/queries";
+import {
+  getGtp2026Speakers,
+  mapSanityHighlightToProps,
+} from "@/sanity/gtp-stage1";
+import { gtpHighlightSpeakers } from "@/data/gtp-highlight-speakers";
 import { ProgrammesPageClient } from "./programmes-page-client";
 
 const description =
@@ -85,7 +90,15 @@ export default function ProgrammesPage() {
 }
 
 async function ProgrammesPageData() {
-  const programme = await getGtp2026Programme();
+  const [programme, speakerRows] = await Promise.all([
+    getGtp2026Programme(),
+    getGtp2026Speakers(),
+  ]);
+  const speakerProfiles =
+    speakerRows.length > 0
+      ? mapSanityHighlightToProps(speakerRows)
+      : gtpHighlightSpeakers;
+
   return (
     <ProgrammesPageClient
       tabs={programme.tabs}
@@ -94,6 +107,7 @@ async function ProgrammesPageData() {
       day2={programme.day2}
       day3={programme.day3}
       day4={programme.day4}
+      speakerProfiles={speakerProfiles}
     />
   );
 }
