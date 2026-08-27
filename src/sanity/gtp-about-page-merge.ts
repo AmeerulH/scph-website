@@ -162,6 +162,7 @@ export type GtpAboutSponsorsBandRaw = {
   gold?: GtpAboutSponsorLogoRaw[] | null;
   silver?: GtpAboutSponsorLogoRaw[] | null;
   bronze?: GtpAboutSponsorLogoRaw[] | null;
+  others?: GtpAboutSponsorLogoRaw[] | null;
   sponsors?: GtpAboutSponsorLogoRaw[] | null;
   noticeBeforeLink?: string | null;
   noticeLinkText?: string | null;
@@ -176,7 +177,9 @@ export type GtpAboutPartnersBandRaw = {
   gold?: GtpAboutSponsorLogoRaw[] | null;
   silver?: GtpAboutSponsorLogoRaw[] | null;
   bronze?: GtpAboutSponsorLogoRaw[] | null;
+  others?: GtpAboutSponsorLogoRaw[] | null;
   partners?: GtpAboutSponsorLogoRaw[] | null;
+  supportedBy?: GtpAboutSponsorLogoRaw[] | null;
   noticeBeforeLink?: string | null;
   noticeLinkText?: string | null;
   noticeLinkHref?: string | null;
@@ -519,6 +522,7 @@ function emptyMergedLogoTiers(): GtpAboutLogoTiers {
     gold: [],
     silver: [],
     bronze: [],
+    others: [],
   };
 }
 
@@ -569,6 +573,28 @@ function collectFlatLogos(
   return out;
 }
 
+function collectSupportedByLogos(
+  raw: GtpAboutPartnersBandRaw,
+): GtpAboutSponsorLogoEntry[] {
+  if (!raw) return [];
+  const out: GtpAboutSponsorLogoEntry[] = [];
+  const seen = new Set<string>();
+
+  const push = (entry: GtpAboutSponsorLogoEntry | null) => {
+    if (!entry) return;
+    const key = `${entry.name}::${entry.logoUrl}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(entry);
+  };
+
+  for (const row of raw.supportedBy ?? []) {
+    push(mergeLogoEntry(row));
+  }
+
+  return out;
+}
+
 function mergeLogoTiersBand(
   raw: GtpAboutSponsorsBandRaw | GtpAboutPartnersBandRaw,
   defaults: GtpAboutLogoTiersBandCopy,
@@ -583,6 +609,7 @@ function mergeLogoTiersBand(
       subtitle: s(raw.subtitle, defaults.subtitle),
       tiers: emptyMergedLogoTiers(),
       logos: collectFlatLogos(raw, "partners"),
+      supportedByLogos: collectSupportedByLogos(raw as GtpAboutPartnersBandRaw),
       noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
       noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
       noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),
@@ -611,6 +638,7 @@ function mergeLogoTiersBand(
     subtitle: s(raw.subtitle, defaults.subtitle),
     tiers,
     logos: [],
+    supportedByLogos: [],
     noticeBeforeLink: s(raw.noticeBeforeLink, defaults.noticeBeforeLink),
     noticeLinkText: s(raw.noticeLinkText, defaults.noticeLinkText),
     noticeLinkHref: s(raw.noticeLinkHref, defaults.noticeLinkHref),

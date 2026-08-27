@@ -263,6 +263,7 @@ export const GTP_LOGO_TIER_KEYS = [
   "gold",
   "silver",
   "bronze",
+  "others",
 ] as const;
 
 export type GtpLogoTierKey = (typeof GTP_LOGO_TIER_KEYS)[number];
@@ -272,6 +273,7 @@ export const GTP_LOGO_TIER_LABELS: Record<GtpLogoTierKey, string> = {
   gold: "Gold",
   silver: "Silver",
   bronze: "Bronze",
+  others: "Others",
 };
 
 export type GtpAboutLogoTiers = Record<
@@ -287,6 +289,8 @@ export type GtpAboutLogoTiersBandCopy = {
   tiers: GtpAboutLogoTiers;
   /** Partners: flat list of every logo (tiers unused). Sponsors: empty. */
   logos: GtpAboutSponsorLogoEntry[];
+  /** Partners only: secondary “Supported by” strip below main partner logos. */
+  supportedByLogos: GtpAboutSponsorLogoEntry[];
   noticeBeforeLink: string;
   noticeLinkText: string;
   noticeLinkHref: string;
@@ -301,6 +305,7 @@ function emptyLogoTiers(): GtpAboutLogoTiers {
     gold: [],
     silver: [],
     bronze: [],
+    others: [],
   };
 }
 
@@ -310,6 +315,7 @@ export const DEFAULT_GTP_SPONSORS_BAND: GtpAboutLogoTiersBandCopy = {
   subtitle: "Our Sponsors",
   tiers: emptyLogoTiers(),
   logos: [],
+  supportedByLogos: [],
   noticeBeforeLink: "Interested in sponsoring?",
   noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",
@@ -321,6 +327,7 @@ export const DEFAULT_GTP_PARTNERS_BAND: GtpAboutLogoTiersBandCopy = {
   subtitle: "Our Partners",
   tiers: emptyLogoTiers(),
   logos: [],
+  supportedByLogos: [],
   noticeBeforeLink: "Interested in partnering?",
   noticeLinkText: "Get in touch",
   noticeLinkHref: "/events/gtp-2026/get-involved#partnership",

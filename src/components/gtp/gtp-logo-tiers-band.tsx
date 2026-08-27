@@ -210,6 +210,7 @@ const tierAccentClassName: Record<GtpLogoTierKey, string> = {
   gold: "text-[#C49212]",
   silver: "text-[#7A8B98]",
   bronze: "text-[#A56B3A]",
+  others: "text-gtp-dark-teal/70",
 };
 
 function TierStarburstIcon({
@@ -352,18 +353,23 @@ function TierHeader({
 function GtpLogoTierCell({
   entry,
   sleek,
+  compact,
 }: {
   entry: GtpAboutSponsorLogoEntry;
   /** Partners: larger slots + multiply so white logo mats disappear on light grounds. */
   sleek?: boolean;
+  /** Supported-by logos use a quieter, subordinate scale. */
+  compact?: boolean;
 }) {
   const remote = imgUnoptimized(entry.logoUrl);
   const image = (
     <span
       className={cn(
         "flex items-center justify-center",
-        sleek
-          ? "h-20 w-48 sm:h-24 sm:w-56 md:h-26 md:w-60"
+        compact
+          ? "h-14 w-36 sm:h-16 sm:w-44"
+          : sleek
+          ? "h-auto min-h-16 w-44 max-h-24 sm:min-h-18 sm:w-52 sm:max-h-28 md:w-56"
           : "h-16 w-44 sm:h-20 sm:w-52",
       )}
     >
@@ -420,11 +426,14 @@ function LogoGrid({
   reduceMotion,
   emptyBorderClassName,
   sleek,
+  balanced,
 }: {
   logos: GtpAboutSponsorLogoEntry[];
   reduceMotion: boolean;
   emptyBorderClassName: string;
   sleek?: boolean;
+  /** Equal-width columns so partner rows read centered regardless of logo aspect ratio. */
+  balanced?: boolean;
 }) {
   if (logos.length === 0) {
     return (
@@ -455,10 +464,15 @@ function LogoGrid({
   return (
     <motion.ul
       className={cn(
-        "flex list-none flex-wrap items-center justify-center p-0",
-        sleek
-          ? "gap-x-12 gap-y-10 py-2 sm:gap-x-16 sm:gap-y-12 md:gap-x-20"
-          : "mt-10 gap-x-10 gap-y-8 py-2 sm:mt-12 sm:gap-x-12 sm:py-3",
+        "flex list-none flex-wrap items-center p-0",
+        balanced
+          ? "w-full justify-center gap-y-0 py-0"
+          : cn(
+              "justify-center",
+              sleek
+                ? "gap-x-12 gap-y-10 py-2 sm:gap-x-16 sm:gap-y-12 md:gap-x-20"
+                : "mt-10 gap-x-10 gap-y-8 py-2 sm:mt-12 sm:gap-x-12 sm:py-3",
+            ),
       )}
       initial="hidden"
       whileInView="show"
@@ -476,6 +490,10 @@ function LogoGrid({
       {logos.map((entry, i) => (
         <motion.li
           key={`${entry.name}-${i}`}
+          className={cn(
+            balanced &&
+              "flex min-w-44 flex-1 basis-0 justify-center px-3 sm:min-w-48 sm:px-5 md:max-w-64",
+          )}
           variants={{
             hidden: reduceMotion
               ? { opacity: 0 }
@@ -504,7 +522,9 @@ function LogoGrid({
   );
 }
 
-function PartnersLogoStage({
+const PARTNERS_SECTION_PAD = "py-8 sm:py-10 md:py-12";
+
+function SupportedByFooter({
   logos,
   reduceMotion,
 }: {
@@ -512,7 +532,52 @@ function PartnersLogoStage({
   reduceMotion: boolean;
 }) {
   return (
-    <div className="relative mx-auto w-full max-w-5xl py-6 sm:py-8 md:py-10">
+    <motion.div
+      className={cn("border-t border-gtp-teal/15", PARTNERS_SECTION_PAD)}
+      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.7 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+    >
+      <div className="flex flex-col items-center gap-6 sm:gap-7">
+        <div className="flex flex-col items-center gap-4 sm:gap-5">
+          <h3 className="font-heading text-lg font-semibold uppercase tracking-[0.14em] text-gtp-dark-teal sm:text-xl md:text-2xl">
+            Supported by
+          </h3>
+          <span
+            aria-hidden
+            className="h-0.5 w-12 bg-gtp-teal/60"
+          />
+        </div>
+        {logos.length === 0 ? (
+          <p className="rounded-full border border-dashed border-gtp-teal/20 bg-white/40 px-5 py-2 text-xs tracking-wide text-gtp-dark-teal/40">
+            Coming soon
+          </p>
+        ) : (
+          <ul className="flex list-none flex-wrap items-center justify-center gap-x-8 gap-y-5 p-0 sm:gap-x-10">
+            {logos.map((entry, index) => (
+              <li key={`${entry.name}-${index}`}>
+                <GtpLogoTierCell entry={entry} sleek compact />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function PartnersLogoStage({
+  logos,
+  supportedByLogos,
+  reduceMotion,
+}: {
+  logos: GtpAboutSponsorLogoEntry[];
+  supportedByLogos: GtpAboutSponsorLogoEntry[];
+  reduceMotion: boolean;
+}) {
+  return (
+    <div className="relative mx-auto w-full max-w-5xl">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-8 top-0 h-px bg-linear-to-r from-transparent via-gtp-teal/30 to-transparent sm:inset-x-16"
@@ -521,11 +586,18 @@ function PartnersLogoStage({
         aria-hidden
         className="pointer-events-none absolute inset-x-[18%] top-0 h-16 bg-[radial-gradient(ellipse_at_center,rgba(0,156,180,0.07),transparent_70%)] sm:h-20"
       />
-      <LogoGrid
-        logos={logos}
+      <div className={PARTNERS_SECTION_PAD}>
+        <LogoGrid
+          logos={logos}
+          reduceMotion={reduceMotion}
+          emptyBorderClassName="border-gtp-teal/25 bg-white/60"
+          sleek
+          balanced
+        />
+      </div>
+      <SupportedByFooter
+        logos={supportedByLogos}
         reduceMotion={reduceMotion}
-        emptyBorderClassName="border-gtp-teal/25 bg-white/60"
-        sleek
       />
       <div
         aria-hidden
@@ -539,6 +611,9 @@ export function GtpLogoTiersBand({ variant, band }: GtpLogoTiersBandProps) {
   const styles = variantStyles[variant];
   const reduceMotion = useReducedMotion();
   const partnerLogos = band.logos.filter(
+    (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
+  );
+  const supportedByLogos = band.supportedByLogos.filter(
     (x) => Boolean(x.logoUrl?.trim() && x.name?.trim()),
   );
   const tiers = GTP_LOGO_TIER_KEYS.map((key) => ({
@@ -597,6 +672,7 @@ export function GtpLogoTiersBand({ variant, band }: GtpLogoTiersBandProps) {
         {variant === "partners" ? (
           <PartnersLogoStage
             logos={partnerLogos}
+            supportedByLogos={supportedByLogos}
             reduceMotion={Boolean(reduceMotion)}
           />
         ) : (

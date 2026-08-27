@@ -203,6 +203,11 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
       href,
       "logoUrl": logo.asset->url
     },
+    supportedBy[] {
+      name,
+      href,
+      "logoUrl": logo.asset->url
+    },
     platinum[] {
       name,
       href,

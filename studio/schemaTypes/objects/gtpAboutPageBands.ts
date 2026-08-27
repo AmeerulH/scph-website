@@ -266,6 +266,7 @@ export const gtpAboutSponsorLogoType = defineType({
           {title: 'Gold', value: 'gold'},
           {title: 'Silver', value: 'silver'},
           {title: 'Bronze', value: 'bronze'},
+          {title: 'Others', value: 'others'},
         ],
         layout: 'radio',
       },
@@ -298,7 +299,9 @@ export const gtpAboutSponsorLogoType = defineType({
               ? 'Silver'
               : tier === 'bronze'
                 ? 'Bronze'
-                : 'No tier (hidden on site)'
+                : tier === 'others'
+                  ? 'Others'
+                  : 'No tier (hidden on site)'
       return {title: title ?? 'Sponsor', subtitle: tierLabel, media}
     },
   },
@@ -350,6 +353,7 @@ function validateLogosMaxPerTier(
     gold: 0,
     silver: 0,
     bronze: 0,
+    others: 0,
   }
   for (const row of logos) {
     const t = row?.tier
@@ -377,7 +381,7 @@ export const gtpAboutSponsorsBandType = defineType({
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
       description:
-        'Set Tier on each logo (Platinum–Bronze). Logos without a tier stay hidden on the site. Max 5 per tier.',
+        'Set Tier on each logo (Platinum–Others). Logos without a tier stay hidden on the site. Max 5 per tier.',
       validation: (rule) => rule.custom(validateLogosMaxPerTier),
     }),
     defineField({
@@ -437,7 +441,18 @@ export const gtpAboutPartnersBandType = defineType({
         {type: 'gtpAboutSponsorLogo'},
       ],
       description:
-        'All partner logos appear on the site. No tier tagging. Prefer “Partner logo” when adding new rows.',
+        'Main partner logos (e.g. PIK, Exeter, Sunway). No tier tagging. Prefer “Partner logo” when adding new rows.',
+    }),
+    defineField({
+      name: 'supportedBy',
+      title: 'Supported by logos',
+      type: 'array',
+      of: [
+        {type: 'gtpAboutPartnerLogo'},
+        {type: 'gtpAboutSponsorLogo'},
+      ],
+      description:
+        'Secondary partner strip shown below the main partner logos, labelled “Supported by” on the site. Empty list shows Coming soon.',
     }),
     defineField({
       name: 'platinum',

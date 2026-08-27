@@ -31,7 +31,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026AboutPage",
     title: "About (conference hub)",
     notes:
-      "Each band has **Visible on site** at the top of its fields (same idea as SCPH section blocks). Extra blocks under the hero use each block’s own toggle. **Accommodation and Activities** (carousel before **Questions about the event**): drag cards to reorder; upload photos per card. **Sponsors** and **Partners** are separate bands on the About page (each with its own logo marquee). Hero includes **Important dates** above the carousel. Programme **What's On** carousel uses `gtp2026Programme`.",
+      "Each band has **Visible on site** at the top of its fields (same idea as SCPH section blocks). Extra blocks under the hero use each block’s own toggle. **Accommodation and Activities** (carousel before **Questions about the event**): drag cards to reorder; upload photos per card. **Sponsors** — set **Tier** on each logo (Platinum–Others); empty tiers show **Coming soon**. **Partners** — main **Partner logos** strip plus **Supported by logos** below (empty shows Coming soon). Hero includes **Important dates** above the carousel. Programme **What's On** carousel uses `gtp2026Programme`.",
   },
   {
     route: "/events/gtp-2026/about",
