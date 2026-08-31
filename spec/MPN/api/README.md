@@ -5,7 +5,12 @@
 Supabase auto-generates a PostgREST REST API for every table. The Next.js app uses:
 
 - **`@supabase/ssr` server client** in Server Components and Server Actions for standard CRUD
-- **Custom Next.js API routes (`/api/*`)** only for logic that PostgREST can't handle: file uploads, signed URLs, email sending, multi-step transactions
+- **Custom Next.js API routes (`/api/mpn/*`)** only for logic that PostgREST can't handle: file uploads, signed URLs, email sending, multi-step transactions
+
+Public browser queries use the public-safe views defined in
+[`../DECISIONS.md`](../DECISIONS.md), not `select('*')` on base tables with
+private columns. Every custom route validates the authenticated user and their
+database role; client-visible metadata is not a role source.
 
 ---
 
@@ -15,16 +20,16 @@ These are called directly from Server Components or Client Components using `@su
 
 | Operation | Query |
 |-----------|-------|
-| List resources with filters | `.from('resources').select('*').eq('theme', theme).eq('type', type).order('created_at', { ascending: false })` |
-| Get resource by ID | `.from('resources').select('*, profiles(full_name, organisation)').eq('id', id).single()` |
-| List publications (approved) | `.from('publications').select('*, profiles(full_name, country, organisation)').eq('status', 'approved')` |
-| Get publication by ID | `.from('publications').select('*, profiles(*)').eq('id', id).single()` |
-| List experts with filter | `.from('experts').select('*').eq('is_active', true).contains('expertise', [tag])` |
+| List resources with filters | `.from('resources_public').select('*').eq('theme', theme).eq('type', type).order('created_at', { ascending: false })` |
+| Get resource by ID | `.from('resources_public').select('*').eq('id', id).single()` |
+| List publications (approved) | `.from('publications_public').select('*').eq('status', 'approved')` |
+| Get publication by ID | `.from('publications_public').select('*').eq('id', id).single()` |
+| List experts with filter | `.from('experts_public').select('*').eq('is_active', true).contains('expertise', [tag])` |
 | List café threads | `.from('cafe_threads').select('*, profiles(full_name, country, organisation)').order('is_pinned', { ascending: false }).order('updated_at', { ascending: false })` |
 | Get thread + replies | `.from('cafe_replies').select('*, profiles(full_name, profile_photo_url, organisation)').eq('thread_id', id).order('created_at')` |
 | List events | `.from('events').select('*').order('date', { ascending: true })` |
 | List webinars | `.from('webinars').select('*').order('date', { ascending: false })` |
-| List members | `.from('profiles').select('id, full_name, organisation, country, workshop_id').eq('role', 'member')` |
+| List members | `.from('profiles_directory').select('*').eq('role', 'member')` |
 | Full-text search | `.from('resources').select('id, title, type, theme').textSearch('search_vector', query, { type: 'websearch' })` |
 | Real-time replies | `.channel('thread-' + id).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'cafe_replies', filter: 'thread_id=eq.' + id }, handler).subscribe()` |
 
@@ -32,7 +37,7 @@ These are called directly from Server Components or Client Components using `@su
 
 ## Custom API Routes
 
-### `POST /api/auth/register`
+### `POST /api/mpn/auth/register`
 **Auth:** Public
 
 Creates the auth user and sets profile metadata in one call. Supabase Auth then sends verification email automatically.
@@ -51,7 +56,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/auth/approve`
+### `POST /api/mpn/auth/approve`
 **Auth:** Admin
 
 ```ts
@@ -68,7 +73,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/auth/reject`
+### `POST /api/mpn/auth/reject`
 **Auth:** Admin
 
 ```ts
@@ -85,7 +90,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/resources/upload`
+### `POST /api/mpn/resources/upload`
 **Auth:** Admin
 
 ```ts
@@ -103,12 +108,12 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `GET /api/resources/[id]/download`
-**Auth:** Member
+### `GET /api/mpn/resources/[id]/download`
+**Auth:** Authenticated
 
 ```ts
 // Steps:
-// 1. Fetch resource row — verify it exists and member has access (visibility check)
+// 1. Fetch resource row — verify it exists and the authenticated user has access
 // 2. supabase.storage.from('resources').createSignedUrl(file_url, 60) — 60 second expiry
 // 3. supabase.from('resource_downloads').insert({ resource_id, user_id }) — triggers count++
 
@@ -118,7 +123,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/publications/submit`
+### `POST /api/mpn/publications/submit`
 **Auth:** Member
 
 ```ts
@@ -137,7 +142,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/publications/[id]/review`
+### `POST /api/mpn/publications/[id]/review`
 **Auth:** Admin
 
 ```ts
@@ -154,7 +159,7 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `POST /api/announcements/send`
+### `POST /api/mpn/announcements/send`
 **Auth:** Admin
 
 ```ts
@@ -173,10 +178,11 @@ Creates the auth user and sets profile metadata in one call. Supabase Auth then 
 
 ---
 
-### `GET /api/search`
-**Auth:** Member
+### `GET /api/mpn/search`
+**Auth:** Public
 
-Unified full-text search across resources, publications, and experts.
+Unified full-text search across resources, publications, and experts. Results
+must use the caller's public-safe view or authenticated projection.
 
 ```ts
 // Query params: q=<search term>&types=resources,publications,experts
@@ -191,7 +197,7 @@ Unified full-text search across resources, publications, and experts.
 
 ---
 
-### `POST /api/cafe/threads`
+### `POST /api/mpn/cafe/threads`
 **Auth:** Member
 
 ```ts
@@ -206,7 +212,7 @@ Unified full-text search across resources, publications, and experts.
 
 ---
 
-### `POST /api/cafe/[id]/replies`
+### `POST /api/mpn/cafe/[id]/replies`
 **Auth:** Member
 
 ```ts
@@ -224,7 +230,7 @@ Unified full-text search across resources, publications, and experts.
 
 ---
 
-### `GET /api/admin/stats`
+### `GET /api/mpn/admin/stats`
 **Auth:** Admin
 
 ```ts
@@ -245,8 +251,8 @@ Unified full-text search across resources, publications, and experts.
 
 ---
 
-### `POST /api/profile/photo`
-**Auth:** Member
+### `POST /api/mpn/profile/photo`
+**Auth:** Authenticated
 
 ```ts
 // Request: multipart/form-data with image file

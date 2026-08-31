@@ -124,8 +124,8 @@ MPN is a route group within the SCPH Next.js app at `/community/mpn`. All routes
 | Role | Who | Access |
 |------|-----|--------|
 | `public` | Unauthenticated visitors | Browse all public content (read-only) |
-| `authenticated` | Logged in, any status | Download PDFs, see contact emails, post/reply in Café |
-| `pending` | Registered, awaiting approval | Same as authenticated; cannot submit publications yet |
+| `authenticated` | Logged in, any status | Download PDFs and see contact emails |
+| `pending` | Registered, awaiting approval | Same as authenticated; cannot post/reply in Café or submit publications |
 | `member` | Approved workshop alumni | Full access — submit publications, full profile |
 | `admin` | SCPH staff | Full portal + Admin dashboard |
 
@@ -140,11 +140,11 @@ MPN is a route group within the SCPH Next.js app at `/community/mpn`. All routes
 - Download PDFs from resources / publications
 - View member email addresses (where `email_visible = true`)
 - View expert contact email
+- Access and edit own profile page
 
 **Requires member role (approved journalist):**
 - Post new threads or reply in Virtual Café
 - Submit publications
-- Access own profile page
 - View workshop-specific materials (workshop alumni only)
 
 **Requires admin role:**
@@ -160,7 +160,8 @@ MPN is a route group within the SCPH Next.js app at `/community/mpn`. All routes
 6. On approval → `role = 'member'` → welcome email sent
 7. On rejection → `role = 'rejected'` → rejection email with reason
 
-> Pending users can browse and interact with the Café like any logged-in user. They just cannot submit publications until approved.
+> Pending users can browse the Café and download permitted resources, but cannot
+> post, reply, or submit publications until approved.
 
 ---
 
@@ -396,20 +397,14 @@ CREATE TABLE resource_downloads (
 - Email confirmation required before profile is created
 - Session: JWT in httpOnly cookie via `@supabase/ssr`
 
-### Next.js Middleware
-```ts
-export async function middleware(request: NextRequest) {
-  const { data: { session } } = await supabase.auth.getSession()
-  const role = session?.user?.user_metadata?.role ?? 'public'
-  const path = request.nextUrl.pathname
-
-  if (path.startsWith('/admin') && role !== 'admin')
-    return NextResponse.redirect(new URL('/login', request.url))
-
-  if (isMemberRoute(path) && !['member', 'admin'].includes(role))
-    return NextResponse.redirect(new URL(role === 'pending' ? '/pending' : '/login', request.url))
-}
-```
+### Next.js Proxy
+Use `@supabase/ssr` cookie `getAll` / `setAll` support and
+`supabase.auth.getClaims()` to refresh and validate the session. Scope the
+matcher to `/community/mpn/:path*`. The Proxy and every protected route must
+look up the authoritative role from `profiles.role`, never user-editable
+metadata. Public browse routes do not redirect; protect only `/profile`,
+`/publications/submit`, and `/admin/**` according to
+[`DECISIONS.md`](DECISIONS.md).
 
 ### Row Level Security (RLS)
 
@@ -417,10 +412,10 @@ RLS enabled on every table. Access enforced at the DB level.
 
 | Table | SELECT | INSERT | UPDATE | DELETE |
 |-------|--------|--------|--------|--------|
-| `profiles` | Public (basic fields); full row for own + admins | Trigger only | Own row; admins update role | Admins only |
-| `resources` | Public (list/detail); file_url gated to authenticated | Admins only | Admins only | Admins only |
+| `profiles` | Public-safe directory view; own row + admins on base table | Trigger only | Own row; admins update role | Admins only |
+| `resources` | Public-safe metadata view; private file path is server-only | Admins only | Admins only | Admins only |
 | `publications` | Public (approved only) | Members (own) | Own pending; admins all | Admins only |
-| `experts` | Public (profile); email field gated to authenticated | Admins only | Admins only | Admins only |
+| `experts` | Public-safe view; contact email is server-only for authenticated viewers | Admins only | Admins only | Admins only |
 | `cafe_threads` | Public | Members only | Own + admins | Own + admins |
 | `cafe_replies` | Public | Members only | Own only | Own + admins |
 | `events` | Public (all) | Admins | Admins | Admins |
@@ -438,19 +433,19 @@ Supabase PostgREST handles standard CRUD. Custom Next.js API routes are only wri
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
-| POST | `/api/auth/register` | Public | Create auth user + set metadata |
-| POST | `/api/auth/approve` | Admin | Set role to member; send welcome email |
-| POST | `/api/auth/reject` | Admin | Set role to rejected; send email with reason |
-| POST | `/api/resources/upload` | Admin | Upload to Storage; create resource row |
-| GET | `/api/resources/[id]/download` | Member | Validate access; log download; return 60s signed URL |
-| POST | `/api/publications/submit` | Member | Create publication (status=pending); notify admins |
-| POST | `/api/publications/[id]/review` | Admin | Approve or reject; email author |
-| POST | `/api/announcements/send` | Admin | Email target audience via Resend; mark sent |
-| GET | `/api/search` | Member | Full-text search across resources, publications, experts |
-| POST | `/api/cafe/threads` | Member | Create thread (validates body, category) |
-| POST | `/api/cafe/[id]/replies` | Member | Add reply; check thread not locked |
-| GET | `/api/admin/stats` | Admin | KPI stats for dashboard |
-| POST | `/api/profile/photo` | Member | Upload photo to Storage; update profile row |
+| POST | `/api/mpn/auth/register` | Public | Create auth user + set metadata |
+| POST | `/api/mpn/auth/approve` | Admin | Set role to member; send welcome email |
+| POST | `/api/mpn/auth/reject` | Admin | Set role to rejected; send email with reason |
+| POST | `/api/mpn/resources/upload` | Admin | Upload to Storage; create resource row |
+| GET | `/api/mpn/resources/[id]/download` | Authenticated | Validate access; log download; return 60s signed URL |
+| POST | `/api/mpn/publications/submit` | Member | Create publication (status=pending); notify admins |
+| POST | `/api/mpn/publications/[id]/review` | Admin | Approve or reject; email author |
+| POST | `/api/mpn/announcements/send` | Admin | Email target audience via Resend; mark sent |
+| GET | `/api/mpn/search` | Public | Full-text search with tier-safe result fields |
+| POST | `/api/mpn/cafe/threads` | Member | Create thread (validates body, category) |
+| POST | `/api/mpn/cafe/[id]/replies` | Member | Add reply; check thread not locked |
+| GET | `/api/mpn/admin/stats` | Admin | KPI stats for dashboard |
+| POST | `/api/mpn/profile/photo` | Authenticated | Upload photo to Storage; update profile row |
 
 All routes return `{ data: {...} | null, error: { code, message } | null }`.
 
@@ -499,7 +494,7 @@ const channel = supabase
 - **Detail:** description, tags, download button (→ signed URL), external article link
 - **Workshop detail:** cover image, Materials tab + Gallery tab with lightbox
 - **Filters:** Type (Research, Report, Toolkit, Guide, Dataset, Book, Video) · Theme (Climate, Air Pollution, Planetary Health, Water, Biodiversity, Food Systems)
-- **Download flow:** click → `/api/resources/[id]/download` → signed URL → opens in new tab
+- **Download flow:** click → `/api/mpn/resources/[id]/download` → signed URL → opens in new tab
 
 ### Publications
 - **Routes:** `/publications`, `/publications/[id]`, `/publications/submit`
@@ -518,15 +513,17 @@ const channel = supabase
 ### Virtual Café
 - **Routes:** `/community/mpn/cafe`, `/community/mpn/cafe/[id]`
 - **Public (Reddit-style):** Thread list and full thread detail (body + all replies) are visible to everyone without login. A "Join to participate" banner appears for logged-out visitors.
-- **To post or reply:** must be logged in (any role, including pending). Prompts sign-up/login with context ("Join the network to join the conversation").
+- **To post or reply:** must be an approved member or administrator. Logged-out
+  visitors are prompted to join; pending users are told their membership is
+  awaiting approval.
 - **UI:** Category tabs (All · Story Ideas · Data & Sources · Expert Contacts · Collaboration · Announcements), thread rows with pinned/locked indicators
-- **Thread detail:** body, reply feed (real-time for logged-in users), reply form shown only when authenticated (replaced by login prompt when logged out)
-- **New thread form:** title, body (min 20 chars), category — accessible to authenticated users
+- **Thread detail:** body and replies are public; reply form is shown only for approved members (otherwise a login or pending prompt)
+- **New thread form:** title, body (min 20 chars), category — accessible to approved members
 - **Admin controls:** pin/unpin, lock/unlock, delete thread
 
 ### Events & Webinars
 - **Events** (`/events`): Public page, Upcoming/Past tabs, members-only badge for logged-out visitors, manual status management by admin
-- **Webinars** (`/webinars`): Members only, theme filter, video modal with YouTube/Vimeo iframe embed
+- **Webinars** (`/webinars`): Public, theme filter, video modal with YouTube/Vimeo iframe embed
 
 ### Members & Committee
 - **Members list** (`/community/mpn/members`): **Publicly visible.** Client-side search by name/org, country filter, profile modal on click. Email shown only to logged-in users where `email_visible = true`.

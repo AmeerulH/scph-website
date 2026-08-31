@@ -25,7 +25,7 @@
 ### Resource detail `/resources/[id]`
 
 - Title, type, theme, description, source, published date
-- Download button → calls `/api/resources/[id]/download` → opens signed URL in new tab
+- Download button → calls `/api/mpn/resources/[id]/download` → opens signed URL in new tab
 - If `article_url` set: "View Article" external link button
 - Tags displayed as chips
 
@@ -89,7 +89,7 @@ const { data } = await supabase
 ## Download Flow
 
 1. Member clicks Download
-2. Client calls `GET /api/resources/[id]/download`
+2. Client calls `GET /api/mpn/resources/[id]/download`
 3. Server generates 60s signed URL + logs download
 4. Client opens signed URL in new tab (PDF viewer in browser)
 

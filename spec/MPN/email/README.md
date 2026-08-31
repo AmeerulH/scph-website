@@ -43,7 +43,7 @@ export async function sendEmail({ to, subject, html }: { to: string | string[], 
 <h2>New MPN Application</h2>
 <p><strong>{full_name}</strong> from {organisation} ({country}) has registered and is awaiting approval.</p>
 <p>Workshop attended: Workshop {number} — {title}</p>
-<a href="{SITE_URL}/admin/members">Review in Admin Dashboard →</a>
+<a href="{SITE_URL}/community/mpn/admin/members">Review in Admin Dashboard →</a>
 ```
 
 ---
@@ -54,7 +54,7 @@ export async function sendEmail({ to, subject, html }: { to: string | string[], 
 <h2>Welcome to the Media Professional Network</h2>
 <p>Hi {first_name},</p>
 <p>Your application has been approved. You now have full access to the MPN portal.</p>
-<a href="{SITE_URL}/login">Access the Portal →</a>
+<a href="{SITE_URL}/community/mpn/login">Access the Portal →</a>
 <hr>
 <p>The MPN is your private space to access SCPH research, connect with fellow journalists, and publish your work.</p>
 ```
@@ -79,7 +79,7 @@ export async function sendEmail({ to, subject, html }: { to: string | string[], 
 <h2>Your publication is live</h2>
 <p>Hi {first_name},</p>
 <p>Your submission "<strong>{title}</strong>" has been approved and is now visible in the MPN Publications catalogue.</p>
-<a href="{SITE_URL}/publications/{id}">View your publication →</a>
+<a href="{SITE_URL}/community/mpn/publications/{id}">View your publication →</a>
 ```
 
 ---

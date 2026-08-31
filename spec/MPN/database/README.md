@@ -2,6 +2,28 @@
 
 All tables in the `public` schema. UUIDs as primary keys throughout. `auth.users` is managed by Supabase Auth — do not alter it directly.
 
+This schema contains 12 application tables. The access model, profile trigger,
+public-safe views, and RLS requirements are canonical in
+[`../DECISIONS.md`](../DECISIONS.md).
+
+## Implementation requirements
+
+- Create `workshops` before `profiles`, because `profiles.workshop_id` references it.
+- Enable RLS on every application table. Base tables containing private fields
+  must not receive broad anonymous `SELECT` policies.
+- Create `WITH (security_invoker = true)` public views that omit private
+  columns: `profiles_directory` (email), `experts_public` (email),
+  `resources_public` (file path), and a public approved-publication view
+  without private PDF storage paths.
+- Admin-only server code reads contact emails and private Storage paths after
+  validating the authenticated viewer's access. RLS cannot redact individual
+  columns from `SELECT *`.
+- Use the email-confirmation update trigger documented in
+  [`../auth/README.md`](../auth/README.md), not an `AFTER INSERT` trigger on
+  `auth.users`.
+- Add a standard `updated_at` trigger for mutable tables (`profiles` and
+  `cafe_threads` at minimum).
+
 ---
 
 ## Table Overview
@@ -40,7 +62,7 @@ CREATE TABLE profiles (
   bio               text,
   profile_photo_url text,
   linkedin_url      text,
-  email_visible     boolean NOT NULL DEFAULT false, -- controls visibility to other members
+  email_visible     boolean NOT NULL DEFAULT false, -- permits authenticated viewers to request email
   created_at        timestamptz NOT NULL DEFAULT now(),
   updated_at        timestamptz NOT NULL DEFAULT now()
 );
@@ -155,7 +177,7 @@ CREATE TABLE experts (
   country            text NOT NULL,
   expertise          text[],              -- searchable tags: "Air Quality", "Climate Policy", …
   bio                text,
-  email              text,                -- shown to members only (RLS)
+  email              text,                -- returned only to authenticated server-side requests
   linkedin_url       text,
   photo_url          text,
   publication_count  integer NOT NULL DEFAULT 0,   -- cached; updated by trigger
@@ -334,7 +356,7 @@ CREATE TRIGGER after_download_insert
 
 ## Full-text Search
 
-`search_vector` tsvector columns with GIN indexes exist on `resources`, `publications`, and `experts`. All three are queried via the unified `/api/search` endpoint.
+`search_vector` tsvector columns with GIN indexes exist on `resources`, `publications`, and `experts`. All three are queried via the unified `/api/mpn/search` endpoint.
 
 ```ts
 // Supabase query example

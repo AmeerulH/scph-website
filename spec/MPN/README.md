@@ -16,24 +16,25 @@ Media Professional Network — technical specification for the Next.js + Supabas
 | [`email/`](email/README.md) | Transactional email triggers and templates |
 | [`deployment/`](deployment/README.md) | SCPH integration, environment variables |
 | [`deployment/roadmap.md`](deployment/roadmap.md) | 5-phase development roadmap |
+| [`DECISIONS.md`](DECISIONS.md) | Canonical Phase 0 access, security, and integration decisions |
 
 ## Project Summary
 
 - **What:** Gated community portal for SCPH Capacity Development Workshop alumni
 - **Who:** Journalists → register → await admin approval → access portal
-- **Stack:** Next.js 14 App Router · TypeScript · Tailwind · Supabase · Vercel
-- **Lives under:** Community tab on SCPH website (`mpn.sunwayplanetaryhealth.com` or `/community/mpn`)
+- **Stack:** Next.js 16 App Router · TypeScript · Tailwind · Supabase · Vercel
+- **Lives under:** Community tab on SCPH website (`/community/mpn`)
 - **UI source of truth:** `media-portal-demo.html` (approved POC, all 8 passes complete)
 
-## Open Questions (answer before Phase 1)
+## Deferred Questions
+
+Phase 0 resolved routing, email/password authentication, manual workshop
+verification, public indexable publications, and public webinars. The following
+choices are deferred and do not block Phase 1:
 
 | # | Question | Options |
 |---|----------|---------|
-| 1 | URL structure | Subdomain vs `/community/mpn` path |
-| 2 | Magic link login | Alongside email/password, or password only? |
-| 3 | Social login | Google OAuth? Simplifies journalist onboarding. |
-| 4 | Workshop verification | Manual admin confirmation vs self-reported + review |
-| 5 | Public publications | Google-indexable or member-only? |
-| 6 | Announcement emails | Real-time per event or digest? |
-| 7 | Expert self-registration | Admin-only or separate expert signup flow? |
-| 8 | Member import | Bulk import past workshop attendees at launch? |
+| 1 | Social login | Google OAuth is a post-launch consideration. |
+| 2 | Announcement emails | Decide real-time delivery vs digest before Phase 4. |
+| 3 | Expert self-registration | Admin-only for v1; revisit after launch. |
+| 4 | Member import | Decide the launch cohort/import approach before Phase 5. |

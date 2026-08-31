@@ -80,7 +80,7 @@ export function ReplyFeed({ threadId, initialReplies }) {
 
 ```ts
 // Fields: title, body (min 20 chars), category (select)
-// POST /api/cafe/threads
+// POST /api/mpn/cafe/threads
 // On success: redirect to /cafe/[newId]
 ```
 
@@ -90,7 +90,7 @@ export function ReplyFeed({ threadId, initialReplies }) {
 
 ```ts
 // Field: body (textarea, min 10 chars)
-// POST /api/cafe/[id]/replies
+// POST /api/mpn/cafe/[id]/replies
 // On success: reply appears via Realtime subscription (no manual state update needed)
 // Show loading state while submitting; disable form during submit
 ```

@@ -33,7 +33,10 @@ const { data } = await supabase
   .order('full_name')
 ```
 
-> Members with `email_visible = false` (default) have their email hidden — RLS policy on `profiles` excludes the `email` column for non-admin selectors unless the member opts in.
+> Members with `email_visible = false` (default) have their email hidden.
+> Directory queries use `profiles_directory`, a public-safe view with no email
+> column. Authenticated server-side code may return an opted-in email after
+> verifying the viewer's session; RLS cannot exclude a single column.
 
 ---
 
@@ -64,7 +67,7 @@ const { data } = await supabase
 
 - **View mode:** avatar, name, role badge, organisation, country, bio, LinkedIn link, workshop attended, publications list (own)
 - **Edit mode:** inline edit form for name, organisation, country, bio, linkedin_url, email_visible toggle
-- Photo upload button (calls `POST /api/profile/photo`)
+- Photo upload button (calls `POST /api/mpn/profile/photo`)
 - "My Publications" tab: list of own publications with status badges (pending / approved / rejected)
 - "My Activity" tab: recent café threads started, replies posted
 
