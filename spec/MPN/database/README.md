@@ -77,8 +77,8 @@ CREATE TABLE workshops (
   id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   number            integer NOT NULL,              -- sequence: 1, 2, 3…
   title             text NOT NULL,                 -- e.g. "Climate, Air Pollution and Health"
-  date              date NOT NULL,
-  location          text NOT NULL,                 -- e.g. "Kuala Lumpur, Malaysia"
+  date              date,                          -- optional when not recorded
+  location          text,                          -- optional when not recorded
   participant_count integer,
   description       text,
   cover_image_url   text,
