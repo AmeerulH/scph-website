@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AccountMenu } from "@/components/mpn/nav/account-menu";
+import { MpnAuthNav } from "@/components/mpn/nav/auth-nav";
 import { getAuthenticatedMpnProfile } from "@/lib/mpn/auth";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Media Professional Network",
@@ -19,13 +21,13 @@ export default async function MpnLayout({ children }: { children: React.ReactNod
           <Link className="font-heading text-sm font-semibold text-[#1B4384]" href="/community/mpn">
             Media Professional Network
           </Link>
-          {profile ? (
-            <AccountMenu fullName={profile.full_name} role={profile.role} />
-          ) : (
-            <Link className="text-sm font-medium text-[#1B4384] hover:underline" href="/community/mpn/login">
-              Member sign in
-            </Link>
-          )}
+          <MpnAuthNav
+            initialProfile={
+              profile
+                ? { full_name: profile.full_name, role: profile.role }
+                : null
+            }
+          />
         </div>
       </div>
       {children}

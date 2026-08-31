@@ -2,7 +2,6 @@
 
 import { LoaderCircle, LogOut } from "lucide-react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/mpn/supabase/client";
 
@@ -12,14 +11,12 @@ type AccountMenuProps = {
 };
 
 export function AccountMenu({ fullName, role }: AccountMenuProps) {
-  const router = useRouter();
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   async function signOut() {
     setIsSigningOut(true);
     await createClient().auth.signOut();
-    router.replace("/community/mpn");
-    router.refresh();
+    window.location.replace("/community/mpn");
   }
 
   const roleLabel = role === "pending" ? "Pending approval" : role;

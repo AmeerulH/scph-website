@@ -1,12 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/mpn/supabase/client";
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,36 +15,30 @@ export function LoginForm() {
     setIsSubmitting(true);
 
     const formData = new FormData(event.currentTarget);
-    const supabase = createClient();
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: String(formData.get("email")),
-      password: String(formData.get("password")),
+    const next = searchParams.get("next");
+
+    const response = await fetch("/api/mpn/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: String(formData.get("email")),
+        password: String(formData.get("password")),
+        next,
+      }),
     });
 
-    if (signInError || !data.user) {
-      setError(signInError?.message ?? "Unable to sign in.");
+    const payload = (await response.json()) as {
+      data: { redirectTo: string } | null;
+      error: { message: string } | null;
+    };
+
+    if (!response.ok || !payload.data?.redirectTo) {
+      setError(payload.error?.message ?? "Unable to sign in.");
       setIsSubmitting(false);
       return;
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", data.user.id)
-      .maybeSingle();
-
-    const next = searchParams.get("next");
-    const safeNext = next?.startsWith("/community/mpn") ? next : null;
-
-    if (profile?.role === "pending") {
-      router.replace("/community/mpn/pending");
-    } else if (profile?.role === "rejected") {
-      setError("Your membership application was not approved. Please contact SCPH for support.");
-      await supabase.auth.signOut();
-      setIsSubmitting(false);
-    } else {
-      router.replace(safeNext ?? "/community/mpn?signedIn=1");
-    }
+    window.location.replace(payload.data.redirectTo);
   }
 
   return (
