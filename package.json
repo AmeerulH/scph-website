@@ -29,6 +29,9 @@
     "seed-scph-media-page": "npx tsx scripts/seed-scph-media-page.ts",
     "seed-footers": "npx tsx scripts/seed-footers.ts",
     "inventory-drive-folder": "npx tsx scripts/inventory-drive-folder.ts",
+    "import-mpn-drive-resources": "npx tsx scripts/import-mpn-drive-resources.ts",
+    "import-mpn-shared-resources": "npx tsx scripts/import-mpn-shared-resources.ts",
+    "import-mpn-workshop-photos": "npx tsx scripts/import-mpn-workshop-photos.ts",
     "unlighthouse:scan": "node scripts/unlighthouse-scan.mjs",
     "unlighthouse:scan:desktop": "node scripts/unlighthouse-scan.mjs --desktop"
   },

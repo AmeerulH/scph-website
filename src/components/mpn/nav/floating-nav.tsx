@@ -23,6 +23,10 @@ const links = [
 export function FloatingNav({ initialProfile }: FloatingNavProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks =
+    initialProfile?.role === "admin"
+      ? [...links, { href: "/community/mpn/admin/members", label: "Admin" }]
+      : links;
 
   function isActive(href: string, exact?: boolean) {
     return exact ? pathname === href : pathname.startsWith(href);
@@ -40,7 +44,7 @@ export function FloatingNav({ initialProfile }: FloatingNavProps) {
         </Link>
 
         <div className="ml-auto hidden items-center gap-1 md:flex">
-          {links.map(({ href, label, exact }) => (
+          {navLinks.map(({ href, label, exact }) => (
             <Link
               className={cn(
                 "rounded-full px-4 py-1.5 text-sm font-semibold transition-colors",
@@ -74,7 +78,7 @@ export function FloatingNav({ initialProfile }: FloatingNavProps) {
       {menuOpen ? (
         <div className="absolute top-[calc(100%+8px)] w-full max-w-6xl rounded-xl border border-slate-200 bg-white p-3 shadow-[0_8px_32px_rgba(0,0,0,0.14)] md:hidden">
           <div className="grid gap-1">
-            {links.map(({ href, label, exact }) => (
+            {navLinks.map(({ href, label, exact }) => (
               <Link
                 className={cn(
                   "rounded-lg px-4 py-3 text-sm font-semibold",
