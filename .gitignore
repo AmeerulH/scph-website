@@ -40,6 +40,9 @@ PRODUCT.md
 DESIGN.md
 !spec/MPN/DESIGN.md
 
+# Supabase CLI local cache (linked project metadata; not migrations)
+supabase/.temp/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

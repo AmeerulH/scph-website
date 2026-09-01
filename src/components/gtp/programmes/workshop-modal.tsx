@@ -18,6 +18,7 @@ import {
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
+import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -166,7 +167,7 @@ export function WorkshopModal({
                       <div>
                         <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
                         <div className="space-y-3">
-                          {w.speakers.map((sp, i) => (
+                          {sortSpeakersModeratorFirst(w.speakers).map((sp, i) => (
                             <div key={`${sp.name}-${i}`} className="flex items-center gap-3">
                               <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} />
                               <div className="min-w-0">
