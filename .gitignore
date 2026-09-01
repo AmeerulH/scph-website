@@ -27,6 +27,21 @@
 # Local agent hooks (machine-specific paths)
 .cursor/hooks.json
 .codex/hooks.json
+.cursor/settings.json
+
+# Vendor agent skills (reinstall locally; optional pin in skills-lock.json)
+.agents/skills/
+.claude/skills/
+.claude/worktrees/
+.claude/launch.json
+
+# Impeccable session context (local design briefs, not site spec)
+PRODUCT.md
+DESIGN.md
+!spec/MPN/DESIGN.md
+
+# Supabase CLI local cache (linked project metadata; not migrations)
+supabase/.temp/
 
 # debug
 npm-debug.log*

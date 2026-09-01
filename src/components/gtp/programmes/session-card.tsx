@@ -13,7 +13,10 @@ import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
-import { normalizeSpeakerName } from "./programme-speaker-filter";
+import {
+  normalizeSpeakerName,
+  sortSpeakersModeratorFirst,
+} from "./programme-speaker-filter";
 
 function programmeSessionReference(title: string): string | null {
   const normalized = normalizeProgrammeSessionTitle(title).toLowerCase();
@@ -41,7 +44,7 @@ export function SessionCard({
   const MetaIcon = meta.Icon;
   const cardRef = React.useRef<HTMLDivElement>(null);
 
-  const namedSpeakers = session.speakers ?? [];
+  const namedSpeakers = sortSpeakersModeratorFirst(session.speakers ?? []);
   const placeholderCount =
     namedSpeakers.length === 0 && session.speakerCount
       ? session.speakerCount

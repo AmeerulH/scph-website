@@ -15,6 +15,10 @@ import { ProgrammeModalShareRegisterColumn } from "./programme-modal-chrome";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
+import {
+  isModeratorSessionRole,
+  sortSpeakersModeratorFirst,
+} from "./programme-speaker-filter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,10 +32,6 @@ interface SessionModalProps {
   /** When set, parallel slots in the modal open a dedicated workshop modal (desktop grid below). */
   onWorkshopClick?: (workshop: Workshop) => void;
   onSpeakerClick?: (speaker: Speaker) => void;
-}
-
-function isModeratorRole(role: string | undefined): boolean {
-  return Boolean(role?.trim().toLowerCase().includes("moderator"));
 }
 
 function sessionExpectsSpeakerList(type: Session["type"]) {
@@ -225,14 +225,14 @@ export function SessionModal({
                       <div className="order-1 space-y-4">
                         {session.type === "fireside" ? (
                           <FiresideSpeakersBlock
-                            speakers={session.speakers}
+                            speakers={sortSpeakersModeratorFirst(session.speakers)}
                             onSpeakerClick={onSpeakerClick}
                           />
                         ) : (
                           <div>
                             <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
                             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                              {session.speakers.map((sp, i) => (
+                              {sortSpeakersModeratorFirst(session.speakers).map((sp, i) => (
                                 <SpeakerRow
                                   key={`${sp.name}-${i}`}
                                   speaker={sp}
@@ -356,8 +356,8 @@ function FiresideSpeakersBlock({
   let others: Speaker[];
 
   if (anyRole) {
-    moderators = speakers.filter((s) => isModeratorRole(s.sessionRole));
-    others = speakers.filter((s) => !isModeratorRole(s.sessionRole));
+    moderators = speakers.filter((s) => isModeratorSessionRole(s.sessionRole));
+    others = speakers.filter((s) => !isModeratorSessionRole(s.sessionRole));
     if (moderators.length === 0) {
       return (
         <div>
@@ -426,7 +426,9 @@ function SpeakerRow({
   onSpeakerClick?: (speaker: Speaker) => void;
 }) {
   const role = speaker.sessionRole?.trim();
-  const showRole = Boolean(role && !(suppressRoleWhenModerator && isModeratorRole(speaker.sessionRole)));
+  const showRole = Boolean(
+    role && !(suppressRoleWhenModerator && isModeratorSessionRole(speaker.sessionRole)),
+  );
 
   return (
     <button

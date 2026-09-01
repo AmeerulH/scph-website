@@ -1,4 +1,4 @@
-import type { Session, SessionType } from "./types";
+import type { Session, SessionType, Speaker } from "./types";
 
 export type ThemeFilterId = "all" | "shift" | "imagination" | "action";
 
@@ -16,6 +16,26 @@ export type SpeakerAppearance = {
 
 export function normalizeSpeakerName(name: string): string {
   return name.trim().toLowerCase();
+}
+
+export function isModeratorSessionRole(role: string | undefined): boolean {
+  return Boolean(role?.trim().toLowerCase().includes("moderator"));
+}
+
+/** Stable sort: moderators first, then all other named roles. */
+export function sortSpeakersModeratorFirst(speakers: Speaker[]): Speaker[] {
+  const moderators: Speaker[] = [];
+  const others: Speaker[] = [];
+
+  for (const speaker of speakers) {
+    if (isModeratorSessionRole(speaker.sessionRole)) {
+      moderators.push(speaker);
+    } else {
+      others.push(speaker);
+    }
+  }
+
+  return [...moderators, ...others];
 }
 
 function sessionMatchesTheme(session: Session, theme: ThemeFilterId): boolean {
