@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAuthenticatedMpnProfile } from "@/lib/mpn/auth";
+import { sendMemberWelcomeEmail } from "@/lib/mpn/email";
 import { createAdminClient } from "@/lib/mpn/supabase/admin";
 
 function errorResponse(code: string, message: string, status: number) {
@@ -21,10 +22,19 @@ export async function POST(request: Request) {
     .update({ role: "member", rejection_reason: null })
     .eq("id", userId)
     .eq("role", "pending")
-    .select("id")
+    .select("id, email, full_name")
     .maybeSingle();
 
   if (error) return errorResponse("INTERNAL", "Unable to approve this member.", 500);
   if (!data) return errorResponse("NOT_FOUND", "Pending member not found.", 404);
+
+  const emailResult = await sendMemberWelcomeEmail({
+    to: data.email,
+    fullName: data.full_name,
+  });
+  if (!emailResult.sent) {
+    console.warn("Member approved but welcome email was not sent:", emailResult.reason);
+  }
+
   return NextResponse.json({ data: { approved: true }, error: null });
 }

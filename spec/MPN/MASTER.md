@@ -721,7 +721,8 @@ Per `AGENTS.md`:
 | `NEXT_PUBLIC_MPN_SUPABASE_URL` | Client + Server | MPN Supabase project URL |
 | `NEXT_PUBLIC_MPN_SUPABASE_ANON_KEY` | Client + Server | MPN public anon key |
 | `MPN_SUPABASE_SERVICE_ROLE_KEY` | Server only | MPN admin key — never in browser |
-| `RESEND_API_KEY` | Server only | Email API key (may already exist in SCPH) |
+| `MPN_RESEND_API_KEY` | Server only | MPN Resend API key |
+| `MPN_RESEND_FROM` | Server only | Optional verified MPN sender address |
 | `MPN_ADMIN_EMAIL` | Server only | Receives pending member alerts |
 
 ### Setup Steps

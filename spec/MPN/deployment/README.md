@@ -27,7 +27,8 @@ Add these to the existing SCPH project's `.env.local` and Vercel environment set
 | `NEXT_PUBLIC_MPN_SUPABASE_URL` | Client + Server | MPN Supabase project URL |
 | `NEXT_PUBLIC_MPN_SUPABASE_ANON_KEY` | Client + Server | MPN public anon key |
 | `MPN_SUPABASE_SERVICE_ROLE_KEY` | Server only | MPN admin key — never sent to browser |
-| `RESEND_API_KEY` | Server only | Resend API key (may already exist in SCPH) |
+| `MPN_RESEND_API_KEY` | Server only | MPN Resend API key |
+| `MPN_RESEND_FROM` | Server only | Optional verified MPN sender address |
 | `MPN_ADMIN_EMAIL` | Server only | Email(s) that receive new pending member alerts |
 
 Set in Vercel → existing SCPH project → Environment Variables. Use a separate MPN Supabase project for staging (Preview deployments).
@@ -52,7 +53,8 @@ Set in Vercel → existing SCPH project → Environment Variables. Use a separat
 vercel env add NEXT_PUBLIC_MPN_SUPABASE_URL production
 vercel env add NEXT_PUBLIC_MPN_SUPABASE_ANON_KEY production
 vercel env add MPN_SUPABASE_SERVICE_ROLE_KEY production
-vercel env add RESEND_API_KEY production        # skip if already set
+vercel env add MPN_RESEND_API_KEY production
+vercel env add MPN_RESEND_FROM production
 vercel env add MPN_ADMIN_EMAIL production
 
 # Deploy via normal SCPH deploy process — no separate step needed

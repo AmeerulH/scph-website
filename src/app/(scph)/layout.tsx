@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ScphNavbar } from "@/components/scph/navbar";
+import { ScphSiteChrome } from "@/components/scph/scph-site-chrome";
 import { ScphFooter } from "@/components/scph/footer";
 import { AtmosphericReveal } from "@/components/motion/AtmosphericReveal";
 import { getMergedScphFooter } from "@/sanity/footer";
@@ -17,13 +17,10 @@ export default async function ScphLayout({
   children: React.ReactNode;
 }) {
   const footerData = await getMergedScphFooter();
+
   return (
-    <>
-      <ScphNavbar />
-      <main className="min-h-screen">
-        <AtmosphericReveal disableEntrance>{children}</AtmosphericReveal>
-      </main>
-      <ScphFooter data={footerData} />
-    </>
+    <ScphSiteChrome footer={<ScphFooter data={footerData} />}>
+      <AtmosphericReveal disableEntrance>{children}</AtmosphericReveal>
+    </ScphSiteChrome>
   );
 }

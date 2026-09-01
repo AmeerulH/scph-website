@@ -6,6 +6,7 @@ type MpnProfile = {
   id: string;
   role: MpnRole;
   full_name: string;
+  workshop_id: string | null;
 };
 
 export async function getAuthenticatedMpnProfile(): Promise<MpnProfile | null> {
@@ -18,7 +19,7 @@ export async function getAuthenticatedMpnProfile(): Promise<MpnProfile | null> {
 
   const { data } = await supabase
     .from("profiles")
-    .select("id, role, full_name")
+    .select("id, role, full_name, workshop_id")
     .eq("id", userId)
     .maybeSingle();
 

@@ -5,6 +5,7 @@ import { getMpnSupabaseConfig } from "@/lib/mpn/supabase/env";
 const MPN_BASE_PATH = "/community/mpn";
 const ADMIN_PATH = `${MPN_BASE_PATH}/admin`;
 const MEMBER_PATHS = [`${MPN_BASE_PATH}/publications/submit`];
+const GUEST_ONLY_PATHS = [`${MPN_BASE_PATH}/login`, `${MPN_BASE_PATH}/register`];
 const AUTH_PATHS = [
   `${MPN_BASE_PATH}/profile`,
   `${MPN_BASE_PATH}/pending`,
@@ -58,6 +59,12 @@ export async function proxy(request: NextRequest) {
     .eq("id", userId)
     .maybeSingle();
   const role = profile?.role;
+
+  if (GUEST_ONLY_PATHS.includes(path)) {
+    const destination =
+      role === "pending" ? `${MPN_BASE_PATH}/pending` : MPN_BASE_PATH;
+    return NextResponse.redirect(new URL(destination, request.url));
+  }
 
   if (path.startsWith(ADMIN_PATH) && role !== "admin") {
     return NextResponse.redirect(new URL(`${MPN_BASE_PATH}/login`, request.url));

@@ -38,6 +38,7 @@
 # Impeccable session context (local design briefs, not site spec)
 PRODUCT.md
 DESIGN.md
+!spec/MPN/DESIGN.md
 
 # debug
 npm-debug.log*

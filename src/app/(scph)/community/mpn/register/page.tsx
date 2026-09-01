@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { RegisterForm } from "@/components/mpn/auth/register-form";
+import { getAuthenticatedMpnProfile } from "@/lib/mpn/auth";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
-export default function MpnRegisterPage() {
+export default async function MpnRegisterPage() {
+  const profile = await getAuthenticatedMpnProfile();
+
+  if (profile) {
+    redirect(
+      profile.role === "pending"
+        ? "/community/mpn/pending"
+        : "/community/mpn"
+    );
+  }
+
   return (
     <section className="mx-auto max-w-xl px-5 py-16">
       <div className="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">

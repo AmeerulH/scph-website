@@ -1,6 +1,8 @@
 import type { EmailOtpType } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { createClient } from "@/lib/mpn/supabase/server";
+import { notifyAdminsOfPendingMember } from "@/lib/mpn/email";
+import { getMpnSupabaseConfig } from "@/lib/mpn/supabase/env";
 
 const MPN_BASE_PATH = "/community/mpn";
 
@@ -13,14 +15,30 @@ export async function GET(request: NextRequest) {
   const type = request.nextUrl.searchParams.get("type") as EmailOtpType | null;
   const code = request.nextUrl.searchParams.get("code");
   const next = safeNext(request.nextUrl.searchParams.get("next"));
-  const supabase = await createClient();
+  const pendingCookies: Array<{
+    name: string;
+    value: string;
+    options?: Parameters<NextResponse["cookies"]["set"]>[2];
+  }> = [];
+  const { url: supabaseUrl, publishableKey } = getMpnSupabaseConfig();
+  const supabase = createServerClient(supabaseUrl, publishableKey, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        pendingCookies.push(...cookiesToSet);
+      },
+    },
+  });
 
-  const error =
+  const { data, error } =
     tokenHash && type
-      ? (await supabase.auth.verifyOtp({ token_hash: tokenHash, type })).error
+      ? await supabase.auth.verifyOtp({ token_hash: tokenHash, type })
       : code
-        ? (await supabase.auth.exchangeCodeForSession(code)).error
-        : new Error("The verification link is incomplete.");
+        ? await supabase.auth.exchangeCodeForSession(code)
+        : { data: { user: null, session: null }, error: new Error("The verification link is incomplete.") };
 
   if (error) {
     const url = request.nextUrl.clone();
@@ -29,9 +47,20 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (data.user) {
+    const emailResult = await notifyAdminsOfPendingMember(data.user.id);
+    if (!emailResult.sent) {
+      console.warn("Email verified but admin alert was not sent:", emailResult.reason);
+    }
+  }
+
   const url = request.nextUrl.clone();
   url.pathname = next;
   url.search = "";
   url.searchParams.set("verified", "1");
-  return NextResponse.redirect(url);
+  const response = NextResponse.redirect(url);
+  pendingCookies.forEach(({ name, value, options }) =>
+    response.cookies.set(name, value, options)
+  );
+  return response;
 }

@@ -18,6 +18,7 @@ spec/
 ├── whatsapp-upgrade-message.md  ← team message about infrastructure costs
 └── MPN/
     ├── MASTER.md                ← single comprehensive spec (read this first)
+    ├── DESIGN.md                ← canonical UI contract from approved prototype
     ├── auth/README.md           ← roles, registration flow, RLS policies
     ├── database/README.md       ← full SQL for all 13 tables
     ├── api/README.md            ← Supabase query patterns + 13 API routes
@@ -113,8 +114,9 @@ Add these to the existing SCPH `.env.local` and Vercel project settings:
 NEXT_PUBLIC_MPN_SUPABASE_URL=        # MPN Supabase project URL
 NEXT_PUBLIC_MPN_SUPABASE_ANON_KEY=   # MPN public anon key
 MPN_SUPABASE_SERVICE_ROLE_KEY=       # MPN admin key — server only, never in browser
-RESEND_API_KEY=                       # May already exist in SCPH project
-MPN_ADMIN_EMAIL=                      # Email(s) for new pending member alerts
+MPN_RESEND_API_KEY=                  # MPN Resend key — server only
+MPN_RESEND_FROM=                     # Optional verified MPN sender address
+MPN_ADMIN_EMAIL=                     # Email(s) for new pending member alerts
 ```
 
 Also add MPN Supabase CDN to `next.config.ts` `remotePatterns`:

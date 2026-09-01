@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { MpnAuthNav } from "@/components/mpn/nav/auth-nav";
+import { FloatingNav } from "@/components/mpn/nav/floating-nav";
 import { getAuthenticatedMpnProfile } from "@/lib/mpn/auth";
 
 export const dynamic = "force-dynamic";
@@ -15,21 +14,14 @@ export default async function MpnLayout({ children }: { children: React.ReactNod
   const profile = await getAuthenticatedMpnProfile();
 
   return (
-    <div className="bg-[#faf9f7] pt-24 text-slate-800">
-      <div className="border-y border-slate-200 bg-white/90">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-          <Link className="font-heading text-sm font-semibold text-[#1B4384]" href="/community/mpn">
-            Media Professional Network
-          </Link>
-          <MpnAuthNav
-            initialProfile={
-              profile
-                ? { full_name: profile.full_name, role: profile.role }
-                : null
-            }
-          />
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#faf9f7] pt-28 text-slate-800">
+      <FloatingNav
+        initialProfile={
+          profile
+            ? { full_name: profile.full_name, role: profile.role }
+            : null
+        }
+      />
       {children}
     </div>
   );

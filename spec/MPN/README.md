@@ -13,6 +13,7 @@ Media Professional Network — technical specification for the Next.js + Supabas
 | [`features/`](features/) | Per-feature specs: resources, publications, experts, café, events, members, admin |
 | [`frontend/`](frontend/README.md) | Routes, component architecture, server vs client decisions |
 | [`frontend/design-system.md`](frontend/design-system.md) | Brand tokens, typography, UI conventions from POC |
+| [`DESIGN.md`](DESIGN.md) | Canonical MPN design contract derived from the approved prototype |
 | [`email/`](email/README.md) | Transactional email triggers and templates |
 | [`deployment/`](deployment/README.md) | SCPH integration, environment variables |
 | [`deployment/roadmap.md`](deployment/roadmap.md) | 5-phase development roadmap |
