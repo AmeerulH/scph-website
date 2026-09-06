@@ -70,6 +70,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-about-page-images` | `scripts/seed-gtp-about-page-images.ts` | Patches `gtp2026AboutPage` gallery + why-matters + quote photos (published + draft); removes legacy `*Src` fields |
 | `seed-gtp-about-accommodation-activities` | `scripts/seed-gtp-about-accommodation-activities.ts` | Patches `gtp2026AboutPage.accommodationActivitiesBand` (carousel hotels/activities; published + draft) |
 | `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
+| `seed-gtp-programme-subpages` | `scripts/seed-gtp-programme-subpages.ts` | Creates missing `gtp2026ProgrammeActivityPage` documents for Action Workshops, AI Thinkers Networking Breakfast, and Excursion Trips; intentionally refuses production |
 | `seed-scph-meet-the-team-page` | `scripts/seed-scph-meet-the-team-page.ts` | `scphMeetTheTeamPage` |
 | `seed-scph-journalist-workshops-page` | `scripts/seed-scph-journalist-workshops-page.ts` | `scphJournalistWorkshopsPage` singleton shell (empty `workshops` until rows seed or Studio) |
 | `seed-scph-journalist-workshop-rows` | `scripts/seed-scph-journalist-workshop-rows.ts` | Patches `workshops[]` from [`scripts/data/journalist-workshops-seed.json`](scripts/data/journalist-workshops-seed.json); optional `JOURNALIST_WORKSHOP_ACCESS_CODES` (comma-separated, 7 values) |

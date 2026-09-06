@@ -33,7 +33,25 @@ const navItems: NavItem[] = [
     label: "Organising Committee",
     href: "/events/gtp-2026/organising-committee",
   },
-  { label: "Programme", href: "/events/gtp-2026/programmes" },
+  {
+    label: "Programme",
+    parentHref: "/events/gtp-2026/programmes",
+    dropdown: [
+      { label: "Conference Programme", href: "/events/gtp-2026/programmes" },
+      {
+        label: "Action Workshops",
+        href: "/events/gtp-2026/programmes/action-workshops",
+      },
+      {
+        label: "AI Thinkers Networking Breakfast",
+        href: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+      },
+      {
+        label: "Excursion Trips",
+        href: "/events/gtp-2026/programmes/excursion-trips",
+      },
+    ],
+  },
   { label: "Speakers", href: "/events/gtp-2026/speakers" },
   {
     label: "Get Involved",

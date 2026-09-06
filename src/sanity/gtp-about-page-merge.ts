@@ -3,6 +3,7 @@ import type {
   GtpAboutGalleryBandCopy,
   GtpAboutGallerySlideCopy,
   GtpAboutHeroCopy,
+  GtpAboutCampaignSlide,
   GtpAboutImportantDateEntry,
   GtpAboutPageResolved,
   GtpAboutQuoteCardCopy,
@@ -19,6 +20,7 @@ import type {
 } from "@/data/gtp-about-page-defaults";
 import {
   DEFAULT_GTP_ABOUT_HERO,
+  DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES,
   DEFAULT_GTP_EVENT_INQUIRY,
   DEFAULT_GTP_GALLERY_BAND,
   DEFAULT_GTP_QUOTES_BAND,
@@ -69,6 +71,15 @@ export type GtpAboutHeroBandRaw = {
   primaryCtaHref?: string | null;
   secondaryCtaLabel?: string | null;
   secondaryCtaHref?: string | null;
+  campaignSlides?: {
+    badge?: string | null;
+    title?: string | null;
+    lede?: string | null;
+    primaryCtaLabel?: string | null;
+    primaryCtaHref?: string | null;
+    secondaryCtaLabel?: string | null;
+    secondaryCtaHref?: string | null;
+  }[] | null;
   importantDatesEyebrow?: string | null;
   importantDates?: GtpAboutHeroImportantDateRaw[] | null;
 } | null;
@@ -254,7 +265,7 @@ function mergeImportantDates(
 
 function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
   const d = DEFAULT_GTP_ABOUT_HERO;
-  if (!raw) return d;
+  if (!raw) return { ...d, campaignSlides: DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES };
   return {
     enabled: raw.enabled !== false,
     badge: s(raw.badge, d.badge),
@@ -267,9 +278,29 @@ function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
     ),
     secondaryCtaLabel: s(raw.secondaryCtaLabel, d.secondaryCtaLabel),
     secondaryCtaHref: s(raw.secondaryCtaHref, d.secondaryCtaHref),
+    campaignSlides: mergeCampaignSlides(raw),
     importantDatesEyebrow: s(raw.importantDatesEyebrow, d.importantDatesEyebrow),
     importantDates: mergeImportantDates(raw, d.importantDates),
   };
+}
+
+function mergeCampaignSlides(raw: GtpAboutHeroBandRaw): GtpAboutCampaignSlide[] {
+  const slides = raw?.campaignSlides
+    ?.map((slide) => {
+      const title = slide?.title?.trim();
+      if (!title) return null;
+      return {
+        badge: s(slide.badge, ""),
+        title,
+        lede: s(slide.lede, ""),
+        primaryCtaLabel: s(slide.primaryCtaLabel, ""),
+        primaryCtaHref: s(slide.primaryCtaHref, ""),
+        secondaryCtaLabel: s(slide.secondaryCtaLabel, ""),
+        secondaryCtaHref: s(slide.secondaryCtaHref, ""),
+      };
+    })
+    .filter((slide): slide is GtpAboutCampaignSlide => Boolean(slide));
+  return slides?.length ? slides : DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES;
 }
 
 function splitThree(
