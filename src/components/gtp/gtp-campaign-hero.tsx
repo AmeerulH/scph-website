@@ -10,20 +10,31 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 function Cta({
   href,
+  className,
   children,
 }: {
   href: string;
+  className?: string;
   children: React.ReactNode;
 }) {
   const internal = href.startsWith("/") || href.startsWith("#");
   return internal ? (
-    <Link href={href}>{children}</Link>
+    <Link href={href} className={className}>
+      {children}
+    </Link>
   ) : (
-    <a href={href} target="_blank" rel="noopener noreferrer">
+    <a href={href} className={className} target="_blank" rel="noopener noreferrer">
       {children}
     </a>
   );
 }
+
+const slideBackgrounds = [
+  "bg-gtp-dark-teal bg-[radial-gradient(circle_at_82%_15%,rgba(0,156,180,0.32),transparent_34%),radial-gradient(circle_at_8%_78%,rgba(134,188,37,0.20),transparent_38%)]",
+  "bg-[#0a5965] bg-[radial-gradient(circle_at_88%_20%,rgba(134,188,37,0.3),transparent_32%),linear-gradient(115deg,rgba(8,58,71,0.52),transparent_60%)]",
+  "bg-[#145967] bg-[radial-gradient(circle_at_12%_65%,rgba(0,156,180,0.44),transparent_38%),linear-gradient(135deg,rgba(13,77,94,0.12),rgba(5,48,60,0.5))]",
+  "bg-[#35622b] bg-[radial-gradient(circle_at_82%_30%,rgba(0,156,180,0.32),transparent_34%),linear-gradient(110deg,rgba(14,67,66,0.56),transparent_66%)]",
+] as const;
 
 function SlideActions({
   slide,
@@ -199,12 +210,7 @@ export function GtpCampaignHero({
   const [active, setActive] = React.useState(0);
   const count = slides.length;
   const slide = slides[active] ?? slides[0];
-
-  React.useEffect(() => {
-    if (reducedMotion || count < 2) return;
-    const interval = window.setInterval(() => setActive((index) => (index + 1) % count), 7000);
-    return () => window.clearInterval(interval);
-  }, [count, reducedMotion]);
+  const background = slideBackgrounds[active % slideBackgrounds.length];
 
   if (!slide) return null;
 
@@ -217,18 +223,17 @@ export function GtpCampaignHero({
       aria-label="GTP 2026 highlights"
       className="relative h-112.5 overflow-hidden bg-gtp-dark-teal sm:h-117.5 lg:h-122.5"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_82%_15%,rgba(0,156,180,0.32),transparent_34%),radial-gradient(circle_at_8%_78%,rgba(134,188,37,0.20),transparent_38%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.06]" />
       <AnimatePresence initial={false} mode="wait">
         <motion.div
           key={slide.title}
           aria-live="polite"
-          className="absolute inset-0"
+          className={`absolute inset-0 ${background}`}
           initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
           transition={{ duration: reducedMotion ? 0.15 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.06]" />
           <CampaignSlide slide={slide} index={active} />
         </motion.div>
       </AnimatePresence>
