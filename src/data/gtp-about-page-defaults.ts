@@ -29,10 +29,22 @@ export type GtpAboutHeroCopy = {
   primaryCtaHref: string;
   secondaryCtaLabel: string;
   secondaryCtaHref: string;
+  campaignSlides: GtpAboutCampaignSlide[];
   /** Eyebrow above the important-dates strip in the hero. */
   importantDatesEyebrow: string;
   importantDates: GtpAboutImportantDateEntry[];
 };
+
+export type GtpAboutCampaignSlide = Pick<
+  GtpAboutHeroCopy,
+  | "badge"
+  | "title"
+  | "lede"
+  | "primaryCtaLabel"
+  | "primaryCtaHref"
+  | "secondaryCtaLabel"
+  | "secondaryCtaHref"
+>;
 
 export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
   enabled: true,
@@ -43,9 +55,49 @@ export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
   primaryCtaHref: GTP_2026_REGISTRATION_URL,
   secondaryCtaLabel: "Learn More",
   secondaryCtaHref: "/events/gtp-2026/about#about",
+  campaignSlides: [],
   importantDatesEyebrow: "Important dates",
   importantDates: DEFAULT_GTP_ABOUT_IMPORTANT_DATES,
 };
+
+export const DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES: GtpAboutCampaignSlide[] = [
+  {
+    badge: DEFAULT_GTP_ABOUT_HERO.badge,
+    title: DEFAULT_GTP_ABOUT_HERO.title,
+    lede: DEFAULT_GTP_ABOUT_HERO.lede,
+    primaryCtaLabel: DEFAULT_GTP_ABOUT_HERO.primaryCtaLabel,
+    primaryCtaHref: DEFAULT_GTP_ABOUT_HERO.primaryCtaHref,
+    secondaryCtaLabel: DEFAULT_GTP_ABOUT_HERO.secondaryCtaLabel,
+    secondaryCtaHref: DEFAULT_GTP_ABOUT_HERO.secondaryCtaHref,
+  },
+  {
+    badge: "13–14 October 2026",
+    title: "Action Workshops",
+    lede: "Practical, participatory sessions exploring how ideas become action.",
+    primaryCtaLabel: "Explore workshops",
+    primaryCtaHref: "/events/gtp-2026/programmes/action-workshops",
+    secondaryCtaLabel: "View conference programme",
+    secondaryCtaHref: "/events/gtp-2026/programmes",
+  },
+  {
+    badge: "Day 2 and Day 4",
+    title: "AI Thinkers Networking Breakfast",
+    lede: "Curating a hybrid future that is pro-people, pro-planet and pro-potential.",
+    primaryCtaLabel: "Find out more",
+    primaryCtaHref: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+    secondaryCtaLabel: "Register now",
+    secondaryCtaHref: "https://forms.cloud.microsoft/r/GncA02pMWe",
+  },
+  {
+    badge: "GTP 2026",
+    title: "Excursion Trips",
+    lede: "Discover opportunities to explore Kuala Lumpur and the region with fellow participants.",
+    primaryCtaLabel: "Explore excursions",
+    primaryCtaHref: "/events/gtp-2026/programmes/excursion-trips",
+    secondaryCtaLabel: "View conference programme",
+    secondaryCtaHref: "/events/gtp-2026/programmes",
+  },
+];
 
 export type GtpAboutWhyMattersCopy = {
   enabled: boolean;

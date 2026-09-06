@@ -18,6 +18,7 @@
     "seed-gtp-about-page-images": "npx tsx scripts/seed-gtp-about-page-images.ts",
     "seed-gtp-about-accommodation-activities": "npx tsx scripts/seed-gtp-about-accommodation-activities.ts",
     "seed-gtp-media-bizforum-pages": "npx tsx scripts/seed-gtp-media-bizforum-pages.ts",
+    "seed-gtp-programme-subpages": "npx tsx scripts/seed-gtp-programme-subpages.ts",
     "seed-gtp-speakers-page": "npx tsx scripts/seed-gtp-speakers-page.ts",
     "migrate-highlight-speakers-to-speakers": "npx tsx scripts/migrate-highlight-speakers-to-speakers.ts",
     "seed-scph-meet-the-team-page": "npx tsx scripts/seed-scph-meet-the-team-page.ts",

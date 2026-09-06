@@ -32,6 +32,7 @@ import {gtp2026FaqGroupType} from './gtp2026FaqGroupType'
 import {gtp2026HighlightSessionSlotType} from './gtp2026HighlightSessionSlotType'
 import {gtp2026HighlightSpeakerType} from './gtp2026HighlightSpeakerType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
+import {gtp2026ProgrammeActivityPageType} from './gtp2026ProgrammeActivityPageType'
 import {scphFooterType} from './scphFooterType'
 import {scphHomePageType} from './scphHomePageType'
 import {scphJournalistWorkshopsPageType} from './scphJournalistWorkshopsPageType'
@@ -55,6 +56,7 @@ export const schemaTypes = [
   programmeSessionType,
   programmeDayType,
   gtp2026ProgrammeType,
+  gtp2026ProgrammeActivityPageType,
   gtp2026HighlightSessionSlotType,
   gtp2026HighlightSpeakerType,
   gtp2026CommitteeMemberType,

@@ -55,6 +55,13 @@ const gtpCmsPages = [
       "Singleton `gtp2026Programme` (fixed id): days, sessions (venue type, venue line, format label, optional Objective, optional **What's On carousel background** image per session), workshops (optional Objective on each row), speakers. **Session modal:** “Hosted by” heading, optional host logo (alt required with image), host name, and subtitle. Objective copy appears on the full programme page (session cards, concurrent tracks, workshop sub-cards, session detail modal) when filled—not on the small About hero carousel. Carousel card backgrounds: upload an image on a session to replace the default colour gradient; remove the image to revert. Drives programme page and parts of About.",
   },
   {
+    route: "/events/gtp-2026/programmes/action-workshops",
+    docTypes: "gtp2026ProgrammeActivityPage",
+    title: "Programme activity pages",
+    notes:
+      "One document per page: choose Action Workshops, AI Thinkers Networking Breakfast, or Excursion Trips in **Page**. Edit the title, intro, registration status and activity rows here. Posters need meaningful alt text. Action Workshops should remain **Coming soon** until the verified attendee-registration system is available; do not use the proposal-submission form.",
+  },
+  {
     route: "/events/gtp-2026/get-involved",
     docTypes: "gtp2026GetInvolvedPage",
     title: "Get involved",

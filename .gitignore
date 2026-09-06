@@ -30,8 +30,11 @@
 .cursor/settings.json
 
 # Vendor agent skills (reinstall locally; optional pin in skills-lock.json)
-.agents/skills/
+.agents/
+.cursor/agents/
+.cursor/skills/impeccable/
 .claude/skills/
+.claude/agents/
 .claude/worktrees/
 .claude/launch.json
 
