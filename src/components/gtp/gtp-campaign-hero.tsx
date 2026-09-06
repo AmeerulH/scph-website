@@ -181,11 +181,18 @@ function CampaignSlide({
 
   return (
     <div className="mx-auto grid h-full w-full max-w-7xl items-center gap-8 px-6 pb-16 pt-28 md:grid-cols-[1fr_0.9fr] lg:px-12">
-      <div className="relative h-40 overflow-hidden rounded-full border border-gtp-green/40 bg-gtp-green/15 md:order-2 md:h-64">
-        <div className="absolute -right-8 -top-16 size-56 rounded-full border-28 border-gtp-teal/45" />
-        <div className="absolute bottom-7 left-8 font-heading text-4xl font-bold text-white/90">Beyond the venue</div>
+      <div className="hidden self-center border-y border-white/25 py-7 text-right md:order-2 md:block">
+        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-gtp-green">
+          In and around
+        </p>
+        <p className="mt-3 font-heading text-5xl font-bold leading-[0.9] text-white">
+          Kuala<br />Lumpur
+        </p>
+        <p className="mt-5 text-sm font-medium text-white/65">
+          Details forthcoming
+        </p>
       </div>
-      <div className="md:order-1">
+      <div className="relative md:order-1">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gtp-green">{slide.badge}</p>
         <h1 className="mt-4 max-w-3xl text-balance font-heading text-5xl font-bold leading-[0.98] text-white md:text-6xl">
           {slide.title}
