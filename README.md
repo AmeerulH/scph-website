@@ -50,6 +50,9 @@ Hosted Studio: from `studio/`, use `npm run build` / `npm run deploy`. Point Stu
 | `SANITY_API_TOKEN` | Root `.env.local` | Write token for import scripts (e.g. `npm run import-gtp-programme`). |
 | `SANITY_REVALIDATE_SECRET` | Root `.env.local` | Shared secret for `POST /api/revalidate/sanity` (GROQ webhook). |
 | `JOURNALIST_WORKSHOP_SESSION_SECRET` | Root `.env.local` + Vercel | **≥16 chars.** Signs the HttpOnly session cookie for `POST /api/scph/journalist-workshops/unlock` (journalist workshop access codes). Generate with e.g. `openssl rand -hex 32`. |
+| `GTP_PARTICIPANT_SHEET_ID` | Root `.env.local` + Vercel | Google Sheet ID for GTP participant eligibility checks. Share the sheet with the configured Google service-account email. |
+| `GTP_PARTICIPANT_SHEET_TAB` | Root `.env.local` + Vercel | Participant sheet tab name (currently `Sheet1`). The app locates the `EMAIL` column by header. |
+| `GTP_ACTION_WORKSHOP_FORM_URL` | Root `.env.local` + Vercel | External Action Workshop form URL. Leave unset until the form is ready; verified participants will see a coming-soon message. |
 | `SANITY_STUDIO_DATASET` | `studio/.env` | Dataset for **Studio + CLI** (`production` if unset). See `studio/.env.example`. |
 | `NEXT_PUBLIC_CLOUDFLARE_WEB_ANALYTICS_TOKEN` | Root `.env.local` + Vercel | Optional. Enables [Cloudflare Web Analytics](https://developers.cloudflare.com/web-analytics/) beacon in [`src/app/layout.tsx`](src/app/layout.tsx) (public token from Cloudflare dashboard). |
 

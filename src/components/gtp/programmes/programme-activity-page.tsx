@@ -3,12 +3,17 @@ import { ArrowUpRight, CalendarDays, CircleAlert, Clock3 } from "lucide-react";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { Button } from "@/components/ui/button";
 import type { GtpProgrammeActivityPage } from "@/data/gtp-programme-activity-defaults";
+import { ActionWorkshopRegistration } from "./action-workshop-registration";
 
 function RegistrationAction({
   page,
 }: {
   page: GtpProgrammeActivityPage;
 }) {
+  if (page.slug === "action-workshops") {
+    return <ActionWorkshopRegistration />;
+  }
+
   if (page.registrationStatus !== "open" || !page.registrationUrl) {
     return (
       <span className="inline-flex min-h-11 items-center rounded-full border border-gtp-teal/25 bg-gtp-teal/5 px-5 text-sm font-semibold text-gtp-dark-teal">
