@@ -34,6 +34,8 @@
 .claude/skills/
 .claude/worktrees/
 .claude/launch.json
+.cursor/skills/impeccable/
+.cursor/agents/
 
 # Impeccable session context (local design briefs, not site spec)
 PRODUCT.md
