@@ -27,6 +27,7 @@
 # Local agent hooks (machine-specific paths)
 .cursor/hooks.json
 .codex/hooks.json
+.codex/agents/
 .cursor/settings.json
 
 # Vendor agent skills (reinstall locally; optional pin in skills-lock.json)
@@ -37,6 +38,8 @@
 .claude/agents/
 .claude/worktrees/
 .claude/launch.json
+.cursor/skills/impeccable/
+.cursor/agents/
 
 # Impeccable session context (local design briefs, not site spec)
 PRODUCT.md

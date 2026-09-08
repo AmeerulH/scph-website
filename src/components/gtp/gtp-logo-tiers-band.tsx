@@ -353,22 +353,17 @@ function TierHeader({
 function GtpLogoTierCell({
   entry,
   sleek,
-  compact,
 }: {
   entry: GtpAboutSponsorLogoEntry;
   /** Partners: larger slots + multiply so white logo mats disappear on light grounds. */
   sleek?: boolean;
-  /** Supported-by logos use a quieter, subordinate scale. */
-  compact?: boolean;
 }) {
   const remote = imgUnoptimized(entry.logoUrl);
   const image = (
     <span
       className={cn(
         "flex items-center justify-center",
-        compact
-          ? "h-14 w-36 sm:h-16 sm:w-44"
-          : sleek
+        sleek
           ? "h-auto min-h-16 w-44 max-h-24 sm:min-h-18 sm:w-52 sm:max-h-28 md:w-56"
           : "h-16 w-44 sm:h-20 sm:w-52",
       )}
@@ -557,7 +552,7 @@ function SupportedByFooter({
           <ul className="flex list-none flex-wrap items-center justify-center gap-x-8 gap-y-5 p-0 sm:gap-x-10">
             {logos.map((entry, index) => (
               <li key={`${entry.name}-${index}`}>
-                <GtpLogoTierCell entry={entry} sleek compact />
+                <GtpLogoTierCell entry={entry} sleek />
               </li>
             ))}
           </ul>
