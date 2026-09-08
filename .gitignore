@@ -27,6 +27,7 @@
 # Local agent hooks (machine-specific paths)
 .cursor/hooks.json
 .codex/hooks.json
+.codex/agents/
 .cursor/settings.json
 
 # Vendor agent skills (reinstall locally; optional pin in skills-lock.json)
