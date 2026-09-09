@@ -7,6 +7,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GtpAboutCampaignSlide } from "@/data/gtp-about-page-defaults";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import styles from "./gtp-campaign-hero.module.css";
 
 function Cta({
   href,
@@ -54,20 +55,28 @@ function SlideActions({
       }
     >
       {slide.primaryCtaHref && slide.primaryCtaLabel ? (
+        <div className={stackOnDesktop ? styles.registration : "contents"}>
+          {stackOnDesktop ? (
+            <p className={styles.availability}>
+              <span aria-hidden="true" className={styles.dot} />
+              Limited seats left
+            </p>
+          ) : null}
         <Button
           variant="gtpCta"
           size="lg"
           className={
             stackOnDesktop
-              ? "flex-1 justify-center py-7 text-base md:flex-none"
+              ? `${styles.registerButton} w-full justify-center py-7 text-base`
               : "justify-center px-6"
           }
           asChild
         >
           <Cta href={slide.primaryCtaHref}>
-            {slide.primaryCtaLabel} <ArrowRight />
+            {slide.primaryCtaLabel.replace(/\s*→\s*$/, "")} <ArrowRight aria-hidden="true" />
           </Cta>
         </Button>
+        </div>
       ) : null}
       {slide.secondaryCtaHref && slide.secondaryCtaLabel ? (
         <Button

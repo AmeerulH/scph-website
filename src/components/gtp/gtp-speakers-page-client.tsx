@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Plus } from "lucide-react";
 import { GtpSpeakerModal } from "@/components/gtp/gtp-speaker-modal";
+import { GtpLimitedAvailabilityBanner } from "@/components/gtp/gtp-limited-availability-banner";
 import { StaggerReveal } from "@/components/motion/StaggerReveal";
 import { getSpeakerInitials } from "@/components/gtp/gtp-speaker-highlight";
 import { cn } from "@/lib/utils";
@@ -461,6 +462,7 @@ export function GtpSpeakersPageClient({
   return (
     <>
       <SpeakersHero cms={pageCms} />
+      <GtpLimitedAvailabilityBanner />
       <SpeakersGrid speakers={speakers} onSelect={setSelected} />
 
       <AnimatePresence>

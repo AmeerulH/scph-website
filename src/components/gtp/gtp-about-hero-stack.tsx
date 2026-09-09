@@ -4,6 +4,8 @@ import type { GtpCountdownTimeLeft } from "@/lib/gtp-countdown";
 import { GtpCountdown } from "./countdown";
 import { GtpEventsPreviewCarousel } from "./events-preview-carousel";
 import { GtpCampaignHero } from "./gtp-campaign-hero";
+import { GtpLimitedAvailabilityBanner } from "./gtp-limited-availability-banner";
+import styles from "./gtp-about-hero-stack.module.css";
 
 function GtpAboutImportantDatesStrip({
   eyebrow,
@@ -14,22 +16,32 @@ function GtpAboutImportantDatesStrip({
 }) {
   if (items.length === 0) return null;
   return (
-    <div className="border-t border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm sm:px-6 lg:px-10">
-      <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-gtp-teal/90 sm:text-left">
-        {eyebrow}
-      </p>
-      <ul className="flex flex-wrap items-start justify-center gap-x-10 gap-y-4 sm:justify-start">
-        {items.map(({ label, date }) => (
-          <li key={label} className="min-w-0 text-center sm:text-left">
-            <span className="block text-[11px] font-medium uppercase tracking-wide text-white/45">
-              {label}
-            </span>
-            <span className="mt-0.5 block text-sm font-semibold text-white/90">
-              {date}
-            </span>
-          </li>
-        ))}
-      </ul>
+    <div className="border-t border-white/10 bg-black/15 backdrop-blur-sm">
+      <div
+        className={`${styles.importantDatesGrid} mx-auto grid max-w-[90rem] lg:grid-cols-[minmax(0,7fr)_minmax(21rem,3fr)]`}
+      >
+        <GtpLimitedAvailabilityBanner
+          layout="inline"
+          className={styles.importantDatesAvailability}
+        />
+        <div className={`${styles.importantDatesList} px-4 py-5 sm:px-6 lg:px-10`}>
+          <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-gtp-teal/90 sm:text-left">
+            {eyebrow}
+          </p>
+          <ul className="flex flex-wrap items-start justify-center gap-x-10 gap-y-4 sm:justify-start">
+            {items.map(({ label, date }) => (
+              <li key={label} className="min-w-0 text-center sm:text-left">
+                <span className="block text-[11px] font-medium uppercase tracking-wide text-white/45">
+                  {label}
+                </span>
+                <span className="mt-0.5 block text-sm font-semibold text-white/90">
+                  {date}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

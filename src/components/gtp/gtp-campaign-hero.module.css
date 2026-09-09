@@ -1,0 +1,85 @@
+.registration {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.availability {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  animation: availability-emphasis 6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #b8e46a;
+}
+
+.registerButton {
+  position: relative;
+  outline: 2px solid #ffc581;
+  outline-offset: 5px;
+  box-shadow: none;
+}
+
+.registerButton::before,
+.registerButton::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 2px solid #ffc581;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  animation: registration-ring 4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.registerButton::after {
+  animation-delay: 2s;
+}
+
+.registration:hover .availability,
+.registration:focus-within .availability,
+.registration:hover .registerButton::before,
+.registration:hover .registerButton::after,
+.registration:focus-within .registerButton::before,
+.registration:focus-within .registerButton::after {
+  animation-play-state: paused;
+}
+
+@keyframes registration-ring {
+  0% { opacity: 0.75; transform: scale(1); }
+  85%, 100% { opacity: 0; transform: scale(1.08, 1.28); }
+}
+
+@keyframes availability-emphasis {
+  0%, 35%, 100% { transform: translateY(0); }
+  15% { transform: translateY(-3px); }
+}
+
+@media (min-width: 768px) {
+  .registration { flex: none; }
+  .availability {
+    position: static;
+    font-size: 0.875rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .availability, .registerButton::before, .registerButton::after { animation: none; }
+}
