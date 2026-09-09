@@ -46,6 +46,7 @@ export const gtp2026ProgrammeActivityPageType = defineType({
           {title: 'Action Workshops', value: 'action-workshops'},
           {title: 'AI Thinkers Networking Breakfast', value: 'ai-thinkers-networking-breakfast'},
           {title: 'Excursion Trips', value: 'excursion-trips'},
+          {title: 'Film Screening', value: 'film-screening'},
         ],
       },
       validation: (rule) => rule.required(),

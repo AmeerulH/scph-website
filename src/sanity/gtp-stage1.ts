@@ -85,7 +85,9 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
       primaryCtaLabel,
       primaryCtaHref,
       secondaryCtaLabel,
-      secondaryCtaHref
+      secondaryCtaHref,
+      "backgroundImageUrl": backgroundImage.asset->url,
+      "mobileBackgroundImageUrl": mobileBackgroundImage.asset->url
     },
     importantDatesEyebrow,
     importantDates[]{ label, dateText }

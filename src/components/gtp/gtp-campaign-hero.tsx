@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ function SlideActions({
   layout,
 }: {
   slide: GtpAboutCampaignSlide;
-  layout: "conference" | "workshops" | "breakfast" | "excursions";
+  layout: "conference" | "activity";
 }) {
   const stackOnDesktop = layout === "conference";
 
@@ -50,7 +51,7 @@ function SlideActions({
     <div
       className={
         stackOnDesktop
-          ? "flex w-full flex-row flex-wrap gap-4 md:w-auto md:min-w-60 md:flex-col"
+          ? "flex w-full flex-row flex-wrap gap-6 md:w-auto md:min-w-60 md:flex-col md:gap-4"
           : "flex flex-wrap gap-3"
       }
     >
@@ -84,32 +85,60 @@ function SlideActions({
           size="lg"
           className={
             stackOnDesktop
-              ? "flex-1 justify-center border-2 border-white/50 bg-transparent py-7 text-base text-white hover:border-white hover:bg-white/10 md:flex-none"
+              ? "h-13 flex-none justify-center border-0 bg-transparent px-2 text-base text-white underline decoration-white/60 decoration-1 underline-offset-4 hover:bg-white/10 hover:decoration-white md:border-2 md:border-white/50 md:px-8 md:no-underline md:hover:border-white"
               : "border-white/60 text-white hover:border-white hover:bg-white hover:text-gtp-dark-teal"
           }
           asChild
         >
-          <Cta href={slide.secondaryCtaHref}>{slide.secondaryCtaLabel}</Cta>
+          <Cta href={slide.secondaryCtaHref}>
+            {slide.secondaryCtaLabel}
+            {stackOnDesktop ? <ArrowRight className="md:hidden" aria-hidden="true" /> : null}
+          </Cta>
         </Button>
       ) : null}
     </div>
   );
 }
 
+function CarouselControls({
+  onPrevious,
+  onNext,
+  className,
+}: {
+  onPrevious: () => void;
+  onNext: () => void;
+  className?: string;
+}) {
+  return (
+    <div className={`flex gap-2 ${className ?? ""}`}>
+      <button
+        type="button"
+        onClick={onPrevious}
+        className="flex size-10 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:bg-white/10"
+        aria-label="Previous highlight"
+      >
+        <ChevronLeft />
+      </button>
+      <button
+        type="button"
+        onClick={onNext}
+        className="flex size-10 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:bg-white/10"
+        aria-label="Next highlight"
+      >
+        <ChevronRight />
+      </button>
+    </div>
+  );
+}
+
 function CampaignSlide({
   slide,
-  index,
+  isMain,
 }: {
   slide: GtpAboutCampaignSlide;
-  index: number;
+  isMain: boolean;
 }) {
-  const layout = ["conference", "workshops", "breakfast", "excursions"][index] as
-    | "conference"
-    | "workshops"
-    | "breakfast"
-    | "excursions";
-
-  if (layout === "conference") {
+  if (isMain) {
     return (
       <div className="mx-auto flex h-full w-full max-w-7xl flex-col items-start gap-8 px-6 pb-8 pt-28 md:flex-row md:items-center md:gap-16 md:pb-10 md:pt-32 lg:px-12">
         <div className="flex-1">
@@ -125,64 +154,8 @@ function CampaignSlide({
             </p>
           ) : null}
         </div>
-        <SlideActions slide={slide} layout={layout} />
-      </div>
-    );
-  }
-
-  if (layout === "workshops") {
-    return (
-      <div className="mx-auto grid h-full w-full max-w-7xl items-center gap-10 px-6 pb-16 pt-28 md:grid-cols-[1.15fr_0.85fr] lg:px-12">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-gtp-green">
-            {slide.badge}
-          </p>
-          <h1 className="mt-4 max-w-3xl text-balance font-heading text-5xl font-bold leading-[0.98] text-white md:text-7xl">
-            {slide.title}
-          </h1>
-          {slide.lede ? (
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">{slide.lede}</p>
-          ) : null}
-          <div className="mt-8">
-            <SlideActions slide={slide} layout={layout} />
-          </div>
-        </div>
-        <div className="hidden border-l border-gtp-green/40 pl-8 md:block">
-          <p className="font-heading text-7xl font-bold leading-none text-gtp-green/85">13—14</p>
-          <p className="mt-2 text-sm font-semibold uppercase tracking-[0.18em] text-white/60">
-            October · Kuala Lumpur
-          </p>
-          <p className="mt-8 max-w-56 text-xl leading-snug text-white">
-            Ideas made practical, together.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (layout === "breakfast") {
-    return (
-      <div className="mx-auto flex h-full w-full max-w-7xl items-center px-6 pb-16 pt-28 lg:px-12">
-        <div className="grid w-full items-end gap-8 border-y border-white/20 py-8 md:grid-cols-[0.7fr_1.3fr] md:py-10">
-          <div className="md:pb-2">
-            <p className="inline-flex rounded-full bg-gtp-teal px-4 py-2 text-sm font-semibold text-gtp-dark-teal">
-              {slide.badge}
-            </p>
-            <p className="mt-6 max-w-52 text-lg leading-snug text-white/70">
-              A morning conversation at the edge of human and artificial intelligence.
-            </p>
-          </div>
-          <div>
-            <h1 className="max-w-3xl text-balance font-heading text-4xl font-bold leading-[1.02] text-white sm:text-5xl md:text-6xl">
-              {slide.title}
-            </h1>
-            {slide.lede ? (
-              <p className="mt-4 max-w-2xl text-lg leading-relaxed text-white/80">{slide.lede}</p>
-            ) : null}
-            <div className="mt-7">
-              <SlideActions slide={slide} layout={layout} />
-            </div>
-          </div>
+        <div className="-translate-y-8 w-full md:translate-y-0 md:w-auto">
+          <SlideActions slide={slide} layout="conference" />
         </div>
       </div>
     );
@@ -192,13 +165,13 @@ function CampaignSlide({
     <div className="mx-auto grid h-full w-full max-w-7xl items-center gap-8 px-6 pb-16 pt-28 md:grid-cols-[1fr_0.9fr] lg:px-12">
       <div className="hidden self-center border-y border-white/25 py-7 text-right md:order-2 md:block">
         <p className="text-sm font-semibold uppercase tracking-[0.22em] text-gtp-green">
-          In and around
+          GTP 2026
         </p>
         <p className="mt-3 font-heading text-5xl font-bold leading-[0.9] text-white">
-          Kuala<br />Lumpur
+          {slide.badge}
         </p>
         <p className="mt-5 text-sm font-medium text-white/65">
-          Details forthcoming
+          Conference programme
         </p>
       </div>
       <div className="relative md:order-1">
@@ -210,7 +183,7 @@ function CampaignSlide({
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-white/80">{slide.lede}</p>
         ) : null}
         <div className="mt-8">
-          <SlideActions slide={slide} layout={layout} />
+          <SlideActions slide={slide} layout="activity" />
         </div>
       </div>
     </div>
@@ -227,6 +200,8 @@ export function GtpCampaignHero({
   const count = slides.length;
   const slide = slides[active] ?? slides[0];
   const background = slideBackgrounds[active % slideBackgrounds.length];
+  const mobileBackgroundImageUrl =
+    slide.mobileBackgroundImageUrl ?? slide.backgroundImageUrl;
 
   if (!slide) return null;
 
@@ -237,7 +212,7 @@ export function GtpCampaignHero({
     <section
       aria-roledescription="carousel"
       aria-label="GTP 2026 highlights"
-      className="relative h-112.5 overflow-hidden bg-gtp-dark-teal sm:h-117.5 lg:h-122.5"
+      className="relative min-h-144 overflow-hidden bg-gtp-dark-teal md:h-117.5 lg:h-122.5"
     >
       <AnimatePresence initial={false} mode="wait">
         <motion.div
@@ -249,20 +224,39 @@ export function GtpCampaignHero({
           exit={reducedMotion ? { opacity: 0 } : { opacity: 0, x: -40 }}
           transition={{ duration: reducedMotion ? 0.15 : 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
+          {slide.backgroundImageUrl ? (
+            <Image
+              src={slide.backgroundImageUrl}
+              alt=""
+              fill
+              sizes="100vw"
+              className="pointer-events-none hidden object-cover md:block"
+              quality={80}
+            />
+          ) : null}
+          {mobileBackgroundImageUrl ? (
+            <Image
+              src={mobileBackgroundImageUrl}
+              alt=""
+              fill
+              sizes="100vw"
+              className="pointer-events-none object-cover md:hidden"
+              quality={80}
+            />
+          ) : null}
+          {mobileBackgroundImageUrl ? (
+            <div className="pointer-events-none absolute inset-0 bg-gtp-dark-teal/55" />
+          ) : null}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.06]" />
-          <CampaignSlide slide={slide} index={active} />
+          <CampaignSlide
+            slide={slide}
+            isMain={active === 0}
+          />
         </motion.div>
       </AnimatePresence>
       {count > 1 ? (
-        <div className="absolute bottom-6 right-6 flex gap-2 lg:bottom-8 lg:right-12">
-          <div className="flex gap-2">
-            <button type="button" onClick={previous} className="flex size-10 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:bg-white/10" aria-label="Previous highlight">
-              <ChevronLeft />
-            </button>
-            <button type="button" onClick={next} className="flex size-10 items-center justify-center rounded-full border border-white/30 text-white transition-colors hover:bg-white/10" aria-label="Next highlight">
-              <ChevronRight />
-            </button>
-          </div>
+        <div className="absolute bottom-1 right-6 sm:bottom-8 sm:right-12">
+          <CarouselControls onPrevious={previous} onNext={next} />
         </div>
       ) : null}
     </section>

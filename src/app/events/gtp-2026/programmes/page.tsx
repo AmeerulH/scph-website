@@ -83,7 +83,7 @@ export default function ProgrammesPage() {
   return (
     <>
       <ProgrammesHero />
-      <GtpLimitedAvailabilityBanner />
+      <GtpLimitedAvailabilityBanner layout="programme" />
       <Suspense fallback={<ProgrammeClientFallback />}>
         <ProgrammesPageData />
       </Suspense>

@@ -30,6 +30,11 @@
   background: #b8e46a;
 }
 
+.registration:hover .availability,
+.registration:focus-within .availability {
+  animation-play-state: paused;
+}
+
 .registerButton {
   position: relative;
   outline: 2px solid #ffc581;
@@ -53,8 +58,6 @@
   animation-delay: 2s;
 }
 
-.registration:hover .availability,
-.registration:focus-within .availability,
 .registration:hover .registerButton::before,
 .registration:hover .registerButton::after,
 .registration:focus-within .registerButton::before,
@@ -64,7 +67,7 @@
 
 @keyframes registration-ring {
   0% { opacity: 0.75; transform: scale(1); }
-  85%, 100% { opacity: 0; transform: scale(1.08, 1.28); }
+  85%, 100% { opacity: 0; transform: scale(1.08, 1.18); }
 }
 
 @keyframes availability-emphasis {

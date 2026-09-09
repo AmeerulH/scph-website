@@ -24,6 +24,22 @@ export const gtpAboutCampaignSlideType = defineType({
     defineField({name: 'primaryCtaHref', title: 'Primary button URL', type: 'string'}),
     defineField({name: 'secondaryCtaLabel', title: 'Secondary button label', type: 'string'}),
     defineField({name: 'secondaryCtaHref', title: 'Secondary button URL', type: 'string'}),
+    defineField({
+      name: 'backgroundImage',
+      title: 'Background image — desktop',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Optional full-bleed slide image. Recommended: 2400 × 1200 px (2:1). Text remains overlaid on a dark tint.',
+    }),
+    defineField({
+      name: 'mobileBackgroundImage',
+      title: 'Background image — mobile',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Optional mobile-specific crop. Recommended: 1080 × 1440 px (3:4). Falls back to the desktop image if empty.',
+    }),
   ],
   preview: {select: {title: 'title', subtitle: 'badge'}},
 })

@@ -1,7 +1,8 @@
 export type GtpProgrammeActivitySlug =
   | "action-workshops"
   | "ai-thinkers-networking-breakfast"
-  | "excursion-trips";
+  | "excursion-trips"
+  | "film-screening";
 
 export type GtpProgrammeActivityEntry = {
   title: string;
@@ -80,6 +81,15 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     pageTitle: "Excursion Trips",
     heroLede: "Global Tipping Points Conference 2026",
     intro: "Excursion details will be announced soon. Check back for opportunities to explore Kuala Lumpur and the region with fellow participants.",
+    registrationStatus: "comingSoon",
+    registrationLabel: "Details coming soon",
+    entries: [],
+  },
+  "film-screening": {
+    slug: "film-screening",
+    pageTitle: "Film Screening",
+    heroLede: "Global Tipping Points Conference 2026",
+    intro: "Film screening details will be announced soon. Please check back for the programme, timings and registration information.",
     registrationStatus: "comingSoon",
     registrationLabel: "Details coming soon",
     entries: [],

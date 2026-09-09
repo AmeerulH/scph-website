@@ -37,14 +37,18 @@ export type GtpAboutHeroCopy = {
 
 export type GtpAboutCampaignSlide = Pick<
   GtpAboutHeroCopy,
-  | "badge"
-  | "title"
-  | "lede"
-  | "primaryCtaLabel"
-  | "primaryCtaHref"
-  | "secondaryCtaLabel"
-  | "secondaryCtaHref"
->;
+  "badge" | "title" | "lede"
+> &
+  Partial<
+    Pick<
+      GtpAboutHeroCopy,
+      "primaryCtaLabel" | "primaryCtaHref" | "secondaryCtaLabel" | "secondaryCtaHref"
+    >
+  > & {
+    /** Optional Sanity-uploaded full-bleed images for desktop and mobile hero art direction. */
+    backgroundImageUrl?: string;
+    mobileBackgroundImageUrl?: string;
+  };
 
 export const DEFAULT_GTP_ABOUT_HERO: GtpAboutHeroCopy = {
   enabled: true,
@@ -74,10 +78,8 @@ export const DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES: GtpAboutCampaignSlide[] = [
     badge: "13–14 October 2026",
     title: "Action Workshops",
     lede: "Practical, participatory sessions exploring how ideas become action.",
-    primaryCtaLabel: "Explore workshops",
+    primaryCtaLabel: "Register Now",
     primaryCtaHref: "/events/gtp-2026/programmes/action-workshops",
-    secondaryCtaLabel: "View conference programme",
-    secondaryCtaHref: "/events/gtp-2026/programmes",
   },
   {
     badge: "Day 2 and Day 4",
@@ -96,6 +98,15 @@ export const DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES: GtpAboutCampaignSlide[] = [
     primaryCtaHref: "/events/gtp-2026/programmes/excursion-trips",
     secondaryCtaLabel: "View conference programme",
     secondaryCtaHref: "/events/gtp-2026/programmes",
+  },
+  {
+    badge: "GTP 2026",
+    title: "Film Screening",
+    lede: "Film screening details will be announced soon.",
+    primaryCtaLabel: "Register Now",
+    primaryCtaHref: GTP_2026_REGISTRATION_URL,
+    secondaryCtaLabel: "Learn More",
+    secondaryCtaHref: "/events/gtp-2026/programmes/film-screening",
   },
 ];
 

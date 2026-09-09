@@ -79,6 +79,8 @@ export type GtpAboutHeroBandRaw = {
     primaryCtaHref?: string | null;
     secondaryCtaLabel?: string | null;
     secondaryCtaHref?: string | null;
+    backgroundImageUrl?: string | null;
+    mobileBackgroundImageUrl?: string | null;
   }[] | null;
   importantDatesEyebrow?: string | null;
   importantDates?: GtpAboutHeroImportantDateRaw[] | null;
@@ -289,14 +291,24 @@ function mergeCampaignSlides(raw: GtpAboutHeroBandRaw): GtpAboutCampaignSlide[] 
     ?.map((slide) => {
       const title = slide?.title?.trim();
       if (!title) return null;
+      const primaryCtaLabel = slide.primaryCtaLabel?.trim();
+      const primaryCtaHref = slide.primaryCtaHref?.trim();
+      const secondaryCtaLabel = slide.secondaryCtaLabel?.trim();
+      const secondaryCtaHref = slide.secondaryCtaHref?.trim();
+      const backgroundImageUrl = slide.backgroundImageUrl?.trim();
+      const mobileBackgroundImageUrl = slide.mobileBackgroundImageUrl?.trim();
       return {
         badge: s(slide.badge, ""),
         title,
         lede: s(slide.lede, ""),
-        primaryCtaLabel: s(slide.primaryCtaLabel, ""),
-        primaryCtaHref: s(slide.primaryCtaHref, ""),
-        secondaryCtaLabel: s(slide.secondaryCtaLabel, ""),
-        secondaryCtaHref: s(slide.secondaryCtaHref, ""),
+        ...(primaryCtaLabel && primaryCtaHref
+          ? { primaryCtaLabel, primaryCtaHref }
+          : {}),
+        ...(secondaryCtaLabel && secondaryCtaHref
+          ? { secondaryCtaLabel, secondaryCtaHref }
+          : {}),
+        ...(backgroundImageUrl ? { backgroundImageUrl } : {}),
+        ...(mobileBackgroundImageUrl ? { mobileBackgroundImageUrl } : {}),
       };
     })
     .filter((slide): slide is GtpAboutCampaignSlide => Boolean(slide));
