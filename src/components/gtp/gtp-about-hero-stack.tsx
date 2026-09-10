@@ -3,7 +3,9 @@ import type { GtpFeaturedCarouselSession } from "@/sanity/queries";
 import type { GtpCountdownTimeLeft } from "@/lib/gtp-countdown";
 import { GtpCountdown } from "./countdown";
 import { GtpEventsPreviewCarousel } from "./events-preview-carousel";
-import { GtpHeroGradient } from "./hero-gradient";
+import { GtpCampaignHero } from "./gtp-campaign-hero";
+import { GtpLimitedAvailabilityBanner } from "./gtp-limited-availability-banner";
+import styles from "./gtp-about-hero-stack.module.css";
 
 function GtpAboutImportantDatesStrip({
   eyebrow,
@@ -14,22 +16,32 @@ function GtpAboutImportantDatesStrip({
 }) {
   if (items.length === 0) return null;
   return (
-    <div className="border-t border-white/10 bg-black/15 px-4 py-4 backdrop-blur-sm sm:px-6 lg:px-10">
-      <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-gtp-teal/90 sm:text-left">
-        {eyebrow}
-      </p>
-      <ul className="flex flex-wrap items-start justify-center gap-x-10 gap-y-4 sm:justify-start">
-        {items.map(({ label, date }) => (
-          <li key={label} className="min-w-0 text-center sm:text-left">
-            <span className="block text-[11px] font-medium uppercase tracking-wide text-white/45">
-              {label}
-            </span>
-            <span className="mt-0.5 block text-sm font-semibold text-white/90">
-              {date}
-            </span>
-          </li>
-        ))}
-      </ul>
+    <div className="border-t border-white/10 bg-black/15 backdrop-blur-sm">
+      <div
+        className={`${styles.importantDatesGrid} mx-auto grid max-w-[90rem] lg:grid-cols-[minmax(0,7fr)_minmax(21rem,3fr)]`}
+      >
+        <GtpLimitedAvailabilityBanner
+          layout="inline"
+          className={styles.importantDatesAvailability}
+        />
+        <div className={`${styles.importantDatesList} px-4 py-5 sm:px-6 lg:px-10`}>
+          <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-gtp-teal/90 sm:text-left">
+            {eyebrow}
+          </p>
+          <ul className="flex flex-wrap items-start justify-center gap-x-10 gap-y-4 sm:justify-start">
+            {items.map(({ label, date }) => (
+              <li key={label} className="min-w-0 text-center sm:text-left">
+                <span className="block text-[11px] font-medium uppercase tracking-wide text-white/45">
+                  {label}
+                </span>
+                <span className="mt-0.5 block text-sm font-semibold text-white/90">
+                  {date}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
@@ -44,19 +56,11 @@ export function GtpAboutHeroStack({
   countdownInitial: GtpCountdownTimeLeft;
 }) {
   return (
-    <div className="relative min-h-[min(88svh,1000px)] overflow-hidden bg-linear-to-br from-gtp-dark-teal via-[#0a6070] to-gtp-dark-teal">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.055]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, white 1.5px, transparent 1.5px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_30%,rgba(0,156,180,0.30),transparent_50%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_60%,rgba(134,188,37,0.13),transparent_48%)]" />
-      <GtpHeroGradient copy={heroCopy} />
-      <GtpCountdown initialTime={countdownInitial} />
+    <div className="relative overflow-hidden bg-gtp-dark-teal">
+      <GtpCampaignHero slides={heroCopy.campaignSlides} />
+      <div className="relative">
+        <GtpCountdown initialTime={countdownInitial} />
+      </div>
       <GtpAboutImportantDatesStrip
         eyebrow={heroCopy.importantDatesEyebrow}
         items={heroCopy.importantDates}

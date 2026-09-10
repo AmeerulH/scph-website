@@ -1,0 +1,15 @@
+@media (min-width: 1024px) {
+  .importantDatesGrid {
+    grid-template-columns: minmax(0, 7fr) minmax(21rem, 3fr);
+  }
+
+  .importantDatesList {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .importantDatesAvailability {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

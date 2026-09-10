@@ -17,6 +17,11 @@ import {
   type SanityWorkshopFormRaw,
 } from "./gtp-submissions-form-merge";
 import type { SectionBlock } from "./section-block-types";
+import type {
+  GtpProgrammeActivityPage,
+  GtpProgrammeActivitySlug,
+} from "@/data/gtp-programme-activity-defaults";
+import { DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES } from "@/data/gtp-programme-activity-defaults";
 
 export type {
   GtpGetInvolvedResolvedCopy,
@@ -511,4 +516,72 @@ export async function getGtp2026MediaPage(): Promise<GtpMarketingSectionPageData
 
 export async function getGtp2026BizForumPage(): Promise<GtpMarketingSectionPageData | null> {
   return client.fetch(bizForumPageQuery);
+}
+
+// ─── Programme activity pages ───────────────────────────────────────────────
+
+type SanityProgrammeActivityPage = {
+  slug?: string | null;
+  pageTitle?: string | null;
+  heroLede?: string | null;
+  intro?: string | null;
+  registrationStatus?: string | null;
+  registrationLabel?: string | null;
+  registrationUrl?: string | null;
+  entries?: {
+    title?: string | null;
+    dateLabel?: string | null;
+    description?: string | null;
+    posterUrl?: string | null;
+    posterAlt?: string | null;
+  }[] | null;
+};
+
+const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" && slug == $slug][0]{
+  slug,
+  pageTitle,
+  heroLede,
+  intro,
+  registrationStatus,
+  registrationLabel,
+  registrationUrl,
+  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt }
+}`;
+
+export async function getGtpProgrammeActivityPage(
+  slug: GtpProgrammeActivitySlug,
+): Promise<GtpProgrammeActivityPage> {
+  const fallback = DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES[slug];
+  const doc = await client
+    .fetch<SanityProgrammeActivityPage | null>(programmeActivityPageQuery, { slug })
+    .catch(() => null);
+  if (!doc) return fallback;
+
+  const status =
+    doc.registrationStatus === "open" ||
+    doc.registrationStatus === "comingSoon" ||
+    doc.registrationStatus === "closed"
+      ? doc.registrationStatus
+      : fallback.registrationStatus;
+  const entries =
+    doc.entries
+      ?.filter((entry) => entry.title?.trim())
+      .map((entry) => ({
+        title: entry.title!.trim(),
+        dateLabel: entry.dateLabel?.trim() || undefined,
+        description: entry.description?.trim() || undefined,
+        posterUrl: entry.posterUrl?.trim() || undefined,
+        posterAlt: entry.posterAlt?.trim() || undefined,
+      })) ?? fallback.entries;
+
+  return {
+    slug,
+    pageTitle: doc.pageTitle?.trim() || fallback.pageTitle,
+    heroLede: doc.heroLede?.trim() || fallback.heroLede,
+    intro: doc.intro?.trim() || fallback.intro,
+    registrationStatus: status,
+    registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
+    registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
+    entries,
+  };
 }
