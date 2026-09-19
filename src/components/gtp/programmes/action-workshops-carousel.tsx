@@ -180,10 +180,19 @@ function WorkshopRow({ date, workshops, onSelect }: { date: string; workshops: W
                 </span>
               </div>
               <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                <h3 className="line-clamp-3 font-heading text-base font-bold leading-snug">
-                  {workshop.title}
-                </h3>
-                <p className="mt-2 text-xs font-semibold text-white/70">View details →</p>
+                {workshop.posterUrl ? null : (
+                  <h3 className="line-clamp-3 font-heading text-base font-bold leading-snug">
+                    {workshop.title}
+                  </h3>
+                )}
+                <p
+                  className={cn(
+                    "text-xs font-semibold text-white/70",
+                    workshop.posterUrl ? "" : "mt-2",
+                  )}
+                >
+                  View details →
+                </p>
               </div>
             </button>
           ))}
