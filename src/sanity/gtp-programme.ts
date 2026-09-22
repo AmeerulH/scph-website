@@ -16,7 +16,16 @@ import type {
 } from "@/components/gtp/programmes/types";
 import { client } from "./client";
 
-const TAB_ORDER = ["pre", "day1", "day2", "day3", "day4"] as const satisfies readonly TabId[];
+/** CMS may still define an optional pre-conference day; it is omitted from static fallbacks. */
+export type GtpProgrammeTabId = TabId | "pre";
+
+const TAB_ORDER = [
+  "pre",
+  "day1",
+  "day2",
+  "day3",
+  "day4",
+] as const satisfies readonly GtpProgrammeTabId[];
 
 const SESSION_TYPES = new Set<SessionType>([
   "opening",
@@ -43,7 +52,7 @@ const VENUE_TYPES = new Set<ProgrammeVenueType>([
   "other",
 ]);
 
-export type GtpProgrammeTab = { id: TabId; label: string };
+export type GtpProgrammeTab = { id: GtpProgrammeTabId; label: string };
 
 /** Conference days shown in the events preview carousel (not pre-conference). */
 export type GtpCarouselDayTab = "day1" | "day2" | "day3" | "day4";
@@ -459,13 +468,13 @@ function buildTabsFromSanityDays(days: SanityProgrammeDayRow[]): GtpProgrammeTab
     if (id && !byTab.has(id)) byTab.set(id, day);
   }
 
-  return TAB_ORDER.map((id) => {
-    const fromSanity = byTab.get(id);
-    const fallback = staticTabs.find((t) => t.id === id)!;
+  return TAB_ORDER.filter((id) => byTab.has(id)).map((id) => {
+    const fromSanity = byTab.get(id)!;
+    const fallback = staticTabs.find((t) => t.id === id);
     const label =
-      typeof fromSanity?.label === "string" && fromSanity.label.trim()
+      typeof fromSanity.label === "string" && fromSanity.label.trim()
         ? fromSanity.label.trim()
-        : fallback.label;
+        : (fallback?.label ?? id);
     return { id, label };
   });
 }
