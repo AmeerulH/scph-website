@@ -54,6 +54,7 @@ export function ProgrammeActivityPage({
       <GtpForestHero
         eyebrow="Programme activities"
         title={page.pageTitle}
+        backgroundImageUrl={page.heroImageUrl}
         lede={page.heroLede}
         bottomSpacing="compact"
       />

@@ -47,6 +47,10 @@ const navItems: NavItem[] = [
         label: "Film Screening",
         href: "/events/gtp-2026/programmes/film-screening",
       },
+      {
+        label: "Sensorial Station",
+        href: "/events/gtp-2026/programmes/sensorial-station",
+      },
     ],
   },
   { label: "Speakers", href: "/events/gtp-2026/speakers" },

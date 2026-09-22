@@ -523,6 +523,7 @@ export async function getGtp2026BizForumPage(): Promise<GtpMarketingSectionPageD
 type SanityProgrammeActivityPage = {
   slug?: string | null;
   pageTitle?: string | null;
+  heroImageUrl?: string | null;
   heroLede?: string | null;
   intro?: string | null;
   registrationStatus?: string | null;
@@ -540,6 +541,7 @@ type SanityProgrammeActivityPage = {
 const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" && slug == $slug][0]{
   slug,
   pageTitle,
+  "heroImageUrl": heroImage.asset->url,
   heroLede,
   intro,
   registrationStatus,
@@ -577,6 +579,7 @@ export async function getGtpProgrammeActivityPage(
   return {
     slug,
     pageTitle: doc.pageTitle?.trim() || fallback.pageTitle,
+    heroImageUrl: doc.heroImageUrl?.trim() || fallback.heroImageUrl,
     heroLede: doc.heroLede?.trim() || fallback.heroLede,
     intro: doc.intro?.trim() || fallback.intro,
     registrationStatus: status,

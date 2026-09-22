@@ -1,5 +1,5 @@
 /**
- * Creates the three GTP programme-activity page documents if missing.
+ * Creates the GTP programme-activity page documents if missing.
  *
  * This script refuses `production`: it is for preview/test datasets. Editors own
  * published content, so it never overwrites a document that already exists.

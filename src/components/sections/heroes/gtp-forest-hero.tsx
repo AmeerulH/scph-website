@@ -15,6 +15,8 @@ const titleSizeClasses = {
 export type GtpForestHeroProps = {
   eyebrow?: string;
   title: React.ReactNode;
+  /** Optional CMS-managed background image; the forest artwork is the fallback. */
+  backgroundImageUrl?: string;
   /** Primary line under accent (text-base md:text-lg) */
   lede?: string;
   /** Secondary line (smaller, e.g. programme disclaimer) */
@@ -28,6 +30,7 @@ export type GtpForestHeroProps = {
 export function GtpForestHero({
   eyebrow = "GTP 2026",
   title,
+  backgroundImageUrl,
   lede,
   ledeSecondary,
   titleSize = "default",
@@ -42,7 +45,7 @@ export function GtpForestHero({
       )}
     >
       <Image
-        src={FOREST_BG}
+        src={backgroundImageUrl || FOREST_BG}
         alt=""
         fill
         className="object-cover object-center"
@@ -50,8 +53,8 @@ export function GtpForestHero({
         quality={40}
         priority
         fetchPriority="high"
-        placeholder="blur"
-        blurDataURL={FOREST_BG_BLUR}
+        placeholder={backgroundImageUrl ? "empty" : "blur"}
+        blurDataURL={backgroundImageUrl ? undefined : FOREST_BG_BLUR}
       />
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />
 
