@@ -163,6 +163,7 @@ export function WorkshopModal({
                   <ProgrammeModalShareRegisterColumn
                     shareTitle={w.title}
                     showWorkshopRegistration
+                    workshopTitle={w.title}
                   />
                   <div className="flex flex-col gap-6">
                     <ProgrammeModalHostedByBlock hostedBy={hostedBy} />

@@ -3,6 +3,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
@@ -114,7 +115,19 @@ function WorkshopDetailModal({
   );
 }
 
-function WorkshopRow({ date, workshops, onSelect }: { date: string; workshops: Workshop[]; onSelect: (workshop: Workshop) => void }) {
+function WorkshopRow({
+  date,
+  workshops,
+  onSelect,
+  highlightedWorkshopTitle,
+  highlightedWorkshopRef,
+}: {
+  date: string;
+  workshops: Workshop[];
+  onSelect: (workshop: Workshop) => void;
+  highlightedWorkshopTitle: string | null;
+  highlightedWorkshopRef: React.RefObject<HTMLButtonElement | null>;
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     dragFree: true,
@@ -153,13 +166,21 @@ function WorkshopRow({ date, workshops, onSelect }: { date: string; workshops: W
       </div>
       <div className="-my-10 overflow-hidden py-10" ref={emblaRef}>
         <div className="flex gap-4">
-          {workshops.map((workshop) => (
-            <button
-              key={workshop.title}
-              type="button"
-              onClick={() => onSelect(workshop)}
-              className="group relative h-80 w-60 shrink-0 overflow-hidden rounded-2xl bg-gtp-dark-teal text-left shadow-lg transition-transform duration-300 hover:z-10 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-teal"
-            >
+          {workshops.map((workshop) => {
+            const isHighlighted = workshop.title === highlightedWorkshopTitle;
+
+            return (
+              <button
+                key={workshop.title}
+                ref={isHighlighted ? highlightedWorkshopRef : undefined}
+                type="button"
+                onClick={() => onSelect(workshop)}
+                aria-current={isHighlighted ? "true" : undefined}
+                className={cn(
+                  "group relative h-80 w-60 shrink-0 overflow-hidden rounded-2xl bg-gtp-dark-teal text-left shadow-lg transition-transform duration-300 hover:z-10 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-teal",
+                  isHighlighted && "z-10 scale-[1.03] ring-4 ring-gtp-orange ring-offset-4",
+                )}
+              >
               {workshop.posterUrl ? (
                 <Image
                   src={workshop.posterUrl}
@@ -173,7 +194,9 @@ function WorkshopRow({ date, workshops, onSelect }: { date: string; workshops: W
                   <div className="absolute inset-0 bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.14]" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent" />
+              {!workshop.posterUrl ? (
+                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/15 to-transparent" />
+              ) : null}
               <div className="absolute left-3 top-3">
                 <span className="rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
                   Action Workshop
@@ -194,8 +217,9 @@ function WorkshopRow({ date, workshops, onSelect }: { date: string; workshops: W
                   View details →
                 </p>
               </div>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -208,17 +232,48 @@ export function ActionWorkshopsCarousel({
   entries: GtpProgrammeActivityPage["entries"];
 }) {
   const [selected, setSelected] = React.useState<Workshop | null>(null);
+  const searchParams = useSearchParams();
+  const requestedWorkshopTitle = searchParams.get("workshop")?.trim() || null;
+  const [highlightedWorkshopTitle, setHighlightedWorkshopTitle] = React.useState<string | null>(null);
+  const highlightedWorkshopRef = React.useRef<HTMLButtonElement | null>(null);
   const groups = entries.reduce<Record<string, Workshop[]>>((result, entry) => {
     const date = entry.dateLabel || "To be confirmed";
     (result[date] ??= []).push(entry);
     return result;
   }, {});
 
+  React.useEffect(() => {
+    if (!requestedWorkshopTitle) return;
+
+    setHighlightedWorkshopTitle(requestedWorkshopTitle);
+    const frame = window.requestAnimationFrame(() => {
+      highlightedWorkshopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+      highlightedWorkshopRef.current?.focus({ preventScroll: true });
+    });
+    const timeout = window.setTimeout(() => setHighlightedWorkshopTitle(null), 5000);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+    };
+  }, [requestedWorkshopTitle]);
+
   return (
     <>
-      <div className="mt-12 space-y-12">
+      <div id="action-workshops" className="mt-12 space-y-12">
         {Object.entries(groups).map(([date, workshops]) => (
-          <WorkshopRow key={date} date={date} workshops={workshops} onSelect={setSelected} />
+          <WorkshopRow
+            key={date}
+            date={date}
+            workshops={workshops}
+            onSelect={setSelected}
+            highlightedWorkshopTitle={highlightedWorkshopTitle}
+            highlightedWorkshopRef={highlightedWorkshopRef}
+          />
         ))}
       </div>
       <WorkshopDetailModal workshop={selected} onClose={() => setSelected(null)} />

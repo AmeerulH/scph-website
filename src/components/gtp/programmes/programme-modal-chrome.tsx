@@ -80,12 +80,15 @@ export function ProgrammeModalShareRegisterColumn({
   shareTitle,
   hostedBy,
   showWorkshopRegistration = false,
+  workshopTitle,
 }: {
   shareTitle: string;
   /** When present, render host details alongside share controls. */
   hostedBy?: GtpSessionModalHostedBy;
   /** Show the attendee-verification gate for Action Workshop details. */
   showWorkshopRegistration?: boolean;
+  /** When set, send users to this workshop on the Action Workshops page. */
+  workshopTitle?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -194,7 +197,9 @@ export function ProgrammeModalShareRegisterColumn({
         </p>
       </div>
 
-      {showWorkshopRegistration ? <ActionWorkshopRegistration /> : null}
+      {showWorkshopRegistration ? (
+        <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
+      ) : null}
     </div>
   );
 }

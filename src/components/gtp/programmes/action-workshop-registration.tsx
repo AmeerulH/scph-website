@@ -9,10 +9,43 @@ type VerificationState =
   | { status: "loading" }
   | { status: "verified"; formUrl: string | null };
 
-export function ActionWorkshopRegistration() {
+const ACTION_WORKSHOP_REGISTRATION_AVAILABLE = false;
+
+export function ActionWorkshopRegistration({
+  redirectToWorkshops = false,
+  workshopTitle,
+}: {
+  redirectToWorkshops?: boolean;
+  workshopTitle?: string;
+}) {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [state, setState] = React.useState<VerificationState>({ status: "idle" });
+
+  if (redirectToWorkshops) {
+    const href = workshopTitle
+      ? `/events/gtp-2026/programmes/action-workshops?workshop=${encodeURIComponent(workshopTitle)}#action-workshops`
+      : "/events/gtp-2026/programmes/action-workshops#action-workshops";
+
+    return (
+      <Button variant="gtpCta" asChild>
+        <a href={href}>Register now</a>
+      </Button>
+    );
+  }
+
+  if (!ACTION_WORKSHOP_REGISTRATION_AVAILABLE) {
+    return (
+      <div>
+        <Button variant="gtpCta" type="button" disabled>
+          Register now
+        </Button>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600">
+          Action Workshop registration will be available soon.
+        </p>
+      </div>
+    );
+  }
 
   function close() {
     setOpen(false);
