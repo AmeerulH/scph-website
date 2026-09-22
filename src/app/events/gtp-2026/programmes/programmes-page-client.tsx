@@ -6,9 +6,11 @@ import { motion, AnimatePresence } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import { TabId, TYPE_META } from "@/components/gtp/programmes/data";
+import { TYPE_META } from "@/components/gtp/programmes/data";
+import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import type {
   GtpProgrammeTab,
+  GtpProgrammeTabId,
   GtpSessionModalHostedBy,
 } from "@/sanity/queries";
 import { PreConferencePlaceholder } from "@/components/gtp/programmes/pre-conference-placeholder";
@@ -430,19 +432,19 @@ export function ProgrammesPageClient({
   const tabIds = new Set(tabs.map((t) => t.id));
   const tabParam = searchParams.get("tab");
   const isValidTabParam = Boolean(
-    tabParam && tabIds.has(tabParam as TabId),
+    tabParam && tabIds.has(tabParam as GtpProgrammeTabId),
   );
-  const initialTab: TabId =
-    tabParam && tabIds.has(tabParam as TabId)
-      ? (tabParam as TabId)
+  const initialTab: GtpProgrammeTabId =
+    tabParam && tabIds.has(tabParam as GtpProgrammeTabId)
+      ? (tabParam as GtpProgrammeTabId)
       : tabIds.has("day1")
         ? "day1"
         : tabIds.has("pre")
           ? "pre"
-          : ((tabs[0]?.id ?? "day1") as TabId);
+          : (tabs[0]?.id ?? "day1");
   const initialSession = searchParams.get("session");
 
-  const [activeTab, setActiveTab] = React.useState<TabId>(initialTab);
+  const [activeTab, setActiveTab] = React.useState<GtpProgrammeTabId>(initialTab);
   const [selectedType, setSelectedType] = React.useState<SessionType | "all">("all");
   const [selectedTheme, setSelectedTheme] = React.useState<ThemeId>("all");
   const [selectedSpeaker, setSelectedSpeaker] = React.useState<string | null>(null);
@@ -454,7 +456,7 @@ export function ProgrammesPageClient({
 
   React.useEffect(() => {
     if (isValidTabParam && tabParam) {
-      setActiveTab(tabParam as TabId);
+      setActiveTab(tabParam as GtpProgrammeTabId);
     }
     setHighlightSession(initialSession);
   }, [initialSession, isValidTabParam, tabParam]);
@@ -466,7 +468,7 @@ export function ProgrammesPageClient({
     return () => clearTimeout(id);
   }, [highlightSession]);
 
-  const dayMap: Record<Exclude<TabId, "pre">, Session[]> = React.useMemo(
+  const dayMap: Record<GtpProgrammeCalendarDayTab, Session[]> = React.useMemo(
     () => ({ day1, day2, day3, day4 }),
     [day1, day2, day3, day4],
   );
@@ -477,7 +479,7 @@ export function ProgrammesPageClient({
   );
 
   const dayBuckets = React.useMemo(() => {
-    const ids: Exclude<TabId, "pre">[] = ["day1", "day2", "day3", "day4"];
+    const ids: GtpProgrammeCalendarDayTab[] = ["day1", "day2", "day3", "day4"];
     return ids.map((tabId) => ({
       tabId,
       dayLabel: tabs.find((t) => t.id === tabId)?.label ?? tabId,
@@ -499,7 +501,7 @@ export function ProgrammesPageClient({
     }
   }
 
-  function handleTabClick(id: TabId) {
+  function handleTabClick(id: GtpProgrammeTabId) {
     setActiveTab(id);
     if (id === "pre") setFiltersOpen(false);
     scrollToAnchor();
@@ -666,7 +668,7 @@ export function ProgrammesPageClient({
                     highlightSession={highlightSession ?? undefined}
                     highlightSpeaker={selectedSpeaker ?? undefined}
                     dayLabel={currentDayLabel}
-                    calendarTabId={activeTab as Exclude<TabId, "pre">}
+                    calendarTabId={activeTab as GtpProgrammeCalendarDayTab}
                     sessionModalHostedBy={sessionModalHostedBy}
                     speakerProfiles={speakerProfiles}
                   />

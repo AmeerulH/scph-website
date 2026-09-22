@@ -162,7 +162,7 @@ async function buildDays(client: SanityClient, appendTestSession: boolean) {
   return Promise.all(
     TABS.map(async (tab) => {
       const carousel = CAROUSEL[tab.id] ?? {}
-      let sessionsRaw = tab.id === 'pre' ? [] : DAY_SESSIONS[tab.id] ?? []
+      let sessionsRaw = DAY_SESSIONS[tab.id] ?? []
       if (appendTestSession && tab.id === 'day1') {
         sessionsRaw = [...sessionsRaw, SANITY_CONNECTION_TEST_SESSION]
       }
