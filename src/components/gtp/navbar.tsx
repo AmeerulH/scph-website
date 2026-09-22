@@ -2,11 +2,9 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import { usePathname } from "next/navigation";
 import { Menu, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -15,7 +13,6 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
-import { Separator } from "@/components/ui/separator";
 
 // ─── Nav structure ────────────────────────────────────────────────────────────
 
@@ -213,19 +210,6 @@ export function GtpNavbar() {
           )}
         </div>
 
-        {/* Desktop CTA */}
-        <div className="hidden lg:block">
-          <Button variant="gtpCta" size="sm" asChild>
-            <a
-              href={GTP_2026_REGISTRATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Register Now
-            </a>
-          </Button>
-        </div>
-
         {/* Mobile hamburger */}
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
@@ -315,26 +299,6 @@ export function GtpNavbar() {
                 )}
               </nav>
 
-              <Separator className="mx-4 bg-white/10" />
-
-              <div className="px-6 py-5">
-                <SheetClose asChild>
-                  <Button
-                    variant="gtpCta"
-                    className="w-full"
-                    asChild
-                  >
-                    <a
-                      href={GTP_2026_REGISTRATION_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={closeSheet}
-                    >
-                      Register Now
-                    </a>
-                  </Button>
-                </SheetClose>
-              </div>
             </div>
           </SheetContent>
         </Sheet>

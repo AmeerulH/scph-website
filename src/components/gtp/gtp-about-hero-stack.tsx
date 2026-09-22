@@ -4,8 +4,6 @@ import type { GtpCountdownTimeLeft } from "@/lib/gtp-countdown";
 import { GtpCountdown } from "./countdown";
 import { GtpEventsPreviewCarousel } from "./events-preview-carousel";
 import { GtpCampaignHero } from "./gtp-campaign-hero";
-import { GtpLimitedAvailabilityBanner } from "./gtp-limited-availability-banner";
-import styles from "./gtp-about-hero-stack.module.css";
 
 function GtpAboutImportantDatesStrip({
   eyebrow,
@@ -18,13 +16,9 @@ function GtpAboutImportantDatesStrip({
   return (
     <div className="border-t border-white/10 bg-black/15 backdrop-blur-sm">
       <div
-        className={`${styles.importantDatesGrid} mx-auto grid max-w-[90rem] lg:grid-cols-[minmax(0,7fr)_minmax(21rem,3fr)]`}
+        className="mx-auto max-w-[90rem]"
       >
-        <GtpLimitedAvailabilityBanner
-          layout="inline"
-          className={styles.importantDatesAvailability}
-        />
-        <div className={`${styles.importantDatesList} px-4 py-5 sm:px-6 lg:px-10`}>
+        <div className="px-4 py-5 sm:px-6 lg:px-10">
           <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-gtp-teal/90 sm:text-left">
             {eyebrow}
           </p>

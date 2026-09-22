@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ProgrammesHero } from "@/components/gtp/programmes/programmes-hero";
-import { GtpLimitedAvailabilityBanner } from "@/components/gtp/gtp-limited-availability-banner";
 import { getGtp2026Programme } from "@/sanity/queries";
 import {
   getGtp2026Speakers,
@@ -83,7 +82,6 @@ export default function ProgrammesPage() {
   return (
     <>
       <ProgrammesHero />
-      <GtpLimitedAvailabilityBanner layout="programme" />
       <Suspense fallback={<ProgrammeClientFallback />}>
         <ProgrammesPageData />
       </Suspense>

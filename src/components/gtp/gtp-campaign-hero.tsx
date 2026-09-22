@@ -8,7 +8,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { GtpAboutCampaignSlide } from "@/data/gtp-about-page-defaults";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import styles from "./gtp-campaign-hero.module.css";
+import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 
 function Cta({
   href,
@@ -38,6 +38,10 @@ const slideBackgrounds = [
   "bg-[#35622b] bg-[radial-gradient(circle_at_82%_30%,rgba(0,156,180,0.32),transparent_34%),linear-gradient(110deg,rgba(14,67,66,0.56),transparent_66%)]",
 ] as const;
 
+function isConferenceRegistrationCta(href: string) {
+  return href === GTP_2026_REGISTRATION_URL;
+}
+
 function SlideActions({
   slide,
   layout,
@@ -46,6 +50,15 @@ function SlideActions({
   layout: "conference" | "activity";
 }) {
   const stackOnDesktop = layout === "conference";
+  const primaryCtaLabel = slide.primaryCtaLabel;
+  const primaryCtaHref = slide.primaryCtaHref;
+  const secondaryCtaLabel = slide.secondaryCtaLabel;
+  const secondaryCtaHref = slide.secondaryCtaHref;
+  const showPrimary =
+    Boolean(primaryCtaHref && primaryCtaLabel) && !isConferenceRegistrationCta(primaryCtaHref!);
+  const showSecondary =
+    Boolean(secondaryCtaHref && secondaryCtaLabel) &&
+    !isConferenceRegistrationCta(secondaryCtaHref!);
 
   return (
     <div
@@ -55,31 +68,25 @@ function SlideActions({
           : "flex flex-wrap gap-3"
       }
     >
-      {slide.primaryCtaHref && slide.primaryCtaLabel ? (
-        <div className={stackOnDesktop ? styles.registration : "contents"}>
-          {stackOnDesktop ? (
-            <p className={styles.availability}>
-              <span aria-hidden="true" className={styles.dot} />
-              Limited seats left
-            </p>
-          ) : null}
+      {showPrimary ? (
+        <div className={stackOnDesktop ? "w-full" : "contents"}>
         <Button
           variant="gtpCta"
           size="lg"
           className={
             stackOnDesktop
-              ? `${styles.registerButton} w-full justify-center py-7 text-base`
+              ? "w-full justify-center py-7 text-base"
               : "justify-center px-6"
           }
           asChild
         >
-          <Cta href={slide.primaryCtaHref}>
-            {slide.primaryCtaLabel.replace(/\s*→\s*$/, "")} <ArrowRight aria-hidden="true" />
+          <Cta href={primaryCtaHref!}>
+            {primaryCtaLabel!.replace(/\s*→\s*$/, "")} <ArrowRight aria-hidden="true" />
           </Cta>
         </Button>
         </div>
       ) : null}
-      {slide.secondaryCtaHref && slide.secondaryCtaLabel ? (
+      {showSecondary ? (
         <Button
           variant="gtpOutline"
           size="lg"
@@ -90,8 +97,8 @@ function SlideActions({
           }
           asChild
         >
-          <Cta href={slide.secondaryCtaHref}>
-            {slide.secondaryCtaLabel}
+          <Cta href={secondaryCtaHref!}>
+            {secondaryCtaLabel}
             {stackOnDesktop ? <ArrowRight className="md:hidden" aria-hidden="true" /> : null}
           </Cta>
         </Button>
