@@ -230,7 +230,7 @@ export function GtpCampaignHero({
               alt=""
               fill
               sizes="100vw"
-              className="pointer-events-none hidden object-cover md:block"
+              className="pointer-events-none z-0 hidden object-cover md:block"
               quality={80}
             />
           ) : null}
@@ -240,22 +240,24 @@ export function GtpCampaignHero({
               alt=""
               fill
               sizes="100vw"
-              className="pointer-events-none object-cover md:hidden"
+              className="pointer-events-none z-0 object-cover md:hidden"
               quality={80}
             />
           ) : null}
           {mobileBackgroundImageUrl ? (
-            <div className="pointer-events-none absolute inset-0 bg-gtp-dark-teal/55" />
+            <div className="pointer-events-none absolute inset-0 z-10 bg-gtp-dark-teal/55" />
           ) : null}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.06]" />
-          <CampaignSlide
-            slide={slide}
-            isMain={active === 0}
-          />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.06]" />
+          <div className="relative z-20 h-full">
+            <CampaignSlide
+              slide={slide}
+              isMain={active === 0}
+            />
+          </div>
         </motion.div>
       </AnimatePresence>
       {count > 1 ? (
-        <div className="absolute bottom-1 right-6 sm:bottom-8 sm:right-12">
+        <div className="absolute bottom-1 right-6 z-30 sm:bottom-8 sm:right-12">
           <CarouselControls onPrevious={previous} onNext={next} />
         </div>
       ) : null}
