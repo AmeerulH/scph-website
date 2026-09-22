@@ -10,9 +10,9 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
-import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import { ActionWorkshopRegistration } from "./action-workshop-registration";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -79,10 +79,16 @@ const SHARE_FALLBACK_URL =
 export function ProgrammeModalShareRegisterColumn({
   shareTitle,
   hostedBy,
+  showWorkshopRegistration = false,
+  workshopTitle,
 }: {
   shareTitle: string;
   /** When present, render host details alongside share controls. */
   hostedBy?: GtpSessionModalHostedBy;
+  /** Show the attendee-verification gate for Action Workshop details. */
+  showWorkshopRegistration?: boolean;
+  /** When set, send users to this workshop on the Action Workshops page. */
+  workshopTitle?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -191,15 +197,9 @@ export function ProgrammeModalShareRegisterColumn({
         </p>
       </div>
 
-      <a
-        href={GTP_2026_REGISTRATION_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-gtp-orange py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-gtp-orange-dark"
-      >
-        Register to Join
-        <span aria-hidden>→</span>
-      </a>
+      {showWorkshopRegistration ? (
+        <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
+      ) : null}
     </div>
   );
 }

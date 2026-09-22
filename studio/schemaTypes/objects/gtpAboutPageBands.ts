@@ -12,6 +12,38 @@ function gtpAboutVisibleOnSiteField() {
   })
 }
 
+export const gtpAboutCampaignSlideType = defineType({
+  name: 'gtpAboutCampaignSlide',
+  title: 'Campaign hero slide',
+  type: 'object',
+  fields: [
+    defineField({name: 'badge', title: 'Badge', type: 'string'}),
+    defineField({name: 'title', title: 'Headline', type: 'string', validation: (rule) => rule.required()}),
+    defineField({name: 'lede', title: 'Supporting line', type: 'text', rows: 3}),
+    defineField({name: 'primaryCtaLabel', title: 'Primary button label', type: 'string'}),
+    defineField({name: 'primaryCtaHref', title: 'Primary button URL', type: 'string'}),
+    defineField({name: 'secondaryCtaLabel', title: 'Secondary button label', type: 'string'}),
+    defineField({name: 'secondaryCtaHref', title: 'Secondary button URL', type: 'string'}),
+    defineField({
+      name: 'backgroundImage',
+      title: 'Background image — desktop',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Optional full-bleed slide image. Recommended: 2400 × 1200 px (2:1). Text remains overlaid on a dark tint.',
+    }),
+    defineField({
+      name: 'mobileBackgroundImage',
+      title: 'Background image — mobile',
+      type: 'image',
+      options: {hotspot: true},
+      description:
+        'Optional mobile-specific crop. Recommended: 1080 × 1440 px (3:4). Falls back to the desktop image if empty.',
+    }),
+  ],
+  preview: {select: {title: 'title', subtitle: 'badge'}},
+})
+
 /** Hero text + CTAs above the programme carousel (GtpHeroGradient). */
 export const gtpAboutHeroBandType = defineType({
   name: 'gtpAboutHeroBand',
@@ -26,6 +58,13 @@ export const gtpAboutHeroBandType = defineType({
     defineField({name: 'primaryCtaHref', title: 'Primary CTA URL', type: 'string'}),
     defineField({name: 'secondaryCtaLabel', title: 'Secondary CTA label', type: 'string'}),
     defineField({name: 'secondaryCtaHref', title: 'Secondary CTA URL', type: 'string'}),
+    defineField({
+      name: 'campaignSlides',
+      title: 'Campaign hero slides',
+      type: 'array',
+      of: [{type: 'gtpAboutCampaignSlide'}],
+      description: 'Drag to reorder. Leave empty to use the headline and CTAs above as one hero slide.',
+    }),
     defineField({
       name: 'importantDatesEyebrow',
       title: 'Important dates — strip heading',
@@ -615,6 +654,7 @@ export const gtpAboutAccommodationActivitiesBandType = defineType({
 })
 
 export const gtpAboutPageBandObjectTypes = [
+  gtpAboutCampaignSlideType,
   gtpAboutHeroBandType,
   gtpAboutWhyMattersBandType,
   gtpAboutThemeCardType,

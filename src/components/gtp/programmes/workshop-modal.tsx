@@ -160,7 +160,11 @@ export function WorkshopModal({
                 <SessionObjectiveBlock text={w.objective} className="mt-4" />
 
                 <div className="mt-6 border-t border-gray-100 pt-5 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-                  <ProgrammeModalShareRegisterColumn shareTitle={w.title} />
+                  <ProgrammeModalShareRegisterColumn
+                    shareTitle={w.title}
+                    showWorkshopRegistration
+                    workshopTitle={w.title}
+                  />
                   <div className="flex flex-col gap-6">
                     <ProgrammeModalHostedByBlock hostedBy={hostedBy} />
                     {w.speakers && w.speakers.length > 0 ? (

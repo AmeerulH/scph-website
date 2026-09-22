@@ -9,6 +9,7 @@ import * as path from "path";
 
 import {
   DEFAULT_GTP_ABOUT_HERO,
+  DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES,
   DEFAULT_GTP_ABOUT_IMPORTANT_DATES,
   DEFAULT_GTP_EVENT_INQUIRY,
   DEFAULT_GTP_GALLERY_BAND,
@@ -395,9 +396,14 @@ export async function buildGtpAboutPageSeedDocument(
     _type: "gtp2026AboutPage",
     internalTitle: "GTP About",
     heroBand: (() => {
-      const { importantDates: _dates, ...heroRest } = DEFAULT_GTP_ABOUT_HERO;
+      const { importantDates: _dates, campaignSlides: _slides, ...heroRest } = DEFAULT_GTP_ABOUT_HERO;
       return {
         ...heroRest,
+        campaignSlides: DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES.map((slide, i) => ({
+          _type: "gtpAboutCampaignSlide",
+          _key: `campaign-slide-${i}`,
+          ...slide,
+        })),
         importantDates: DEFAULT_GTP_ABOUT_IMPORTANT_DATES.map((row, i) => ({
           _type: "gtpFooterImportantDate" as const,
           _key: `hero-id-${i}`,

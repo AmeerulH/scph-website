@@ -217,6 +217,7 @@ export function SessionModal({
                       <ProgrammeModalShareRegisterColumn
                         shareTitle={session.title}
                         hostedBy={hostedBy}
+                        showWorkshopRegistration={session.type === "concurrent"}
                       />
                     </div>
 
