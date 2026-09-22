@@ -1,7 +1,6 @@
 export type GtpProgrammeActivitySlug =
   | "action-workshops"
   | "ai-thinkers-networking-breakfast"
-  | "excursion-trips"
   | "film-screening";
 
 export type GtpProgrammeActivityEntry = {
@@ -75,15 +74,6 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
         description: "Grounded in the logic of ProSocial AI, these sessions connect technological change with human agency, meaning, prosperity and planetary health. Bring a perspective, a question, or a productive disagreement.",
       },
     ],
-  },
-  "excursion-trips": {
-    slug: "excursion-trips",
-    pageTitle: "Excursion Trips",
-    heroLede: "Global Tipping Points Conference 2026",
-    intro: "Excursion details will be announced soon. Check back for opportunities to explore Kuala Lumpur and the region with fellow participants.",
-    registrationStatus: "comingSoon",
-    registrationLabel: "Details coming soon",
-    entries: [],
   },
   "film-screening": {
     slug: "film-screening",

@@ -21,7 +21,6 @@ export const GTP_2026_MARKETING_PATHS: readonly string[] = [
   "/events/gtp-2026/programmes",
   "/events/gtp-2026/programmes/action-workshops",
   "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
-  "/events/gtp-2026/programmes/excursion-trips",
   "/events/gtp-2026/programmes/film-screening",
   "/events/gtp-2026/speakers",
   "/events/gtp-2026/submissions",

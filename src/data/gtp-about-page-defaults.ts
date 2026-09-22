@@ -92,15 +92,6 @@ export const DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES: GtpAboutCampaignSlide[] = [
   },
   {
     badge: "GTP 2026",
-    title: "Excursion Trips",
-    lede: "Discover opportunities to explore Kuala Lumpur and the region with fellow participants.",
-    primaryCtaLabel: "Explore excursions",
-    primaryCtaHref: "/events/gtp-2026/programmes/excursion-trips",
-    secondaryCtaLabel: "View conference programme",
-    secondaryCtaHref: "/events/gtp-2026/programmes",
-  },
-  {
-    badge: "GTP 2026",
     title: "Film Screening",
     lede: "Film screening details will be announced soon.",
     primaryCtaLabel: "Register Now",

@@ -59,7 +59,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026ProgrammeActivityPage",
     title: "Programme activity pages",
     notes:
-      "One document per page: choose Action Workshops, AI Thinkers Networking Breakfast, Excursion Trips, or Film Screening in **Page**. Edit the title, intro, registration status and activity rows here. Posters need meaningful alt text. Action Workshops should remain **Coming soon** until the verified attendee-registration system is available; do not use the proposal-submission form.",
+      "One document per page: choose Action Workshops, AI Thinkers Networking Breakfast, or Film Screening in **Page**. Edit the title, intro, registration status and activity rows here. Posters need meaningful alt text. Action Workshops should remain **Coming soon** until the verified attendee-registration system is available; do not use the proposal-submission form.",
   },
   {
     route: "/events/gtp-2026/get-involved",

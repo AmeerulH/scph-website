@@ -139,9 +139,7 @@ export function ProgrammeActivityPage({
                 More details are on their way
               </h2>
               <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-slate-600">
-                {page.slug === "excursion-trips"
-                  ? "The team is confirming the excursion programme. Please check back soon."
-                  : "The team is confirming the programme. Please check back soon."}
+                The team is confirming the programme. Please check back soon.
               </p>
             </div>
           )}

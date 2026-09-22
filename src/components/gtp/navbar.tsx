@@ -44,10 +44,6 @@ const navItems: NavItem[] = [
         href: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
       },
       {
-        label: "Excursion Trips",
-        href: "/events/gtp-2026/programmes/excursion-trips",
-      },
-      {
         label: "Film Screening",
         href: "/events/gtp-2026/programmes/film-screening",
       },
