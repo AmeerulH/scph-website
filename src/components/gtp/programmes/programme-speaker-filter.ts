@@ -43,7 +43,9 @@ function sessionMatchesTheme(session: Session, theme: ThemeFilterId): boolean {
   return session.theme === theme;
 }
 
-function sessionMatchesType(session: Session, type: SessionType | "all"): boolean {
+export type ProgrammeTypeFilter = SessionType | "all";
+
+function sessionMatchesType(session: Session, type: ProgrammeTypeFilter): boolean {
   if (type === "all") return true;
   return session.type === type;
 }
@@ -124,9 +126,10 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
  */
 export function filterSessionsWithSpeaker(
   sessions: Session[],
-  type: SessionType | "all",
+  type: ProgrammeTypeFilter,
   theme: ThemeFilterId,
   speakerName: string | null,
+  closedOnly = false,
 ): Session[] {
   let filtered = sessions;
 
@@ -137,6 +140,16 @@ export function filterSessionsWithSpeaker(
     if (!hasMatch) return [];
     filtered = filtered.filter(
       (s) => s.type === type || s.type === "break" || s.type === "reconvening",
+    );
+  }
+
+  if (closedOnly) {
+    const hasMatch = filtered.some(
+      (s) => s.type !== "break" && s.type !== "reconvening" && s.closedEvent === true,
+    );
+    if (!hasMatch) return [];
+    filtered = filtered.filter(
+      (s) => s.closedEvent === true || s.type === "break" || s.type === "reconvening",
     );
   }
 
@@ -185,8 +198,9 @@ type DayBucket = {
 export function findSpeakerAppearances(
   days: DayBucket[],
   speakerName: string,
-  type: SessionType | "all",
+  type: ProgrammeTypeFilter,
   theme: ThemeFilterId,
+  closedOnly = false,
 ): SpeakerAppearance[] {
   const appearances: SpeakerAppearance[] = [];
 
@@ -194,6 +208,7 @@ export function findSpeakerAppearances(
     for (const session of day.sessions) {
       if (session.type === "break" || session.type === "reconvening") continue;
       if (!sessionMatchesType(session, type)) continue;
+      if (closedOnly && session.closedEvent !== true) continue;
       if (!sessionMatchesTheme(session, theme)) continue;
       if (!sessionIncludesSpeaker(session, speakerName)) continue;
 

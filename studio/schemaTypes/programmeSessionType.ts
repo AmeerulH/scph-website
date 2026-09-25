@@ -41,6 +41,15 @@ export const programmeSessionType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'closedEvent',
+      title: 'Closed event',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        'Invitation-only, still listed on the programme. The session keeps its type above (Plenary, Special event, and so on) and also appears when visitors filter by Closed Event.',
+      hidden: ({parent}) => parent?.type === 'break',
+    }),
+    defineField({
       name: 'title',
       title: 'Session title',
       type: 'string',

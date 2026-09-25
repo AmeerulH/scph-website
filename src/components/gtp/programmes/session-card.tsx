@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, Lock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
@@ -135,15 +135,23 @@ export function SessionCard({
             {getSessionVenueLine(session)}
           </span>
         </div>
-        <span
-          className={cn(
-            "ml-auto flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
-            meta.headerBadgeClass,
-          )}
-        >
-          <MetaIcon className="h-3 w-3" />
-          {meta.label}
-        </span>
+        <div className="ml-auto flex items-center gap-2">
+          <span
+            className={cn(
+              "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
+              meta.headerBadgeClass,
+            )}
+          >
+            <MetaIcon className="h-3 w-3" />
+            {meta.label}
+          </span>
+          {session.closedEvent ? (
+            <span className="flex items-center gap-1.5 rounded-full bg-gtp-dark-teal px-3 py-1 text-xs font-semibold text-white">
+              <Lock className="h-3 w-3" />
+              Closed
+            </span>
+          ) : null}
+        </div>
         {googleCalHref ? (
           <div className="flex w-full basis-full justify-end pt-1">
             <AddToGoogleCalendarLink

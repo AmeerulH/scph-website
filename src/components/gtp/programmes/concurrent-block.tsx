@@ -1,4 +1,4 @@
-import { Clock, MapPin } from "lucide-react";
+import { Clock, Lock, MapPin } from "lucide-react";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { cn } from "@/lib/utils";
@@ -94,16 +94,24 @@ export function ConcurrentBlock({
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span className="text-xs italic wrap-anywhere">{getSessionVenueLine(session)}</span>
         </div>
-        <span
-          className={cn(
-            "ml-auto rounded-full px-3 py-1 text-xs font-semibold",
-            isResearch
-              ? "bg-gtp-orange/15 text-gtp-orange-dark"
-              : "bg-gtp-teal/15 text-gtp-dark-teal",
-          )}
-        >
-          {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
-        </span>
+        <div className="ml-auto flex items-center gap-2">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-semibold",
+              isResearch
+                ? "bg-gtp-orange/15 text-gtp-orange-dark"
+                : "bg-gtp-teal/15 text-gtp-dark-teal",
+            )}
+          >
+            {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
+          </span>
+          {session.closedEvent ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-gtp-dark-teal px-3 py-1 text-xs font-semibold text-white">
+              <Lock className="h-3 w-3" />
+              Closed
+            </span>
+          ) : null}
+        </div>
         {blockGoogleCalHref ? (
           <div className="flex w-full basis-full justify-end pt-1">
             <AddToGoogleCalendarLink href={blockGoogleCalHref} className="text-xs" />

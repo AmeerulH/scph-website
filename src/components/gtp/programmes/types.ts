@@ -59,6 +59,8 @@ export interface Session {
   time: string;
   durationMins?: number;
   type: SessionType;
+  /** Invitation-only. Keeps `type` and also appears under the Closed Event filter. */
+  closedEvent?: boolean;
   title: string;
   /** Session-level objective (CMS). Parallel slots may use `workshops[].objective` instead or as well. */
   objective?: string;

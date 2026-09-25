@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Clock, MapPin } from "lucide-react";
+import { X, Clock, Lock, MapPin } from "lucide-react";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import type { Session, Speaker, Workshop } from "./types";
@@ -142,10 +142,16 @@ export function SessionModal({
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_60%,rgba(255,255,255,0.15),transparent_60%)]" />
 
                   {/* Format badge */}
-                  <div className="absolute bottom-4 left-5">
+                  <div className="absolute bottom-4 left-5 flex flex-wrap gap-2">
                     <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
                       {TYPE_META[session.type].label}
                     </span>
+                    {session.closedEvent ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
+                        <Lock className="h-3 w-3" />
+                        Closed
+                      </span>
+                    ) : null}
                   </div>
                 </div>
 

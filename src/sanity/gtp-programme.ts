@@ -140,6 +140,7 @@ interface SanitySessionRow extends SanityHostedByFields {
   time?: string;
   durationMins?: number;
   type?: string;
+  closedEvent?: boolean | null;
   title?: string;
   objective?: string;
   theme?: string;
@@ -222,6 +223,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       time,
       durationMins,
       type,
+      closedEvent,
       title,
       objective,
       theme,
@@ -489,6 +491,8 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     title,
     type: type as SessionType,
   };
+
+  if (row.closedEvent === true) session.closedEvent = true;
 
   if (typeof row.objective === "string" && row.objective.trim()) {
     session.objective = row.objective.trim();

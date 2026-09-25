@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { SlidersHorizontal } from "lucide-react";
+import { Lock, SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { TYPE_META } from "@/components/gtp/programmes/data";
@@ -15,12 +15,13 @@ import type {
 } from "@/sanity/queries";
 import { PreConferencePlaceholder } from "@/components/gtp/programmes/pre-conference-placeholder";
 import { DayAgenda } from "@/components/gtp/programmes/day-agenda";
-import type { Session, SessionType } from "@/components/gtp/programmes/types";
+import type { Session } from "@/components/gtp/programmes/types";
 import {
   collectSpeakers,
   filterSessionsWithSpeaker,
   findSpeakerAppearances,
   speakerExistsInProgramme,
+  type ProgrammeTypeFilter,
   type SpeakerAppearance,
   type ThemeFilterId,
 } from "@/components/gtp/programmes/programme-speaker-filter";
@@ -30,7 +31,7 @@ import type { GtpHighlightSpeaker } from "@/data/gtp-highlight-speakers";
 // ─── Filter config ─────────────────────────────────────────────────────────────
 
 // Session types that make sense as user-facing filters (exclude housekeeping types)
-const FILTERABLE_TYPES: (SessionType | "all")[] = [
+const FILTERABLE_TYPES: ProgrammeTypeFilter[] = [
   "all",
   "opening",
   "plenary",
@@ -83,17 +84,50 @@ function FilterChip({
 
 // ─── Mobile filter bar (horizontal chip strips) ────────────────────────────────
 
+function ClosedEventFilterButton({
+  active,
+  onClick,
+  fullWidth = false,
+}: {
+  active: boolean;
+  onClick: () => void;
+  fullWidth?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-all duration-150",
+        fullWidth ? "w-full text-left" : "shrink-0 rounded-full px-3 py-1.5 text-xs",
+        active
+          ? "border-white/30 bg-white text-gtp-dark-teal shadow-sm"
+          : "border-white/20 bg-transparent text-white/80 hover:border-white/40 hover:bg-white/10 hover:text-white",
+      )}
+    >
+      <Lock className="h-3.5 w-3.5 shrink-0" />
+      Closed Event
+    </button>
+  );
+}
+
 function FilterBar({
   selectedType,
   onTypeChange,
+  closedOnly,
+  onClosedOnlyChange,
   selectedTheme,
   onThemeChange,
   speakerOptions,
   selectedSpeaker,
   onSpeakerChange,
 }: {
-  selectedType: SessionType | "all";
-  onTypeChange: (t: SessionType | "all") => void;
+  selectedType: ProgrammeTypeFilter;
+  onTypeChange: (t: ProgrammeTypeFilter) => void;
+  closedOnly: boolean;
+  onClosedOnlyChange: (value: boolean) => void;
   selectedTheme: ThemeId;
   onThemeChange: (t: ThemeId) => void;
   speakerOptions: ReturnType<typeof collectSpeakers>;
@@ -124,8 +158,7 @@ function FilterBar({
           </span>
           <div className="flex gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
             {FILTERABLE_TYPES.map((type) => {
-              const label =
-                type === "all" ? "All" : TYPE_META[type as SessionType].label;
+              const label = type === "all" ? "All" : TYPE_META[type].label;
               return (
                 <FilterChip
                   key={type}
@@ -138,6 +171,10 @@ function FilterBar({
             })}
           </div>
         </div>
+        <ClosedEventFilterButton
+          active={closedOnly}
+          onClick={() => onClosedOnlyChange(!closedOnly)}
+        />
 
         <div className="h-px bg-white/10" />
 
@@ -197,22 +234,32 @@ function SidebarFilterRow({
 function FilterSidebar({
   selectedType,
   onTypeChange,
+  closedOnly,
+  onClosedOnlyChange,
   selectedTheme,
   onThemeChange,
   speakerOptions,
   selectedSpeaker,
   onSpeakerChange,
 }: {
-  selectedType: SessionType | "all";
-  onTypeChange: (t: SessionType | "all") => void;
+  selectedType: ProgrammeTypeFilter;
+  onTypeChange: (t: ProgrammeTypeFilter) => void;
+  closedOnly: boolean;
+  onClosedOnlyChange: (value: boolean) => void;
   selectedTheme: ThemeId;
   onThemeChange: (t: ThemeId) => void;
   speakerOptions: ReturnType<typeof collectSpeakers>;
   selectedSpeaker: string | null;
   onSpeakerChange: (name: string | null) => void;
 }) {
+  const listRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    listRef.current?.scrollTo({ top: 0 });
+  }, [closedOnly, selectedType, selectedTheme]);
+
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-gtp-dark-teal/40 shadow-lg backdrop-blur-sm">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-white/10 bg-gtp-dark-teal/40 shadow-lg backdrop-blur-sm [overflow-anchor:none]">
       {/* Pinned header — stays visible while Type/Theme scroll */}
       <div className="shrink-0 p-4 pb-0">
         <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/70">
@@ -231,15 +278,17 @@ function FilterSidebar({
         <div className="mt-4 h-px bg-white/10" />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.25)_transparent]">
+      <div
+        ref={listRef}
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4 pt-4 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.25)_transparent]"
+      >
         {/* Type section */}
         <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/60">
           Type
         </p>
         <div className="flex flex-col gap-0.5">
           {FILTERABLE_TYPES.map((type) => {
-            const label =
-              type === "all" ? "All Sessions" : TYPE_META[type as SessionType].label;
+            const label = type === "all" ? "All Sessions" : TYPE_META[type].label;
             return (
               <SidebarFilterRow
                 key={type}
@@ -250,6 +299,13 @@ function FilterSidebar({
               </SidebarFilterRow>
             );
           })}
+        </div>
+        <div className="mt-3">
+          <ClosedEventFilterButton
+            fullWidth
+            active={closedOnly}
+            onClick={() => onClosedOnlyChange(!closedOnly)}
+          />
         </div>
 
         <div className="my-4 h-px bg-white/10" />
@@ -408,6 +464,57 @@ function SpeakerFilterEmpty({
   );
 }
 
+const NAVBAR_OFFSET = 72;
+
+function DesktopFilterSidebar(props: React.ComponentProps<typeof FilterSidebar>) {
+  const spacerRef = React.useRef<HTMLElement>(null);
+  const [frame, setFrame] = React.useState({ left: 0, maxHeight: 0, ready: false });
+
+  React.useLayoutEffect(() => {
+    const spacer = spacerRef.current;
+    if (!spacer) return;
+
+    const update = () => {
+      const left = Math.round(spacer.getBoundingClientRect().left);
+      const footerTop = document.querySelector("footer")?.getBoundingClientRect().top;
+      const limit = Math.min(window.innerHeight, footerTop ?? window.innerHeight);
+      const maxHeight = Math.max(0, Math.round(limit - NAVBAR_OFFSET));
+      setFrame((prev) => {
+        if (prev.ready && prev.left === left && prev.maxHeight === maxHeight) return prev;
+        return { left, maxHeight, ready: true };
+      });
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(document.documentElement);
+    const footer = document.querySelector("footer");
+    if (footer) observer.observe(footer);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  return (
+    <aside ref={spacerRef} className="relative z-30 hidden w-56 shrink-0 lg:block">
+      <div
+        className="fixed top-18 z-30 flex w-56 flex-col overflow-hidden pt-3 [overflow-anchor:none]"
+        style={{
+          left: frame.left,
+          maxHeight: frame.maxHeight,
+          visibility: frame.ready ? "visible" : "hidden",
+        }}
+      >
+        <FilterSidebar {...props} />
+      </div>
+    </aside>
+  );
+}
+
 // ─── Client body (useSearchParams — must be inside Suspense in parent) ───────
 
 export function ProgrammesPageClient({
@@ -445,7 +552,8 @@ export function ProgrammesPageClient({
   const initialSession = searchParams.get("session");
 
   const [activeTab, setActiveTab] = React.useState<GtpProgrammeTabId>(initialTab);
-  const [selectedType, setSelectedType] = React.useState<SessionType | "all">("all");
+  const [selectedType, setSelectedType] = React.useState<ProgrammeTypeFilter>("all");
+  const [closedOnly, setClosedOnly] = React.useState(false);
   const [selectedTheme, setSelectedTheme] = React.useState<ThemeId>("all");
   const [selectedSpeaker, setSelectedSpeaker] = React.useState<string | null>(null);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
@@ -488,7 +596,10 @@ export function ProgrammesPageClient({
   }, [dayMap, tabs]);
 
   const hasActiveFilter =
-    selectedType !== "all" || selectedTheme !== "all" || selectedSpeaker !== null;
+    selectedType !== "all" ||
+    closedOnly ||
+    selectedTheme !== "all" ||
+    selectedSpeaker !== null;
 
   function scrollToAnchor() {
     if (anchorRef.current) {
@@ -507,10 +618,28 @@ export function ProgrammesPageClient({
     scrollToAnchor();
   }
 
-  function handleTypeChange(type: SessionType | "all") {
+  function handleTypeChange(type: ProgrammeTypeFilter) {
     setSelectedType(type);
     scrollToAnchor();
   }
+
+  function handleClosedOnlyChange(value: boolean) {
+    setClosedOnly(value);
+    scrollToAnchor();
+  }
+
+  const closedOnlyReady = React.useRef(false);
+  React.useLayoutEffect(() => {
+    if (!closedOnlyReady.current) {
+      closedOnlyReady.current = true;
+      return;
+    }
+    if (!anchorRef.current) return;
+    const navbarHeight = 72;
+    const top =
+      anchorRef.current.getBoundingClientRect().top + window.scrollY - navbarHeight;
+    window.scrollTo({ top, behavior: "auto" });
+  }, [closedOnly]);
 
   function handleThemeChange(theme: ThemeId) {
     setSelectedTheme(theme);
@@ -524,6 +653,7 @@ export function ProgrammesPageClient({
 
   function clearAllFilters() {
     setSelectedType("all");
+    setClosedOnly(false);
     setSelectedTheme("all");
     setSelectedSpeaker(null);
     scrollToAnchor();
@@ -538,6 +668,7 @@ export function ProgrammesPageClient({
           selectedType,
           themeFilter,
           selectedSpeaker,
+          closedOnly,
         )
       : [];
 
@@ -548,6 +679,7 @@ export function ProgrammesPageClient({
           selectedSpeaker,
           selectedType,
           themeFilter,
+          closedOnly,
         )
       : [];
 
@@ -620,6 +752,8 @@ export function ProgrammesPageClient({
               <FilterBar
                 selectedType={selectedType}
                 onTypeChange={handleTypeChange}
+                closedOnly={closedOnly}
+                onClosedOnlyChange={handleClosedOnlyChange}
                 selectedTheme={selectedTheme}
                 onThemeChange={handleThemeChange}
                 speakerOptions={speakerOptions}
@@ -635,30 +769,23 @@ export function ProgrammesPageClient({
       <div className="min-h-screen bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-0 md:px-6 lg:px-8">
           <div className="flex gap-8">
-            {/*
-              Desktop sidebar sits level with day tabs: pull up by tab-strip height
-              (-mt-16) and stick at the same top-18 as the day filter pill.
-            */}
+            {/* Desktop filters stay pinned under the nav, in line with the day tabs. */}
             {activeTab !== "pre" && (
-              <aside className="relative z-30 hidden w-56 shrink-0 -mt-16 lg:block">
-                <div className="sticky top-18 flex h-[calc(100vh-5rem)] flex-col pt-3">
-                  <div className="min-h-0 flex-1">
-                    <FilterSidebar
-                      selectedType={selectedType}
-                      onTypeChange={handleTypeChange}
-                      selectedTheme={selectedTheme}
-                      onThemeChange={handleThemeChange}
-                      speakerOptions={speakerOptions}
-                      selectedSpeaker={selectedSpeaker}
-                      onSpeakerChange={handleSpeakerChange}
-                    />
-                  </div>
-                </div>
-              </aside>
+              <DesktopFilterSidebar
+                selectedType={selectedType}
+                onTypeChange={handleTypeChange}
+                closedOnly={closedOnly}
+                onClosedOnlyChange={handleClosedOnlyChange}
+                selectedTheme={selectedTheme}
+                onThemeChange={handleThemeChange}
+                speakerOptions={speakerOptions}
+                selectedSpeaker={selectedSpeaker}
+                onSpeakerChange={handleSpeakerChange}
+              />
             )}
 
             {/* ── Main content ── */}
-            <div className="min-w-0 flex-1 pt-6 lg:pt-8">
+            <div className="min-h-[calc(100dvh-4.5rem)] min-w-0 flex-1 pt-6 [overflow-anchor:none] lg:pt-8">
               {activeTab === "pre" && <PreConferencePlaceholder />}
 
               {activeTab !== "pre" && currentSessions.length > 0 && (
@@ -688,7 +815,7 @@ export function ProgrammesPageClient({
                   otherAppearances={otherAppearances}
                   inProgramme={speakerInProgramme}
                   hasTypeOrThemeFilter={
-                    selectedType !== "all" || selectedTheme !== "all"
+                    selectedType !== "all" || closedOnly || selectedTheme !== "all"
                   }
                   onClear={clearAllFilters}
                   onJumpToDay={(tabId) => handleTabClick(tabId)}
