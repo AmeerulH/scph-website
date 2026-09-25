@@ -107,6 +107,17 @@ export function FacilitatorCards({ people }: { people: Speaker[] }) {
   );
 }
 
+function hostedByMark(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return "SCPH";
+  if (words.length === 1) return words[0].slice(0, 4).toUpperCase();
+  return words
+    .map((word) => word[0])
+    .join("")
+    .slice(0, 4)
+    .toUpperCase();
+}
+
 /** “Hosted by” block — shared by main session modal and parallel workshop modal. */
 export function ProgrammeModalHostedByBlock({
   hostedBy,
@@ -129,7 +140,9 @@ export function ProgrammeModalHostedByBlock({
               unoptimized={hostedBy.logoUrl.toLowerCase().includes(".svg")}
             />
           ) : (
-            <span className="text-xs font-bold text-gtp-dark-teal">SCPH</span>
+            <span className="text-xs font-bold text-gtp-dark-teal">
+              {hostedByMark(hostedBy.name)}
+            </span>
           )}
         </div>
         <div className="min-w-0 text-xs leading-relaxed text-gray-500">

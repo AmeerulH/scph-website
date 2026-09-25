@@ -16,6 +16,7 @@ import {
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
+import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -210,7 +211,13 @@ export function WorkshopModal({
                     />
                   </div>
                   <div className="order-1 flex flex-col gap-6 lg:order-2">
-                    <ProgrammeModalHostedByBlock hostedBy={hostedBy} />
+                    <ProgrammeModalHostedByBlock
+                      hostedBy={resolveProgrammeHostedBy(
+                        hostedBy,
+                        parent.hostedBy,
+                        w.hostedBy,
+                      )}
+                    />
                     {(w.speakers?.length ?? 0) > 0 || (w.facilitators?.length ?? 0) > 0 ? (
                       <WorkshopPeopleGroup title="Speakers" people={w.speakers ?? []} />
                     ) : (

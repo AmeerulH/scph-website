@@ -8,6 +8,7 @@ import {
 } from "@/components/gtp/programmes/data";
 import type {
   ConferenceThemeId,
+  ProgrammeHostedByOverride,
   ProgrammeVenueType,
   Session,
   SessionType,
@@ -112,7 +113,14 @@ const CAROUSEL_TABS: GtpCarouselDayTab[] = ["day1", "day2", "day3", "day4"];
 
 const CAROUSEL_EXCLUDED_TYPES = new Set<SessionType>(["break", "reconvening"]);
 
-interface SanityWorkshopRow {
+interface SanityHostedByFields {
+  hostedByName?: string | null;
+  hostedByLocation?: string | null;
+  hostedByShowLocation?: boolean | null;
+  hostedByLogo?: SanitySessionModalHostedLogo | null;
+}
+
+interface SanityWorkshopRow extends SanityHostedByFields {
   number?: string;
   title?: string;
   objective?: string;
@@ -128,7 +136,7 @@ interface SanitySpeakerRow {
   imageUrl?: string | null;
 }
 
-interface SanitySessionRow {
+interface SanitySessionRow extends SanityHostedByFields {
   time?: string;
   durationMins?: number;
   type?: string;
@@ -180,6 +188,18 @@ interface SanityGtpProgrammeDoc {
   days?: SanityProgrammeDayRow[];
 }
 
+const hostedByProjection = `
+  hostedByName,
+  hostedByLocation,
+  hostedByShowLocation,
+  hostedByLogo {
+    alt,
+    asset->{
+      url,
+      metadata { dimensions { width, height } }
+    }
+  }`;
+
 const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Programme"][0]{
   _id,
   sessionModalHostedSectionTitle,
@@ -218,6 +238,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         sessionRole,
         "imageUrl": image.asset->url
       },
+      ${hostedByProjection},
       workshops[]{
         number,
         title,
@@ -234,7 +255,8 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
           designation,
           sessionRole,
           "imageUrl": image.asset->url
-        }
+        },
+        ${hostedByProjection}
       },
       breakLabel,
       breakIcon,
@@ -396,6 +418,32 @@ function splitSpeakersAndFacilitators(
   return { speakers, facilitators };
 }
 
+function mapHostedByOverride(row: SanityHostedByFields): ProgrammeHostedByOverride | undefined {
+  const name = typeof row.hostedByName === "string" ? row.hostedByName.trim() : "";
+  const location =
+    typeof row.hostedByLocation === "string" ? row.hostedByLocation.trim() : "";
+  const logo = row.hostedByLogo;
+  const logoUrl =
+    typeof logo?.asset?.url === "string" && logo.asset.url.trim() ? logo.asset.url.trim() : "";
+  if (!name && !logoUrl) return undefined;
+
+  const override: ProgrammeHostedByOverride = {};
+  if (name) override.name = name;
+  if (location) override.location = location;
+  if (row.hostedByShowLocation === false) override.showLocation = false;
+  if (row.hostedByShowLocation === true) override.showLocation = true;
+  if (logoUrl) {
+    override.logoUrl = logoUrl;
+    const alt = typeof logo?.alt === "string" ? logo.alt.trim() : "";
+    if (alt) override.logoAlt = alt;
+    const width = logo?.asset?.metadata?.dimensions?.width;
+    const height = logo?.asset?.metadata?.dimensions?.height;
+    if (typeof width === "number" && width > 0) override.logoWidth = width;
+    if (typeof height === "number" && height > 0) override.logoHeight = height;
+  }
+  return override;
+}
+
 function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   const number = typeof row.number === "string" ? row.number.trim() : "";
   const title = typeof row.title === "string" ? row.title.trim() : "";
@@ -414,6 +462,9 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
 
   if (speakers.length > 0) workshop.speakers = speakers;
   if (facilitators.length > 0) workshop.facilitators = facilitators;
+
+  const hostedBy = mapHostedByOverride(row);
+  if (hostedBy) workshop.hostedBy = hostedBy;
 
   if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
     workshop.speakerCount = row.speakerCount;
@@ -461,6 +512,9 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
   );
   if (speakers.length > 0) session.speakers = speakers;
   if (facilitators.length > 0) session.facilitators = facilitators;
+
+  const hostedBy = mapHostedByOverride(row);
+  if (hostedBy) session.hostedBy = hostedBy;
 
   if (Array.isArray(row.workshops) && row.workshops.length > 0) {
     const workshops = row.workshops.map(mapWorkshop).filter((w): w is Workshop => w !== null);

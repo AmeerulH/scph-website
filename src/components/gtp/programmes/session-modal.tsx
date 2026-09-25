@@ -15,6 +15,7 @@ import {
   FacilitatorCards,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
+import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -219,7 +220,7 @@ export function SessionModal({
                     <div className="order-2">
                       <ProgrammeModalShareRegisterColumn
                         shareTitle={session.title}
-                        hostedBy={hostedBy}
+                        hostedBy={resolveProgrammeHostedBy(hostedBy, session.hostedBy)}
                         showWorkshopRegistration={session.type === "concurrent"}
                       />
                     </div>

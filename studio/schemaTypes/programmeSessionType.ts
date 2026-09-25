@@ -1,9 +1,11 @@
 import {defineField, defineType} from 'sanity'
+import {programmeHostedByFields} from './programmeHostedByFields'
 
 export const programmeSessionType = defineType({
   name: 'programmeSession',
   title: 'Session',
   type: 'object',
+  fieldsets: [{name: 'hostedBy', title: 'Hosted by', options: {collapsible: false}}],
   fields: [
     defineField({
       name: 'time',
@@ -135,6 +137,7 @@ export const programmeSessionType = defineType({
       description:
         'Used for default venue wording when Venue line is empty (evening vs daytime defaults on the site).',
     }),
+    ...programmeHostedByFields(({parent}) => parent?.type === 'break'),
     defineField({
       name: 'venueType',
       title: 'Venue type',

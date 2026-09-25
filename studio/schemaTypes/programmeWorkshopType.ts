@@ -1,9 +1,11 @@
 import {defineField, defineType} from 'sanity'
+import {programmeHostedByFields} from './programmeHostedByFields'
 
 export const programmeWorkshopType = defineType({
   name: 'programmeWorkshop',
   title: 'Workshop / research slot',
   type: 'object',
+  fieldsets: [{name: 'hostedBy', title: 'Hosted by', options: {collapsible: false}}],
   fields: [
     defineField({
       name: 'number',
@@ -41,6 +43,7 @@ export const programmeWorkshopType = defineType({
       description:
         'Shown under Facilitators in the workshop popup, separate from Speakers. Leave empty to show “To be confirmed”. People whose role is already “Facilitator” in Speakers also appear here.',
     }),
+    ...programmeHostedByFields(),
     defineField({
       name: 'speakerCount',
       title: 'Speaker count (TBC)',
