@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import type { GtpAboutCampaignSlide } from "@/data/gtp-about-page-defaults";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
+import styles from "./gtp-campaign-hero.module.css";
 
 function Cta({
   href,
@@ -54,8 +55,14 @@ function SlideActions({
   const primaryCtaHref = slide.primaryCtaHref;
   const secondaryCtaLabel = slide.secondaryCtaLabel;
   const secondaryCtaHref = slide.secondaryCtaHref;
+  const primaryIsConferenceRegistration = Boolean(
+    primaryCtaHref && isConferenceRegistrationCta(primaryCtaHref),
+  );
+  const showOnlineParticipationNote =
+    stackOnDesktop && primaryIsConferenceRegistration;
   const showPrimary =
-    Boolean(primaryCtaHref && primaryCtaLabel) && !isConferenceRegistrationCta(primaryCtaHref!);
+    Boolean(primaryCtaHref && primaryCtaLabel) &&
+    !(primaryIsConferenceRegistration && !stackOnDesktop);
   const showSecondary =
     Boolean(secondaryCtaHref && secondaryCtaLabel) &&
     !isConferenceRegistrationCta(secondaryCtaHref!);
@@ -69,21 +76,29 @@ function SlideActions({
       }
     >
       {showPrimary ? (
-        <div className={stackOnDesktop ? "w-full" : "contents"}>
-        <Button
-          variant="gtpCta"
-          size="lg"
-          className={
-            stackOnDesktop
-              ? "w-full justify-center py-7 text-base"
-              : "justify-center px-6"
-          }
-          asChild
-        >
-          <Cta href={primaryCtaHref!}>
-            {primaryCtaLabel!.replace(/\s*→\s*$/, "")} <ArrowRight aria-hidden="true" />
-          </Cta>
-        </Button>
+        <div className={showOnlineParticipationNote ? styles.registration : stackOnDesktop ? "w-full" : "contents"}>
+          {showOnlineParticipationNote ? (
+            <p className={styles.availability}>
+              <span aria-hidden="true" className={styles.dot} />
+              For online participation only
+            </p>
+          ) : null}
+          <Button
+            variant="gtpCta"
+            size="lg"
+            className={
+              showOnlineParticipationNote
+                ? `${styles.registerButton} w-full justify-center py-7 text-base`
+                : stackOnDesktop
+                  ? "w-full justify-center py-7 text-base"
+                  : "justify-center px-6"
+            }
+            asChild
+          >
+            <Cta href={primaryCtaHref!}>
+              {primaryCtaLabel!.replace(/\s*→\s*$/, "")} <ArrowRight aria-hidden="true" />
+            </Cta>
+          </Button>
         </div>
       ) : null}
       {showSecondary ? (

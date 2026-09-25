@@ -355,24 +355,17 @@ function GtpLogoTierCell({
   sleek,
 }: {
   entry: GtpAboutSponsorLogoEntry;
-  /** Partners: larger slots + multiply so white logo mats disappear on light grounds. */
+  /** Partners: multiply so white logo mats disappear on light grounds. */
   sleek?: boolean;
 }) {
   const remote = imgUnoptimized(entry.logoUrl);
   const image = (
-    <span
-      className={cn(
-        "flex items-center justify-center",
-        sleek
-          ? "h-auto min-h-16 w-44 max-h-24 sm:min-h-18 sm:w-52 sm:max-h-28 md:w-56"
-          : "h-16 w-44 sm:h-20 sm:w-52",
-      )}
-    >
+    <span className="flex h-24 w-44 items-center justify-center overflow-hidden sm:h-28 sm:w-52 md:w-56">
       <Image
         src={entry.logoUrl}
         alt={entry.name}
-        width={sleek ? 260 : 220}
-        height={sleek ? 104 : 80}
+        width={260}
+        height={104}
         className={cn(
           "max-h-full max-w-full object-contain",
           sleek && "mix-blend-multiply",
@@ -466,7 +459,7 @@ function LogoGrid({
               "justify-center",
               sleek
                 ? "gap-x-12 gap-y-10 py-2 sm:gap-x-16 sm:gap-y-12 md:gap-x-20"
-                : "mt-10 gap-x-10 gap-y-8 py-2 sm:mt-12 sm:gap-x-12 sm:py-3",
+                : "mt-14 gap-x-10 gap-y-8 py-2 sm:mt-16 sm:gap-x-12 sm:py-3",
             ),
       )}
       initial="hidden"
