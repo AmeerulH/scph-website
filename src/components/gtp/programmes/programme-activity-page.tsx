@@ -64,7 +64,7 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
   const intro = page.intro.trim();
   const carried = page.entries
     .map((entry) => entry.description?.trim())
-    .filter((text): text is string => Boolean(text) && !intro.includes(text));
+    .filter((text): text is string => typeof text === "string" && text.length > 0 && !intro.includes(text));
   const description = [intro, ...carried].filter(Boolean).join("\n\n");
 
   return (
