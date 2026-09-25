@@ -76,6 +76,18 @@ export const programmeSessionType = defineType({
         parent?.type === 'concurrent' || parent?.type === 'research',
     }),
     defineField({
+      name: 'facilitators',
+      title: 'Facilitators',
+      type: 'array',
+      of: [{type: 'programmeSpeaker'}],
+      description:
+        'Shown under Facilitators in the session popup, separate from Speakers. Leave empty to show “To be confirmed”. People whose role is already “Facilitator” in Speakers also appear here. For parallel sessions, add facilitators on each workshop row instead.',
+      hidden: ({parent}) =>
+        parent?.type === 'break' ||
+        parent?.type === 'concurrent' ||
+        parent?.type === 'research',
+    }),
+    defineField({
       name: 'speakerCount',
       title: 'Speaker count (TBC)',
       type: 'number',

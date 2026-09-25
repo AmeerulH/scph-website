@@ -7,11 +7,12 @@ import { X, Clock, MapPin, UserCircle2 } from "lucide-react";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
-import type { Session, Workshop } from "./types";
+import type { Session, Speaker, Workshop } from "./types";
 import { TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 import {
+  FacilitatorCards,
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
@@ -19,6 +20,47 @@ import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-cale
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
+
+function WorkshopPeopleGroup({
+  title,
+  people,
+  showWhenEmpty = false,
+}: {
+  title: string;
+  people: Speaker[];
+  /** Keep the heading on screen before names are published. */
+  showWhenEmpty?: boolean;
+}) {
+  if (people.length === 0 && !showWhenEmpty) return null;
+
+  return (
+    <div>
+      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">{title}</p>
+      {title === "Facilitators" ? (
+        <FacilitatorCards people={people} />
+      ) : people.length > 0 ? (
+        <ul className="space-y-3">
+          {sortSpeakersModeratorFirst(people).map((person, index) => (
+            <li key={`${person.name}-${index}`} className="flex items-center gap-3">
+              <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
+              <div className="min-w-0">
+                {person.sessionRole?.trim() ? (
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                    {person.sessionRole.trim()}
+                  </p>
+                ) : null}
+                <p className="text-sm font-semibold text-gray-800">{person.name}</p>
+                {person.designation ? (
+                  <p className="text-xs leading-relaxed text-gtp-teal">{person.designation}</p>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  );
+}
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -159,38 +201,18 @@ export function WorkshopModal({
 
                 <SessionObjectiveBlock text={w.objective} className="mt-4" />
 
-                <div className="mt-6 border-t border-gray-100 pt-5 grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-                  <ProgrammeModalShareRegisterColumn
-                    shareTitle={w.title}
-                    showWorkshopRegistration
-                    workshopTitle={w.title}
-                  />
-                  <div className="flex flex-col gap-6">
+                <div className="mt-6 grid grid-cols-1 gap-8 border-t border-gray-100 pt-5 lg:grid-cols-2 lg:gap-x-10">
+                  <div className="order-2 lg:order-1">
+                    <ProgrammeModalShareRegisterColumn
+                      shareTitle={w.title}
+                      showWorkshopRegistration
+                      workshopTitle={w.title}
+                    />
+                  </div>
+                  <div className="order-1 flex flex-col gap-6 lg:order-2">
                     <ProgrammeModalHostedByBlock hostedBy={hostedBy} />
-                    {w.speakers && w.speakers.length > 0 ? (
-                      <div>
-                        <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
-                        <div className="space-y-3">
-                          {sortSpeakersModeratorFirst(w.speakers).map((sp, i) => (
-                            <div key={`${sp.name}-${i}`} className="flex items-center gap-3">
-                              <ProgrammeSpeakerAvatar imageUrl={sp.imageUrl} name={sp.name} />
-                              <div className="min-w-0">
-                                {sp.sessionRole?.trim() ? (
-                                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                                    {sp.sessionRole.trim()}
-                                  </p>
-                                ) : null}
-                                <p className="text-sm font-semibold text-gray-800">{sp.name}</p>
-                                {sp.designation && (
-                                  <p className="text-xs leading-relaxed text-gtp-teal">
-                                    {sp.designation}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                    {(w.speakers?.length ?? 0) > 0 || (w.facilitators?.length ?? 0) > 0 ? (
+                      <WorkshopPeopleGroup title="Speakers" people={w.speakers ?? []} />
                     ) : (
                       <div>
                         <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
@@ -214,6 +236,11 @@ export function WorkshopModal({
                         </div>
                       </div>
                     )}
+                    <WorkshopPeopleGroup
+                      title="Facilitators"
+                      people={w.facilitators ?? []}
+                      showWhenEmpty
+                    />
                   </div>
                 </div>
               </div>

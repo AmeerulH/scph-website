@@ -11,7 +11,10 @@ import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionFormatLabel, getSessionVenueLine } from "./session-display-helpers";
-import { ProgrammeModalShareRegisterColumn } from "./programme-modal-chrome";
+import {
+  FacilitatorCards,
+  ProgrammeModalShareRegisterColumn,
+} from "./programme-modal-chrome";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -269,6 +272,11 @@ export function SessionModal({
                           </p>
                         </div>
                       )}
+
+                    <div className="order-1">
+                      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Facilitators</p>
+                      <FacilitatorCards people={session.facilitators ?? []} />
+                    </div>
 
                   </div>
 

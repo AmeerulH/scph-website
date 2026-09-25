@@ -24,6 +24,7 @@ export function WorkshopSubCard({
   highlightSpeaker?: string;
 }) {
   const namedSpeakers = sortSpeakersModeratorFirst(w.speakers ?? []);
+  const namedFacilitators = w.facilitators ?? [];
   const speakerKey = highlightSpeaker ? normalizeSpeakerName(highlightSpeaker) : "";
   const isMatched =
     !!highlightSpeaker && workshopHasSpeaker(w, highlightSpeaker);
@@ -76,11 +77,14 @@ export function WorkshopSubCard({
         collapsibleOnMobile
       />
       <div className="mt-3 space-y-2 pl-9">
-        {namedSpeakers.length > 0 ? (
-          namedSpeakers.map((sp, idx) => {
+        {namedSpeakers.length > 0 || namedFacilitators.length > 0 ? (
+          [...namedSpeakers, ...namedFacilitators].map((sp, idx) => {
             const isSpeakerMatched =
               !!speakerKey && normalizeSpeakerName(sp.name) === speakerKey;
             const isSpeakerMuted = !!speakerKey && !isSpeakerMatched;
+            const role =
+              sp.sessionRole?.trim() ||
+              (namedFacilitators.includes(sp) ? "Facilitator" : "");
             return (
               <div
                 key={`${sp.name}-${idx}`}
@@ -99,9 +103,9 @@ export function WorkshopSubCard({
                   sizeClassName="h-8 w-8"
                 />
                 <div className="min-w-0">
-                  {sp.sessionRole?.trim() ? (
+                  {role ? (
                     <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                      {sp.sessionRole.trim()}
+                      {role}
                     </p>
                   ) : null}
                   <p className="text-xs font-semibold text-gray-800">{sp.name}</p>

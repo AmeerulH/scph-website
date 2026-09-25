@@ -13,6 +13,9 @@ import {
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
+import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
+import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
+import type { Speaker } from "./types";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -38,6 +41,72 @@ function hostedLogoDisplayDimensions(hostedBy: GtpSessionModalHostedBy): {
   };
 }
 
+/** Same shape as a speaker row. Hover uses orange so it stays distinct from the teal speaker wash. */
+export function FacilitatorPersonCard({
+  name,
+  designation,
+  imageUrl,
+  role = "Facilitator",
+}: {
+  name: string;
+  designation?: string;
+  imageUrl?: string;
+  role?: string;
+}) {
+  return (
+    <div className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-gtp-orange/10">
+      <ProgrammeSpeakerAvatar imageUrl={imageUrl} name={name} />
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-orange">{role}</p>
+        <p className="text-sm font-semibold text-gray-800">{name}</p>
+        {designation ? (
+          <p className="text-xs leading-relaxed text-gtp-orange">{designation}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Placeholder card when a session or workshop has no facilitators yet. */
+export function FacilitatorToBeConfirmedCard() {
+  return (
+    <div className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-gtp-orange/10">
+      <ProgrammeSpeakerAvatar />
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-orange">
+          Facilitator
+        </p>
+        <p className="text-sm font-semibold text-gray-800">To be confirmed</p>
+      </div>
+    </div>
+  );
+}
+
+export function FacilitatorCards({ people }: { people: Speaker[] }) {
+  if (people.length === 0) {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <FacilitatorToBeConfirmedCard />
+      </div>
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {sortSpeakersModeratorFirst(people).map((person, index) => (
+        <li key={`${person.name}-${index}`}>
+          <FacilitatorPersonCard
+            name={person.name}
+            designation={person.designation}
+            imageUrl={person.imageUrl}
+            role={person.sessionRole?.trim() || "Facilitator"}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** “Hosted by” block — shared by main session modal and parallel workshop modal. */
 export function ProgrammeModalHostedByBlock({
   hostedBy,
@@ -46,7 +115,7 @@ export function ProgrammeModalHostedByBlock({
 }) {
   return (
     <div>
-      <p className="mb-3 text-sm font-semibold text-gray-700">
+      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">
         {hostedBy.sectionTitle}
       </p>
       <div className="flex items-center gap-4">
@@ -63,9 +132,11 @@ export function ProgrammeModalHostedByBlock({
             <span className="text-xs font-bold text-gtp-dark-teal">SCPH</span>
           )}
         </div>
-        <div className="text-xs leading-relaxed text-gray-500">
+        <div className="min-w-0 text-xs leading-relaxed text-gray-500">
           <p className="font-semibold text-gray-700">{hostedBy.name}</p>
-          <p>{hostedBy.subtitle}</p>
+          {hostedBy.showSubtitle && hostedBy.subtitle ? (
+            <p>{hostedBy.subtitle}</p>
+          ) : null}
         </div>
       </div>
     </div>

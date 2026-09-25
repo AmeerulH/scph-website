@@ -37,6 +37,8 @@ export interface Workshop {
   title: string;
   objective?: string;
   speakers?: Speaker[];
+  /** Separate popup list. Also filled from speaker rows whose role is Facilitator. */
+  facilitators?: Speaker[];
   speakerCount?: number;
 }
 
@@ -49,6 +51,8 @@ export interface Session {
   objective?: string;
   /** Named speakers — when present, rendered instead of generic placeholders */
   speakers?: Speaker[];
+  /** Popup list. Empty lists render a “To be confirmed” card. */
+  facilitators?: Speaker[];
   /** Fallback when speaker names aren't confirmed yet */
   speakerCount?: number;
   /** Conference pathway — theme filter on the programme page */

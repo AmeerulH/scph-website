@@ -53,12 +53,18 @@ export function sessionIncludesSpeaker(session: Session, speakerName: string): b
   const key = normalizeSpeakerName(speakerName);
   if (!key) return false;
 
-  if (session.speakers?.some((s) => normalizeSpeakerName(s.name) === key)) {
+  if (
+    [...(session.speakers ?? []), ...(session.facilitators ?? [])].some(
+      (s) => normalizeSpeakerName(s.name) === key,
+    )
+  ) {
     return true;
   }
   return (
     session.workshops?.some((w) =>
-      w.speakers?.some((s) => normalizeSpeakerName(s.name) === key),
+      [...(w.speakers ?? []), ...(w.facilitators ?? [])].some(
+        (s) => normalizeSpeakerName(s.name) === key,
+      ),
     ) ?? false
   );
 }
@@ -73,10 +79,13 @@ function workshopIncludesSpeaker(
 }
 
 export function workshopHasSpeaker(
-  workshop: { speakers?: { name: string }[] },
+  workshop: { speakers?: { name: string }[]; facilitators?: { name: string }[] },
   speakerName: string,
 ): boolean {
-  return workshopIncludesSpeaker(workshop.speakers, speakerName);
+  return (
+    workshopIncludesSpeaker(workshop.speakers, speakerName) ||
+    workshopIncludesSpeaker(workshop.facilitators, speakerName)
+  );
 }
 
 /** Deduped A–Z list of named speakers across all sessions (incl. workshops). */
@@ -84,7 +93,7 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
   const byKey = new Map<string, SpeakerOption>();
 
   for (const session of sessions) {
-    for (const sp of session.speakers ?? []) {
+    for (const sp of [...(session.speakers ?? []), ...(session.facilitators ?? [])]) {
       const key = normalizeSpeakerName(sp.name);
       if (!key || byKey.has(key)) continue;
       const option: SpeakerOption = { name: sp.name.trim() };
@@ -93,7 +102,7 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
       byKey.set(key, option);
     }
     for (const workshop of session.workshops ?? []) {
-      for (const sp of workshop.speakers ?? []) {
+      for (const sp of [...(workshop.speakers ?? []), ...(workshop.facilitators ?? [])]) {
         const key = normalizeSpeakerName(sp.name);
         if (!key || byKey.has(key)) continue;
         const option: SpeakerOption = { name: sp.name.trim() };

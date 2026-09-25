@@ -24,8 +24,9 @@ export const gtp2026ProgrammeType = defineType({
     }),
     defineField({
       name: 'sessionModalHostedLogo',
-      title: 'Session modal — host logo',
-      description: 'Square or compact logo. If empty, the site shows a text placeholder.',
+      title: 'Session modal — organisation logo',
+      description:
+        'Logo in the Hosted by block of session and workshop popups. If empty, the site shows a text placeholder.',
       type: 'image',
       options: {hotspot: true},
       fields: [
@@ -47,15 +48,24 @@ export const gtp2026ProgrammeType = defineType({
     }),
     defineField({
       name: 'sessionModalHostedName',
-      title: 'Session modal — host name',
+      title: 'Session modal — organisation',
+      description: 'Organisation name under Hosted by.',
       type: 'string',
       initialValue: 'Sunway Centre for Planetary Health',
     }),
     defineField({
       name: 'sessionModalHostedSubtitle',
-      title: 'Session modal — host subtitle / location',
+      title: 'Session modal — location',
+      description: 'Location line under the organisation name. Hidden when “Show location” is off.',
       type: 'string',
       initialValue: 'Sunway University, Kuala Lumpur',
+    }),
+    defineField({
+      name: 'sessionModalHostedShowSubtitle',
+      title: 'Session modal — show location',
+      description: 'Turn off to hide the location line. The organisation name and logo stay visible.',
+      type: 'boolean',
+      initialValue: true,
     }),
     defineField({
       name: 'days',

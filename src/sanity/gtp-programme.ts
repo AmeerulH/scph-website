@@ -71,6 +71,8 @@ export type GtpSessionModalHostedBy = {
   logoHeight?: number;
   name: string;
   subtitle: string;
+  /** When false, the location line is omitted in session and workshop popups. */
+  showSubtitle: boolean;
 };
 
 export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
@@ -79,6 +81,7 @@ export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
   logoAlt: "",
   name: "Sunway Centre for Planetary Health",
   subtitle: "Sunway University, Kuala Lumpur",
+  showSubtitle: true,
 };
 
 export type GtpProgrammePageData = {
@@ -114,6 +117,7 @@ interface SanityWorkshopRow {
   title?: string;
   objective?: string;
   speakers?: SanitySpeakerRow[];
+  facilitators?: SanitySpeakerRow[];
   speakerCount?: number;
 }
 
@@ -133,6 +137,7 @@ interface SanitySessionRow {
   theme?: string;
   speakerCount?: number;
   speakers?: SanitySpeakerRow[];
+  facilitators?: SanitySpeakerRow[];
   workshops?: SanityWorkshopRow[];
   breakLabel?: string;
   breakIcon?: string;
@@ -170,6 +175,7 @@ interface SanityGtpProgrammeDoc {
   sessionModalHostedSectionTitle?: string | null;
   sessionModalHostedName?: string | null;
   sessionModalHostedSubtitle?: string | null;
+  sessionModalHostedShowSubtitle?: boolean | null;
   sessionModalHostedLogo?: SanitySessionModalHostedLogo | null;
   days?: SanityProgrammeDayRow[];
 }
@@ -179,6 +185,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
   sessionModalHostedSectionTitle,
   sessionModalHostedName,
   sessionModalHostedSubtitle,
+  sessionModalHostedShowSubtitle,
   sessionModalHostedLogo {
     alt,
     asset->{
@@ -205,12 +212,24 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         sessionRole,
         "imageUrl": image.asset->url
       },
+      facilitators[]{
+        name,
+        designation,
+        sessionRole,
+        "imageUrl": image.asset->url
+      },
       workshops[]{
         number,
         title,
         objective,
         speakerCount,
         speakers[]{
+          name,
+          designation,
+          sessionRole,
+          "imageUrl": image.asset->url
+        },
+        facilitators[]{
           name,
           designation,
           sessionRole,
@@ -286,6 +305,7 @@ function mapSessionModalHostedBy(
     logoAlt: altRaw || (name ? `${name} logo` : "Host organisation logo"),
     logoWidth: typeof w === "number" && w > 0 ? w : undefined,
     logoHeight: typeof h === "number" && h > 0 ? h : undefined,
+    showSubtitle: doc.sessionModalHostedShowSubtitle !== false,
   };
 }
 
@@ -343,6 +363,39 @@ function mapSpeaker(row: SanitySpeakerRow): Speaker | null {
   return speaker;
 }
 
+function isFacilitatorSessionRole(role: string | undefined): boolean {
+  const value = role?.trim().toLowerCase() ?? "";
+  return value === "facilitator" || value === "facilitators";
+}
+
+function mapNamedPeople(rows: SanitySpeakerRow[] | undefined): Speaker[] {
+  if (!Array.isArray(rows) || rows.length === 0) return [];
+  return rows.map(mapSpeaker).filter((s): s is Speaker => s !== null);
+}
+
+function splitSpeakersAndFacilitators(
+  speakerRows: SanitySpeakerRow[] | undefined,
+  facilitatorRows: SanitySpeakerRow[] | undefined,
+): { speakers: Speaker[]; facilitators: Speaker[] } {
+  const facilitators = mapNamedPeople(facilitatorRows);
+  const facilitatorKeys = new Set(
+    facilitators.map((person) => person.name.trim().toLowerCase()),
+  );
+  const speakers: Speaker[] = [];
+  for (const person of mapNamedPeople(speakerRows)) {
+    const key = person.name.trim().toLowerCase();
+    if (facilitatorKeys.has(key) || isFacilitatorSessionRole(person.sessionRole)) {
+      if (!facilitatorKeys.has(key)) {
+        facilitators.push(person);
+        facilitatorKeys.add(key);
+      }
+      continue;
+    }
+    speakers.push(person);
+  }
+  return { speakers, facilitators };
+}
+
 function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   const number = typeof row.number === "string" ? row.number.trim() : "";
   const title = typeof row.title === "string" ? row.title.trim() : "";
@@ -354,10 +407,13 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
     workshop.objective = row.objective.trim();
   }
 
-  if (Array.isArray(row.speakers) && row.speakers.length > 0) {
-    const speakers = row.speakers.map(mapSpeaker).filter((s): s is Speaker => s !== null);
-    if (speakers.length > 0) workshop.speakers = speakers;
-  }
+  const { speakers, facilitators } = splitSpeakersAndFacilitators(
+    row.speakers,
+    row.facilitators,
+  );
+
+  if (speakers.length > 0) workshop.speakers = speakers;
+  if (facilitators.length > 0) workshop.facilitators = facilitators;
 
   if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
     workshop.speakerCount = row.speakerCount;
@@ -399,10 +455,12 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     session.speakerCount = row.speakerCount;
   }
 
-  if (Array.isArray(row.speakers) && row.speakers.length > 0) {
-    const speakers = row.speakers.map(mapSpeaker).filter((s): s is Speaker => s !== null);
-    if (speakers.length > 0) session.speakers = speakers;
-  }
+  const { speakers, facilitators } = splitSpeakersAndFacilitators(
+    row.speakers,
+    row.facilitators,
+  );
+  if (speakers.length > 0) session.speakers = speakers;
+  if (facilitators.length > 0) session.facilitators = facilitators;
 
   if (Array.isArray(row.workshops) && row.workshops.length > 0) {
     const workshops = row.workshops.map(mapWorkshop).filter((w): w is Workshop => w !== null);
