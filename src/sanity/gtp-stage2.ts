@@ -529,6 +529,8 @@ type SanityProgrammeActivityPage = {
   registrationStatus?: string | null;
   registrationLabel?: string | null;
   registrationUrl?: string | null;
+  showcasePosterUrl?: string | null;
+  showcasePosterAlt?: string | null;
   entries?: {
     title?: string | null;
     dateLabel?: string | null;
@@ -547,6 +549,8 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   registrationStatus,
   registrationLabel,
   registrationUrl,
+  "showcasePosterUrl": showcasePoster.asset->url,
+  "showcasePosterAlt": showcasePoster.alt,
   entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt }
 }`;
 
@@ -585,6 +589,8 @@ export async function getGtpProgrammeActivityPage(
     registrationStatus: status,
     registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
     registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
+    showcasePosterUrl: doc.showcasePosterUrl?.trim() || undefined,
+    showcasePosterAlt: doc.showcasePosterAlt?.trim() || undefined,
     entries,
   };
 }

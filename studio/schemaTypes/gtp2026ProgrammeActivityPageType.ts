@@ -60,7 +60,38 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       type: 'image',
     }),
     defineField({name: 'heroLede', title: 'Hero lede', type: 'text', rows: 3}),
-    defineField({name: 'intro', title: 'Introduction', type: 'text', rows: 8}),
+    defineField({
+      name: 'intro',
+      title: 'Description',
+      type: 'text',
+      rows: 8,
+      description:
+        'For the breakfast, film screening, and sensorial station, this is the text beside the poster. Text already saved on an older activity row is shown after it. For Action Workshops, it sits above the workshop list.',
+    }),
+    defineField({
+      name: 'showcasePoster',
+      title: 'Poster',
+      type: 'image',
+      description:
+        'Portrait poster shown on the left on desktop, and above the description on a phone. Use the full artwork; it will not be cropped.',
+      options: {hotspot: true},
+      hidden: ({document}) => document?.slug === 'action-workshops',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Poster alt text',
+          type: 'string',
+          description: 'Describe the poster for screen readers.',
+          validation: (rule) =>
+            rule.custom((alt, context) => {
+              const parent = context.parent as {asset?: {_ref?: string}} | undefined
+              return parent?.asset?._ref && !alt?.trim()
+                ? 'Alt text is required when a poster is set'
+                : true
+            }),
+        }),
+      ],
+    }),
     defineField({
       name: 'registrationStatus',
       title: 'Registration status',
@@ -76,8 +107,20 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({name: 'registrationLabel', title: 'Registration button label', type: 'string'}),
-    defineField({name: 'registrationUrl', title: 'Registration URL', type: 'url'}),
-    defineField({name: 'entries', title: 'Activities', type: 'array', of: [activityEntry]}),
+    defineField({
+      name: 'registrationUrl',
+      title: 'Registration URL',
+      type: 'url',
+      description:
+        'External registration link. The button uses this when Registration status is Open.',
+    }),
+    defineField({
+      name: 'entries',
+      title: 'Activities',
+      type: 'array',
+      of: [activityEntry],
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+    }),
   ],
   preview: {
     select: {title: 'pageTitle', subtitle: 'slug'},

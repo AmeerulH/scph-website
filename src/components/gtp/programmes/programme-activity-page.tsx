@@ -1,10 +1,19 @@
 import Image from "next/image";
-import { ArrowUpRight, CalendarDays, CircleAlert, Clock3 } from "lucide-react";
+import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { Button } from "@/components/ui/button";
-import type { GtpProgrammeActivityPage } from "@/data/gtp-programme-activity-defaults";
+import type {
+  GtpProgrammeActivityPage,
+  GtpProgrammeActivitySlug,
+} from "@/data/gtp-programme-activity-defaults";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { ActionWorkshopsCarousel } from "./action-workshops-carousel";
+
+const POSTER_PAGE_SLUGS = new Set<GtpProgrammeActivitySlug>([
+  "ai-thinkers-networking-breakfast",
+  "film-screening",
+  "sensorial-station",
+]);
 
 function RegistrationAction({
   page,
@@ -26,12 +35,76 @@ function RegistrationAction({
   }
 
   return (
-    <Button variant="gtpCta" asChild>
+    <Button variant="gtpCta" size="lg" asChild>
       <a href={page.registrationUrl} target="_blank" rel="noopener noreferrer">
         {page.registrationLabel}
         <ArrowUpRight />
       </a>
     </Button>
+  );
+}
+
+function posterFor(page: GtpProgrammeActivityPage) {
+  if (page.showcasePosterUrl) {
+    return {
+      url: page.showcasePosterUrl,
+      alt: page.showcasePosterAlt || `${page.pageTitle} poster`,
+    };
+  }
+  const fromEntry = page.entries.find((entry) => entry.posterUrl);
+  if (!fromEntry?.posterUrl) return null;
+  return {
+    url: fromEntry.posterUrl,
+    alt: fromEntry.posterAlt || `${page.pageTitle} poster`,
+  };
+}
+
+function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
+  const poster = posterFor(page);
+  const intro = page.intro.trim();
+  const carried = page.entries
+    .map((entry) => entry.description?.trim())
+    .filter((text): text is string => Boolean(text) && !intro.includes(text));
+  const description = [intro, ...carried].filter(Boolean).join("\n\n");
+
+  return (
+    <section className="bg-slate-50">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(16rem,26rem)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-20">
+        <div className="mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none">
+          <div className="bg-gtp-dark-teal p-3 sm:p-4">
+            {poster ? (
+              <div className="relative aspect-3/4 bg-gtp-dark-teal">
+                <Image
+                  src={poster.url}
+                  alt={poster.alt}
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1024px) 80vw, 416px"
+                />
+              </div>
+            ) : (
+              <div className="flex aspect-3/4 items-end bg-gtp-dark-teal p-6">
+                <p className="font-heading text-2xl font-semibold leading-tight text-white/75">
+                  Poster coming soon
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="max-w-[68ch]">
+          <p className="whitespace-pre-line text-base leading-relaxed text-slate-700 sm:text-lg sm:leading-8">
+            {description}
+          </p>
+          <div className="mt-8">
+            <RegistrationAction page={page} />
+          </div>
+          <p className="mt-5 text-sm leading-relaxed text-slate-600">
+            Open to participants registered for GTP 2026.
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -59,22 +132,17 @@ export function ProgrammeActivityPage({
         bottomSpacing="compact"
       />
 
+      {POSTER_PAGE_SLUGS.has(page.slug) ? (
+        <ProgrammePosterLayout page={page} />
+      ) : (
       <section className="bg-slate-50 px-4 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">
           <p className="max-w-3xl text-pretty text-base leading-relaxed text-slate-700 md:text-lg">
             {page.intro}
           </p>
-
-          <div
-            aria-label="Participant access information"
-            className="mt-6 flex max-w-3xl items-start gap-3 rounded-xl border border-gtp-orange/25 bg-gtp-orange/8 px-4 py-3"
-          >
-            <CircleAlert className="mt-0.5 size-5 shrink-0 text-gtp-orange" aria-hidden />
-            <p className="text-sm leading-relaxed text-slate-700">
-              <span className="font-semibold text-gtp-dark-teal">For conference attendees:</span>{" "}
-              these activities are available only to participants registered for GTP 2026.
-            </p>
-          </div>
+          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-slate-600">
+            Open to participants registered for GTP 2026.
+          </p>
 
           {page.slug === "action-workshops" ? (
             <ActionWorkshopsCarousel entries={page.entries} />
@@ -146,6 +214,7 @@ export function ProgrammeActivityPage({
           )}
         </div>
       </section>
+      )}
     </>
   );
 }

@@ -21,6 +21,9 @@ export type GtpProgrammeActivityPage = {
   registrationStatus: "open" | "comingSoon" | "closed";
   registrationLabel: string;
   registrationUrl?: string;
+  /** Page-level poster for the breakfast, film, and sensorial pages. */
+  showcasePosterUrl?: string;
+  showcasePosterAlt?: string;
   entries: GtpProgrammeActivityEntry[];
 };
 
