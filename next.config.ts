@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
   },
 
   async headers() {
+    // Dev chunk filenames are not content-hashed, so immutable caching serves stale CSS/JS.
+    if (process.env.NODE_ENV !== "production") return [];
     return [
       {
         // Static assets: images, fonts, JS, CSS — cache for 1 year
@@ -65,6 +67,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.sanity.io",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi/**",
       },
     ],
   },

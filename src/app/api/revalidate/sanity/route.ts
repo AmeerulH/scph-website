@@ -31,6 +31,10 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   gtp2026GetInvolvedPage: ["/events/gtp-2026/get-involved"],
   gtp2026SubmissionsPage: ["/events/gtp-2026/submissions"],
   gtp2026MediaPage: ["/events/gtp-2026/media"],
+  gtp2026SustainabilityPage: [
+    "/events/gtp-2026/sustainability",
+    "/events/gtp-2026/about",
+  ],
   gtp2026BizForumPage: ["/events/gtp-2026/biz-forum"],
   scphHomePage: ["/"],
   scphAboutPage: ["/about-us"],

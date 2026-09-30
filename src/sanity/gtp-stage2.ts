@@ -496,23 +496,12 @@ export type GtpMarketingSectionPageData = {
   sections: SectionBlock[] | null;
 };
 
-const mediaPageQuery = `*[_type == "gtp2026MediaPage"][0]{
-  pageTitle,
-  heroLede,
-  placeholderDescription,
-  sections
-}`;
-
 const bizForumPageQuery = `*[_type == "gtp2026BizForumPage"][0]{
   pageTitle,
   heroLede,
   placeholderDescription,
   sections
 }`;
-
-export async function getGtp2026MediaPage(): Promise<GtpMarketingSectionPageData | null> {
-  return client.fetch(mediaPageQuery);
-}
 
 export async function getGtp2026BizForumPage(): Promise<GtpMarketingSectionPageData | null> {
   return client.fetch(bizForumPageQuery);

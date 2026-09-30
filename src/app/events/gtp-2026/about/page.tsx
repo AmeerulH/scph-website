@@ -46,6 +46,8 @@ import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highligh
 import { GtpViewAllSpeakersCta } from "@/components/gtp/gtp-view-all-speakers-cta";
 import { GtpLogoTiersBand } from "@/components/gtp/gtp-logo-tiers-band";
 import { GtpRatesExcursionsSection } from "@/components/gtp/gtp-rates-excursions-section";
+import { SustainabilityTeaser } from "@/components/gtp/sustainability/sustainability-teaser";
+import { getGtpSustainabilityPage } from "@/sanity/gtp-sustainability-page";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
 import { GtpEventInquiryPanel } from "@/components/sections/gtp-event-inquiry-panel";
 import { TwoColumnTextImages } from "@/components/sections/two-column-text-images";
@@ -685,10 +687,11 @@ function QuoteSection({ band }: { band: GtpAboutQuotesBandCopy }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function GtpAboutPage() {
-  const [programme, aboutCms, aboutSpeakerRows] = await Promise.all([
+  const [programme, aboutCms, aboutSpeakerRows, sustainability] = await Promise.all([
     getGtp2026Programme(),
     getGtp2026AboutPage().catch(() => null),
     getGtp2026AboutSpeakers().catch(() => []),
+    getGtpSustainabilityPage(),
   ]);
   const carouselSessions = buildGtpCarouselSessions(programme);
   const aboutSections = aboutCms?.sections ?? null;
@@ -735,6 +738,7 @@ export default async function GtpAboutPage() {
       {about.gallery.enabled ? (
         <GallerySection band={about.gallery} />
       ) : null}
+      <SustainabilityTeaser page={sustainability} />
       {accommodationBand.enabled ? (
         <GtpRatesExcursionsSection band={accommodationBand} />
       ) : null}
