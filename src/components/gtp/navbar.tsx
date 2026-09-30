@@ -30,8 +30,18 @@ type NavItem = SimpleLink | DropdownLink;
 const navItems: NavItem[] = [
   { label: "Home", href: "/events/gtp-2026/about" },
   {
-    label: "Organising Committee",
-    href: "/events/gtp-2026/organising-committee",
+    label: "About",
+    parentHref: "/events/gtp-2026/organising-committee",
+    dropdown: [
+      {
+        label: "Organising Committee",
+        href: "/events/gtp-2026/organising-committee",
+      },
+      {
+        label: "Sustainability Commitment",
+        href: "/events/gtp-2026/sustainability",
+      },
+    ],
   },
   {
     label: "Programme",
@@ -57,6 +67,15 @@ const navItems: NavItem[] = [
     ],
   },
   { label: "Speakers", href: "/events/gtp-2026/speakers" },
+  {
+    label: "Media",
+    parentHref: "/events/gtp-2026/media",
+    dropdown: [
+      { label: "Photo Gallery", href: "/events/gtp-2026/media#photos" },
+      { label: "Podcasts", href: "/events/gtp-2026/media#podcasts" },
+      { label: "Videos", href: "/events/gtp-2026/media#videos" },
+    ],
+  },
   {
     label: "Get Involved",
     parentHref: "/events/gtp-2026/get-involved",

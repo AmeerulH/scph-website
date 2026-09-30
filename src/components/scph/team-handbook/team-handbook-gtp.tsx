@@ -78,7 +78,15 @@ const gtpCmsPages = [
     route: "/events/gtp-2026/media",
     docTypes: "gtp2026MediaPage",
     title: "Media",
-    notes: "Marketing-style sections for the GTP media page.",
+    notes:
+      "Three sections on one page. **Photo gallery:** add albums (Day 1 to 4, Special Events, Action Workshops), drag in photos (about 9 per album; the first is shown large, add alt text), and paste Google Drive \"More photos\" links. Empty albums show GTP 2025 preview photos. **Podcasts:** cover art, Spotify / Apple Podcasts / YouTube links, and episodes (newest first). **Videos:** paste YouTube URLs; the first video is the featured player and thumbnails load automatically. Empty links and lists are hidden, never shown as broken.",
+  },
+  {
+    route: "/events/gtp-2026/sustainability",
+    docTypes: "gtp2026SustainabilityPage",
+    title: "Sustainability commitment",
+    notes:
+      "Singleton. Hero image, intro (lead sentence + supporting text) and five **Commitments** (category, headline, body, image with alt text; optional highlight figure and link). Numbering follows list order. The **Home teaser** fields control the short band on the About page; untick to hide it. Missing images use GTP photos.",
   },
   {
     route: "/events/gtp-2026/biz-forum",

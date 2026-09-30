@@ -26,6 +26,12 @@ export const gtpFooterDefaultQuickLinks: FooterNavLinkResolved[] = [
     openInNewTab: false,
   },
   { label: "Programme", href: "/events/gtp-2026/programmes", openInNewTab: false },
+  { label: "Media", href: "/events/gtp-2026/media", openInNewTab: false },
+  {
+    label: "Sustainability",
+    href: "/events/gtp-2026/sustainability",
+    openInNewTab: false,
+  },
   { label: "FAQ", href: "/events/gtp-2026/faq", openInNewTab: false },
   { label: "Get Involved", href: "/events/gtp-2026/get-involved", openInNewTab: false },
   { label: "Submissions", href: "/events/gtp-2026/submissions", openInNewTab: false },
