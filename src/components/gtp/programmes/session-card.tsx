@@ -13,10 +13,11 @@ import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
+import { normalizeSpeakerName } from "./programme-speaker-filter";
 import {
-  normalizeSpeakerName,
-  sortSpeakersModeratorFirst,
-} from "./programme-speaker-filter";
+  actionWorkshopPeople,
+  programmePersonRoleLabel,
+} from "./programme-person-roles";
 
 function programmeSessionReference(title: string): string | null {
   const normalized = normalizeProgrammeSessionTitle(title).toLowerCase();
@@ -44,7 +45,7 @@ export function SessionCard({
   const MetaIcon = meta.Icon;
   const cardRef = React.useRef<HTMLDivElement>(null);
 
-  const namedSpeakers = sortSpeakersModeratorFirst(session.speakers ?? []);
+  const namedSpeakers = actionWorkshopPeople(session);
   const placeholderCount =
     namedSpeakers.length === 0 && session.speakerCount
       ? session.speakerCount
@@ -208,11 +209,9 @@ export function SessionCard({
                     sizeClassName="h-8 w-8"
                   />
                   <div className="min-w-0">
-                    {sp.sessionRole?.trim() ? (
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                        {sp.sessionRole.trim()}
-                      </p>
-                    ) : null}
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                      {programmePersonRoleLabel(sp)}
+                    </p>
                     <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
                     {sp.designation && (
                       <p className="text-xs text-gray-400">{sp.designation}</p>

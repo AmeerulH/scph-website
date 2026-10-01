@@ -23,11 +23,25 @@ export const programmeSpeakerType = defineType({
       options: {hotspot: true},
     }),
     defineField({
+      name: 'roles',
+      title: 'Roles',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        list: [
+          {title: 'Speaker', value: 'speaker'},
+          {title: 'Facilitator', value: 'facilitator'},
+        ],
+      },
+      description:
+        'Optional. Tick Speaker, Facilitator, or both. Leave empty to keep the role implied by the list this person is in, or by Role in this session.',
+    }),
+    defineField({
       name: 'sessionRole',
       title: 'Role in this session',
       type: 'string',
       description:
-        'Optional. Shown on the programme (e.g. Moderator, Panelist, Facilitator). Leave empty for a generic speaker line.',
+        'Optional label such as Moderator or Panelist. Leave empty for a generic line. “Speaker” or “Facilitator” here is still read when Roles is empty.',
     }),
   ],
   preview: {

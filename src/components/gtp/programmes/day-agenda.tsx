@@ -90,7 +90,16 @@ export function DayAgenda({
           if (session.type === "break") {
             return <BreakStrip key={i} session={session} />;
           }
-          if (session.type === "concurrent" || session.type === "research") {
+          if (session.type === "concurrent") {
+            return (
+              <ConcurrentBlock
+                key={i}
+                session={session}
+                calendarTabId={calendarTabId}
+              />
+            );
+          }
+          if (session.type === "research") {
             return (
               <ConcurrentBlock
                 key={i}

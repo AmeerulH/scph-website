@@ -6,8 +6,11 @@ import type {
   GtpProgrammeActivityPage,
   GtpProgrammeActivitySlug,
 } from "@/data/gtp-programme-activity-defaults";
+import { DEFAULT_SESSION_MODAL_HOSTED_BY } from "@/sanity/gtp-programme";
+import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { ActionWorkshopsCarousel } from "./action-workshops-carousel";
+import type { ActionWorkshopListingItem } from "./action-workshop-listing";
 
 const POSTER_PAGE_SLUGS = new Set<GtpProgrammeActivitySlug>([
   "ai-thinkers-networking-breakfast",
@@ -110,8 +113,12 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
 
 export function ProgrammeActivityPage({
   page,
+  actionWorkshops,
+  hostedBy,
 }: {
   page: GtpProgrammeActivityPage;
+  actionWorkshops?: ActionWorkshopListingItem[];
+  hostedBy?: GtpSessionModalHostedBy;
 }) {
   const entriesByDate = page.entries.reduce<Record<string, GtpProgrammeActivityPage["entries"]>>(
     (groups, entry) => {
@@ -140,12 +147,12 @@ export function ProgrammeActivityPage({
           <p className="max-w-3xl text-pretty text-base leading-relaxed text-slate-700 md:text-lg">
             {page.intro}
           </p>
-          <p className="mt-6 max-w-3xl text-sm leading-relaxed text-slate-600">
-            Open to participants registered for GTP 2026.
-          </p>
 
           {page.slug === "action-workshops" ? (
-            <ActionWorkshopsCarousel entries={page.entries} />
+            <ActionWorkshopsCarousel
+              items={actionWorkshops ?? []}
+              hostedBy={hostedBy ?? DEFAULT_SESSION_MODAL_HOSTED_BY}
+            />
           ) : page.entries.length > 0 ? (
             <div className="mt-12 space-y-10">
               {Object.entries(entriesByDate).map(([date, entries]) => (

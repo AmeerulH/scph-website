@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { Clock, Lock, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { cn } from "@/lib/utils";
@@ -7,6 +9,9 @@ import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { WorkshopSubCard } from "./workshop-sub-card";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
+
+const ACTION_WORKSHOPS_HREF =
+  "/events/gtp-2026/programmes/action-workshops#action-workshops";
 
 export function ConcurrentBlock({
   session,
@@ -127,7 +132,17 @@ export function ConcurrentBlock({
           collapsibleOnMobile
         />
 
-        {hasBothTypes ? (
+        {isResearch ? null : (
+          <div className="mt-6">
+            <Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild>
+              <Link href={ACTION_WORKSHOPS_HREF}>
+                Click here to see the list of Action Workshops and register.
+              </Link>
+            </Button>
+          </div>
+        )}
+
+        {isResearch && hasBothTypes ? (
           /* Two-column layout: Workshop Sessions | Research Sessions */
           <div className="mt-5 grid grid-cols-1 gap-6 border-l-2 border-gtp-teal/25 pl-5 md:grid-cols-2">
             <div>
@@ -166,7 +181,7 @@ export function ConcurrentBlock({
               </div>
             </div>
           </div>
-        ) : (
+        ) : isResearch ? (
           /* Single-column fallback */
           <div className="mt-5 space-y-3 border-l-2 border-gtp-teal/25 pl-5">
             {session.workshops?.map((w) => (
@@ -179,7 +194,7 @@ export function ConcurrentBlock({
               />
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

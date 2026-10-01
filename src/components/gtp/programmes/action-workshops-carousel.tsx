@@ -1,17 +1,17 @@
 "use client";
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
-import { AnimatePresence, motion } from "motion/react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
-import { ActionWorkshopRegistration } from "./action-workshop-registration";
-import type { GtpProgrammeActivityPage } from "@/data/gtp-programme-activity-defaults";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
-
-type Workshop = GtpProgrammeActivityPage["entries"][number];
+import {
+  normalizeActionWorkshopTitle,
+  type ActionWorkshopListingItem,
+} from "./action-workshop-listing";
+import { WorkshopModal } from "./workshop-modal";
 
 function ScrollButton({
   direction,
@@ -38,83 +38,6 @@ function ScrollButton({
   );
 }
 
-function WorkshopDetailModal({
-  workshop,
-  onClose,
-}: {
-  workshop: Workshop | null;
-  onClose: () => void;
-}) {
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => setMounted(true), []);
-  React.useEffect(() => {
-    if (!workshop) return;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [workshop]);
-
-  if (!mounted) return null;
-
-  return ReactDOM.createPortal(
-    <AnimatePresence>
-      {workshop ? (
-        <motion.div
-          className="fixed inset-0 z-60 flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        >
-          <div className="absolute inset-0 bg-gtp-dark-teal/70 backdrop-blur-sm" />
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="action-workshop-title"
-            className="relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl"
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.97 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="relative min-h-28 bg-linear-to-br from-gtp-dark-teal to-gtp-teal px-6 pb-5 pt-6 text-white">
-              <div className="absolute inset-0 bg-[radial-gradient(circle,white_1px,transparent_1px)] bg-size-[28px_28px] opacity-[0.1]" />
-              <button
-                type="button"
-                onClick={onClose}
-                className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full bg-black/25 transition-colors hover:bg-black/40"
-                aria-label="Close workshop details"
-              >
-                <X className="size-4" />
-              </button>
-              <p className="relative text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
-                {workshop.dateLabel}
-              </p>
-              <h2 id="action-workshop-title" className="relative mt-2 max-w-xl font-heading text-xl font-bold leading-snug">
-                {workshop.title}
-              </h2>
-            </div>
-            <div className="p-6">
-              <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
-                {workshop.description || "Workshop details will be announced soon."}
-              </p>
-              <div className="mt-7 border-t border-slate-100 pt-6">
-                <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">
-                  Ready to register?
-                </p>
-                <ActionWorkshopRegistration />
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>,
-    document.body,
-  );
-}
-
 function WorkshopRow({
   date,
   workshops,
@@ -123,8 +46,8 @@ function WorkshopRow({
   highlightedWorkshopRef,
 }: {
   date: string;
-  workshops: Workshop[];
-  onSelect: (workshop: Workshop) => void;
+  workshops: ActionWorkshopListingItem[];
+  onSelect: (workshop: ActionWorkshopListingItem) => void;
   highlightedWorkshopTitle: string | null;
   highlightedWorkshopRef: React.RefObject<HTMLButtonElement | null>;
 }) {
@@ -167,11 +90,12 @@ function WorkshopRow({
       <div className="-my-10 overflow-hidden py-10" ref={emblaRef}>
         <div className="flex gap-4">
           {workshops.map((workshop) => {
-            const isHighlighted = workshop.title === highlightedWorkshopTitle;
+            const isHighlighted =
+              normalizeActionWorkshopTitle(workshop.title) === highlightedWorkshopTitle;
 
             return (
               <button
-                key={workshop.title}
+                key={`${workshop.calendarTabId}-${workshop.workshop.number}-${workshop.title}`}
                 ref={isHighlighted ? highlightedWorkshopRef : undefined}
                 type="button"
                 onClick={() => onSelect(workshop)}
@@ -227,25 +151,33 @@ function WorkshopRow({
 }
 
 export function ActionWorkshopsCarousel({
-  entries,
+  items,
+  hostedBy,
 }: {
-  entries: GtpProgrammeActivityPage["entries"];
+  items: ActionWorkshopListingItem[];
+  hostedBy: GtpSessionModalHostedBy;
 }) {
-  const [selected, setSelected] = React.useState<Workshop | null>(null);
+  const [selected, setSelected] = React.useState<ActionWorkshopListingItem | null>(null);
   const searchParams = useSearchParams();
   const requestedWorkshopTitle = searchParams.get("workshop")?.trim() || null;
+  const requestedKey = requestedWorkshopTitle
+    ? normalizeActionWorkshopTitle(requestedWorkshopTitle)
+    : null;
   const [highlightedWorkshopTitle, setHighlightedWorkshopTitle] = React.useState<string | null>(null);
   const highlightedWorkshopRef = React.useRef<HTMLButtonElement | null>(null);
-  const groups = entries.reduce<Record<string, Workshop[]>>((result, entry) => {
+  const groups = items.reduce<Record<string, ActionWorkshopListingItem[]>>((result, entry) => {
     const date = entry.dateLabel || "To be confirmed";
     (result[date] ??= []).push(entry);
     return result;
   }, {});
 
   React.useEffect(() => {
-    if (!requestedWorkshopTitle) return;
-
-    setHighlightedWorkshopTitle(requestedWorkshopTitle);
+    if (!requestedKey) return;
+    const match = items.find(
+      (item) => normalizeActionWorkshopTitle(item.title) === requestedKey,
+    );
+    if (match) setSelected(match);
+    setHighlightedWorkshopTitle(requestedKey);
     const frame = window.requestAnimationFrame(() => {
       highlightedWorkshopRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -260,7 +192,7 @@ export function ActionWorkshopsCarousel({
       window.cancelAnimationFrame(frame);
       window.clearTimeout(timeout);
     };
-  }, [requestedWorkshopTitle]);
+  }, [items, requestedKey]);
 
   return (
     <>
@@ -276,7 +208,18 @@ export function ActionWorkshopsCarousel({
           />
         ))}
       </div>
-      <WorkshopDetailModal workshop={selected} onClose={() => setSelected(null)} />
+      <WorkshopModal
+        context={
+          selected
+            ? { workshop: selected.workshop, parent: selected.parent }
+            : null
+        }
+        dayLabel={selected?.dayLabel}
+        calendarTabId={selected?.calendarTabId ?? "day2"}
+        hostedBy={hostedBy}
+        workshopRegistration="inline"
+        onClose={() => setSelected(null)}
+      />
     </>
   );
 }

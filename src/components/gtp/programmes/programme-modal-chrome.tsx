@@ -164,6 +164,7 @@ export function ProgrammeModalShareRegisterColumn({
   shareTitle,
   hostedBy,
   showWorkshopRegistration = false,
+  workshopRegistration = "redirect",
   workshopTitle,
 }: {
   shareTitle: string;
@@ -171,6 +172,8 @@ export function ProgrammeModalShareRegisterColumn({
   hostedBy?: GtpSessionModalHostedBy;
   /** Show the attendee-verification gate for Action Workshop details. */
   showWorkshopRegistration?: boolean;
+  /** `redirect` sends visitors to the Action Workshops page. `inline` opens verification here. */
+  workshopRegistration?: "redirect" | "inline";
   /** When set, send users to this workshop on the Action Workshops page. */
   workshopTitle?: string;
 }) {
@@ -282,7 +285,11 @@ export function ProgrammeModalShareRegisterColumn({
       </div>
 
       {showWorkshopRegistration ? (
-        <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
+        workshopRegistration === "inline" ? (
+          <ActionWorkshopRegistration />
+        ) : (
+          <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
+        )
       ) : null}
     </div>
   );

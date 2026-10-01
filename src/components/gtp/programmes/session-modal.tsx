@@ -11,18 +11,15 @@ import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionFormatLabel, getSessionVenueLine } from "./session-display-helpers";
+import { ProgrammeModalShareRegisterColumn } from "./programme-modal-chrome";
 import {
-  FacilitatorCards,
-  ProgrammeModalShareRegisterColumn,
-} from "./programme-modal-chrome";
+  actionWorkshopPeople,
+  programmePersonRoleLabel,
+} from "./programme-person-roles";
 import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
-import {
-  isModeratorSessionRole,
-  sortSpeakersModeratorFirst,
-} from "./programme-speaker-filter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -36,16 +33,6 @@ interface SessionModalProps {
   /** When set, parallel slots in the modal open a dedicated workshop modal (desktop grid below). */
   onWorkshopClick?: (workshop: Workshop) => void;
   onSpeakerClick?: (speaker: Speaker) => void;
-}
-
-function sessionExpectsSpeakerList(type: Session["type"]) {
-  return (
-    type === "opening" ||
-    type === "plenary" ||
-    type === "lightning" ||
-    type === "fireside" ||
-    type === "closing"
-  );
 }
 
 // ─── Modal ────────────────────────────────────────────────────────────────────
@@ -231,59 +218,7 @@ export function SessionModal({
                       />
                     </div>
 
-                    {/* Speakers (named) or TBC */}
-                    {session.speakers && session.speakers.length > 0 && (
-                      <div className="order-1 space-y-4">
-                        {session.type === "fireside" ? (
-                          <FiresideSpeakersBlock
-                            speakers={sortSpeakersModeratorFirst(session.speakers)}
-                            onSpeakerClick={onSpeakerClick}
-                          />
-                        ) : (
-                          <div>
-                            <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                              {sortSpeakersModeratorFirst(session.speakers).map((sp, i) => (
-                                <SpeakerRow
-                                  key={`${sp.name}-${i}`}
-                                  speaker={sp}
-                                  onSpeakerClick={onSpeakerClick}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {sessionExpectsSpeakerList(session.type) &&
-                      (!session.speakers || session.speakers.length === 0) && (
-                        <div className="order-1">
-                          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
-                          <p className="text-sm leading-relaxed text-gray-600">
-                            {(session.speakerCount ?? 0) > 0 ? (
-                              <>
-                                Speakers to be confirmed. This session is planned with approximately{" "}
-                                <span className="font-semibold text-gray-800">
-                                  {session.speakerCount}
-                                </span>{" "}
-                                speaker
-                                {session.speakerCount !== 1 ? "s" : ""}; names and bios will be
-                                published closer to the event.
-                              </>
-                            ) : (
-                              <>
-                                Speakers to be confirmed. Further details will be published
-                                closer to the event.
-                              </>
-                            )}
-                          </p>
-                        </div>
-                      )}
-
-                    <div className="order-1">
-                      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Facilitators</p>
-                      <FacilitatorCards people={session.facilitators ?? []} />
-                    </div>
+                    <SessionPeopleBlock session={session} onSpeakerClick={onSpeakerClick} />
 
                   </div>
 
@@ -358,93 +293,56 @@ export function SessionModal({
   return ReactDOM.createPortal(modal, document.body);
 }
 
-// ─── Fireside: moderator vs speakers (role field when set, else first row = moderator) ─
+// ─── Speaker row ──────────────────────────────────────────────────────────────
 
-function FiresideSpeakersBlock({
-  speakers,
+function SessionPeopleBlock({
+  session,
   onSpeakerClick,
 }: {
-  speakers: Speaker[];
+  session: Session;
   onSpeakerClick?: (speaker: Speaker) => void;
 }) {
-  const anyRole = speakers.some((s) => s.sessionRole?.trim());
-  let moderators: Speaker[];
-  let others: Speaker[];
-
-  if (anyRole) {
-    moderators = speakers.filter((s) => isModeratorSessionRole(s.sessionRole));
-    others = speakers.filter((s) => !isModeratorSessionRole(s.sessionRole));
-    if (moderators.length === 0) {
-      return (
-        <div>
-          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {speakers.map((sp, i) => (
-              <SpeakerRow
-                key={`${sp.name}-${i}`}
-                speaker={sp}
-                onSpeakerClick={onSpeakerClick}
-              />
-            ))}
-          </div>
-        </div>
-      );
-    }
-  } else {
-    moderators = speakers[0] ? [speakers[0]] : [];
-    others = speakers.slice(1);
-  }
+  const people = actionWorkshopPeople(session);
+  const speakerCount = session.speakerCount ?? 0;
 
   return (
-    <>
-      {moderators.length > 0 ? (
-        <div>
-          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Moderator:</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {moderators.map((sp, i) => (
-              <SpeakerRow
-                key={`${sp.name}-mod-${i}`}
-                speaker={sp}
-                suppressRoleWhenModerator
-                onSpeakerClick={onSpeakerClick}
-              />
-            ))}
-          </div>
+    <div className="order-1">
+      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Facilitators/Speakers</p>
+      {people.length > 0 ? (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {people.map((person, index) => (
+            <SpeakerRow
+              key={`${person.name}-${index}`}
+              speaker={person}
+              onSpeakerClick={onSpeakerClick}
+            />
+          ))}
         </div>
-      ) : null}
-      {others.length > 0 ? (
-        <div>
-          <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Speakers:</p>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {others.map((sp, i) => (
-              <SpeakerRow
-                key={`${sp.name}-sp-${i}`}
-                speaker={sp}
-                onSpeakerClick={onSpeakerClick}
-              />
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </>
+      ) : (
+        <p className="text-sm leading-relaxed text-gray-600">
+          {speakerCount > 0 ? (
+            <>
+              To be confirmed. This session is planned with approximately{" "}
+              <span className="font-semibold text-gray-800">{speakerCount}</span>{" "}
+              speaker{speakerCount === 1 ? "" : "s"}; names will be published closer to the event.
+            </>
+          ) : (
+            <>To be confirmed. Further details will be published closer to the event.</>
+          )}
+        </p>
+      )}
+    </div>
   );
 }
 
-// ─── Speaker row ──────────────────────────────────────────────────────────────
-
 function SpeakerRow({
   speaker,
-  suppressRoleWhenModerator,
   onSpeakerClick,
 }: {
   speaker: Speaker;
-  suppressRoleWhenModerator?: boolean;
   onSpeakerClick?: (speaker: Speaker) => void;
 }) {
-  const role = speaker.sessionRole?.trim();
-  const showRole = Boolean(
-    role && !(suppressRoleWhenModerator && isModeratorSessionRole(speaker.sessionRole)),
-  );
+  const role = programmePersonRoleLabel(speaker);
 
   return (
     <button
@@ -460,9 +358,7 @@ function SpeakerRow({
     >
       <ProgrammeSpeakerAvatar imageUrl={speaker.imageUrl} name={speaker.name} />
       <div className="min-w-0">
-        {showRole ? (
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p>
-        ) : null}
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p>
         <p className="text-sm font-semibold text-gray-800">{speaker.name}</p>
         {speaker.designation && (
           <p className="text-xs text-gtp-teal leading-relaxed">{speaker.designation}</p>

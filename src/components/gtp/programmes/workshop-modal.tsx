@@ -7,61 +7,22 @@ import { X, Clock, MapPin, UserCircle2 } from "lucide-react";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
-import type { Session, Speaker, Workshop } from "./types";
+import type { Session, Workshop } from "./types";
 import { TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
 import {
-  FacilitatorCards,
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
 } from "./programme-modal-chrome";
+import {
+  actionWorkshopPeople,
+  programmePersonRoleLabel,
+} from "./programme-person-roles";
 import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
-import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
-
-function WorkshopPeopleGroup({
-  title,
-  people,
-  showWhenEmpty = false,
-}: {
-  title: string;
-  people: Speaker[];
-  /** Keep the heading on screen before names are published. */
-  showWhenEmpty?: boolean;
-}) {
-  if (people.length === 0 && !showWhenEmpty) return null;
-
-  return (
-    <div>
-      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">{title}</p>
-      {title === "Facilitators" ? (
-        <FacilitatorCards people={people} />
-      ) : people.length > 0 ? (
-        <ul className="space-y-3">
-          {sortSpeakersModeratorFirst(people).map((person, index) => (
-            <li key={`${person.name}-${index}`} className="flex items-center gap-3">
-              <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
-              <div className="min-w-0">
-                {person.sessionRole?.trim() ? (
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                    {person.sessionRole.trim()}
-                  </p>
-                ) : null}
-                <p className="text-sm font-semibold text-gray-800">{person.name}</p>
-                {person.designation ? (
-                  <p className="text-xs leading-relaxed text-gtp-teal">{person.designation}</p>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -74,6 +35,7 @@ export function WorkshopModal({
   calendarTabId,
   hostedBy,
   onClose,
+  workshopRegistration = "redirect",
 }: {
   context: WorkshopModalContext | null;
   dayLabel?: string;
@@ -81,6 +43,8 @@ export function WorkshopModal({
   /** Same programme-level “Hosted by” block as the main session modal. */
   hostedBy: GtpSessionModalHostedBy;
   onClose: () => void;
+  /** Action Workshops page verifies registration in this popup. Programme page links across. */
+  workshopRegistration?: "redirect" | "inline";
 }) {
   const open = context != null;
 
@@ -91,6 +55,15 @@ export function WorkshopModal({
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
@@ -164,9 +137,11 @@ export function WorkshopModal({
                   <span className="rounded-full bg-white/20 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
                     {parent.type === "research" ? "Research slot" : "Workshop"}
                   </span>
-                  <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold text-white/95 ring-1 ring-white/15">
-                    #{w.number}
-                  </span>
+                  {w.number ? (
+                    <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold text-white/95 ring-1 ring-white/15">
+                      #{w.number}
+                    </span>
+                  ) : null}
                 </div>
               </div>
 
@@ -206,7 +181,8 @@ export function WorkshopModal({
                   <div className="order-2 lg:order-1">
                     <ProgrammeModalShareRegisterColumn
                       shareTitle={w.title}
-                      showWorkshopRegistration
+                      showWorkshopRegistration={parent.type === "concurrent"}
+                      workshopRegistration={workshopRegistration}
                       workshopTitle={w.title}
                     />
                   </div>
@@ -218,36 +194,7 @@ export function WorkshopModal({
                         w.hostedBy,
                       )}
                     />
-                    {(w.speakers?.length ?? 0) > 0 || (w.facilitators?.length ?? 0) > 0 ? (
-                      <WorkshopPeopleGroup title="Speakers" people={w.speakers ?? []} />
-                    ) : (
-                      <div>
-                        <p className="mb-2 text-sm font-semibold text-gtp-dark-teal">Speakers</p>
-                        <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
-                          <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
-                          <div>
-                            {(w.speakerCount ?? 0) > 0 ? (
-                              <>
-                                <p className="text-sm font-medium text-gray-600">To be confirmed</p>
-                                <p className="text-xs text-gray-400">
-                                  Approx. {w.speakerCount} speaker{w.speakerCount !== 1 ? "s" : ""} planned
-                                </p>
-                              </>
-                            ) : (
-                              <>
-                                <p className="text-sm font-medium text-gray-600">To be confirmed</p>
-                                <p className="text-xs text-gray-400">Speaker details coming soon</p>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <WorkshopPeopleGroup
-                      title="Facilitators"
-                      people={w.facilitators ?? []}
-                      showWhenEmpty
-                    />
+                    <FacilitatorsSpeakersBlock workshop={w} />
                   </div>
                 </div>
               </div>
@@ -259,4 +206,45 @@ export function WorkshopModal({
 
   if (!mounted) return null;
   return ReactDOM.createPortal(modal, document.body);
+}
+
+function FacilitatorsSpeakersBlock({ workshop }: { workshop: Workshop }) {
+  const people = actionWorkshopPeople(workshop);
+  const speakerCount = workshop.speakerCount ?? 0;
+
+  return (
+    <div>
+      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Facilitators/Speakers</p>
+      {people.length > 0 ? (
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {people.map((person, index) => (
+            <li key={`${person.name}-${index}`} className="flex items-center gap-3">
+              <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                  {programmePersonRoleLabel(person)}
+                </p>
+                <p className="text-sm font-semibold text-gray-800">{person.name}</p>
+                {person.designation ? (
+                  <p className="text-xs leading-relaxed text-gtp-teal">{person.designation}</p>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
+          <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
+          <div>
+            <p className="text-sm font-medium text-gray-600">To be confirmed</p>
+            <p className="text-xs text-gray-400">
+              {speakerCount > 0
+                ? `Approx. ${speakerCount} speaker${speakerCount === 1 ? "" : "s"} planned`
+                : "Details coming soon"}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

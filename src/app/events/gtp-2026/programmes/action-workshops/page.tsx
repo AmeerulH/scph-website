@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { buildActionWorkshopListing } from "@/components/gtp/programmes/action-workshop-listing";
 import { ProgrammeActivityPage } from "@/components/gtp/programmes/programme-activity-page";
+import { getGtp2026Programme } from "@/sanity/gtp-programme";
 import { getGtpProgrammeActivityPage } from "@/sanity/gtp-stage2";
 
 const description =
@@ -19,6 +21,20 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function ActionWorkshopsPage() {
-  const page = await getGtpProgrammeActivityPage("action-workshops");
-  return <ProgrammeActivityPage page={page} />;
+  const [page, programme] = await Promise.all([
+    getGtpProgrammeActivityPage("action-workshops"),
+    getGtp2026Programme(),
+  ]);
+  const actionWorkshops = buildActionWorkshopListing({
+    entries: page.entries,
+    day2: programme.day2,
+    day3: programme.day3,
+  });
+  return (
+    <ProgrammeActivityPage
+      page={page}
+      actionWorkshops={actionWorkshops}
+      hostedBy={programme.sessionModalHostedBy}
+    />
+  );
 }

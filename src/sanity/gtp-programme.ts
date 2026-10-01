@@ -133,6 +133,7 @@ interface SanitySpeakerRow {
   name?: string;
   designation?: string;
   sessionRole?: string;
+  roles?: (string | null)[] | null;
   imageUrl?: string | null;
 }
 
@@ -232,12 +233,14 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         name,
         designation,
         sessionRole,
+        roles,
         "imageUrl": image.asset->url
       },
       facilitators[]{
         name,
         designation,
         sessionRole,
+        roles,
         "imageUrl": image.asset->url
       },
       ${hostedByProjection},
@@ -250,12 +253,14 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
           name,
           designation,
           sessionRole,
+          roles,
           "imageUrl": image.asset->url
         },
         facilitators[]{
           name,
           designation,
           sessionRole,
+          roles,
           "imageUrl": image.asset->url
         },
         ${hostedByProjection}
@@ -387,37 +392,85 @@ function mapSpeaker(row: SanitySpeakerRow): Speaker | null {
   return speaker;
 }
 
-function isFacilitatorSessionRole(role: string | undefined): boolean {
-  const value = role?.trim().toLowerCase() ?? "";
-  return value === "facilitator" || value === "facilitators";
+type StoredPersonRole = "speaker" | "facilitator";
+
+function uniquePersonRoles(roles: StoredPersonRole[]): StoredPersonRole[] {
+  const unique: StoredPersonRole[] = [];
+  for (const role of roles) {
+    if (!unique.includes(role)) unique.push(role);
+  }
+  return unique;
 }
 
-function mapNamedPeople(rows: SanitySpeakerRow[] | undefined): Speaker[] {
-  if (!Array.isArray(rows) || rows.length === 0) return [];
-  return rows.map(mapSpeaker).filter((s): s is Speaker => s !== null);
+function checkboxRoles(row: SanitySpeakerRow): StoredPersonRole[] {
+  if (!Array.isArray(row.roles)) return [];
+  return row.roles.filter(
+    (role): role is StoredPersonRole => role === "speaker" || role === "facilitator",
+  );
+}
+
+/** Legacy free-text role. Moderator and other labels are not treated as Speaker or Facilitator. */
+function legacyTextRoles(sessionRole: string | undefined): StoredPersonRole[] {
+  const value = sessionRole?.trim().toLowerCase() ?? "";
+  if (value === "speaker" || value === "speakers") return ["speaker"];
+  if (value === "facilitator" || value === "facilitators") return ["facilitator"];
+  return [];
+}
+
+/**
+ * Roles checkboxes win when set. Otherwise legacy “Speaker” / “Facilitator” text wins,
+ * so a facilitator typed into the speakers list stays a facilitator. The list they were
+ * saved in is the fallback.
+ */
+function rolesForRow(row: SanitySpeakerRow, fromList: StoredPersonRole): StoredPersonRole[] {
+  const checks = checkboxRoles(row);
+  const text = legacyTextRoles(
+    typeof row.sessionRole === "string" ? row.sessionRole : undefined,
+  );
+  if (checks.length > 0) return uniquePersonRoles([...checks, ...text]);
+  if (text.length > 0) return text;
+  return [fromList];
+}
+
+function mergeProgrammePeople(
+  speakerRows: SanitySpeakerRow[] | undefined,
+  facilitatorRows: SanitySpeakerRow[] | undefined,
+): Speaker[] {
+  const merged = new Map<string, Speaker>();
+
+  const add = (row: SanitySpeakerRow, fromList: StoredPersonRole) => {
+    const person = mapSpeaker(row);
+    if (!person) return;
+    const key = person.name.trim().toLowerCase();
+    const roles = rolesForRow(row, fromList);
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, { ...person, roles });
+      return;
+    }
+    merged.set(key, {
+      name: existing.name,
+      designation: existing.designation || person.designation,
+      imageUrl: existing.imageUrl || person.imageUrl,
+      sessionRole: existing.sessionRole || person.sessionRole,
+      roles: uniquePersonRoles([...(existing.roles ?? []), ...roles]),
+    });
+  };
+
+  for (const row of speakerRows ?? []) add(row, "speaker");
+  for (const row of facilitatorRows ?? []) add(row, "facilitator");
+  return [...merged.values()];
 }
 
 function splitSpeakersAndFacilitators(
   speakerRows: SanitySpeakerRow[] | undefined,
   facilitatorRows: SanitySpeakerRow[] | undefined,
 ): { speakers: Speaker[]; facilitators: Speaker[] } {
-  const facilitators = mapNamedPeople(facilitatorRows);
-  const facilitatorKeys = new Set(
-    facilitators.map((person) => person.name.trim().toLowerCase()),
-  );
-  const speakers: Speaker[] = [];
-  for (const person of mapNamedPeople(speakerRows)) {
-    const key = person.name.trim().toLowerCase();
-    if (facilitatorKeys.has(key) || isFacilitatorSessionRole(person.sessionRole)) {
-      if (!facilitatorKeys.has(key)) {
-        facilitators.push(person);
-        facilitatorKeys.add(key);
-      }
-      continue;
-    }
-    speakers.push(person);
-  }
-  return { speakers, facilitators };
+  const people = mergeProgrammePeople(speakerRows, facilitatorRows);
+  return {
+    speakers: people.filter((person) => person.roles?.includes("speaker")),
+    facilitators: people.filter((person) => person.roles?.includes("facilitator")),
+  };
 }
 
 function mapHostedByOverride(row: SanityHostedByFields): ProgrammeHostedByOverride | undefined {

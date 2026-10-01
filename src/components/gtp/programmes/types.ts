@@ -23,6 +23,8 @@ export type ProgrammeVenueType =
   | "tbc"
   | "other";
 
+export type ProgrammePersonRole = "speaker" | "facilitator";
+
 export interface Speaker {
   name: string;
   designation?: string;
@@ -30,6 +32,8 @@ export interface Speaker {
   imageUrl?: string;
   /** Shown on cards/modal (e.g. Moderator, Panelist) */
   sessionRole?: string;
+  /** Speaker, facilitator, or both. Combined from Roles, list membership, and legacy role text. */
+  roles?: ProgrammePersonRole[];
 }
 
 /** Set on a session or workshop when that popup is not hosted by the programme default. */

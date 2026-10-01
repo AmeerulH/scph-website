@@ -82,7 +82,8 @@ export const programmeSessionType = defineType({
       title: 'Speakers',
       type: 'array',
       of: [{type: 'programmeSpeaker'}],
-      description: 'Named speakers. If empty, use Speaker count (TBC) below. Not shown for parallel sessions — add speakers to each individual workshop slot instead.',
+      description:
+        'Named speakers for this session. Tick Roles on each person when they are a speaker, a facilitator, or both. If empty, use Speaker count (TBC) below. Not shown for parallel sessions — add people on each workshop row instead.',
       hidden: ({parent}) =>
         parent?.type === 'concurrent' || parent?.type === 'research',
     }),
@@ -92,7 +93,7 @@ export const programmeSessionType = defineType({
       type: 'array',
       of: [{type: 'programmeSpeaker'}],
       description:
-        'Shown under Facilitators in the session popup, separate from Speakers. Leave empty to show “To be confirmed”. People whose role is already “Facilitator” in Speakers also appear here. For parallel sessions, add facilitators on each workshop row instead.',
+        'Older list, still shown under Facilitators on plenary and other session popups. The site also merges these people into action workshop popups. Prefer Roles on each person when someone is a speaker, a facilitator, or both.',
       hidden: ({parent}) =>
         parent?.type === 'break' ||
         parent?.type === 'concurrent' ||
