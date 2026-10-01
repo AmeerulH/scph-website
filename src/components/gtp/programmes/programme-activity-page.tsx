@@ -8,12 +8,12 @@ import type {
 } from "@/data/gtp-programme-activity-defaults";
 import { DEFAULT_SESSION_MODAL_HOSTED_BY } from "@/sanity/gtp-programme";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
+import { AiSessionsList } from "./ai-sessions-list";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { ActionWorkshopsCarousel } from "./action-workshops-carousel";
 import type { ActionWorkshopListingItem } from "./action-workshop-listing";
 
 const POSTER_PAGE_SLUGS = new Set<GtpProgrammeActivitySlug>([
-  "ai-thinkers-networking-breakfast",
   "film-screening",
   "sensorial-station",
 ]);
@@ -139,7 +139,9 @@ export function ProgrammeActivityPage({
         bottomSpacing="compact"
       />
 
-      {POSTER_PAGE_SLUGS.has(page.slug) ? (
+      {page.slug === "ai-thinkers-networking-breakfast" ? (
+        <AiSessionsList page={page} />
+      ) : POSTER_PAGE_SLUGS.has(page.slug) ? (
         <ProgrammePosterLayout page={page} />
       ) : (
       <section className="bg-slate-50 px-4 py-12 sm:py-16">

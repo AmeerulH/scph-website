@@ -18,7 +18,7 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   ],
   gtp2026ProgrammeActivityPage: [
     "/events/gtp-2026/programmes/action-workshops",
-    "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+    "/events/gtp-2026/programmes/artificial-intelligence-sessions",
     "/events/gtp-2026/programmes/film-screening",
     "/events/gtp-2026/programmes/sensorial-station",
   ],

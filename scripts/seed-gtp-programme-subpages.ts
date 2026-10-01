@@ -36,6 +36,13 @@ function buildDocuments() {
       title: entry.title,
       dateLabel: entry.dateLabel,
       description: entry.description,
+      sessionDate: entry.sessionDate,
+      format: entry.format,
+      time: entry.time,
+      venue: entry.venue,
+      registrationUrl: entry.registrationUrl,
+      registrationLabel: entry.registrationLabel,
+      registrationPendingLabel: entry.registrationPendingLabel,
     })),
   }));
 }

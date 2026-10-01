@@ -2,25 +2,24 @@ import type { Metadata } from "next";
 import { ProgrammeActivityPage } from "@/components/gtp/programmes/programme-activity-page";
 import { getGtpProgrammeActivityPage } from "@/sanity/gtp-stage2";
 
+const PATH = "/events/gtp-2026/programmes/artificial-intelligence-sessions";
 const description =
-  "AI Thinkers Networking Breakfast at Global Tipping Points Conference 2026: curating a hybrid future for people, planet and potential.";
+  "Artificial Intelligence Sessions at Global Tipping Points Conference 2026: networking breakfasts and workshops on curating a hybrid future for people, planet and potential.";
 
 export const metadata: Metadata = {
-  title: "AI Thinkers Networking Breakfast",
+  title: "Artificial Intelligence Sessions",
   description,
-  alternates: {
-    canonical: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
-  },
+  alternates: { canonical: PATH },
   openGraph: {
-    title: "AI Thinkers Networking Breakfast | GTP 2026",
+    title: "Artificial Intelligence Sessions | GTP 2026",
     description,
-    url: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+    url: PATH,
   },
 };
 
 export const dynamic = "force-dynamic";
 
-export default async function AiThinkersNetworkingBreakfastPage() {
+export default async function ArtificialIntelligenceSessionsPage() {
   const page = await getGtpProgrammeActivityPage("ai-thinkers-networking-breakfast");
   return <ProgrammeActivityPage page={page} />;
 }

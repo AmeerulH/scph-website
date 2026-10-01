@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         destination: GTP_2026_REGISTRATION_URL,
         permanent: true,
       },
+      {
+        source: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+        destination: "/events/gtp-2026/programmes/artificial-intelligence-sessions",
+        permanent: true,
+      },
     ];
   },
 

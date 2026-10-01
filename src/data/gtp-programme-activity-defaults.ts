@@ -10,6 +10,17 @@ export type GtpProgrammeActivityEntry = {
   description?: string;
   posterUrl?: string;
   posterAlt?: string;
+  /** Artificial Intelligence Sessions: ISO date (YYYY-MM-DD) used for order and the large date. */
+  sessionDate?: string;
+  /** Short tag such as "Workshop" or "Networking Breakfast". */
+  format?: string;
+  time?: string;
+  venue?: string;
+  /** Per-session registration; falls back to the page-level button when empty. */
+  registrationUrl?: string;
+  registrationLabel?: string;
+  /** Greyed-out button text while there is no registration URL. */
+  registrationPendingLabel?: string;
 };
 
 export type GtpProgrammeActivityPage = {
@@ -66,17 +77,44 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
   },
   "ai-thinkers-networking-breakfast": {
     slug: "ai-thinkers-networking-breakfast",
-    pageTitle: "AI Thinkers Networking Breakfast",
-    heroLede: "Day 2 and Day 4 · Global Tipping Points Conference",
-    intro: "Artificial intelligence is rapidly changing how we think, work, relate, decide and organise society. This one-hour breakfast conversation brings unlike-minded, like-hearted thinkers and practitioners together to consider what kind of hybrid future we want to create — and what it will take to make it pro-people, pro-planet and pro-potential.",
+    pageTitle: "Artificial Intelligence Sessions",
+    heroLede: "11–15 October 2026 · Global Tipping Points Conference",
+    intro: "Artificial intelligence is rapidly changing how we think, work, relate, decide and organise society. Join the networking breakfasts and workshops that bring thinkers and practitioners together to consider what kind of hybrid future we want to create, and what it will take to make it pro-people, pro-planet and pro-potential.",
     registrationStatus: "open",
-    registrationLabel: "Register for the breakfast",
+    registrationLabel: "Register",
     registrationUrl: "https://forms.cloud.microsoft/r/GncA02pMWe",
     entries: [
       {
-        title: "Curating a Hybrid Future: Pro-People, Pro-Planet, Pro-Potential",
-        dateLabel: "Day 2 and Day 4",
+        title: "AI Workshop",
+        dateLabel: "11 October 2026",
+        sessionDate: "2026-10-11",
+        format: "Workshop",
+        description: "Details to be announced.",
+      },
+      {
+        title: "AI Thinkers Networking Breakfast: Curating a Hybrid Future",
+        dateLabel: "13 October 2026",
+        sessionDate: "2026-10-13",
+        format: "Networking Breakfast",
         description: "Grounded in the logic of ProSocial AI, these sessions connect technological change with human agency, meaning, prosperity and planetary health. Bring a perspective, a question, or a productive disagreement.",
+        registrationLabel: "Register for the breakfast",
+        registrationUrl: "https://forms.cloud.microsoft/r/GncA02pMWe",
+      },
+      {
+        title: "AI Thinkers Networking Breakfast: Curating a Hybrid Future",
+        dateLabel: "15 October 2026",
+        sessionDate: "2026-10-15",
+        format: "Networking Breakfast",
+        description: "Grounded in the logic of ProSocial AI, these sessions connect technological change with human agency, meaning, prosperity and planetary health. Bring a perspective, a question, or a productive disagreement.",
+        registrationLabel: "Register for the breakfast",
+        registrationUrl: "https://forms.cloud.microsoft/r/GncA02pMWe",
+      },
+      {
+        title: "AI Workshop",
+        dateLabel: "15 October 2026",
+        sessionDate: "2026-10-15",
+        format: "Workshop",
+        description: "Details to be announced.",
       },
     ],
   },

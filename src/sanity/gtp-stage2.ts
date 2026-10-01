@@ -526,6 +526,13 @@ type SanityProgrammeActivityPage = {
     description?: string | null;
     posterUrl?: string | null;
     posterAlt?: string | null;
+    sessionDate?: string | null;
+    format?: string | null;
+    time?: string | null;
+    venue?: string | null;
+    registrationUrl?: string | null;
+    registrationLabel?: string | null;
+    registrationPendingLabel?: string | null;
   }[] | null;
 };
 
@@ -540,7 +547,7 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   registrationUrl,
   "showcasePosterUrl": showcasePoster.asset->url,
   "showcasePosterAlt": showcasePoster.alt,
-  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt }
+  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel }
 }`;
 
 export async function getGtpProgrammeActivityPage(
@@ -567,6 +574,13 @@ export async function getGtpProgrammeActivityPage(
         description: entry.description?.trim() || undefined,
         posterUrl: entry.posterUrl?.trim() || undefined,
         posterAlt: entry.posterAlt?.trim() || undefined,
+        sessionDate: entry.sessionDate?.trim() || undefined,
+        format: entry.format?.trim() || undefined,
+        time: entry.time?.trim() || undefined,
+        venue: entry.venue?.trim() || undefined,
+        registrationUrl: entry.registrationUrl?.trim() || undefined,
+        registrationLabel: entry.registrationLabel?.trim() || undefined,
+        registrationPendingLabel: entry.registrationPendingLabel?.trim() || undefined,
       })) ?? fallback.entries;
 
   return {

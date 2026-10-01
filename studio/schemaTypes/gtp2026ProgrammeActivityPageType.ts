@@ -7,11 +7,64 @@ const activityEntry = defineArrayMember({
   fields: [
     defineField({name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required()}),
     defineField({name: 'dateLabel', title: 'Date label', type: 'string'}),
+    defineField({
+      name: 'sessionDate',
+      title: 'Session date',
+      type: 'date',
+      description:
+        'Artificial Intelligence Sessions only. Sets the order and the large date on the page. If a session runs on more than one day, pick the first day and describe the rest in Date label.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
+    defineField({
+      name: 'format',
+      title: 'Format',
+      type: 'string',
+      description: 'Artificial Intelligence Sessions only. Short tag, for example Workshop or Networking Breakfast.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
+    defineField({
+      name: 'time',
+      title: 'Time',
+      type: 'string',
+      description: 'Artificial Intelligence Sessions only. For example 8:00 AM to 9:00 AM. Leave empty until confirmed.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
+    defineField({
+      name: 'venue',
+      title: 'Venue',
+      type: 'string',
+      description: 'Artificial Intelligence Sessions only. Leave empty until confirmed.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
     defineField({name: 'description', title: 'Description', type: 'text', rows: 5}),
+    defineField({
+      name: 'registrationUrl',
+      title: 'Registration URL',
+      type: 'url',
+      description:
+        'Artificial Intelligence Sessions only. External link for this session. The page-level Registration URL is only used while no session has its own link.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
+    defineField({
+      name: 'registrationLabel',
+      title: 'Registration button label',
+      type: 'string',
+      description: 'Artificial Intelligence Sessions only. Shown on the button once a Registration URL is set, for example Register for this workshop.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
+    defineField({
+      name: 'registrationPendingLabel',
+      title: 'Button text until the link is ready',
+      type: 'string',
+      description:
+        'Artificial Intelligence Sessions only. While there is no Registration URL, the button is greyed out and shows this text. Leave empty for the default: Registration link coming soon. Add the URL to turn it into a working button.',
+      hidden: ({document}) => document?.slug === 'action-workshops',
+    }),
     defineField({
       name: 'poster',
       title: 'Poster',
       type: 'image',
+      description: 'Portrait artwork (about 3:4) works best. It is shown in full and not cropped.',
       options: {hotspot: true},
       fields: [
         defineField({
@@ -29,7 +82,12 @@ const activityEntry = defineArrayMember({
       ],
     }),
   ],
-  preview: {select: {title: 'title', subtitle: 'dateLabel'}},
+  preview: {
+    select: {title: 'title', dateLabel: 'dateLabel', sessionDate: 'sessionDate', media: 'poster'},
+    prepare({title, dateLabel, sessionDate, media}) {
+      return {title, subtitle: dateLabel || sessionDate, media}
+    },
+  },
 })
 
 export const gtp2026ProgrammeActivityPageType = defineType({
@@ -44,7 +102,7 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       options: {
         list: [
           {title: 'Action Workshops', value: 'action-workshops'},
-          {title: 'AI Thinkers Networking Breakfast', value: 'ai-thinkers-networking-breakfast'},
+          {title: 'Artificial Intelligence Sessions', value: 'ai-thinkers-networking-breakfast'},
           {title: 'Film Screening', value: 'film-screening'},
           {title: 'Sensorial Station', value: 'sensorial-station'},
         ],
@@ -66,14 +124,14 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       type: 'text',
       rows: 8,
       description:
-        'For the breakfast, film screening, and sensorial station, this is the text beside the poster. Text already saved on an older activity row is shown after it. For Action Workshops, it sits above the workshop list.',
+        'For film screening and sensorial station, this is the text beside the poster. For Action Workshops and Artificial Intelligence Sessions, it sits above the list of sessions.',
     }),
     defineField({
       name: 'showcasePoster',
       title: 'Poster',
       type: 'image',
       description:
-        'Portrait poster shown on the left on desktop, and above the description on a phone. Use the full artwork; it will not be cropped.',
+        'Portrait poster shown on the left on desktop, and above the description on a phone. Use the full artwork; it will not be cropped. For Artificial Intelligence Sessions, upload posters on each session under Activities instead; this one is only a fallback for the first session.',
       options: {hotspot: true},
       hidden: ({document}) => document?.slug === 'action-workshops',
       fields: [
@@ -112,14 +170,17 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       title: 'Registration URL',
       type: 'url',
       description:
-        'External registration link. The button uses this when Registration status is Open.',
+        'External registration link. The button uses this when Registration status is Open. For Artificial Intelligence Sessions it is only used while no session has its own link. Set Registration status to Closed to hide every Register button on that page.',
     }),
     defineField({
       name: 'entries',
       title: 'Activities',
       type: 'array',
       of: [activityEntry],
-      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description:
+        'Action Workshops: poster rows for the workshop list. Artificial Intelligence Sessions: one row per session (breakfast, workshops), each with its own date, poster and registration link.',
+      hidden: ({document}) =>
+        document?.slug !== 'action-workshops' && document?.slug !== 'ai-thinkers-networking-breakfast',
     }),
   ],
   preview: {
