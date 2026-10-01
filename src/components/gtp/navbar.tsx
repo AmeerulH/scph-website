@@ -64,6 +64,10 @@ const navItems: NavItem[] = [
         label: "Sensorial Station",
         href: "/events/gtp-2026/programmes/sensorial-station",
       },
+      {
+        label: "Book Launch",
+        href: "/events/gtp-2026/programmes/book-launch",
+      },
     ],
   },
   { label: "Speakers", href: "/events/gtp-2026/speakers" },

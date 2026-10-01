@@ -8,6 +8,7 @@ import {gtp2026SpeakersPageType} from './gtp2026SpeakersPageType'
 import {gtp2026SpeakerType} from './gtp2026SpeakerType'
 import {gtp2026MediaPageType} from './gtp2026MediaPageType'
 import {gtp2026SustainabilityPageType} from './gtp2026SustainabilityPageType'
+import {gtp2026BookLaunchPageType} from './gtp2026BookLaunchPageType'
 import {gtp2026SubmissionsPageType} from './gtp2026SubmissionsPageType'
 import {
   gtp2026AbstractFormCopyType,
@@ -83,6 +84,7 @@ export const schemaTypes = [
   gtp2026SpeakerType,
   gtp2026MediaPageType,
   gtp2026SustainabilityPageType,
+  gtp2026BookLaunchPageType,
   gtp2026BizForumPageType,
   teamMemberType,
   ...sectionObjectTypes,

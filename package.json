@@ -20,6 +20,7 @@
     "seed-gtp-media-bizforum-pages": "npx tsx scripts/seed-gtp-media-bizforum-pages.ts",
     "seed-gtp-media-page": "npx tsx scripts/seed-gtp-media-page.ts",
     "seed-gtp-sustainability-page": "npx tsx scripts/seed-gtp-sustainability-page.ts",
+    "seed-gtp-book-launch-page": "npx tsx scripts/seed-gtp-book-launch-page.ts",
     "seed-gtp-programme-subpages": "npx tsx scripts/seed-gtp-programme-subpages.ts",
     "seed-gtp-speakers-page": "npx tsx scripts/seed-gtp-speakers-page.ts",
     "migrate-highlight-speakers-to-speakers": "npx tsx scripts/migrate-highlight-speakers-to-speakers.ts",

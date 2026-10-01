@@ -62,6 +62,13 @@ const gtpCmsPages = [
       "One document per page: choose Action Workshops, Artificial Intelligence Sessions, Film Screening, or Sensorial Station in **Page**. Film screening and sensorial station share one poster layout: upload **Poster** (full artwork, alt text required), write **Description** for the text beside it, then set **Registration status** to Open and paste an external **Registration URL**. The button label is editable. Leave the poster empty and the page keeps a portrait frame until one is published. **Artificial Intelligence Sessions** (/programmes/artificial-intelligence-sessions): rename it by editing **Page title**. Add one row under **Activities** for each breakfast or workshop: set **Session date** (orders the list and shows the large date), **Format**, **Time**, **Venue**, **Description**, a portrait **Poster** (about 3:4, alt text required) and that session's own **Registration URL**. Add a new row whenever another AI session is confirmed. Until the form exists, leave **Registration URL** empty: the session shows a greyed-out button reading Registration link coming soon (change the wording in **Button text until the link is ready**). Paste the form link and publish to turn it into a working Register button. The page-level Poster and Registration URL are only used for older pages that have no per-session links. Action Workshops keeps posters and the page intro here. Workshop titles, times, venues, and Facilitators/Speakers come from the Programme document; a description on an activity row is used only when that workshop has no objective on the programme. Upload an optional **Hero banner image** (at least 2400 × 1200 px) to replace the forest banner. Action Workshops should remain **Coming soon** until the verified attendee-registration system is available; do not use the proposal-submission form.",
   },
   {
+    route: "/events/gtp-2026/programmes/book-launch",
+    docTypes: "gtp2026BookLaunchPage",
+    title: "Book Launch",
+    notes:
+      "Singleton. **Launch** tab: book title, subtitle, author, book cover or poster (shown uncropped; without one a designed stand-in appears) and an optional banner image. **Date and registration** tab: date, time, venue (each shows To be announced while empty), Registration URL and the greyed-out button text shown until the link is ready; tick Registration closed to retire the buttons. **About the book**, **Author** (hidden until a bio or photo is added) and **With thanks** tabs hold the rest of the copy. Empty fields and sections are hidden, never shown broken.",
+  },
+  {
     route: "/events/gtp-2026/get-involved",
     docTypes: "gtp2026GetInvolvedPage",
     title: "Get involved",

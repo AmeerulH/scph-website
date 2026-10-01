@@ -70,6 +70,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-about-page-images` | `scripts/seed-gtp-about-page-images.ts` | Patches `gtp2026AboutPage` gallery + why-matters + quote photos (published + draft); removes legacy `*Src` fields |
 | `seed-gtp-about-accommodation-activities` | `scripts/seed-gtp-about-accommodation-activities.ts` | Patches `gtp2026AboutPage.accommodationActivitiesBand` (carousel hotels/activities; published + draft) |
 | `seed-gtp-media-page` | `scripts/seed-gtp-media-page.ts` | `gtp2026MediaPage` copy + empty album shells (`createIfNotExists` + `setIfMissing`; no images; refuses production) |
+| `seed-gtp-book-launch-page` | `scripts/seed-gtp-book-launch-page.ts` | `gtp2026BookLaunchPage` singleton: placeholder copy only; no book facts or images (`setIfMissing`; refuses production) |
 | `seed-gtp-sustainability-page` | `scripts/seed-gtp-sustainability-page.ts` | `gtp2026SustainabilityPage` singleton: intro, 5 commitments, Home teaser copy (`setIfMissing`; refuses production) |
 | `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage` (create-if-missing only), `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
 | `seed-gtp-programme-subpages` | `scripts/seed-gtp-programme-subpages.ts` | Creates missing `gtp2026ProgrammeActivityPage` documents for Action Workshops, Artificial Intelligence Sessions, Film Screening, and Sensorial Station; intentionally refuses production |
