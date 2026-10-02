@@ -102,9 +102,11 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
           <div className="mt-8">
             <RegistrationAction page={page} />
           </div>
-          <p className="mt-5 text-sm leading-relaxed text-slate-600">
-            Open to participants registered for GTP 2026.
-          </p>
+          {page.slug !== "film-screening" ? (
+            <p className="mt-5 text-sm leading-relaxed text-slate-600">
+              Open to participants registered for GTP 2026.
+            </p>
+          ) : null}
         </div>
       </div>
     </section>
