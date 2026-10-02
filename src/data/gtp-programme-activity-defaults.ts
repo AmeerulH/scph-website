@@ -10,6 +10,8 @@ export type GtpProgrammeActivityEntry = {
   description?: string;
   posterUrl?: string;
   posterAlt?: string;
+  posterWidth?: number;
+  posterHeight?: number;
   /** Artificial Intelligence Sessions: ISO date (YYYY-MM-DD) used for order and the large date. */
   sessionDate?: string;
   /** Short tag such as "Workshop" or "Networking Breakfast". */
@@ -35,6 +37,8 @@ export type GtpProgrammeActivityPage = {
   /** Page-level poster for the breakfast, film, and sensorial pages. */
   showcasePosterUrl?: string;
   showcasePosterAlt?: string;
+  showcasePosterWidth?: number;
+  showcasePosterHeight?: number;
   entries: GtpProgrammeActivityEntry[];
 };
 

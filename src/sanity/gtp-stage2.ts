@@ -520,12 +520,16 @@ type SanityProgrammeActivityPage = {
   registrationUrl?: string | null;
   showcasePosterUrl?: string | null;
   showcasePosterAlt?: string | null;
+  showcasePosterWidth?: number | null;
+  showcasePosterHeight?: number | null;
   entries?: {
     title?: string | null;
     dateLabel?: string | null;
     description?: string | null;
     posterUrl?: string | null;
     posterAlt?: string | null;
+    posterWidth?: number | null;
+    posterHeight?: number | null;
     sessionDate?: string | null;
     format?: string | null;
     time?: string | null;
@@ -535,6 +539,10 @@ type SanityProgrammeActivityPage = {
     registrationPendingLabel?: string | null;
   }[] | null;
 };
+
+function positiveDimension(value: number | null | undefined): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : undefined;
+}
 
 const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" && slug == $slug][0]{
   slug,
@@ -547,7 +555,9 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   registrationUrl,
   "showcasePosterUrl": showcasePoster.asset->url,
   "showcasePosterAlt": showcasePoster.alt,
-  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel }
+  "showcasePosterWidth": showcasePoster.asset->metadata.dimensions.width,
+  "showcasePosterHeight": showcasePoster.asset->metadata.dimensions.height,
+  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, "posterWidth": poster.asset->metadata.dimensions.width, "posterHeight": poster.asset->metadata.dimensions.height, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel }
 }`;
 
 export async function getGtpProgrammeActivityPage(
@@ -574,6 +584,8 @@ export async function getGtpProgrammeActivityPage(
         description: entry.description?.trim() || undefined,
         posterUrl: entry.posterUrl?.trim() || undefined,
         posterAlt: entry.posterAlt?.trim() || undefined,
+        posterWidth: positiveDimension(entry.posterWidth),
+        posterHeight: positiveDimension(entry.posterHeight),
         sessionDate: entry.sessionDate?.trim() || undefined,
         format: entry.format?.trim() || undefined,
         time: entry.time?.trim() || undefined,
@@ -594,6 +606,8 @@ export async function getGtpProgrammeActivityPage(
     registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
     showcasePosterUrl: doc.showcasePosterUrl?.trim() || undefined,
     showcasePosterAlt: doc.showcasePosterAlt?.trim() || undefined,
+    showcasePosterWidth: positiveDimension(doc.showcasePosterWidth),
+    showcasePosterHeight: positiveDimension(doc.showcasePosterHeight),
     entries,
   };
 }

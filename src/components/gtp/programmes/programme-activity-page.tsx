@@ -52,6 +52,8 @@ function posterFor(page: GtpProgrammeActivityPage) {
     return {
       url: page.showcasePosterUrl,
       alt: page.showcasePosterAlt || `${page.pageTitle} poster`,
+      width: page.showcasePosterWidth,
+      height: page.showcasePosterHeight,
     };
   }
   const fromEntry = page.entries.find((entry) => entry.posterUrl);
@@ -59,7 +61,50 @@ function posterFor(page: GtpProgrammeActivityPage) {
   return {
     url: fromEntry.posterUrl,
     alt: fromEntry.posterAlt || `${page.pageTitle} poster`,
+    width: fromEntry.posterWidth,
+    height: fromEntry.posterHeight,
   };
+}
+
+function ProgrammePoster({
+  poster,
+}: {
+  poster: ReturnType<typeof posterFor>;
+}) {
+  if (poster?.width && poster.height) {
+    return (
+      <Image
+        src={poster.url}
+        alt={poster.alt}
+        width={poster.width}
+        height={poster.height}
+        sizes="(max-width: 1024px) min(80vw, 24rem), 26rem"
+        className="h-auto w-full rounded-md shadow-[0_28px_50px_-32px_oklch(0.28_0.045_210/0.55)]"
+      />
+    );
+  }
+
+  if (poster) {
+    return (
+      <div className="relative aspect-3/4 w-full">
+        <Image
+          src={poster.url}
+          alt={poster.alt}
+          fill
+          className="rounded-md object-contain"
+          sizes="(max-width: 1024px) min(80vw, 24rem), 26rem"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex aspect-3/4 items-end rounded-md bg-gtp-dark-teal p-6">
+      <p className="font-heading text-2xl font-semibold leading-tight text-white/75">
+        Poster coming soon
+      </p>
+    </div>
+  );
 }
 
 function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
@@ -72,27 +117,9 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
 
   return (
     <section className="bg-slate-50">
-      <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(16rem,26rem)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(16rem,26rem)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-20">
         <div className="mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none">
-          <div className="bg-gtp-dark-teal p-3 sm:p-4">
-            {poster ? (
-              <div className="relative aspect-3/4 bg-gtp-dark-teal">
-                <Image
-                  src={poster.url}
-                  alt={poster.alt}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 80vw, 416px"
-                />
-              </div>
-            ) : (
-              <div className="flex aspect-3/4 items-end bg-gtp-dark-teal p-6">
-                <p className="font-heading text-2xl font-semibold leading-tight text-white/75">
-                  Poster coming soon
-                </p>
-              </div>
-            )}
-          </div>
+          <ProgrammePoster poster={poster} />
         </div>
 
         <div className="max-w-[68ch]">
