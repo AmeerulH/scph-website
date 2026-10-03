@@ -90,6 +90,59 @@ const activityEntry = defineArrayMember({
   },
 })
 
+const stationEntry = defineArrayMember({
+  name: 'gtpProgrammeActivityStation',
+  title: 'Station',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      description: 'Short label, for example Sound or Touch. Numbering follows list order.',
+    }),
+    defineField({name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required()}),
+    defineField({name: 'body', title: 'Body', type: 'text', rows: 5}),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Landscape or square, at least 1600 px wide. The station still shows if this is empty.',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          description: 'Describe the image for screen readers.',
+          validation: (rule) =>
+            rule.custom((alt, context) => {
+              const parent = context.parent as {asset?: {_ref?: string}} | undefined
+              return parent?.asset?._ref && !alt?.trim()
+                ? 'Alt text is required when an image is set'
+                : true
+            }),
+        }),
+      ],
+    }),
+    defineField({
+      name: 'link',
+      title: 'Link (optional)',
+      type: 'object',
+      fields: [
+        defineField({name: 'label', title: 'Label', type: 'string'}),
+        defineField({
+          name: 'href',
+          title: 'URL or path',
+          type: 'string',
+          description: 'Internal path (/events/gtp-2026/...) or full https:// URL.',
+        }),
+      ],
+    }),
+  ],
+  preview: {select: {title: 'headline', subtitle: 'category', media: 'image'}},
+})
+
 export const gtp2026ProgrammeActivityPageType = defineType({
   name: 'gtp2026ProgrammeActivityPage',
   title: 'GTP 2026 Programme activity page',
@@ -124,7 +177,7 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       type: 'text',
       rows: 8,
       description:
-        'For film screening and sensorial station, this is the text beside the poster. For Action Workshops and Artificial Intelligence Sessions, it sits above the list of sessions.',
+        'For film screening and sensorial station, this is the text beside the poster. Sensorial stations are edited under Stations. For Action Workshops and Artificial Intelligence Sessions, it sits above the list of sessions.',
     }),
     defineField({
       name: 'showcasePoster',
@@ -181,6 +234,23 @@ export const gtp2026ProgrammeActivityPageType = defineType({
         'Action Workshops: poster rows for the workshop list. Artificial Intelligence Sessions: one row per session (breakfast, workshops), each with its own date, poster and registration link.',
       hidden: ({document}) =>
         document?.slug !== 'action-workshops' && document?.slug !== 'ai-thinkers-networking-breakfast',
+    }),
+    defineField({
+      name: 'stationsTitle',
+      title: 'Stations heading',
+      type: 'string',
+      initialValue: 'The stations',
+      description: 'Sensorial Station only. Shown above the numbered station list.',
+      hidden: ({document}) => document?.slug !== 'sensorial-station',
+    }),
+    defineField({
+      name: 'stations',
+      title: 'Stations',
+      type: 'array',
+      of: [stationEntry],
+      description:
+        'Sensorial Station only. Add one row per station. Drag to reorder. The page numbers them in this order, in the same layout as Sustainability commitments.',
+      hidden: ({document}) => document?.slug !== 'sensorial-station',
     }),
   ],
   preview: {

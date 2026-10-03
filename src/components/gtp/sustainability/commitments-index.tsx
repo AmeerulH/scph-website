@@ -7,7 +7,11 @@ import { ArrowRight } from "lucide-react";
 import type { GtpSustainabilityCommitment } from "@/data/gtp-sustainability-page-defaults";
 import { cn } from "@/lib/utils";
 
-type Props = { title: string; commitments: GtpSustainabilityCommitment[] };
+type Props = {
+  title: string;
+  commitments: GtpSustainabilityCommitment[];
+  headingId?: string;
+};
 
 function CommitmentLink({ link }: { link: NonNullable<GtpSustainabilityCommitment["link"]> }) {
   const external = link.href.startsWith("http");
@@ -31,8 +35,27 @@ function CommitmentLink({ link }: { link: NonNullable<GtpSustainabilityCommitmen
   );
 }
 
+function CommitmentVisual({
+  image,
+  alt,
+  sizes,
+}: {
+  image: GtpSustainabilityCommitment["image"];
+  alt: string;
+  sizes: string;
+}) {
+  if (!image.src) return null;
+  return (
+    <Image src={image.src} alt={alt} fill sizes={sizes} className="object-cover" />
+  );
+}
+
 /** Editorial index: rows on the left, a sticky image that crossfades on the right (lg+). */
-export function CommitmentsIndex({ title, commitments }: Props) {
+export function CommitmentsIndex({
+  title,
+  commitments,
+  headingId = "commitments-heading",
+}: Props) {
   const [active, setActive] = React.useState(0);
   const refs = React.useRef<(HTMLElement | null)[]>([]);
 
@@ -52,15 +75,14 @@ export function CommitmentsIndex({ title, commitments }: Props) {
 
   return (
     <section
-      aria-labelledby="commitments-heading"
-      className="px-4 pb-24 pt-8 sm:px-6 lg:px-8 lg:pb-32"
+      aria-labelledby={headingId}
+      className="bg-gtp-paper px-4 pb-24 pt-16 sm:px-6 lg:px-8 lg:pb-32 lg:pt-24"
     >
       <div className="mx-auto max-w-7xl">
         <h2
-          id="commitments-heading"
-          className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.22em] text-gtp-dark-teal"
+          id={headingId}
+          className="font-heading text-4xl font-bold leading-none tracking-tight text-gtp-dark-teal sm:text-5xl"
         >
-          <span aria-hidden className="h-px w-10 bg-gtp-dark-teal" />
           {title}
         </h2>
 
@@ -91,24 +113,24 @@ export function CommitmentsIndex({ title, commitments }: Props) {
                         {c.category}
                       </p>
                     ) : null}
-                    <h3 className="mt-3 font-heading text-2xl font-bold leading-tight text-gtp-dark-teal sm:text-3xl lg:text-4xl">
+                    <h3 className="mt-3 font-heading text-4xl font-bold leading-[1.05] text-gtp-dark-teal sm:text-5xl lg:text-6xl">
                       {c.headline}
                     </h3>
                   </div>
                 </div>
 
                 <div className="mt-8 sm:pl-[calc(6rem+2.5rem)] lg:pl-[calc(6rem+2.5rem)]">
-                  <div className="relative mb-8 aspect-4/3 overflow-hidden rounded-2xl bg-gtp-dark-teal/10 lg:hidden">
-                    <Image
-                      src={c.image.src}
-                      alt={c.image.alt}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 640px"
-                      className="object-cover"
-                    />
-                  </div>
+                  {c.image.src ? (
+                    <div className="relative mb-8 aspect-4/3 overflow-hidden rounded-2xl bg-gtp-dark-teal/10 lg:hidden">
+                      <CommitmentVisual
+                        image={c.image}
+                        alt={c.image.alt}
+                        sizes="(max-width: 640px) 100vw, 640px"
+                      />
+                    </div>
+                  ) : null}
                   {c.body ? (
-                    <p className="max-w-xl text-base leading-relaxed text-slate-700 lg:text-lg">
+                    <p className="max-w-[65ch] text-lg leading-relaxed text-gtp-dark-teal-dark/80">
                       {c.body}
                     </p>
                   ) : null}
@@ -130,17 +152,15 @@ export function CommitmentsIndex({ title, commitments }: Props) {
             <div className="sticky top-28 h-[calc(100vh-9rem)] max-h-[44rem]">
               <div className="relative size-full overflow-hidden rounded-3xl bg-gtp-dark-teal">
                 {commitments.map((c, i) => (
-                  <Image
+                  <div
                     key={c.id}
-                    src={c.image.src}
-                    alt=""
-                    fill
-                    sizes="40vw"
                     className={cn(
-                      "object-cover transition-opacity duration-700 ease-out",
+                      "absolute inset-0 transition-opacity duration-700 ease-out",
                       i === active ? "opacity-100" : "opacity-0",
                     )}
-                  />
+                  >
+                    <CommitmentVisual image={c.image} alt="" sizes="40vw" />
+                  </div>
                 ))}
                 <span className="absolute bottom-5 left-5 rounded-full bg-gtp-dark-teal-dark/80 px-4 py-1.5 font-heading text-sm font-semibold tabular-nums text-white backdrop-blur-sm">
                   {String(active + 1).padStart(2, "0")} / {String(commitments.length).padStart(2, "0")}

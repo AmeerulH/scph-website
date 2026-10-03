@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ArrowUpRight, CalendarDays, Clock3 } from "lucide-react";
+import { CommitmentsIndex } from "@/components/gtp/sustainability/commitments-index";
 import { GtpForestHero } from "@/components/sections/heroes";
 import { Button } from "@/components/ui/button";
 import type {
@@ -171,7 +172,25 @@ export function ProgrammeActivityPage({
       {page.slug === "ai-thinkers-networking-breakfast" ? (
         <AiSessionsList page={page} />
       ) : POSTER_PAGE_SLUGS.has(page.slug) ? (
-        <ProgrammePosterLayout page={page} />
+        <>
+          <ProgrammePosterLayout page={page} />
+          {page.slug === "sensorial-station" && page.stations.length > 0 ? (
+            <div className="bg-gtp-paper">
+              <CommitmentsIndex
+                title={page.stationsTitle}
+                headingId="stations-heading"
+                commitments={page.stations.map((station) => ({
+                  id: station.id,
+                  category: station.category,
+                  headline: station.headline,
+                  body: station.body,
+                  image: station.image ?? { src: "", alt: "" },
+                  link: station.link,
+                }))}
+              />
+            </div>
+          ) : null}
+        </>
       ) : (
       <section className="bg-slate-50 px-4 py-12 sm:py-16">
         <div className="mx-auto max-w-6xl">

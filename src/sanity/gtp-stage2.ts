@@ -20,6 +20,7 @@ import type { SectionBlock } from "./section-block-types";
 import type {
   GtpProgrammeActivityPage,
   GtpProgrammeActivitySlug,
+  GtpProgrammeActivityStation,
 } from "@/data/gtp-programme-activity-defaults";
 import { DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES } from "@/data/gtp-programme-activity-defaults";
 
@@ -538,6 +539,16 @@ type SanityProgrammeActivityPage = {
     registrationLabel?: string | null;
     registrationPendingLabel?: string | null;
   }[] | null;
+  stationsTitle?: string | null;
+  stations?: {
+    _key?: string | null;
+    category?: string | null;
+    headline?: string | null;
+    body?: string | null;
+    imageUrl?: string | null;
+    imageAlt?: string | null;
+    link?: { label?: string | null; href?: string | null } | null;
+  }[] | null;
 };
 
 function positiveDimension(value: number | null | undefined): number | undefined {
@@ -557,8 +568,43 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   "showcasePosterAlt": showcasePoster.alt,
   "showcasePosterWidth": showcasePoster.asset->metadata.dimensions.width,
   "showcasePosterHeight": showcasePoster.asset->metadata.dimensions.height,
-  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, "posterWidth": poster.asset->metadata.dimensions.width, "posterHeight": poster.asset->metadata.dimensions.height, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel }
+  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, "posterWidth": poster.asset->metadata.dimensions.width, "posterHeight": poster.asset->metadata.dimensions.height, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel },
+  stationsTitle,
+  stations[]{
+    _key, category, headline, body,
+    "imageUrl": image.asset->url, "imageAlt": image.alt,
+    link{ label, href }
+  }
 }`;
+
+function safeStationHref(value: string | null | undefined) {
+  const href = value?.trim();
+  return href && (href.startsWith("/") || /^https:\/\//i.test(href)) ? href : undefined;
+}
+
+function mergeStations(
+  raw: SanityProgrammeActivityPage["stations"],
+  defaults: GtpProgrammeActivityStation[],
+): GtpProgrammeActivityStation[] {
+  if (!raw?.length) return defaults;
+  return raw
+    .filter((station) => station.headline?.trim())
+    .map((station, index) => {
+      const headline = station.headline!.trim();
+      const href = safeStationHref(station.link?.href);
+      const linkLabel = station.link?.label?.trim();
+      return {
+        id: station._key?.trim() || `station-${index}`,
+        category: station.category?.trim() || "",
+        headline,
+        body: station.body?.trim() || "",
+        image: station.imageUrl?.trim()
+          ? { src: station.imageUrl.trim(), alt: station.imageAlt?.trim() || headline }
+          : undefined,
+        link: href && linkLabel ? { label: linkLabel, href } : undefined,
+      };
+    });
+}
 
 export async function getGtpProgrammeActivityPage(
   slug: GtpProgrammeActivitySlug,
@@ -609,5 +655,7 @@ export async function getGtpProgrammeActivityPage(
     showcasePosterWidth: positiveDimension(doc.showcasePosterWidth),
     showcasePosterHeight: positiveDimension(doc.showcasePosterHeight),
     entries,
+    stationsTitle: doc.stationsTitle?.trim() || fallback.stationsTitle,
+    stations: mergeStations(doc.stations, fallback.stations),
   };
 }

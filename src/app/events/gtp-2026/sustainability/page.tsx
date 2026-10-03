@@ -29,7 +29,7 @@ export default async function GtpSustainabilityPage() {
   const page = await getGtpSustainabilityPage();
 
   return (
-    <div className="bg-[oklch(0.975_0.008_205)]">
+    <div className="bg-gtp-paper">
       <header className="relative isolate overflow-hidden bg-gtp-dark-teal-dark">
         <Image
           src={page.heroImage.src}

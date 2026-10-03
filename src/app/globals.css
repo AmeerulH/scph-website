@@ -37,6 +37,8 @@
   --color-gtp-orange: #DB5D00;
   --color-gtp-orange-light: #f06a00;
   --color-gtp-orange-dark: #b34c00;
+  /* Teal-tinted paper. Body copy sits on this, never on dark teal. */
+  --color-gtp-paper: #f4f7f8;
 
   /* shadcn defaults */
   --color-sidebar-ring: var(--sidebar-ring);

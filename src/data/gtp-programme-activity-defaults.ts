@@ -25,6 +25,16 @@ export type GtpProgrammeActivityEntry = {
   registrationPendingLabel?: string;
 };
 
+/** Sensorial Station rows. Same shape as a Sustainability commitment, without the highlight figure. */
+export type GtpProgrammeActivityStation = {
+  id: string;
+  category: string;
+  headline: string;
+  body: string;
+  image?: { src: string; alt: string };
+  link?: { label: string; href: string };
+};
+
 export type GtpProgrammeActivityPage = {
   slug: GtpProgrammeActivitySlug;
   pageTitle: string;
@@ -40,6 +50,9 @@ export type GtpProgrammeActivityPage = {
   showcasePosterWidth?: number;
   showcasePosterHeight?: number;
   entries: GtpProgrammeActivityEntry[];
+  /** Sensorial Station: heading above the numbered station list. */
+  stationsTitle: string;
+  stations: GtpProgrammeActivityStation[];
 };
 
 const actionWorkshops: GtpProgrammeActivityEntry[] = [
@@ -78,6 +91,8 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Registration opening soon",
     entries: actionWorkshops,
+    stationsTitle: "The stations",
+    stations: [],
   },
   "ai-thinkers-networking-breakfast": {
     slug: "ai-thinkers-networking-breakfast",
@@ -121,6 +136,8 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
         description: "Details to be announced.",
       },
     ],
+    stationsTitle: "The stations",
+    stations: [],
   },
   "film-screening": {
     slug: "film-screening",
@@ -130,6 +147,8 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Details coming soon",
     entries: [],
+    stationsTitle: "The stations",
+    stations: [],
   },
   "sensorial-station": {
     slug: "sensorial-station",
@@ -140,5 +159,7 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Details coming soon",
     entries: [],
+    stationsTitle: "The stations",
+    stations: [],
   },
 };

@@ -16,7 +16,7 @@ export function SustainabilityTeaser({ page }: Props) {
   return (
     <section
       aria-labelledby="sustainability-teaser-heading"
-      className="bg-[oklch(0.975_0.008_205)] px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
+      className="bg-gtp-paper px-4 py-20 sm:px-6 lg:px-8 lg:py-28"
     >
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="relative aspect-4/3 overflow-hidden rounded-3xl lg:col-span-5">
