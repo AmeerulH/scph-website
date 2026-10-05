@@ -19,7 +19,10 @@ import {
   actionWorkshopPeople,
   programmePersonRoleLabel,
 } from "./programme-person-roles";
-import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
+import {
+  resolveProgrammeHostedBy,
+  withoutDefaultHostedLogo,
+} from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -189,7 +192,7 @@ export function WorkshopModal({
                   <div className="order-1 flex flex-col gap-6 lg:order-2">
                     <ProgrammeModalHostedByBlock
                       hostedBy={resolveProgrammeHostedBy(
-                        hostedBy,
+                        withoutDefaultHostedLogo(hostedBy),
                         parent.hostedBy,
                         w.hostedBy,
                       )}

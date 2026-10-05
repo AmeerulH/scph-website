@@ -74,15 +74,20 @@ export type GtpSessionModalHostedBy = {
   subtitle: string;
   /** When false, the location line is omitted in session and workshop popups. */
   showSubtitle: boolean;
+  /** True when `logoUrl` is the built-in SCPH logo rather than a Studio upload. */
+  logoIsDefault?: boolean;
 };
+
+export const DEFAULT_SESSION_MODAL_HOSTED_LOGO_URL = "/images/scph/logo-round.png";
 
 export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
   sectionTitle: "Hosted By",
-  logoUrl: null,
-  logoAlt: "",
+  logoUrl: DEFAULT_SESSION_MODAL_HOSTED_LOGO_URL,
+  logoAlt: "Sunway Centre for Planetary Health logo",
   name: "Sunway Centre for Planetary Health",
   subtitle: "Sunway University, Kuala Lumpur",
   showSubtitle: true,
+  logoIsDefault: true,
 };
 
 export type GtpProgrammePageData = {
@@ -325,6 +330,17 @@ function mapSessionModalHostedBy(
     typeof logo?.alt === "string" && logo.alt.trim() ? logo.alt.trim() : "";
   const w = logo?.asset?.metadata?.dimensions?.width;
   const h = logo?.asset?.metadata?.dimensions?.height;
+
+  if (!url) {
+    return {
+      ...d,
+      sectionTitle,
+      name,
+      subtitle,
+      logoAlt: `${name} logo`,
+      showSubtitle: doc.sessionModalHostedShowSubtitle !== false,
+    };
+  }
 
   return {
     sectionTitle,

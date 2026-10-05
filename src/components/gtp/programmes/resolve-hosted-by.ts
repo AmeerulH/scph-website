@@ -33,3 +33,11 @@ export function resolveProgrammeHostedBy(
 ): GtpSessionModalHostedBy {
   return overrides.reduce(applyHostedByOverride, fallback);
 }
+
+/** Action Workshop popups do not inherit the built-in SCPH logo; a Studio upload or override still applies. */
+export function withoutDefaultHostedLogo(
+  hostedBy: GtpSessionModalHostedBy,
+): GtpSessionModalHostedBy {
+  if (!hostedBy.logoIsDefault) return hostedBy;
+  return { ...hostedBy, logoUrl: null, logoAlt: "", logoIsDefault: false };
+}
