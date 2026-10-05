@@ -27,7 +27,7 @@ export const gtp2026ProgrammeType = defineType({
       name: 'sessionModalHostedLogo',
       title: 'Session modal — organisation logo',
       description:
-        'Default logo when a session does not set its own. If empty, the site shows the SCPH round logo. Action Workshop popups do not use this fallback.',
+        'Default logo when a session or workshop does not set its own. If empty, the site shows the SCPH round logo.',
       type: 'image',
       options: {hotspot: true},
       fields: [

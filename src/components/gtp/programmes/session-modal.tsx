@@ -16,10 +16,7 @@ import {
   actionWorkshopPeople,
   programmePersonRoleLabel,
 } from "./programme-person-roles";
-import {
-  resolveProgrammeHostedBy,
-  withoutDefaultHostedLogo,
-} from "./resolve-hosted-by";
+import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
@@ -216,12 +213,7 @@ export function SessionModal({
                     <div className="order-2">
                       <ProgrammeModalShareRegisterColumn
                         shareTitle={session.title}
-                        hostedBy={resolveProgrammeHostedBy(
-                          session.type === "concurrent"
-                            ? withoutDefaultHostedLogo(hostedBy)
-                            : hostedBy,
-                          session.hostedBy,
-                        )}
+                        hostedBy={resolveProgrammeHostedBy(hostedBy, session.hostedBy)}
                         showWorkshopRegistration={session.type === "concurrent"}
                       />
                     </div>
