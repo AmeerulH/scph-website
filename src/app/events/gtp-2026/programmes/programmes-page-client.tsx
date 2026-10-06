@@ -464,53 +464,10 @@ function SpeakerFilterEmpty({
   );
 }
 
-const NAVBAR_OFFSET = 72;
-
 function DesktopFilterSidebar(props: React.ComponentProps<typeof FilterSidebar>) {
-  const spacerRef = React.useRef<HTMLElement>(null);
-  const [frame, setFrame] = React.useState({ left: 0, maxHeight: 0, ready: false });
-
-  React.useLayoutEffect(() => {
-    const spacer = spacerRef.current;
-    if (!spacer) return;
-
-    const update = () => {
-      const left = Math.round(spacer.getBoundingClientRect().left);
-      const footerTop = document.querySelector("footer")?.getBoundingClientRect().top;
-      const limit = Math.min(window.innerHeight, footerTop ?? window.innerHeight);
-      const maxHeight = Math.max(0, Math.round(limit - NAVBAR_OFFSET));
-      setFrame((prev) => {
-        if (prev.ready && prev.left === left && prev.maxHeight === maxHeight) return prev;
-        return { left, maxHeight, ready: true };
-      });
-    };
-
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(document.documentElement);
-    const footer = document.querySelector("footer");
-    if (footer) observer.observe(footer);
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
   return (
-    <aside ref={spacerRef} className="relative z-30 hidden w-56 shrink-0 lg:block">
-      <div
-        className="fixed top-18 z-30 flex w-56 flex-col overflow-hidden pt-3 [overflow-anchor:none]"
-        style={{
-          left: frame.left,
-          maxHeight: frame.maxHeight,
-          visibility: frame.ready ? "visible" : "hidden",
-        }}
-      >
-        <FilterSidebar {...props} />
-      </div>
+    <aside className="sticky top-40 z-30 hidden max-h-[calc(100dvh-11rem)] w-56 shrink-0 self-start flex-col overflow-hidden lg:flex">
+      <FilterSidebar {...props} />
     </aside>
   );
 }
@@ -768,8 +725,8 @@ export function ProgrammesPageClient({
       {/* Tab content */}
       <div className="min-h-screen bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-0 md:px-6 lg:px-8">
-          <div className="flex gap-8">
-            {/* Desktop filters stay pinned under the nav, in line with the day tabs. */}
+          <div className="flex gap-8 pt-6 lg:pt-8">
+            {/* Desktop filters stay within the agenda and stick below the day tabs. */}
             {activeTab !== "pre" && (
               <DesktopFilterSidebar
                 selectedType={selectedType}
@@ -785,7 +742,7 @@ export function ProgrammesPageClient({
             )}
 
             {/* ── Main content ── */}
-            <div className="min-h-[calc(100dvh-4.5rem)] min-w-0 flex-1 pt-6 [overflow-anchor:none] lg:pt-8">
+            <div className="min-h-[calc(100dvh-4.5rem)] min-w-0 flex-1 [overflow-anchor:none]">
               {activeTab === "pre" && <PreConferencePlaceholder />}
 
               {activeTab !== "pre" && currentSessions.length > 0 && (
