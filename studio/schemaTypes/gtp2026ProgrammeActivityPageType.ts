@@ -108,7 +108,7 @@ const stationEntry = defineArrayMember({
       type: 'text',
       rows: 8,
       description:
-        'Separate paragraphs with a blank line. A line break inside a paragraph stays in that paragraph. HTML tags such as <p> and <br> are not needed.',
+        'Press Enter twice to start the next paragraph. A single line break stays in the same paragraph. HTML tags are not needed.',
     }),
     defineField({
       name: 'image',

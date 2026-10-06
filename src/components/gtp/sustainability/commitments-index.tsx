@@ -11,11 +11,6 @@ type Props = {
   title: string;
   commitments: GtpSustainabilityCommitment[];
   headingId?: string;
-  /**
-   * Sensorial stations: keep a long description beside its image and scroll the
-   * copy when it is taller than that image, instead of stacking one above the other.
-   */
-  scrollBody?: boolean;
 };
 
 /**
@@ -35,27 +30,12 @@ export function plainTextParagraphs(body: string): string[] {
     .filter(Boolean);
 }
 
-function CommitmentBody({
-  body,
-  className,
-  scrollable = false,
-}: {
-  body: string;
-  className?: string;
-  scrollable?: boolean;
-}) {
+function CommitmentBody({ body }: { body: string }) {
   const paragraphs = plainTextParagraphs(body);
   if (paragraphs.length === 0) return null;
 
   return (
-    <div
-      className={cn(
-        "max-w-[65ch] space-y-4 text-lg leading-relaxed text-gtp-dark-teal-dark/80",
-        className,
-      )}
-      tabIndex={scrollable ? 0 : undefined}
-      aria-label={scrollable ? "Station description" : undefined}
-    >
+    <div className="max-w-[65ch] space-y-4 text-base leading-relaxed text-gtp-dark-teal-dark/80 sm:text-lg">
       {paragraphs.map((paragraph, index) => (
         <p key={index}>{paragraph}</p>
       ))}
@@ -105,7 +85,6 @@ export function CommitmentsIndex({
   title,
   commitments,
   headingId = "commitments-heading",
-  scrollBody = false,
 }: Props) {
   const [active, setActive] = React.useState(0);
   const refs = React.useRef<(HTMLElement | null)[]>([]);
@@ -171,37 +150,16 @@ export function CommitmentsIndex({
                 </div>
 
                 <div className="mt-8 sm:pl-[calc(6rem+2.5rem)] lg:pl-[calc(6rem+2.5rem)]">
-                  {scrollBody && c.image.src ? (
-                    <div className="grid grid-cols-[minmax(0,1fr)_7rem] items-stretch gap-3 sm:grid-cols-[minmax(0,1fr)_14rem] sm:gap-5 lg:grid-cols-1">
-                      {c.body ? (
-                        <CommitmentBody
-                          body={c.body}
-                          scrollable
-                          className="h-52 min-h-0 min-w-0 overflow-y-auto overscroll-y-contain pr-1 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gtp-teal sm:h-80 sm:text-lg lg:h-auto lg:overflow-visible lg:pr-0"
-                        />
-                      ) : null}
-                      <div className="relative min-h-44 overflow-hidden rounded-2xl bg-gtp-dark-teal/10 lg:hidden">
-                        <CommitmentVisual
-                          image={c.image}
-                          alt={c.image.alt}
-                          sizes="(max-width: 1024px) 40vw, 0px"
-                        />
-                      </div>
+                  {c.image.src ? (
+                    <div className="relative mb-8 aspect-4/3 overflow-hidden rounded-2xl bg-gtp-dark-teal/10 lg:hidden">
+                      <CommitmentVisual
+                        image={c.image}
+                        alt={c.image.alt}
+                        sizes="(max-width: 640px) 100vw, 640px"
+                      />
                     </div>
-                  ) : (
-                    <>
-                      {c.image.src ? (
-                        <div className="relative mb-8 aspect-4/3 overflow-hidden rounded-2xl bg-gtp-dark-teal/10 lg:hidden">
-                          <CommitmentVisual
-                            image={c.image}
-                            alt={c.image.alt}
-                            sizes="(max-width: 640px) 100vw, 640px"
-                          />
-                        </div>
-                      ) : null}
-                      {c.body ? <CommitmentBody body={c.body} /> : null}
-                    </>
-                  )}
+                  ) : null}
+                  {c.body ? <CommitmentBody body={c.body} /> : null}
                   {c.stat ? (
                     <p className="mt-8 flex items-baseline gap-3">
                       <span className="font-heading text-5xl font-bold text-gtp-dark-green">
