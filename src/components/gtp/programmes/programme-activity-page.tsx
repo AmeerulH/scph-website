@@ -179,6 +179,7 @@ export function ProgrammeActivityPage({
               <CommitmentsIndex
                 title={page.stationsTitle}
                 headingId="stations-heading"
+                scrollBody
                 commitments={page.stations.map((station) => ({
                   id: station.id,
                   category: station.category,
