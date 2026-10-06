@@ -4,6 +4,21 @@ export type GtpProgrammeActivitySlug =
   | "film-screening"
   | "sensorial-station";
 
+/** One knowledge-partner mark on an Action Workshop day. */
+export type GtpActionWorkshopPartnerLogo = {
+  name: string;
+  logoUrl: string;
+  logoAlt: string;
+  href?: string;
+};
+
+/** Logos shown in one row under a single Action Workshop date. */
+export type GtpActionWorkshopPartnerDay = {
+  dateLabel: string;
+  label: string;
+  partners: GtpActionWorkshopPartnerLogo[];
+};
+
 export type GtpProgrammeActivityEntry = {
   title: string;
   dateLabel?: string;
@@ -50,6 +65,8 @@ export type GtpProgrammeActivityPage = {
   showcasePosterWidth?: number;
   showcasePosterHeight?: number;
   entries: GtpProgrammeActivityEntry[];
+  /** Action Workshops: partner logo rows keyed by the day heading. */
+  knowledgePartnerDays: GtpActionWorkshopPartnerDay[];
   /** Sensorial Station: heading above the numbered station list. */
   stationsTitle: string;
   stations: GtpProgrammeActivityStation[];
@@ -91,6 +108,7 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Registration opening soon",
     entries: actionWorkshops,
+    knowledgePartnerDays: [],
     stationsTitle: "The stations",
     stations: [],
   },
@@ -102,6 +120,7 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "open",
     registrationLabel: "Register",
     registrationUrl: "https://forms.cloud.microsoft/r/GncA02pMWe",
+    knowledgePartnerDays: [],
     entries: [
       {
         title: "AI Workshop",
@@ -147,6 +166,7 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Details coming soon",
     entries: [],
+    knowledgePartnerDays: [],
     stationsTitle: "The stations",
     stations: [],
   },
@@ -159,6 +179,7 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
     registrationStatus: "comingSoon",
     registrationLabel: "Details coming soon",
     entries: [],
+    knowledgePartnerDays: [],
     stationsTitle: "The stations",
     stations: [],
   },

@@ -5,12 +5,17 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { GtpActionWorkshopPartnerDay } from "@/data/gtp-programme-activity-defaults";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
 import {
   normalizeActionWorkshopTitle,
   type ActionWorkshopListingItem,
 } from "./action-workshop-listing";
+import {
+  ActionWorkshopPartnerRow,
+  matchActionWorkshopPartnerDay,
+} from "./action-workshop-partner-row";
 import { WorkshopModal } from "./workshop-modal";
 
 function ScrollButton({
@@ -44,12 +49,14 @@ function WorkshopRow({
   onSelect,
   highlightedWorkshopTitle,
   highlightedWorkshopRef,
+  partnerDay,
 }: {
   date: string;
   workshops: ActionWorkshopListingItem[];
   onSelect: (workshop: ActionWorkshopListingItem) => void;
   highlightedWorkshopTitle: string | null;
   highlightedWorkshopRef: React.RefObject<HTMLButtonElement | null>;
+  partnerDay?: GtpActionWorkshopPartnerDay;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -146,6 +153,7 @@ function WorkshopRow({
           })}
         </div>
       </div>
+      {partnerDay ? <ActionWorkshopPartnerRow day={partnerDay} /> : null}
     </section>
   );
 }
@@ -153,9 +161,11 @@ function WorkshopRow({
 export function ActionWorkshopsCarousel({
   items,
   hostedBy,
+  partnerDays = [],
 }: {
   items: ActionWorkshopListingItem[];
   hostedBy: GtpSessionModalHostedBy;
+  partnerDays?: readonly GtpActionWorkshopPartnerDay[];
 }) {
   const [selected, setSelected] = React.useState<ActionWorkshopListingItem | null>(null);
   const searchParams = useSearchParams();
@@ -194,10 +204,19 @@ export function ActionWorkshopsCarousel({
     };
   }, [items, requestedKey]);
 
+  const usedPartnerDays = new Set<GtpActionWorkshopPartnerDay>();
+  const rows = Object.entries(groups).map(([date, workshops]) => {
+    const partnerDay = matchActionWorkshopPartnerDay(date, partnerDays);
+    const available = partnerDay && !usedPartnerDays.has(partnerDay) ? partnerDay : undefined;
+    if (available) usedPartnerDays.add(available);
+    return { date, workshops, partnerDay: available };
+  });
+  const unmatchedPartnerDays = partnerDays.filter((day) => !usedPartnerDays.has(day));
+
   return (
     <>
       <div id="action-workshops" className="mt-12 space-y-12">
-        {Object.entries(groups).map(([date, workshops]) => (
+        {rows.map(({ date, workshops, partnerDay }) => (
           <WorkshopRow
             key={date}
             date={date}
@@ -205,7 +224,19 @@ export function ActionWorkshopsCarousel({
             onSelect={setSelected}
             highlightedWorkshopTitle={highlightedWorkshopTitle}
             highlightedWorkshopRef={highlightedWorkshopRef}
+            partnerDay={partnerDay}
           />
+        ))}
+        {unmatchedPartnerDays.map((partnerDay) => (
+          <section key={partnerDay.dateLabel} aria-labelledby={`action-workshops-${partnerDay.dateLabel.replaceAll(" ", "-")}`}>
+            <h2
+              id={`action-workshops-${partnerDay.dateLabel.replaceAll(" ", "-")}`}
+              className="mb-4 font-heading text-2xl font-bold text-gtp-dark-teal"
+            >
+              {partnerDay.dateLabel}
+            </h2>
+            <ActionWorkshopPartnerRow day={partnerDay} />
+          </section>
         ))}
       </div>
       <WorkshopModal
