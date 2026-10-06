@@ -18,6 +18,7 @@ import {
 } from "./gtp-submissions-form-merge";
 import type { SectionBlock } from "./section-block-types";
 import type {
+  GtpActionWorkshopPartnerDay,
   GtpProgrammeActivityPage,
   GtpProgrammeActivitySlug,
   GtpProgrammeActivityStation,
@@ -539,6 +540,16 @@ type SanityProgrammeActivityPage = {
     registrationLabel?: string | null;
     registrationPendingLabel?: string | null;
   }[] | null;
+  knowledgePartnerDays?: {
+    dateLabel?: string | null;
+    label?: string | null;
+    partners?: {
+      name?: string | null;
+      logoUrl?: string | null;
+      logoAlt?: string | null;
+      url?: string | null;
+    }[] | null;
+  }[] | null;
   stationsTitle?: string | null;
   stations?: {
     _key?: string | null;
@@ -569,6 +580,16 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   "showcasePosterWidth": showcasePoster.asset->metadata.dimensions.width,
   "showcasePosterHeight": showcasePoster.asset->metadata.dimensions.height,
   entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, "posterWidth": poster.asset->metadata.dimensions.width, "posterHeight": poster.asset->metadata.dimensions.height, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel },
+  knowledgePartnerDays[]{
+    dateLabel,
+    label,
+    partners[]{
+      name,
+      "logoUrl": logo.asset->url,
+      "logoAlt": logo.alt,
+      url
+    }
+  },
   stationsTitle,
   stations[]{
     _key, category, headline, body,
@@ -576,6 +597,46 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
     link{ label, href }
   }
 }`;
+
+function safePartnerHref(value: string | null | undefined) {
+  const href = value?.trim();
+  if (!href) return undefined;
+  if (href.startsWith("/") && !href.startsWith("//")) return href;
+  if (/^https?:\/\//i.test(href)) return href;
+  return undefined;
+}
+
+function mergeKnowledgePartnerDays(
+  raw: SanityProgrammeActivityPage["knowledgePartnerDays"],
+): GtpActionWorkshopPartnerDay[] {
+  if (!raw?.length) return [];
+  return raw.flatMap((day) => {
+    const dateLabel = day.dateLabel?.trim();
+    if (!dateLabel) return [];
+    const partners = (day.partners ?? []).flatMap((partner) => {
+      const name = partner.name?.trim();
+      const logoUrl = partner.logoUrl?.trim();
+      if (!name || !logoUrl) return [];
+      const href = safePartnerHref(partner.url);
+      return [
+        {
+          name,
+          logoUrl,
+          logoAlt: partner.logoAlt?.trim() || name,
+          ...(href ? { href } : {}),
+        },
+      ];
+    });
+    if (partners.length === 0) return [];
+    return [
+      {
+        dateLabel,
+        label: day.label?.trim() || "Knowledge partners",
+        partners,
+      },
+    ];
+  });
+}
 
 function safeStationHref(value: string | null | undefined) {
   const href = value?.trim();
@@ -655,6 +716,7 @@ export async function getGtpProgrammeActivityPage(
     showcasePosterWidth: positiveDimension(doc.showcasePosterWidth),
     showcasePosterHeight: positiveDimension(doc.showcasePosterHeight),
     entries,
+    knowledgePartnerDays: mergeKnowledgePartnerDays(doc.knowledgePartnerDays),
     stationsTitle: doc.stationsTitle?.trim() || fallback.stationsTitle,
     stations: mergeStations(doc.stations, fallback.stations),
   };
