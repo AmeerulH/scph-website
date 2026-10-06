@@ -1,4 +1,4 @@
-import type { Session, SessionType } from "./types";
+import type { Session, SessionType, Workshop } from "./types";
 
 /** Default map-pin line when CMS `venueLine` is empty. */
 export function getSessionVenueLine(session: Session): string {
@@ -9,6 +9,13 @@ export function getSessionVenueLine(session: Session): string {
     return "Evening venue TBC";
   }
   return "Venue TBC — Sunway, Malaysia";
+}
+
+/** Workshop room when set; otherwise the parent session’s venue line. */
+export function getWorkshopVenueLine(workshop: Workshop, parent: Session): string {
+  const custom = typeof workshop.venueLine === "string" ? workshop.venueLine.trim() : "";
+  if (custom) return custom;
+  return getSessionVenueLine(parent);
 }
 
 /** Default “Format: …” copy in the session modal when CMS `formatLabel` is empty. */

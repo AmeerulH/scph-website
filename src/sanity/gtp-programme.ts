@@ -486,14 +486,18 @@ function splitSpeakersAndFacilitators(
   };
 }
 
+function cmsPlainText(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.replace(/[\u0000-\u001F\u007F]/g, "").trim();
+}
+
 function mapHostedByOverride(row: SanityHostedByFields): ProgrammeHostedByOverride | undefined {
-  const name = typeof row.hostedByName === "string" ? row.hostedByName.trim() : "";
-  const location =
-    typeof row.hostedByLocation === "string" ? row.hostedByLocation.trim() : "";
+  const name = cmsPlainText(row.hostedByName);
+  const location = cmsPlainText(row.hostedByLocation);
   const logo = row.hostedByLogo;
   const logoUrl =
     typeof logo?.asset?.url === "string" && logo.asset.url.trim() ? logo.asset.url.trim() : "";
-  if (!name && !logoUrl) return undefined;
+  if (!name && !logoUrl && !location) return undefined;
 
   const override: ProgrammeHostedByOverride = {};
   if (name) override.name = name;
@@ -533,6 +537,7 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
 
   const hostedBy = mapHostedByOverride(row);
   if (hostedBy) workshop.hostedBy = hostedBy;
+  if (hostedBy?.location) workshop.venueLine = hostedBy.location;
 
   if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
     workshop.speakerCount = row.speakerCount;

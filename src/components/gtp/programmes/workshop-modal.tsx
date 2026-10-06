@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import type { Session, Workshop } from "./types";
 import { TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
-import { getSessionVenueLine } from "./session-display-helpers";
+import { getWorkshopVenueLine } from "./session-display-helpers";
 import {
   ProgrammeModalHostedByBlock,
   ProgrammeModalShareRegisterColumn,
@@ -84,6 +84,7 @@ export function WorkshopModal({
               : []),
           ],
           includeSessionObjective: false,
+          location: getWorkshopVenueLine(w, parent),
         })
       : null;
 
@@ -162,7 +163,7 @@ export function WorkshopModal({
                   </div>
                   <div className="flex items-start gap-2.5 text-gray-500">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gtp-teal" />
-                    <span className="italic wrap-anywhere">{getSessionVenueLine(parent)}</span>
+                    <span className="italic wrap-anywhere">{getWorkshopVenueLine(w, parent)}</span>
                   </div>
                   {workshopGoogleCalHref ? (
                     <div className="pt-1">
