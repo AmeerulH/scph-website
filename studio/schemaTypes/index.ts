@@ -50,10 +50,12 @@ import {programmeDayType} from './programmeDayType'
 import {programmeSessionType} from './programmeSessionType'
 import {programmeSpeakerType} from './programmeSpeakerType'
 import {programmeWorkshopType} from './programmeWorkshopType'
+import {programmeResearchPresentationType} from './programmeResearchPresentationType'
 import {teamMemberType} from './teamMemberType'
 
 export const schemaTypes = [
   programmeSpeakerType,
+  programmeResearchPresentationType,
   programmeWorkshopType,
   programmeSessionType,
   programmeDayType,

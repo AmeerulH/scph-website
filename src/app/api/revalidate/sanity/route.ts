@@ -13,6 +13,7 @@ const GTP_PROGRAMME_DOC_ID = "gtp2026Programme";
 /** Document `_type` values that power the Next.js app → paths to revalidate on webhook. */
 const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   gtp2026Programme: [
+    "/events/gtp-2026/programmes/action-workshops",
     "/events/gtp-2026/programmes",
     "/events/gtp-2026/about",
   ],

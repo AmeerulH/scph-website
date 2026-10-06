@@ -270,12 +270,32 @@ export const gtp2026ProgrammeActivityPageType = defineType({
     }),
     defineField({name: 'heroLede', title: 'Hero lede', type: 'text', rows: 3}),
     defineField({
+      name: 'combinedIntro', title: 'Combined page introduction', type: 'text', rows: 3,
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Introduction above the dates on Action Workshops and Research Sessions. Explain that the activities run simultaneously. Publish this document to update the page.',
+    }),
+    defineField({
+      name: 'actionWorkshopsTitle', title: 'Action Workshops heading', type: 'string',
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Heading above the workshop description/cards within each date. Defaults to Action Workshops.',
+    }),
+    defineField({
+      name: 'researchSessionsTitle', title: 'Research Sessions heading', type: 'string',
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Heading above the research schedule within each date. Defaults to Research Sessions.',
+    }),
+    defineField({
+      name: 'researchSessionsIntro', title: 'Research Sessions description', type: 'text', rows: 4,
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Approved introduction to the research schedule. Presenter/title rows are edited under research sessions in GTP 2026 Programme, not Activities here.',
+    }),
+    defineField({
       name: 'intro',
       title: 'Description',
       type: 'text',
       rows: 8,
       description:
-        'For film screening and sensorial station, this is the text beside the poster. Sensorial stations are edited under Stations. For Action Workshops and Artificial Intelligence Sessions, it sits above the list of sessions.',
+        'For film screening and sensorial station, this is the text beside the poster. Sensorial stations are edited under Stations. For Action Workshops, this is the description under the workshop heading within each date. For Artificial Intelligence Sessions, it sits above the list of sessions.',
     }),
     defineField({
       name: 'showcasePoster',
@@ -321,7 +341,7 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       title: 'Registration URL',
       type: 'url',
       description:
-        'External registration link. The button uses this when Registration status is Open. For Artificial Intelligence Sessions it is only used while no session has its own link. Set Registration status to Closed to hide every Register button on that page.',
+        'External registration link. Action Workshops and Research Sessions share this form after attendee-email eligibility verification; the server environment URL is a legacy fallback. Open also requires participant-sheet configuration. For Artificial Intelligence Sessions it is only used while no session has its own link. Closed disables registration on this page.',
     }),
     defineField({
       name: 'entries',

@@ -65,6 +65,8 @@ export function SessionModal({
   const sessionGoogleCalHref = session
     ? buildProgrammeGoogleCalendarUrl({ tabId: calendarTabId, session })
     : null;
+  const modalHostedBy = session ? resolveProgrammeHostedBy(hostedBy, session.hostedBy) : hostedBy;
+  const showFormatBadge = session?.type !== "special" || (modalHostedBy.hosts?.length ?? 0) < 2;
 
   const modal = (
     <AnimatePresence>
@@ -130,9 +132,9 @@ export function SessionModal({
 
                   {/* Format badge */}
                   <div className="absolute bottom-4 left-5 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
+                    {showFormatBadge ? <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
                       {TYPE_META[session.type].label}
-                    </span>
+                    </span> : null}
                     {session.closedEvent ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm ring-1 ring-white/20">
                         <Lock className="h-3 w-3" />
@@ -213,7 +215,7 @@ export function SessionModal({
                     <div className="order-2">
                       <ProgrammeModalShareRegisterColumn
                         shareTitle={session.title}
-                        hostedBy={resolveProgrammeHostedBy(hostedBy, session.hostedBy)}
+                        hostedBy={modalHostedBy}
                         showWorkshopRegistration={session.type === "concurrent"}
                       />
                     </div>

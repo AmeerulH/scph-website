@@ -86,7 +86,7 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 
 | Sanity `_type` | Revalidated paths |
 | -------------- | ----------------- |
-| `gtp2026Programme` | `/events/gtp-2026/programmes`, `/events/gtp-2026/about` |
+| `gtp2026Programme` | `/events/gtp-2026/programmes`, `/events/gtp-2026/about`, `/events/gtp-2026/programmes/action-workshops` |
 | `gtp2026HighlightSpeaker` | `/`, `/events/gtp-2026/about` |
 | `gtp2026AboutPage` | `/events/gtp-2026/about` |
 | `gtp2026CommitteeMember` | `/events/gtp-2026/organising-committee` |
@@ -109,6 +109,8 @@ Configure a webhook to **`POST /api/revalidate/sanity`** with:
 `cmsSandboxPage` and embedded **`section*`** object types are not listed: updates usually arrive as saves on the **parent document**, which should carry that document’s `_type`.
 
 ### Import scripts
+
+- **Combined Action Workshops and Research Sessions:** [editing and release guide](docs/gtp-combined-programme-editing.md). `DRY_RUN=1 npm run seed-gtp-combined-programme` fills only missing safe section headings/introduction on the existing activity page. `DRY_RUN=1 npm run import-gtp-research-schedule -- /path/to/approved.json` previews keyed research-session changes without replacing unrelated agenda entries. Real writes save full backups with asset references and check document revisions; production also requires explicit approval and `ALLOW_PRODUCTION=1`. Co-host lists and research presentation rows are editable in Programme. The page's published registration status/HTTPS URL controls the shared verified flow; `GTP_PARTICIPANT_EMAIL_COLUMNS` defaults to `EMAIL`. No research examples or organisations are seeded. `npm run test-gtp-combined-programme` checks compatibility and registration policy.
 
 - **GTP programme** (agenda): `npm run import-gtp-programme` — source [`src/components/gtp/programmes/data.tsx`](src/components/gtp/programmes/data.tsx), script [`scripts/import-gtp-programme-to-sanity.ts`](scripts/import-gtp-programme-to-sanity.ts). Uses `SANITY_DATASET` from `.env.local`. `DRY_RUN=1` prints JSON only. With `SANITY_DATASET=development` or `GTP_APPEND_TEST_SESSION=1`, Day 1 gets an extra test session.
 - **GTP Get involved** (marketing copy + Get in Touch sidebar): `npm run seed-gtp-get-involved-page` — source [`src/sanity/gtp-marketing-defaults.ts`](src/sanity/gtp-marketing-defaults.ts) (same defaults as `mergeGtpGetInvolvedCopy`). Upserts singleton `_id` = `gtp2026GetInvolvedPage`, including FAQ link, structured contact lines, socials, and optional **Google Map embed URL** (paste iframe `src` from Google Maps). `DRY_RUN=1` prints JSON only. Prefer `SANITY_DATASET=development` first; align with `SANITY_STUDIO_DATASET` in `studio/.env`. After schema changes, `cd studio && npx sanity schema deploy`. Conference registration is on Sunway Events (see `GTP_2026_REGISTRATION_URL` in [`src/lib/gtp-registration-url.ts`](src/lib/gtp-registration-url.ts)); `/events/gtp-2026/register` redirects there.

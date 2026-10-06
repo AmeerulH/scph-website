@@ -15,7 +15,8 @@ import { cn } from "@/lib/utils";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
-import type { Speaker } from "./types";
+import type { ProgrammeHost, Speaker } from "./types";
+import type { ActivityRegistrationState } from "@/lib/gtp-activity-registration";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -25,7 +26,7 @@ export function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function hostedLogoDisplayDimensions(hostedBy: GtpSessionModalHostedBy): {
+function hostedLogoDisplayDimensions(hostedBy: ProgrammeHost): {
   width: number;
   height: number;
 } {
@@ -107,51 +108,48 @@ export function FacilitatorCards({ people }: { people: Speaker[] }) {
   );
 }
 
-function hostedByMark(name: string): string {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return "SCPH";
-  if (words.length === 1) return words[0].slice(0, 4).toUpperCase();
-  return words
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 4)
-    .toUpperCase();
-}
-
 /** “Hosted by” block — shared by main session modal and parallel workshop modal. */
 export function ProgrammeModalHostedByBlock({
   hostedBy,
 }: {
   hostedBy: GtpSessionModalHostedBy;
 }) {
+  const hosts: ProgrammeHost[] = hostedBy.hosts?.length ? hostedBy.hosts : [{
+    name: hostedBy.name,
+    subtitle: hostedBy.subtitle,
+    logoUrl: hostedBy.logoUrl || undefined,
+    logoAlt: hostedBy.logoAlt,
+    logoWidth: hostedBy.logoWidth,
+    logoHeight: hostedBy.logoHeight,
+  }];
   return (
     <div>
       <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">
         {hostedBy.sectionTitle}
       </p>
-      <div className="flex items-center gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
-          {hostedBy.logoUrl ? (
+      <ul className={cn("grid gap-5", hosts.length > 1 && "sm:grid-cols-2")}>
+        {hosts.map((host, index) => (
+        <li key={host.id || `${host.name}-${index}`} className="flex min-w-0 items-center gap-3">
+          {host.logoUrl ? (
+            <div className="flex size-16 shrink-0 items-center justify-center">
             <Image
-              src={hostedBy.logoUrl}
-              alt={hostedBy.logoAlt}
-              {...hostedLogoDisplayDimensions(hostedBy)}
-              className="max-h-12 max-w-12 object-contain"
-              unoptimized={hostedBy.logoUrl.toLowerCase().includes(".svg")}
+              src={host.logoUrl}
+              alt={host.logoAlt || `${host.name} logo`}
+              {...hostedLogoDisplayDimensions(host)}
+              className="max-h-16 max-w-16 object-contain"
+              unoptimized={host.logoUrl.toLowerCase().includes(".svg")}
             />
-          ) : (
-            <span className="text-xs font-bold text-gtp-dark-teal">
-              {hostedByMark(hostedBy.name)}
-            </span>
-          )}
-        </div>
-        <div className="min-w-0 text-xs leading-relaxed text-gray-500">
-          <p className="font-semibold text-gray-700">{hostedBy.name}</p>
-          {hostedBy.showSubtitle && hostedBy.subtitle ? (
-            <p>{hostedBy.subtitle}</p>
+            </div>
+          ) : null}
+        <div className="min-w-0 text-xs leading-relaxed text-gtp-dark-teal/80">
+          <p className="font-semibold text-gtp-dark-teal wrap-anywhere">{host.name}</p>
+          {hostedBy.showSubtitle && host.subtitle ? (
+            <p>{host.subtitle}</p>
           ) : null}
         </div>
-      </div>
+        </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -166,6 +164,8 @@ export function ProgrammeModalShareRegisterColumn({
   showWorkshopRegistration = false,
   workshopRegistration = "redirect",
   workshopTitle,
+  registration,
+  verificationEndpoint,
 }: {
   shareTitle: string;
   /** When present, render host details alongside share controls. */
@@ -176,6 +176,8 @@ export function ProgrammeModalShareRegisterColumn({
   workshopRegistration?: "redirect" | "inline";
   /** When set, send users to this workshop on the Action Workshops page. */
   workshopTitle?: string;
+  registration?: ActivityRegistrationState;
+  verificationEndpoint?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -286,7 +288,7 @@ export function ProgrammeModalShareRegisterColumn({
 
       {showWorkshopRegistration ? (
         workshopRegistration === "inline" ? (
-          <ActionWorkshopRegistration />
+          <ActionWorkshopRegistration registration={registration} verificationEndpoint={verificationEndpoint} />
         ) : (
           <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
         )

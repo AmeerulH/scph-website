@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-gtp-review/
 /out/
 
 # production

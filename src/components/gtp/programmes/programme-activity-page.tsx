@@ -11,8 +11,10 @@ import { DEFAULT_SESSION_MODAL_HOSTED_BY } from "@/sanity/gtp-programme";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { AiSessionsList } from "./ai-sessions-list";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
-import { ActionWorkshopsCarousel } from "./action-workshops-carousel";
+import { CombinedProgrammePage } from "./combined-programme-page";
 import type { ActionWorkshopListingItem } from "./action-workshop-listing";
+import type { ResearchSessionBlock } from "./research-session-listing";
+import type { ActivityRegistrationState } from "@/lib/gtp-activity-registration";
 
 const POSTER_PAGE_SLUGS = new Set<GtpProgrammeActivitySlug>([
   "film-screening",
@@ -141,14 +143,28 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
   );
 }
 
+export function ProgrammeActivityHero({page}: {page: GtpProgrammeActivityPage}) {
+  return <GtpForestHero
+    eyebrow={page.slug === "action-workshops" ? null : "Programme activities"}
+    title={page.pageTitle}
+    backgroundImageUrl={page.heroImageUrl}
+    lede={page.heroLede}
+    bottomSpacing="compact"
+  />;
+}
+
 export function ProgrammeActivityPage({
   page,
   actionWorkshops,
   hostedBy,
+  researchSessions = [],
+  registration = {status: "comingSoon", label: "Registration opening soon"},
 }: {
   page: GtpProgrammeActivityPage;
   actionWorkshops?: ActionWorkshopListingItem[];
   hostedBy?: GtpSessionModalHostedBy;
+  researchSessions?: ResearchSessionBlock[];
+  registration?: ActivityRegistrationState;
 }) {
   const entriesByDate = page.entries.reduce<Record<string, GtpProgrammeActivityPage["entries"]>>(
     (groups, entry) => {
@@ -161,15 +177,11 @@ export function ProgrammeActivityPage({
 
   return (
     <>
-      <GtpForestHero
-        eyebrow="Programme activities"
-        title={page.pageTitle}
-        backgroundImageUrl={page.heroImageUrl}
-        lede={page.heroLede}
-        bottomSpacing="compact"
-      />
+      <ProgrammeActivityHero page={page} />
 
-      {page.slug === "ai-thinkers-networking-breakfast" ? (
+      {page.slug === "action-workshops" ? (
+        <CombinedProgrammePage page={page} workshops={actionWorkshops ?? []} research={researchSessions} hostedBy={hostedBy ?? DEFAULT_SESSION_MODAL_HOSTED_BY} registration={registration} />
+      ) : page.slug === "ai-thinkers-networking-breakfast" ? (
         <AiSessionsList page={page} />
       ) : POSTER_PAGE_SLUGS.has(page.slug) ? (
         <>
@@ -198,13 +210,7 @@ export function ProgrammeActivityPage({
             {page.intro}
           </p>
 
-          {page.slug === "action-workshops" ? (
-            <ActionWorkshopsCarousel
-              items={actionWorkshops ?? []}
-              hostedBy={hostedBy ?? DEFAULT_SESSION_MODAL_HOSTED_BY}
-              partnerDays={page.knowledgePartnerDays}
-            />
-          ) : page.entries.length > 0 ? (
+          {page.entries.length > 0 ? (
             <div className="mt-12 space-y-10">
               {Object.entries(entriesByDate).map(([date, entries]) => (
                 <section key={date} aria-labelledby={`date-${date}`}>

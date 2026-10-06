@@ -13,7 +13,7 @@ const titleSizeClasses = {
 } as const;
 
 export type GtpForestHeroProps = {
-  eyebrow?: string;
+  eyebrow?: string | null;
   title: React.ReactNode;
   /** Optional CMS-managed background image; the forest artwork is the fallback. */
   backgroundImageUrl?: string;
@@ -59,12 +59,13 @@ export function GtpForestHero({
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />
 
       <div className="relative mx-auto max-w-4xl">
-        <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
+        {eyebrow ? <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           {eyebrow}
-        </span>
+        </span> : null}
         <h1
           className={cn(
-            "mt-6 font-heading font-bold leading-tight text-white",
+            "font-heading font-bold leading-tight text-white",
+            eyebrow && "mt-6",
             titleSizeClasses[titleSize],
           )}
         >

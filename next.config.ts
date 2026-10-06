@@ -7,6 +7,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  // Keep the opt-in fixture preview separate from the team's normal dev server.
+  distDir: process.env.NODE_ENV === "development" && process.env.GTP_PROGRAMME_REVIEW_MODE === "1"
+    ? ".next-gtp-review" : ".next",
   async redirects() {
     return [
       {

@@ -49,7 +49,7 @@ const navItems: NavItem[] = [
     dropdown: [
       { label: "Conference Programme", href: "/events/gtp-2026/programmes" },
       {
-        label: "Action Workshops",
+        label: "Action Workshops and Research Sessions",
         href: "/events/gtp-2026/programmes/action-workshops",
       },
       {

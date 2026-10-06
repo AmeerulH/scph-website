@@ -9,11 +9,18 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    ".next-gtp-review/**",
     "out/**",
     "build/**",
+    "unlighthouse/**",
     "next-env.d.ts",
     // Colocated Sanity Studio — separate package.json and eslint.config.mjs
     "studio/**",
+    // Local tooling and review artifacts are outside the application source.
+    ".agents/**",
+    ".cursor/**",
+    ".claude/**",
+    ".impeccable/**",
   ]),
 ]);
 

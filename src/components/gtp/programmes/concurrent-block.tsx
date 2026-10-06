@@ -27,6 +27,9 @@ export function ConcurrentBlock({
   highlightSpeaker?: string;
 }) {
   const isResearch = session.type === "research";
+  const hasPresentations = session.workshops?.some((slot) => slot.presentations?.length);
+  const researchHref = calendarTabId === "day2" ? "/events/gtp-2026/programmes/action-workshops#day-13-research"
+    : calendarTabId === "day3" ? "/events/gtp-2026/programmes/action-workshops#day-14-research" : null;
 
   const workshopSessions =
     session.workshops?.filter((w) => w.title.startsWith("Workshop Session:")) ?? [];
@@ -137,13 +140,15 @@ export function ConcurrentBlock({
           <div className="mt-6">
             <Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild>
               <Link href={ACTION_WORKSHOPS_HREF}>
-                Click here to see the list of Action Workshops and register.
+                View Action Workshops and Research Sessions
               </Link>
             </Button>
           </div>
         )}
 
-        {isResearch && hasBothTypes ? (
+        {isResearch && researchHref ? <div className="mt-6"><Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild><Link href={researchHref} onClick={(event) => event.stopPropagation()}>View the research schedule and registration</Link></Button></div> : null}
+
+        {isResearch && !hasPresentations && hasBothTypes ? (
           /* Two-column layout: Workshop Sessions | Research Sessions */
           <div className="mt-5 grid grid-cols-1 gap-6 border-l-2 border-gtp-teal/25 pl-5 md:grid-cols-2">
             <div>
@@ -182,7 +187,7 @@ export function ConcurrentBlock({
               </div>
             </div>
           </div>
-        ) : isResearch ? (
+        ) : isResearch && !hasPresentations ? (
           /* Single-column fallback */
           <div className="mt-5 space-y-3 border-l-2 border-gtp-teal/25 pl-5">
             {session.workshops?.map((w) => (

@@ -1,24 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { normalizeGooglePrivateKey } from "@/lib/google-drive-client";
+import { normalizeParticipantEmail, participantEmailsFromRows } from "@/lib/gtp-activity-registration";
+import { getActivityRegistration } from "@/lib/gtp-activity-registration-server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const PARTICIPANT_SHEET_ID = process.env.GTP_PARTICIPANT_SHEET_ID?.trim();
 const PARTICIPANT_SHEET_TAB = process.env.GTP_PARTICIPANT_SHEET_TAB?.trim() || "Sheet1";
-const FORM_URL = process.env.GTP_ACTION_WORKSHOP_FORM_URL?.trim();
-const EMAIL_HEADER = "EMAIL";
+const configuredEmailHeaders = process.env.GTP_PARTICIPANT_EMAIL_COLUMNS?.split(",").map((header) => header.trim()).filter(Boolean);
+const EMAIL_HEADERS = configuredEmailHeaders?.length ? configuredEmailHeaders : ["EMAIL"];
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const RATE_WINDOW_MS = 15 * 60 * 1000;
 const RATE_MAX_ATTEMPTS = 10;
 
 let cachedEmails: { expiresAt: number; values: Set<string> } | null = null;
 const ATTEMPTS = new Map<string, { count: number; resetAt: number }>();
-
-function normalizeEmail(value: string) {
-  return value.trim().toLowerCase();
-}
 
 function columnLetter(index: number) {
   let result = "";
@@ -78,29 +76,14 @@ async function getParticipantEmails() {
     range: `'${PARTICIPANT_SHEET_TAB}'!1:1`,
   });
   const headers = headerResponse.data.values?.[0] ?? [];
-  const emailColumnIndex = headers.findIndex(
-    (header) => String(header).trim().toUpperCase() === EMAIL_HEADER,
-  );
-  if (emailColumnIndex < 0) {
-    throw new Error(`Could not find ${EMAIL_HEADER} column in participant sheet.`);
-  }
+  participantEmailsFromRows(headers, [], EMAIL_HEADERS);
 
   const lastHeaderColumn = columnLetter(headers.length - 1);
   const participantResponse = await sheets.spreadsheets.values.get({
     spreadsheetId: PARTICIPANT_SHEET_ID,
     range: `'${PARTICIPANT_SHEET_TAB}'!A2:${lastHeaderColumn}`,
   });
-  const values = new Set(
-    (participantResponse.data.values ?? [])
-      .flatMap((row) => {
-        const primaryEmail = row[emailColumnIndex];
-        const allCells = row.filter((value) => typeof value === "string");
-        return [primaryEmail, ...allCells];
-      })
-      .map((email) => (typeof email === "string" ? normalizeEmail(email) : ""))
-      .filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      .filter(Boolean),
-  );
+  const values = participantEmailsFromRows(headers, participantResponse.data.values ?? [], EMAIL_HEADERS);
 
   cachedEmails = { values, expiresAt: Date.now() + CACHE_TTL_MS };
   return values;
@@ -128,7 +111,7 @@ export async function POST(req: NextRequest) {
     typeof body === "object" &&
     body !== null &&
     typeof (body as { email?: unknown }).email === "string"
-      ? normalizeEmail((body as { email: string }).email)
+      ? normalizeParticipantEmail((body as { email: string }).email)
       : "";
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -141,6 +124,10 @@ export async function POST(req: NextRequest) {
   recordAttempt(ip, now);
 
   try {
+    const registration = await getActivityRegistration();
+    if (registration.status !== "open") {
+      return NextResponse.json({ok: false, error: registration.label}, {status: 503});
+    }
     const participantEmails = await getParticipantEmails();
     if (!participantEmails.has(email)) {
       return NextResponse.json(
@@ -153,7 +140,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ ok: true, formUrl: FORM_URL || null });
+    return NextResponse.json({ ok: true, formUrl: registration.formUrl });
   } catch (error) {
     console.error("Action workshop participant verification failed", error);
     return NextResponse.json(

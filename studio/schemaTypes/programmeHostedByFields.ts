@@ -6,6 +6,36 @@ type HiddenFn = (context: {parent?: {type?: string}}) => boolean
 export function programmeHostedByFields(hidden?: HiddenFn): FieldDefinition[] {
   return [
     defineField({
+      name: 'hostedByHosts',
+      title: 'Hosted by — organisations',
+      type: 'array',
+      fieldset: 'hostedBy',
+      hidden,
+      description:
+        'The complete ordered host list for this popup. A populated list replaces the inherited host and the single-organisation fields below. Leave empty to keep existing host behavior. Room/venue is edited separately.',
+      of: [{
+        type: 'object',
+        name: 'programmeHost',
+        title: 'Host organisation',
+        fields: [
+          defineField({name: 'name', title: 'Organisation name', type: 'string', validation: (rule) => rule.required()}),
+          defineField({name: 'subtitle', title: 'Subtitle', type: 'string', description: 'Optional organisation detail, displayed under its name. This does not set the session room.'}),
+          defineField({
+            name: 'logo', title: 'Logo', type: 'image', options: {hotspot: true},
+            fields: [defineField({
+              name: 'alt', title: 'Alt text', type: 'string',
+              validation: (rule) => rule.custom((alt, context) => {
+                const parent = context.parent as {asset?: {_ref?: string}} | undefined
+                return !parent?.asset?._ref || (typeof alt === 'string' && alt.trim())
+                  ? true : 'Alt text is required when a logo is uploaded'
+              }),
+            })],
+          }),
+        ],
+        preview: {select: {title: 'name', subtitle: 'subtitle', media: 'logo'}},
+      }],
+    }),
+    defineField({
       name: 'hostedByLogo',
       title: 'Hosted by — organisation logo',
       type: 'image',

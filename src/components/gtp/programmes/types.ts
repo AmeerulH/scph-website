@@ -38,6 +38,7 @@ export interface Speaker {
 
 /** Set on a session or workshop when that popup is not hosted by the programme default. */
 export interface ProgrammeHostedByOverride {
+  hosts?: ProgrammeHost[];
   name?: string;
   location?: string;
   showLocation?: boolean;
@@ -47,7 +48,24 @@ export interface ProgrammeHostedByOverride {
   logoHeight?: number;
 }
 
+export interface ProgrammeHost {
+  id?: string;
+  name: string;
+  subtitle?: string;
+  logoUrl?: string;
+  logoAlt?: string;
+  logoWidth?: number;
+  logoHeight?: number;
+}
+
+export interface ResearchPresentation {
+  id: string;
+  presenterName: string;
+  presentationTitle: string;
+}
+
 export interface Workshop {
+  id?: string;
   number: string;
   title: string;
   objective?: string;
@@ -62,9 +80,11 @@ export interface Workshop {
    */
   venueLine?: string;
   speakerCount?: number;
+  presentations?: ResearchPresentation[];
 }
 
 export interface Session {
+  id?: string;
   time: string;
   durationMins?: number;
   type: SessionType;

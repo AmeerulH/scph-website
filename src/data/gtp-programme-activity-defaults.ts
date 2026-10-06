@@ -56,6 +56,10 @@ export type GtpProgrammeActivityPage = {
   heroImageUrl?: string;
   heroLede: string;
   intro: string;
+  combinedIntro?: string;
+  actionWorkshopsTitle?: string;
+  researchSessionsTitle?: string;
+  researchSessionsIntro?: string;
   registrationStatus: "open" | "comingSoon" | "closed";
   registrationLabel: string;
   registrationUrl?: string;
@@ -102,9 +106,12 @@ export const DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES: Record<
 > = {
   "action-workshops": {
     slug: "action-workshops",
-    pageTitle: "Action Workshops",
+    pageTitle: "Action Workshops and Research Sessions",
     heroLede: "13–14 October 2026 · Global Tipping Points Conference",
     intro: "Join practical, participatory sessions exploring how ideas become action. Descriptions and facilitator information will be added as they are confirmed.",
+    combinedIntro: "Action Workshops and Research Sessions run simultaneously. Explore both activities below.",
+    actionWorkshopsTitle: "Action Workshops",
+    researchSessionsTitle: "Research Sessions",
     registrationStatus: "comingSoon",
     registrationLabel: "Registration opening soon",
     entries: actionWorkshops,

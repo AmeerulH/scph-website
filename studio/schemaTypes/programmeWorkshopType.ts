@@ -47,6 +47,19 @@ export const programmeWorkshopType = defineType({
     }),
     ...programmeHostedByFields(),
     defineField({
+      name: 'venueLine',
+      title: 'Room / hall (public)',
+      type: 'string',
+      description: 'Exact room or hall for this parallel slot. Takes precedence over the older Hosted by location. Leave empty to retain that location or the parent session venue.',
+    }),
+    defineField({
+      name: 'presentations',
+      title: 'Research presentations',
+      type: 'array',
+      of: [{type: 'programmeResearchPresentation'}],
+      description: 'For a research session, use this slot as one hall and add presentations in schedule order. The parent session supplies the date/time. Leave empty for Action Workshops. Publish GTP 2026 Programme to update the public schedule.',
+    }),
+    defineField({
       name: 'speakerCount',
       title: 'Speaker count (TBC)',
       type: 'number',

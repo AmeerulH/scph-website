@@ -9,6 +9,7 @@ import {
 import type {
   ConferenceThemeId,
   ProgrammeHostedByOverride,
+  ProgrammeHost,
   ProgrammeVenueType,
   Session,
   SessionType,
@@ -65,6 +66,7 @@ export type GtpCarouselMeta = Record<
 
 /** “Hosted by” block in the programme session detail modal (from `gtp2026Programme`). */
 export type GtpSessionModalHostedBy = {
+  hosts?: ProgrammeHost[];
   sectionTitle: string;
   logoUrl: string | null;
   logoAlt: string;
@@ -88,6 +90,7 @@ export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
 };
 
 export type GtpProgrammePageData = {
+  isPublished?: boolean;
   tabs: GtpProgrammeTab[];
   carouselMeta: GtpCarouselMeta;
   sessionModalHostedBy: GtpSessionModalHostedBy;
@@ -116,6 +119,12 @@ const CAROUSEL_TABS: GtpCarouselDayTab[] = ["day1", "day2", "day3", "day4"];
 const CAROUSEL_EXCLUDED_TYPES = new Set<SessionType>(["break", "reconvening"]);
 
 interface SanityHostedByFields {
+  hostedByHosts?: {
+    _key?: string | null;
+    name?: string | null;
+    subtitle?: string | null;
+    logo?: SanitySessionModalHostedLogo | null;
+  }[] | null;
   hostedByName?: string | null;
   hostedByLocation?: string | null;
   hostedByShowLocation?: boolean | null;
@@ -123,6 +132,9 @@ interface SanityHostedByFields {
 }
 
 interface SanityWorkshopRow extends SanityHostedByFields {
+  _key?: string;
+  venueLine?: string | null;
+  presentations?: {_key?: string | null; presenterName?: string | null; presentationTitle?: string | null}[] | null;
   number?: string;
   title?: string;
   objective?: string;
@@ -140,6 +152,7 @@ interface SanitySpeakerRow {
 }
 
 interface SanitySessionRow extends SanityHostedByFields {
+  _key?: string;
   time?: string;
   durationMins?: number;
   type?: string;
@@ -193,6 +206,10 @@ interface SanityGtpProgrammeDoc {
 }
 
 const hostedByProjection = `
+  hostedByHosts[]{
+    _key, name, subtitle,
+    logo { alt, asset->{ url, metadata { dimensions { width, height } } } }
+  },
   hostedByName,
   hostedByLocation,
   hostedByShowLocation,
@@ -223,6 +240,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
     carouselDateLabel,
     carouselDayLabel,
     sessions[]{
+      _key,
       time,
       durationMins,
       type,
@@ -247,9 +265,12 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       },
       ${hostedByProjection},
       workshops[]{
+        _key,
         number,
         title,
         objective,
+        venueLine,
+        presentations[]{_key, presenterName, presentationTitle},
         speakerCount,
         speakers[]{
           name,
@@ -492,14 +513,29 @@ function cmsPlainText(value: unknown): string {
 }
 
 function mapHostedByOverride(row: SanityHostedByFields): ProgrammeHostedByOverride | undefined {
+  const hosts: ProgrammeHost[] = (row.hostedByHosts ?? []).flatMap((host, index) => {
+    const name = cmsPlainText(host.name);
+    if (!name) return [];
+    const logo = host.logo;
+    return [{
+      id: host._key || `host-${index}`,
+      name,
+      subtitle: cmsPlainText(host.subtitle) || undefined,
+      logoUrl: logo?.asset?.url?.trim() || undefined,
+      logoAlt: logo?.alt?.trim() || `${name} logo`,
+      logoWidth: logo?.asset?.metadata?.dimensions?.width ?? undefined,
+      logoHeight: logo?.asset?.metadata?.dimensions?.height ?? undefined,
+    }];
+  });
   const name = cmsPlainText(row.hostedByName);
   const location = cmsPlainText(row.hostedByLocation);
   const logo = row.hostedByLogo;
   const logoUrl =
     typeof logo?.asset?.url === "string" && logo.asset.url.trim() ? logo.asset.url.trim() : "";
-  if (!name && !logoUrl && !location) return undefined;
+  if (!hosts.length && !name && !logoUrl && !location) return undefined;
 
   const override: ProgrammeHostedByOverride = {};
+  if (hosts.length) override.hosts = hosts;
   if (name) override.name = name;
   if (location) override.location = location;
   if (row.hostedByShowLocation === false) override.showLocation = false;
@@ -522,6 +558,14 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   if (!number || !title) return null;
 
   const workshop: Workshop = { number, title };
+  if (row._key) workshop.id = row._key;
+  const presentations = (row.presentations ?? []).flatMap((presentation, index) => {
+    const presenterName = presentation.presenterName?.trim();
+    const presentationTitle = presentation.presentationTitle?.trim();
+    if (!presenterName || !presentationTitle) return [];
+    return [{id: presentation._key || `presentation-${index}`, presenterName, presentationTitle}];
+  });
+  if (presentations.length) workshop.presentations = presentations;
 
   if (typeof row.objective === "string" && row.objective.trim()) {
     workshop.objective = row.objective.trim();
@@ -537,7 +581,8 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
 
   const hostedBy = mapHostedByOverride(row);
   if (hostedBy) workshop.hostedBy = hostedBy;
-  if (hostedBy?.location) workshop.venueLine = hostedBy.location;
+  const venueLine = row.venueLine?.trim() || hostedBy?.location;
+  if (venueLine) workshop.venueLine = venueLine;
 
   if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
     workshop.speakerCount = row.speakerCount;
@@ -558,6 +603,7 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
   }
 
   const session: Session = {
+    id: row._key,
     time,
     title,
     type: type as SessionType,
@@ -696,6 +742,7 @@ function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpPro
   const day4 = mapDaySessions(byTab.get("day4")?.sessions, devLog);
 
   const data: GtpProgrammePageData = {
+    isPublished: true,
     tabs: buildTabsFromSanityDays(doc.days),
     carouselMeta: buildCarouselMetaFromSanityDays(byTab),
     sessionModalHostedBy: mapSessionModalHostedBy(doc),

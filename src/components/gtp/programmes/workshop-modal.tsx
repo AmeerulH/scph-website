@@ -3,7 +3,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { X, Clock, MapPin, UserCircle2 } from "lucide-react";
+import { X, Clock, MapPin } from "lucide-react";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,7 @@ import { resolveProgrammeHostedBy } from "./resolve-hosted-by";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
+import type { ActivityRegistrationState } from "@/lib/gtp-activity-registration";
 
 export type WorkshopModalContext = {
   workshop: Workshop;
@@ -36,6 +37,8 @@ export function WorkshopModal({
   hostedBy,
   onClose,
   workshopRegistration = "redirect",
+  registration,
+  verificationEndpoint,
 }: {
   context: WorkshopModalContext | null;
   dayLabel?: string;
@@ -45,6 +48,8 @@ export function WorkshopModal({
   onClose: () => void;
   /** Action Workshops page verifies registration in this popup. Programme page links across. */
   workshopRegistration?: "redirect" | "inline";
+  registration?: ActivityRegistrationState;
+  verificationEndpoint?: string;
 }) {
   const open = context != null;
 
@@ -59,7 +64,7 @@ export function WorkshopModal({
   React.useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape" && !event.defaultPrevented) onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -178,6 +183,8 @@ export function WorkshopModal({
 
                 <SessionObjectiveBlock text={w.objective} className="mt-4" />
 
+                <FacilitatorsSpeakersBlock workshop={w} />
+
                 <div className="mt-6 grid grid-cols-1 gap-8 border-t border-gray-100 pt-5 lg:grid-cols-2 lg:gap-x-10">
                   <div className="order-2 lg:order-1">
                     <ProgrammeModalShareRegisterColumn
@@ -185,6 +192,8 @@ export function WorkshopModal({
                       showWorkshopRegistration={parent.type === "concurrent"}
                       workshopRegistration={workshopRegistration}
                       workshopTitle={w.title}
+                      registration={registration}
+                      verificationEndpoint={verificationEndpoint}
                     />
                   </div>
                   <div className="order-1 flex flex-col gap-6 lg:order-2">
@@ -195,7 +204,6 @@ export function WorkshopModal({
                         w.hostedBy,
                       )}
                     />
-                    <FacilitatorsSpeakersBlock workshop={w} />
                   </div>
                 </div>
               </div>
@@ -212,40 +220,38 @@ export function WorkshopModal({
 function FacilitatorsSpeakersBlock({ workshop }: { workshop: Workshop }) {
   const people = actionWorkshopPeople(workshop);
   const speakerCount = workshop.speakerCount ?? 0;
+  const headingId = React.useId();
 
   return (
-    <div>
-      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">Facilitators/Speakers</p>
+    <section aria-labelledby={headingId} className="@container mt-6 border-t border-gray-100 pt-5">
+      <h3 id={headingId} className="mb-4 text-sm font-semibold text-gtp-dark-teal">Facilitators/Speakers</h3>
       {people.length > 0 ? (
-        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-x-8 gap-y-5 @xl:grid-cols-2">
           {people.map((person, index) => (
-            <li key={`${person.name}-${index}`} className="flex items-center gap-3">
+            <li key={`${person.name}-${index}`} className="flex items-start gap-3">
               <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
               <div className="min-w-0">
-                <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
+                <p className="wrap-anywhere text-sm font-semibold leading-snug text-gtp-dark-teal">{person.name}</p>
+                <p className="mt-1 text-xs font-medium leading-relaxed text-gtp-dark-teal/75">
                   {programmePersonRoleLabel(person)}
                 </p>
-                <p className="text-sm font-semibold text-gray-800">{person.name}</p>
                 {person.designation ? (
-                  <p className="text-xs leading-relaxed text-gtp-teal">{person.designation}</p>
+                  <p className="mt-1 wrap-anywhere text-xs leading-relaxed text-gray-600">{person.designation}</p>
                 ) : null}
               </div>
             </li>
           ))}
         </ul>
       ) : (
-        <div className="flex items-center gap-3 rounded-xl border border-dashed border-gray-200 bg-gray-50/80 px-4 py-3">
-          <UserCircle2 className="h-9 w-9 shrink-0 text-gray-300" />
-          <div>
-            <p className="text-sm font-medium text-gray-600">To be confirmed</p>
-            <p className="text-xs text-gray-400">
-              {speakerCount > 0
-                ? `Approx. ${speakerCount} speaker${speakerCount === 1 ? "" : "s"} planned`
-                : "Details coming soon"}
-            </p>
-          </div>
+        <div className="text-gray-600">
+          <p className="text-sm font-medium">To be confirmed</p>
+          <p className="mt-1 text-xs leading-relaxed">
+            {speakerCount > 0
+              ? `Approx. ${speakerCount} speaker${speakerCount === 1 ? "" : "s"} planned`
+              : "Details coming soon"}
+          </p>
         </div>
       )}
-    </div>
+    </section>
   );
 }

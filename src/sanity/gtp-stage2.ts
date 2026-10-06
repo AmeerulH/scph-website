@@ -517,6 +517,10 @@ type SanityProgrammeActivityPage = {
   heroImageUrl?: string | null;
   heroLede?: string | null;
   intro?: string | null;
+  combinedIntro?: string | null;
+  actionWorkshopsTitle?: string | null;
+  researchSessionsTitle?: string | null;
+  researchSessionsIntro?: string | null;
   registrationStatus?: string | null;
   registrationLabel?: string | null;
   registrationUrl?: string | null;
@@ -572,6 +576,10 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   "heroImageUrl": heroImage.asset->url,
   heroLede,
   intro,
+  combinedIntro,
+  actionWorkshopsTitle,
+  researchSessionsTitle,
+  researchSessionsIntro,
   registrationStatus,
   registrationLabel,
   registrationUrl,
@@ -708,6 +716,10 @@ export async function getGtpProgrammeActivityPage(
     heroImageUrl: doc.heroImageUrl?.trim() || fallback.heroImageUrl,
     heroLede: doc.heroLede?.trim() || fallback.heroLede,
     intro: doc.intro?.trim() || fallback.intro,
+    combinedIntro: doc.combinedIntro?.trim() || fallback.combinedIntro,
+    actionWorkshopsTitle: doc.actionWorkshopsTitle?.trim() || fallback.actionWorkshopsTitle,
+    researchSessionsTitle: doc.researchSessionsTitle?.trim() || fallback.researchSessionsTitle,
+    researchSessionsIntro: doc.researchSessionsIntro?.trim() || fallback.researchSessionsIntro,
     registrationStatus: status,
     registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
     registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
