@@ -326,6 +326,7 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       title: 'Registration status',
       type: 'string',
       initialValue: 'comingSoon',
+      hidden: ({document}) => document?.slug === 'sensorial-station',
       options: {
         list: [
           {title: 'Open', value: 'open'},
@@ -333,15 +334,44 @@ export const gtp2026ProgrammeActivityPageType = defineType({
           {title: 'Closed', value: 'closed'},
         ],
       },
-      validation: (rule) => rule.required(),
+      validation: (rule) =>
+        rule.custom((value, context) =>
+          context.document?.slug === 'sensorial-station' || value
+            ? true
+            : 'Registration status is required',
+        ),
     }),
-    defineField({name: 'registrationLabel', title: 'Registration button label', type: 'string'}),
+    defineField({
+      name: 'registrationLabel',
+      title: 'Registration button label',
+      type: 'string',
+      hidden: ({document}) => document?.slug === 'sensorial-station',
+    }),
     defineField({
       name: 'registrationUrl',
       title: 'Registration URL',
       type: 'url',
       description:
         'External registration link. Action Workshops and Research Sessions share this form after attendee-email eligibility verification; the server environment URL is a legacy fallback. Open also requires participant-sheet configuration. For Artificial Intelligence Sessions it is only used while no session has its own link. Closed disables registration on this page.',
+      hidden: ({document}) => document?.slug === 'sensorial-station',
+    }),
+    defineField({
+      name: 'scentRegistrationUrl',
+      title: 'Scent Station registration URL',
+      type: 'url',
+      description:
+        'Sensorial Station only. Leave empty while awaiting the organiser’s form. Paste the HTTPS link and publish to enable the Scent button. This is independent of the Taste link and page-level registration status.',
+      validation: (rule) => rule.uri({scheme: ['https']}),
+      hidden: ({document}) => document?.slug !== 'sensorial-station',
+    }),
+    defineField({
+      name: 'tasteRegistrationUrl',
+      title: 'Taste Station registration URL',
+      type: 'url',
+      description:
+        'Sensorial Station only. Leave empty while awaiting the organiser’s form. Paste the HTTPS link and publish to enable the Taste button. Remove a link and publish to return that button to Registration opening soon.',
+      validation: (rule) => rule.uri({scheme: ['https']}),
+      hidden: ({document}) => document?.slug !== 'sensorial-station',
     }),
     defineField({
       name: 'entries',

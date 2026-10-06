@@ -12,6 +12,7 @@ import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { AiSessionsList } from "./ai-sessions-list";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { CombinedProgrammePage } from "./combined-programme-page";
+import { SensorialStationRegistration } from "./sensorial-station-registration";
 import type { ActionWorkshopListingItem } from "./action-workshop-listing";
 import type { ResearchSessionBlock } from "./research-session-listing";
 import type { ActivityRegistrationState } from "@/lib/gtp-activity-registration";
@@ -130,7 +131,11 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
             {description}
           </p>
           <div className="mt-8">
-            <RegistrationAction page={page} />
+            {page.slug === "sensorial-station" ? (
+              <SensorialStationRegistration page={page} />
+            ) : (
+              <RegistrationAction page={page} />
+            )}
           </div>
           {page.slug !== "film-screening" ? (
             <p className="mt-5 text-sm leading-relaxed text-slate-600">

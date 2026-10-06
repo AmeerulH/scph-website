@@ -63,6 +63,9 @@ export type GtpProgrammeActivityPage = {
   registrationStatus: "open" | "comingSoon" | "closed";
   registrationLabel: string;
   registrationUrl?: string;
+  /** Sensorial Station: independent form links; empty links keep each button pending. */
+  scentRegistrationUrl?: string;
+  tasteRegistrationUrl?: string;
   /** Page-level poster for the breakfast, film, and sensorial pages. */
   showcasePosterUrl?: string;
   showcasePosterAlt?: string;

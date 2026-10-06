@@ -524,6 +524,8 @@ type SanityProgrammeActivityPage = {
   registrationStatus?: string | null;
   registrationLabel?: string | null;
   registrationUrl?: string | null;
+  scentRegistrationUrl?: string | null;
+  tasteRegistrationUrl?: string | null;
   showcasePosterUrl?: string | null;
   showcasePosterAlt?: string | null;
   showcasePosterWidth?: number | null;
@@ -583,6 +585,8 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   registrationStatus,
   registrationLabel,
   registrationUrl,
+  scentRegistrationUrl,
+  tasteRegistrationUrl,
   "showcasePosterUrl": showcasePoster.asset->url,
   "showcasePosterAlt": showcasePoster.alt,
   "showcasePosterWidth": showcasePoster.asset->metadata.dimensions.width,
@@ -723,6 +727,8 @@ export async function getGtpProgrammeActivityPage(
     registrationStatus: status,
     registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
     registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
+    scentRegistrationUrl: doc.scentRegistrationUrl?.trim() || undefined,
+    tasteRegistrationUrl: doc.tasteRegistrationUrl?.trim() || undefined,
     showcasePosterUrl: doc.showcasePosterUrl?.trim() || undefined,
     showcasePosterAlt: doc.showcasePosterAlt?.trim() || undefined,
     showcasePosterWidth: positiveDimension(doc.showcasePosterWidth),
