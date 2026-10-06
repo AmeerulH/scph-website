@@ -56,6 +56,11 @@ export interface Workshop {
   facilitators?: Speaker[];
   /** When set, replaces the programme-level Hosted by block in this popup. */
   hostedBy?: ProgrammeHostedByOverride;
+  /**
+   * Room for this parallel slot. Comes from Hosted by location.
+   * Shown on the map pin; the parent session venue is the fallback.
+   */
+  venueLine?: string;
   speakerCount?: number;
 }
 

@@ -47,7 +47,7 @@ export function programmeHostedByFields(hidden?: HiddenFn): FieldDefinition[] {
       fieldset: 'hostedBy',
       hidden,
       description:
-        'Location under the organisation name. Used only when this session or workshop sets its own organisation or logo.',
+        'Room or venue for this popup. Shown on the map pin. If the organisation and logo stay empty, this still replaces the location under the programme host. If this row sets its own organisation or logo, this is the location under that name.',
     }),
     defineField({
       name: 'hostedByShowLocation',

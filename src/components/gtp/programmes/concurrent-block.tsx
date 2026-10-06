@@ -8,7 +8,7 @@ import type { Session, Workshop } from "./types";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { WorkshopSubCard } from "./workshop-sub-card";
 import { SessionObjectiveBlock } from "./session-objective-block";
-import { getSessionVenueLine } from "./session-display-helpers";
+import { getSessionVenueLine, getWorkshopVenueLine } from "./session-display-helpers";
 
 const ACTION_WORKSHOPS_HREF =
   "/events/gtp-2026/programmes/action-workshops#action-workshops";
@@ -50,6 +50,7 @@ export function ConcurrentBlock({
       title: w.title,
       detailsPrefixLines: extra,
       includeSessionObjective: false,
+      location: getWorkshopVenueLine(w, session),
     });
   }
 
