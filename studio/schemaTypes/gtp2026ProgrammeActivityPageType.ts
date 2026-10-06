@@ -193,7 +193,14 @@ const stationEntry = defineArrayMember({
       description: 'Short label, for example Sound or Touch. Numbering follows list order.',
     }),
     defineField({name: 'headline', title: 'Headline', type: 'string', validation: (rule) => rule.required()}),
-    defineField({name: 'body', title: 'Body', type: 'text', rows: 5}),
+    defineField({
+      name: 'body',
+      title: 'Body',
+      type: 'text',
+      rows: 8,
+      description:
+        'Press Enter twice to start the next paragraph. A single line break stays in the same paragraph. HTML tags are not needed.',
+    }),
     defineField({
       name: 'image',
       title: 'Image',

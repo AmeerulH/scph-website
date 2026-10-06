@@ -13,6 +13,36 @@ type Props = {
   headingId?: string;
 };
 
+/**
+ * Sanity `text` bodies. A blank line starts a new paragraph. Hard wraps inside a
+ * paragraph are joined. `<p>` and `<br>` are treated as breaks so they are not printed.
+ */
+export function plainTextParagraphs(body: string): string[] {
+  const normalised = body
+    .replace(/\r\n/g, "\n")
+    .replace(/<br\s*\/?>/gi, "\n\n")
+    .replace(/<\/p>\s*<p\b[^>]*>/gi, "\n\n")
+    .replace(/<\/?p\b[^>]*>/gi, "\n\n");
+
+  return normalised
+    .split(/\n\s*\n/)
+    .map((part) => part.replace(/&nbsp;/gi, " ").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function CommitmentBody({ body }: { body: string }) {
+  const paragraphs = plainTextParagraphs(body);
+  if (paragraphs.length === 0) return null;
+
+  return (
+    <div className="max-w-[65ch] space-y-4 text-base leading-relaxed text-gtp-dark-teal-dark/80 sm:text-lg">
+      {paragraphs.map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+      ))}
+    </div>
+  );
+}
+
 function CommitmentLink({ link }: { link: NonNullable<GtpSustainabilityCommitment["link"]> }) {
   const external = link.href.startsWith("http");
   const cls =
@@ -129,11 +159,7 @@ export function CommitmentsIndex({
                       />
                     </div>
                   ) : null}
-                  {c.body ? (
-                    <p className="max-w-[65ch] text-lg leading-relaxed text-gtp-dark-teal-dark/80">
-                      {c.body}
-                    </p>
-                  ) : null}
+                  {c.body ? <CommitmentBody body={c.body} /> : null}
                   {c.stat ? (
                     <p className="mt-8 flex items-baseline gap-3">
                       <span className="font-heading text-5xl font-bold text-gtp-dark-green">
