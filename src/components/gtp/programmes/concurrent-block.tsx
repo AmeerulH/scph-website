@@ -27,6 +27,11 @@ export function ConcurrentBlock({
   highlightSpeaker?: string;
 }) {
   const isResearch = session.type === "research";
+  const subpageButtonLabel = session.subpageButtonLabel?.trim() || (
+    isResearch
+      ? "View the research schedule and registration"
+      : "View Action Workshops and Research Sessions"
+  );
   const hasPresentations = session.workshops?.some((slot) => slot.presentations?.length);
   const researchHref = calendarTabId === "day2" ? "/events/gtp-2026/programmes/action-workshops#day-13-research"
     : calendarTabId === "day3" ? "/events/gtp-2026/programmes/action-workshops#day-14-research" : null;
@@ -140,13 +145,13 @@ export function ConcurrentBlock({
           <div className="mt-6">
             <Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild>
               <Link href={ACTION_WORKSHOPS_HREF}>
-                View Action Workshops and Research Sessions
+                {subpageButtonLabel}
               </Link>
             </Button>
           </div>
         )}
 
-        {isResearch && researchHref ? <div className="mt-6"><Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild><Link href={researchHref} onClick={(event) => event.stopPropagation()}>View the research schedule and registration</Link></Button></div> : null}
+        {isResearch && researchHref ? <div className="mt-6"><Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild><Link href={researchHref} onClick={(event) => event.stopPropagation()}>{subpageButtonLabel}</Link></Button></div> : null}
 
         {isResearch && !hasPresentations && hasBothTypes ? (
           /* Two-column layout: Workshop Sessions | Research Sessions */

@@ -64,6 +64,15 @@ export const programmeSessionType = defineType({
         'Shown on the public programme page. Use “TBC” if not final. For parallel slots, you can also set Objective on each workshop row.',
     }),
     defineField({
+      name: 'subpageButtonLabel',
+      title: 'Subpage button text',
+      type: 'string',
+      description:
+        'Text on this session’s button linking to the combined Action Workshops and Research Sessions page. Leave empty to use the current default. This changes the wording only; the destination and registration availability stay the same. Publish Programme to update the website.',
+      hidden: ({parent}) =>
+        parent?.type !== 'concurrent' && parent?.type !== 'research',
+    }),
+    defineField({
       name: 'theme',
       title: 'Conference theme',
       type: 'string',

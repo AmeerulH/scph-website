@@ -104,6 +104,8 @@ export interface Session {
   /** Conference pathway — theme filter on the programme page */
   theme?: ConferenceThemeId;
   workshops?: Workshop[];
+  /** CMS: overview button text for the workshop/research subpage. */
+  subpageButtonLabel?: string;
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";
   /** Temp: concurrent workshop notice for team review (Day 2 & 3 coffee breaks) */
