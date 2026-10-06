@@ -202,6 +202,7 @@ export function ProgrammeActivityPage({
             <ActionWorkshopsCarousel
               items={actionWorkshops ?? []}
               hostedBy={hostedBy ?? DEFAULT_SESSION_MODAL_HOSTED_BY}
+              partnerDays={page.knowledgePartnerDays}
             />
           ) : page.entries.length > 0 ? (
             <div className="mt-12 space-y-10">

@@ -183,6 +183,42 @@
   --animate-marquee-reverse: marquee-reverse 30s linear infinite;
 }
 
+/* Action Workshop partner row. Duration is set per row so more logos do not move faster.
+   The site-wide reduced-motion rule forces a 0.01ms duration, so this animation is
+   only defined when motion is allowed. Otherwise the row is a manual one-line scroller. */
+@media (prefers-reduced-motion: no-preference) {
+  .action-workshop-partner-viewport.is-scrolling .action-workshop-partner-track {
+    animation-name: marquee;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: var(--partner-marquee-duration, 48s);
+  }
+
+  .action-workshop-partner-viewport.is-scrolling:hover .action-workshop-partner-track,
+  .action-workshop-partner-viewport.is-scrolling:focus-within .action-workshop-partner-track,
+  .action-workshop-partner-viewport.is-scrolling .action-workshop-partner-track.is-paused {
+    animation-play-state: paused;
+  }
+}
+
+.action-workshop-partner-viewport.is-scrolling {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-workshop-partner-viewport.is-scrolling {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .action-workshop-partner-clone {
+    display: none;
+  }
+}
+
 /* Text shimmer: left-to-right shine effect */
 @keyframes text-shimmer {
   0% { background-position: 200% center; }

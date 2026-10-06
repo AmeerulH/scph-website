@@ -90,6 +90,97 @@ const activityEntry = defineArrayMember({
   },
 })
 
+const knowledgePartner = defineArrayMember({
+  name: 'gtpActionWorkshopKnowledgePartner',
+  title: 'Knowledge partner',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'name',
+      title: 'Partner name',
+      type: 'string',
+      description: 'Shown to screen readers, and used as the logo alt text when Logo alt text is empty.',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'logo',
+      title: 'Logo',
+      type: 'image',
+      description:
+        'Transparent PNG or SVG works best. Every logo is fitted into the same size box, so a wide wordmark and a square seal take the same slot.',
+      validation: (rule) => rule.required(),
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Logo alt text',
+          type: 'string',
+          description: 'Optional. Leave empty to use the partner name.',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'url',
+      title: 'Website',
+      type: 'string',
+      description: 'Optional. A full https:// link, or an internal path such as /events/gtp-2026/about.',
+      validation: (rule) =>
+        rule.custom((value) => {
+          if (!value?.trim()) return true
+          const href = value.trim()
+          if (href.startsWith('/') && !href.startsWith('//')) return true
+          if (/^https?:\/\//i.test(href)) return true
+          return 'Use a full https:// link or an internal path starting with /'
+        }),
+    }),
+  ],
+  preview: {
+    select: {title: 'name', media: 'logo'},
+    prepare({title, media}) {
+      return {title: title || 'Knowledge partner', media}
+    },
+  },
+})
+
+const knowledgePartnerDay = defineArrayMember({
+  name: 'gtpActionWorkshopKnowledgePartnerDay',
+  title: 'Workshop day',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'dateLabel',
+      title: 'Date label',
+      type: 'string',
+      description:
+        'Match the workshop day heading, for example 13 October 2026 or 14 October 2026. The logos sit under that day.',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'label',
+      title: 'Row label',
+      type: 'string',
+      initialValue: 'Knowledge partners',
+      description: 'Small heading above the logos. Leave empty for “Knowledge partners”.',
+    }),
+    defineField({
+      name: 'partners',
+      title: 'Logos',
+      type: 'array',
+      of: [knowledgePartner],
+      description:
+        'One horizontal row under this day’s workshop cards. Add as many as you need. When they do not fit, the row scrolls on its own. There are no arrows.',
+    }),
+  ],
+  preview: {
+    select: {title: 'dateLabel', firstPartner: 'partners.0.name'},
+    prepare({title, firstPartner}) {
+      return {
+        title: title || 'Workshop day',
+        subtitle: firstPartner ? `Logos, starting with ${firstPartner}` : 'No logos yet',
+      }
+    },
+  },
+})
+
 const stationEntry = defineArrayMember({
   name: 'gtpProgrammeActivityStation',
   title: 'Station',
@@ -234,6 +325,15 @@ export const gtp2026ProgrammeActivityPageType = defineType({
         'Action Workshops: poster rows for the workshop list. Artificial Intelligence Sessions: one row per session (breakfast, workshops), each with its own date, poster and registration link.',
       hidden: ({document}) =>
         document?.slug !== 'action-workshops' && document?.slug !== 'ai-thinkers-networking-breakfast',
+    }),
+    defineField({
+      name: 'knowledgePartnerDays',
+      title: 'Knowledge partner logos',
+      type: 'array',
+      of: [knowledgePartnerDay],
+      description:
+        'Action Workshops only. Add one row per workshop day. Logos render in a single even line under that day’s cards and auto-scroll when the line is wider than the page.',
+      hidden: ({document}) => document?.slug !== 'action-workshops',
     }),
     defineField({
       name: 'stationsTitle',
