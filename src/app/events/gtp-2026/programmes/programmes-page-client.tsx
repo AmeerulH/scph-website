@@ -466,7 +466,7 @@ function SpeakerFilterEmpty({
 
 function DesktopFilterSidebar(props: React.ComponentProps<typeof FilterSidebar>) {
   return (
-    <aside className="sticky top-40 z-30 hidden max-h-[calc(100dvh-11rem)] w-56 shrink-0 self-start flex-col overflow-hidden lg:flex">
+    <aside className="sticky top-21 z-30 hidden max-h-[calc(100dvh-6.25rem)] w-56 shrink-0 self-start flex-col overflow-hidden lg:flex">
       <FilterSidebar {...props} />
     </aside>
   );
@@ -726,7 +726,7 @@ export function ProgrammesPageClient({
       <div className="min-h-screen bg-slate-100">
         <div className="mx-auto max-w-7xl px-4 pb-10 pt-0 md:px-6 lg:px-8">
           <div className="flex gap-8 pt-6 lg:pt-8">
-            {/* Desktop filters stay within the agenda and stick below the day tabs. */}
+            {/* Desktop filters stay within the agenda and align with the sticky day pills. */}
             {activeTab !== "pre" && (
               <DesktopFilterSidebar
                 selectedType={selectedType}
