@@ -202,9 +202,10 @@
 }
 
 .action-workshop-partner-viewport.is-scrolling {
+  --partner-edge-fade: clamp(2rem, 12vw, 5rem);
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--partner-edge-fade), #000 calc(100% - var(--partner-edge-fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--partner-edge-fade), #000 calc(100% - var(--partner-edge-fade)), transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

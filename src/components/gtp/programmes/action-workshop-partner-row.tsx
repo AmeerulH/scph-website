@@ -42,12 +42,12 @@ function isSvg(url: string): boolean {
   return /\.svg(?:$|\?)/i.test(url);
 }
 
-const CHIP =
-  "flex h-16 w-36 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gtp-teal/15 bg-white px-3.5 py-2.5 sm:w-40";
+const LOGO_SLOT =
+  "flex h-40 w-52 shrink-0 items-center justify-center sm:h-48 sm:w-64";
 
-const CHIP_LINK = cn(
-  CHIP,
-  "transition-colors hover:border-gtp-teal/50 focus-visible:border-gtp-teal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50",
+const LOGO_LINK = cn(
+  LOGO_SLOT,
+  "rounded-md transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gtp-teal/40 focus-visible:ring-offset-2 focus-visible:ring-offset-gtp-paper",
 );
 
 function PartnerLogo({
@@ -61,21 +61,21 @@ function PartnerLogo({
     <Image
       src={partner.logoUrl}
       alt={partner.href ? "" : partner.logoAlt}
-      width={152}
-      height={48}
-      sizes="160px"
-      className="h-10 w-full object-contain"
+      width={256}
+      height={192}
+      sizes="(min-width: 640px) 256px, 208px"
+      className="h-full w-full object-contain"
       unoptimized={isSvg(partner.logoUrl)}
     />
   );
 
   if (!partner.href) {
-    return <div className={CHIP}>{image}</div>;
+    return <div className={LOGO_SLOT}>{image}</div>;
   }
 
   if (partner.href.startsWith("/")) {
     return (
-      <Link href={partner.href} className={CHIP_LINK} tabIndex={tabIndex} aria-label={partner.name}>
+      <Link href={partner.href} className={LOGO_LINK} tabIndex={tabIndex} aria-label={partner.name}>
         {image}
       </Link>
     );
@@ -84,7 +84,7 @@ function PartnerLogo({
   return (
     <a
       href={partner.href}
-      className={CHIP_LINK}
+      className={LOGO_LINK}
       tabIndex={tabIndex}
       target="_blank"
       rel="noopener noreferrer"
@@ -142,7 +142,8 @@ export function ActionWorkshopPartnerRow({ day }: { day: GtpActionWorkshopPartne
     if (!viewport || !list) return;
 
     const measure = () => {
-      setScrolling(list.scrollWidth > viewport.clientWidth + 1);
+      const contentWidth = list.scrollWidth - parseFloat(getComputedStyle(list).paddingRight);
+      setScrolling(contentWidth > viewport.clientWidth + 1);
     };
 
     measure();
@@ -175,7 +176,7 @@ export function ActionWorkshopPartnerRow({ day }: { day: GtpActionWorkshopPartne
       </div>
       <div
         ref={viewportRef}
-        className={cn("action-workshop-partner-viewport", scrolling && "is-scrolling")}
+        className={cn("action-workshop-partner-viewport mix-blend-multiply", scrolling && "is-scrolling")}
       >
         <div
           className={cn(
