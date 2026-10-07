@@ -94,6 +94,18 @@ Comparison outcome: **the finished extension preserves the incumbent GTP system,
 
 Deliberately not canonized: redundant eyebrow devices outside the corrected scope, older contrast defects, illustrative fixture content, one-off composition values and the main programme performance shortfall; none supplies a durable, approved system rule.
 
+### Research session table correction — 7 October 2026
+
+The team's supplied desktop/mobile designs remain the visual reference. The research listing now groups existing one-paper-per-slot records by their published room within each date/time block. Papers become ordered rows under **Session 1** and **Session 2**, with the actual hall retained as venue metadata. Explicit Research presentations lists remain separate ordered groups. A missing assignment stays visible under **Session to be confirmed** until supplied; no assignment is inferred from paper order.
+
+The schedule removes the single-paper card branch. Desktop uses two presenter/title tables; mobile stacks the session containers and uses labelled presenter/title rows. Existing presenter names, multiple presenters, profile photos and the shared missing-photo avatar remain supported. The correction retains the incumbent GTP paper surface, teal text, restrained borders, fonts, workshop carousel and registration flow.
+
+Final local production-build captures: `.impeccable/review/research-session-tables-desktop.jpg` and `.impeccable/review/research-session-tables-mobile.jpg`. Both published dates render two sessions with four papers each. Checks at 320, 390, 768 and 1280px found no horizontal page overflow; tables stack at tablet widths and use two columns on desktop. The production build, focused lint and 18 behaviour checks passed. The affected route's local mobile Lighthouse Performance score was **86**, with CLS **0**.
+
+The independent scoped finish review returned **ship**, with no material layout fixes. Its screenshot/source check confirmed the approved two-session composition, readable wrapping and preserved presenter-photo support. This verdict covers the research-table correction, not the wider site or a frontend deployment.
+
+The user confirmed that the previously unassigned 14 October paper, “Revealing Risks from Shifting Seas: A Data-Driven Coastal Vulnerability Analysis in Indonesia,” belongs to Session 2. After explicit production-write approval, its missing `venueLine` was set to **Hall 2** using a keyed, revision-guarded one-field patch. A complete backup is saved under `tmp/gtp-cms-backups/`; a subsequent full-document comparison verified all other content and asset references were preserved. There was no draft Programme document to patch. This CMS assignment was saved in production before the frontend release; the captures above show the local production-build preview used for approval.
+
 ### Workshop people readability refinement
 
 Follow-up evidence recorded 6 October 2026 for the user's requested workshop roster refinement, including explicit retention of profile photos. The [workshop modal](../src/components/gtp/programmes/workshop-modal.tsx#L184) now presents the roster at full content width after the objective and before sharing, registration and host utilities. It retains the existing GTP palette and body face: names lead in semibold dark teal, smaller roles follow, and designations use muted text. Long names and designations wrap. This is a local workshop display refinement; the ordinary-session roster is outside its scope.

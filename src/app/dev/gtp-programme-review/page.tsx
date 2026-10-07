@@ -18,7 +18,7 @@ export default async function ProgrammeReviewPage() {
   const research: ResearchSessionBlock[] = (["day2", "day3"] as const).map((dayId) => ({
     id: `review-${dayId}`, dayId, time: "Research time to be confirmed",
     halls: [1, 2].map((hall) => ({
-      id: `hall-${hall}`, title: `Hall ${hall}`, venue: "Venue to be confirmed",
+      id: `hall-${hall}`, title: `Session ${hall}`, venue: "Venue to be confirmed",
       presentations: [1, 2, 3, 4].map((row) => ({id: `row-${row}`, presenterName: `Illustrative presenter ${row}`,
         presentationTitle: row === 2 ? "Illustrative long presentation title to check how research topics wrap across multiple lines without losing the presenter or widening the page" : "Illustrative presentation title — final schedule pending"})),
     })),

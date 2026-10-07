@@ -85,6 +85,7 @@ check('New research rows keep day/hall/presentation order and explicit room', ()
   const blocks = buildResearchSessionListing({day2: [{...session, type: 'concurrent'}, session], day3: [{...session, id: 'research-14'}]});
   assert.deepEqual(blocks.map((block) => block.dayId), ['day2', 'day3']);
   assert.equal(blocks[0].halls[0].venue, 'Room B'); assert.equal(blocks[0].halls[1].venue, 'Parent room');
+  assert.deepEqual(blocks[0].halls.map((hall) => hall.title), ['Session 1', 'Session 2']);
   assert.deepEqual(blocks[0].halls[0].presentations.map((row) => row.id), ['p2', 'p1']);
   assert.deepEqual(blocks[0].halls[1].presentations, []);
   assert.deepEqual(buildResearchSessionListing({day2: [], day3: []}), []);
@@ -100,9 +101,36 @@ check('Existing research speaker rows supply presenters without replacing explic
   const blocks = buildResearchSessionListing({day2: [session], day3: [session]});
   assert.deepEqual(blocks.map((block) => block.dayId), ['day2', 'day3']);
   assert.deepEqual(blocks[0].halls[0].presentations, [{id: 'legacy-presentation', presenterName: 'Presenter, Co-presenter', presentationTitle: 'Existing paper', presenters: [{name: 'Presenter', imageUrl: '/presenter.jpg'}, {name: 'Co-presenter', imageUrl: '/co-presenter.jpg'}]}]);
-  assert.equal(blocks[0].halls[1].presentations, publishedRows);
+  assert.deepEqual(blocks[0].halls[1].presentations, publishedRows);
   assert.deepEqual(blocks[0].halls[2].presentations, []);
   assert.deepEqual(session, original);
+});
+check('Published paper slots become two session tables, preserving order, presenters, photos and the source', () => {
+  const paper = (id, venueLine, name) => ({id, title: `Paper ${id}`, venueLine, speakers: [{name, imageUrl: `/${id}.jpg`}]});
+  const session = {id: 'research', type: 'research', time: '14:00–16:00', workshops: [
+    paper('a', ' Hall 1 ', 'First'), paper('b', 'Hall 2', 'Second'),
+    paper('c', 'hall  1', 'Third'), paper('d', 'Hall 2 ', 'Fourth'),
+  ]};
+  const original = structuredClone(session);
+  const blocks = buildResearchSessionListing({day2: [session], day3: [session]});
+  for (const block of blocks) {
+    assert.deepEqual(block.halls.map((hall) => hall.title), ['Session 1', 'Session 2']);
+    assert.deepEqual(block.halls.map((hall) => hall.presentations.map((row) => row.presentationTitle)), [['Paper a', 'Paper c'], ['Paper b', 'Paper d']]);
+    assert.equal(block.halls[0].presentations[1].presenters[0].imageUrl, '/c.jpg');
+    assert.equal(block.halls[1].presentations[0].presenterName, 'Second');
+  }
+  assert.deepEqual(session, original);
+});
+check('Missing research assignments stay visible and separate; different time blocks never merge', () => {
+  const session = {id: 'early', type: 'research', time: '14:00–15:00', venueLine: 'Venue to be confirmed', workshops: [
+    {id: 'assigned', title: 'Assigned paper', venueLine: 'Hall 1', speakers: [{name: 'Assigned presenter'}]},
+    {id: 'pending', title: 'Unassigned paper', speakers: [{name: 'Pending presenter'}]},
+  ]};
+  const blocks = buildResearchSessionListing({day2: [session, {...session, id: 'late', time: '15:00–16:00'}], day3: []});
+  assert.equal(blocks.length, 2);
+  assert.deepEqual(blocks.map((block) => block.time), ['14:00–15:00', '15:00–16:00']);
+  assert.deepEqual(blocks[0].halls.map((hall) => hall.title), ['Session 1', 'Session to be confirmed']);
+  assert.equal(blocks[0].halls[1].presentations[0].presentationTitle, 'Unassigned paper');
 });
 check('Only canonical workshop slots render, with stable identities and explicit artwork', () => {
   const workshop = {id: 'w1', number: '10', title: 'Renamed workshop', objective: 'Published objective', posterUrl: '/canonical.jpg'};
