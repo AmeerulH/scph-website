@@ -17,7 +17,7 @@ const {buildCombinedProgrammeDays} = require('../src/components/gtp/programmes/c
 const {resolveActivityRegistration, participantEmailsFromRows, safeRegistrationUrl} = require('../src/lib/gtp-activity-registration.ts');
 const {prepareResearchSchedule} = require('./lib/gtp-research-schedule.ts');
 const {buildSpecialSessionRegistrationLink} = require('../src/lib/gtp-programme-session-link.ts');
-const {prepareWorkshopMigration} = require('./lib/gtp-workshop-migration.ts');
+const {prepareWorkshopMigration, sameWorkshopMigrationChanges} = require('./lib/gtp-workshop-migration.ts');
 
 let count = 0;
 function check(name, run) {run(); count++; console.log(`PASS ${name}`);}
@@ -178,5 +178,19 @@ check('Migration refuses ambiguous mappings, changed titles and changed image re
   assert.throws(() => prepareWorkshopMigration(titleChange, mapping), /Title changed/);
   const assetChange = structuredClone(documents); assetChange[1].entries[0].poster.asset._ref = 'new-upload';
   assert.throws(() => prepareWorkshopMigration(assetChange, mapping), /Artwork changed/);
+});
+check('Reviewed migration tolerates unrelated editor revisions but rejects changed targets or field values', () => {
+  const {documents, mapping} = migrationFixture();
+  const approved = prepareWorkshopMigration(documents, mapping);
+  documents[0]._rev = 'new-editor-revision'; documents[0].internalTitle = 'New editor copy';
+  const current = prepareWorkshopMigration(documents, mapping);
+  assert.equal(sameWorkshopMigrationChanges(approved.patches, current.patches), true);
+  assert.equal(current.patches[0].revision, 'new-editor-revision');
+  assert.equal(current.preview[0].internalTitle, 'New editor copy');
+  assert.equal(sameWorkshopMigrationChanges(approved.patches, current.patches.slice(1)), false);
+  assert.equal(sameWorkshopMigrationChanges(approved.patches, current.patches.filter(patch => !patch.id.startsWith('drafts.'))), true);
+  assert.equal(sameWorkshopMigrationChanges(approved.patches, [...current.patches, {...current.patches[0], id: 'drafts.unreviewed'}]), false);
+  documents[0].days[0].sessions[0].workshops[0].poster = {asset: {_ref: 'new-editor-poster'}};
+  assert.equal(sameWorkshopMigrationChanges(approved.patches, prepareWorkshopMigration(documents, mapping).patches), false);
 });
 console.log(`${count} behavior checks passed.`);

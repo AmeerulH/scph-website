@@ -1,4 +1,5 @@
 /** One-time, keyed migration. Never matches live workshops by title. */
+import {isDeepStrictEqual} from "node:util";
 type Document = Record<string, unknown>;
 type Mapping = {
   _key: string; artworkTitle: string; assetRef: string;
@@ -8,6 +9,17 @@ type Mapping = {
 export type WorkshopMigrationPatch = {
   id: string; revision: string; set: Record<string, unknown>; unset: string[];
 };
+
+/** Editor changes outside the reviewed paths are preserved by the fresh read/revision guard. */
+export function sameWorkshopMigrationChanges(approved: WorkshopMigrationPatch[], current: WorkshopMigrationPatch[]): boolean {
+  if (new Set(approved.map(patch => patch.id)).size !== approved.length || new Set(current.map(patch => patch.id)).size !== current.length) return false;
+  // Publishing removes a draft. Its absent variant needs no patch; published targets remain required.
+  if (approved.some(patch => !patch.id.startsWith("drafts.") && !current.some(next => next.id === patch.id))) return false;
+  return current.every(patch => {
+    const reviewed = approved.find(candidate => candidate.id === patch.id);
+    return reviewed !== undefined && isDeepStrictEqual(patch.set, reviewed.set) && isDeepStrictEqual(patch.unset, reviewed.unset);
+  });
+}
 
 function object(value: unknown): Document {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("Expected an object in the CMS snapshot");

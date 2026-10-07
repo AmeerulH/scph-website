@@ -2,7 +2,7 @@ import {createClient} from "@sanity/client";
 import {config} from "dotenv";
 import {readFile, writeFile} from "node:fs/promises";
 import {isDeepStrictEqual} from "node:util";
-import {prepareWorkshopMigration} from "./lib/gtp-workshop-migration";
+import {prepareWorkshopMigration, sameWorkshopMigrationChanges} from "./lib/gtp-workshop-migration";
 
 config({path: ".env.local", quiet: true});
 
@@ -31,7 +31,7 @@ async function main() {
   if (dataset === "production" && process.env.ALLOW_PRODUCTION !== "1") throw new Error("Production requires exact-change approval and ALLOW_PRODUCTION=1");
   if (!process.env.APPROVED_PLAN_PATH) throw new Error("An exact reviewed dry-run plan is required");
   const approved = JSON.parse(await readFile(process.env.APPROVED_PLAN_PATH, "utf8"));
-  if (!isDeepStrictEqual(approved, reviewed)) throw new Error("CMS revisions or changes differ from the reviewed plan; regenerate the dry run");
+  if (approved.dataset !== dataset || !sameWorkshopMigrationChanges(approved.patches, plan.patches)) throw new Error("CMS target documents or field changes differ from the reviewed plan; regenerate the dry run");
   if (!process.env.SANITY_API_TOKEN?.trim()) throw new Error("A write token is required");
   const backupPath = process.env.SANITY_BACKUP_PATH || `/tmp/gtp-workshops-${dataset}-${Date.now()}.json`;
   await writeFile(backupPath, JSON.stringify(documents, null, 2), {mode: 0o600, flag: "wx"});
