@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export default async function ProgrammeReviewPage() {
   if (process.env.NODE_ENV !== "development" || process.env.GTP_PROGRAMME_REVIEW_MODE !== "1") notFound();
   const [page, programme] = await Promise.all([getGtpProgrammeActivityPage("action-workshops"), getGtp2026Programme()]);
-  const workshops = buildActionWorkshopListing({entries: page.entries, day2: programme.day2, day3: programme.day3});
+  const workshops = buildActionWorkshopListing({day2: programme.day2, day3: programme.day3});
   const research: ResearchSessionBlock[] = (["day2", "day3"] as const).map((dayId) => ({
     id: `review-${dayId}`, dayId, time: "Research time to be confirmed",
     halls: [1, 2].map((hall) => ({

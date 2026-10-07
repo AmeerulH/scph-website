@@ -23,6 +23,7 @@
     "seed-gtp-book-launch-page": "npx tsx scripts/seed-gtp-book-launch-page.ts",
     "seed-gtp-programme-subpages": "npx tsx scripts/seed-gtp-programme-subpages.ts",
     "seed-gtp-combined-programme": "npx tsx scripts/seed-gtp-combined-programme.ts",
+    "migrate-gtp-workshop-records": "npx tsx scripts/migrate-gtp-workshop-records.ts",
     "import-gtp-research-schedule": "npx tsx scripts/import-gtp-research-schedule.ts",
     "test-gtp-combined-programme": "node scripts/test-gtp-combined-programme.cjs",
     "seed-gtp-speakers-page": "npx tsx scripts/seed-gtp-speakers-page.ts",

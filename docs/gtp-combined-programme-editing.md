@@ -8,15 +8,21 @@ The combined public page keeps `/events/gtp-2026/programmes/action-workshops`. T
 | --- | --- |
 | Page title, hero image/lede, simultaneous-session introduction | Action Workshops activity page: Page title, Hero banner image, Hero lede, Combined page introduction |
 | Workshop heading/description | Same activity page: Action Workshops heading, Description |
-| Workshop poster and fallback description | Same activity page: Activities |
-| Workshop title, time, people, room | GTP 2026 Programme: correct day → concurrent session → workshop slot |
+| Workshop title, poster/alt, objective, people, room | GTP 2026 Programme: correct day → Action Workshops → Workshops / parallel slots |
+| Workshop date/time | Programme: parent day/session |
 | Knowledge-partner logos | Activity page: Knowledge partner logos, matched to the date |
 | Research heading/introduction | Activity page: Research Sessions heading/description |
 | Research date/time/hall/presenter/title | GTP 2026 Programme: correct day → Research sessions type → parallel hall slot → Research presentations |
 | Roundtable co-hosts | Programme: correct roundtable session → Hosted by — organisations |
 | Shared registration status/label/URL | Activity page: Registration status/button label/URL; participant access also requires server configuration |
 
-Publish the document that owns the fact. Workshop artwork/copy and programme agenda facts are merged; changing one document does not edit the other. Published values override fallback headings. The current activity description starts with “Action Workshops -”; remove that prefix through an intentional copy edit once the team approves the separate heading/body, rather than changing defaults and expecting published content to follow.
+Publish the document that owns the fact. Workshop details and artwork now share one Programme slot. The activity document owns page copy, partners and registration. Published values override fallback headings. The current activity description starts with “Action Workshops -”; remove that prefix through an intentional copy edit once the team approves the separate heading/body, rather than changing defaults and expecting published content to follow.
+
+Edit every Action Workshop in **Programme → day → Action Workshops → Workshops / parallel slots**. Upload **Workshop poster** with alt text on that same slot. Publish Programme to update both its card and popup. Clearing the poster produces a title card; old artwork cannot reappear as a fallback. Renaming a slot keeps its identity and does not create another card. Move it to the correct day/session to change its date/time. Do not duplicate a workshop in Research Sessions or Special events.
+
+Legacy Action Workshop **Activities** rows remain in the dataset for recovery and are hidden in Studio. They no longer generate cards. Artificial Intelligence Sessions still use their own Activities list. See the [7 October source audit](gtp-cms-issues-2026-10-07.md) for confirmed replacements and pending posters.
+
+**Special-event registration buttons:** Keep the session type **Special event**. Populate **Subpage button text** to show the same link on its programme card and popup. Day 2 links to the 13 October date section; Day 3 links to 14 October, where the existing shared registration control handles eligibility and pending/closed status. Other days link to the combined page introduction. An empty label hides the button. This requires the updated frontend and Studio/schema to be deployed; publishing a label alone does not open registration. Do not reclassify a Special event as Research sessions to expose this field.
 
 ## Add co-hosts
 
@@ -47,6 +53,16 @@ The server also needs `GTP_PARTICIPANT_SHEET_ID`, optional `GTP_PARTICIPANT_SHEE
 Both dates and workshop-popup actions use the same eligibility endpoint/form. The website checks that an email belongs to the configured participant list; it does not prove email ownership or enforce access control on the external form. Eligibility does not book a place. Confirm the sheet reflects the in-person restriction, and the form supports both activity types/dates, before opening.
 
 Coming soon/Closed are enforced by the API as well as the UI; they return no form URL. Open with missing configuration becomes pending. A server configuration check does not prove the sheet/form works, so perform a controlled verification before activating production. The existing rate-limit counter is per server process.
+
+## One-time workshop artwork migration
+
+Deploy the additive schema, then migrate content before activating the frontend that reads Programme-only posters. `DRY_RUN=1 npm run migrate-gtp-workshop-records` reads both published and draft variants with the raw perspective. Its reviewed key/asset mapping lives in `scripts/data/gtp-workshop-artwork-migration.json`; changed titles, asset references, missing keys or extra artwork rows stop the migration for review. Existing Programme posters and populated objectives win. Image asset references, crop, hotspot and alt text transfer without uploading replacements.
+
+Set `MIGRATION_PLAN_PATH` to a new private file during the dry run. A real run requires that exact file as `APPROVED_PLAN_PATH`, explicit production approval and `ALLOW_PRODUCTION=1`. All document revisions must still match, and every patch commits atomically. The script backs up complete raw published/draft documents with original asset references before writing, then re-queries and compares the exact expected documents. It never replaces days, sessions or artwork arrays, and never publishes unrelated draft edits. The hidden migration marker makes re-runs a no-op, so later poster removals stay removed.
+
+The confirmed correction moves REACH to one standalone Special event with the existing shared-registration label and removes only its duplicate workshop slot. Seventeen verified posters transfer. Rethinking Leadership is on 14 October; its existing poster prints 13 October and stays archived. Ecosystem Restoration and Turning the Tide have no approved poster yet. All three remain title cards. Mobilising Leadership was replaced by Turning the Tide and its artwork stays archived. Both legacy artwork variants receive the confirmed Rethinking date metadata correction while retaining the original image.
+
+Rollback: retain the private full backup in durable storage. Restore only the changed poster/objective paths, migration marker, REACH category/removed keyed slot and legacy date metadata after a fresh revision check; compare any later editor changes first. Do not restore whole singleton documents. Revert the canonical-list frontend only together with the reviewed data rollback; legacy artwork is still available.
 
 ## Safe seed and research import
 

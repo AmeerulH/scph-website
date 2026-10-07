@@ -133,6 +133,7 @@ interface SanityHostedByFields {
 
 interface SanityWorkshopRow extends SanityHostedByFields {
   _key?: string;
+  poster?: {alt?: string | null; asset?: {url?: string | null} | null} | null;
   venueLine?: string | null;
   presentations?: {_key?: string | null; presenterName?: string | null; presentationTitle?: string | null}[] | null;
   number?: string;
@@ -269,6 +270,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         _key,
         number,
         title,
+        poster {alt, asset->{url}},
         objective,
         venueLine,
         presentations[]{_key, presenterName, presentationTitle},
@@ -561,6 +563,11 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
 
   const workshop: Workshop = { number, title };
   if (row._key) workshop.id = row._key;
+  const posterUrl = row.poster?.asset?.url?.trim();
+  if (posterUrl) {
+    workshop.posterUrl = posterUrl;
+    workshop.posterAlt = row.poster?.alt?.trim() || `${title} poster`;
+  }
   const presentations = (row.presentations ?? []).flatMap((presentation, index) => {
     const presenterName = presentation.presenterName?.trim();
     const presentationTitle = presentation.presentationTitle?.trim();

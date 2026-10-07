@@ -379,9 +379,8 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       type: 'array',
       of: [activityEntry],
       description:
-        'Action Workshops: poster rows for the workshop list. Artificial Intelligence Sessions: one row per session (breakfast, workshops), each with its own date, poster and registration link.',
-      hidden: ({document}) =>
-        document?.slug !== 'action-workshops' && document?.slug !== 'ai-thinkers-networking-breakfast',
+        'Artificial Intelligence Sessions: one row per session, with its own date, poster and registration link. Legacy Action Workshop rows are retained for recovery only. Edit active workshop titles, posters, objectives, rooms and people in GTP 2026 Programme → day → Action Workshops → Workshops / parallel slots.',
+      hidden: ({document}) => document?.slug !== 'ai-thinkers-networking-breakfast',
     }),
     defineField({
       name: 'knowledgePartnerDays',

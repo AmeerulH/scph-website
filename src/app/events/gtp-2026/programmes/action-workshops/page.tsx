@@ -42,7 +42,6 @@ async function CombinedProgrammeData({page, programmePromise}: {
 }) {
   const programme = await programmePromise;
   const actionWorkshops = buildActionWorkshopListing({
-    entries: page.entries,
     day2: programme.day2,
     day3: programme.day3,
   });

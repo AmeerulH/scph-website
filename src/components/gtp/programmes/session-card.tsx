@@ -11,6 +11,7 @@ import { TYPE_META } from "./data";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
+import { SpecialSessionRegistrationLink } from "./special-session-registration-link";
 import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { normalizeSpeakerName } from "./programme-speaker-filter";
@@ -173,6 +174,7 @@ export function SessionCard({
           className="mt-4"
           collapsibleOnMobile
         />
+        <SpecialSessionRegistrationLink session={session} calendarTabId={calendarTabId} />
 
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (

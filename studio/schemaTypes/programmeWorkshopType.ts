@@ -21,6 +21,21 @@ export const programmeWorkshopType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'poster',
+      title: 'Workshop poster',
+      type: 'image',
+      options: {hotspot: true},
+      description: 'Action Workshops: the poster for this exact workshop. Title, details and artwork are edited together here. Date/time come from the parent day/session. Leave empty until correct artwork is ready; the website shows a title card.',
+      fields: [defineField({
+        name: 'alt', title: 'Alt text', type: 'string',
+        validation: (rule) => rule.custom((alt, context) => {
+          const parent = context.parent as {asset?: {_ref?: string}} | undefined
+          return parent?.asset?._ref && !(typeof alt === 'string' && alt.trim())
+            ? 'Alt text is required when a poster is set' : true
+        }),
+      })],
+    }),
+    defineField({
       name: 'objective',
       title: 'Objective',
       type: 'text',

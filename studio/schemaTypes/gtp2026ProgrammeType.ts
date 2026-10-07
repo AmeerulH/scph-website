@@ -8,6 +8,13 @@ export const gtp2026ProgrammeType = defineType({
     'Conference agenda for the programme page. Prefer a single document with fixed id gtp2026Programme so the website query stays stable (create in Studio with Custom ID, or import).',
   fields: [
     defineField({
+      name: 'workshopArtworkMigrationVersion',
+      type: 'number',
+      hidden: true,
+      readOnly: true,
+      description: 'Internal migration marker. Prevents archived artwork from being restored over later editor changes.',
+    }),
+    defineField({
       name: 'internalTitle',
       title: 'Internal title',
       type: 'string',

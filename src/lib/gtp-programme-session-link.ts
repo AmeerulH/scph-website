@@ -1,6 +1,17 @@
 /** Programme day tabs that deep-link via `?tab=` on /events/gtp-2026/programmes. */
 export type ProgrammeDayTab = "day1" | "day2" | "day3" | "day4";
 
+/** Special-event buttons opt into the existing shared registration page. */
+export function buildSpecialSessionRegistrationLink(
+  session: { type: string; subpageButtonLabel?: string },
+  tab: ProgrammeDayTab,
+): { label: string; href: string } | null {
+  const label = session.subpageButtonLabel?.trim();
+  if (session.type !== "special" || !label) return null;
+  const anchor = tab === "day2" ? "day-13" : tab === "day3" ? "day-14" : "action-workshops";
+  return { label, href: `/events/gtp-2026/programmes/action-workshops#${anchor}` };
+}
+
 const DAY_TAB_RE = /Day\s*([1-4])/i;
 
 const PLACEHOLDER_TITLES = new Set([

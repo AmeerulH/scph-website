@@ -10,6 +10,7 @@ import type { Session, Speaker, Workshop } from "./types";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
 import { TYPE_META, TYPE_GRADIENTS } from "./data";
 import { SessionObjectiveBlock } from "./session-objective-block";
+import { SpecialSessionRegistrationLink } from "./special-session-registration-link";
 import { getSessionFormatLabel, getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeModalShareRegisterColumn } from "./programme-modal-chrome";
 import {
@@ -186,6 +187,7 @@ export function SessionModal({
                   </div>
 
                   <SessionObjectiveBlock text={session.objective} className="mt-4" />
+                  <SpecialSessionRegistrationLink session={session} calendarTabId={calendarTabId} />
 
                   {/* Description */}
                   <div className="mt-5 border-t border-gray-100 pt-5 space-y-3 text-sm text-gray-600 leading-relaxed">

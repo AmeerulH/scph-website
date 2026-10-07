@@ -68,9 +68,9 @@ export const programmeSessionType = defineType({
       title: 'Subpage button text',
       type: 'string',
       description:
-        'Text on this session’s button linking to the combined Action Workshops and Research Sessions page. Leave empty to use the current default. This changes the wording only; the destination and registration availability stay the same. Publish Programme to update the website.',
+        'Text on this session’s button linking to the combined Action Workshops and Research Sessions page. For Special events, enter text to show a button on the card and popup; leave empty to hide it. The link uses the matching date’s shared registration section. Action Workshops and Research Sessions keep their default wording when empty. This changes the wording only, not registration availability. Publish Programme to update the website.',
       hidden: ({parent}) =>
-        parent?.type !== 'concurrent' && parent?.type !== 'research',
+        parent?.type !== 'concurrent' && parent?.type !== 'research' && parent?.type !== 'special',
     }),
     defineField({
       name: 'theme',
@@ -121,6 +121,8 @@ export const programmeSessionType = defineType({
       title: 'Workshops / parallel slots',
       type: 'array',
       of: [{type: 'programmeWorkshop'}],
+      description:
+        'Each Action Workshop is edited entirely here: title, Workshop poster, objective, room and people. The parent session/day supplies time/date. Publish Programme to update its card and popup. The activity page owns headings, partners and shared registration only. Research sessions use one slot per hall with Research presentations.',
     }),
     defineField({
       name: 'breakLabel',

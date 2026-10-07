@@ -68,6 +68,9 @@ export interface Workshop {
   id?: string;
   number: string;
   title: string;
+  /** Artwork belongs to this programme slot; empty renders a title card. */
+  posterUrl?: string;
+  posterAlt?: string;
   objective?: string;
   speakers?: Speaker[];
   /** Separate popup list. Also filled from speaker rows whose role is Facilitator. */
@@ -104,7 +107,7 @@ export interface Session {
   /** Conference pathway — theme filter on the programme page */
   theme?: ConferenceThemeId;
   workshops?: Workshop[];
-  /** CMS: overview button text for the workshop/research subpage. */
+  /** CMS: workshop/research overview text, or opt-in Special-event shared registration link. */
   subpageButtonLabel?: string;
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";

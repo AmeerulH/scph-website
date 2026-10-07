@@ -56,7 +56,7 @@ export function ActionWorkshopRow({
       <div className="flex gap-4">
         {workshops.map((workshop) => {
           const highlighted = workshop === selection?.highlightedWorkshop;
-          return <button key={`${workshop.calendarTabId}-${workshop.workshop.number}-${workshop.title}`}
+          return <button key={workshop.id}
             ref={highlighted ? selection?.highlightedRef : undefined} type="button" onClick={() => selection?.onSelect(workshop)}
             aria-label={`View details: ${workshop.title}`} aria-current={highlighted ? "true" : undefined}
             className={cn("group relative flex h-[318px] w-52 shrink-0 flex-col overflow-hidden rounded-xl bg-gtp-dark-teal text-left text-white transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-orange focus-visible:ring-offset-2 sm:h-[360px] sm:w-60", highlighted && "ring-3 ring-gtp-orange ring-offset-2")}>

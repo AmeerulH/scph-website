@@ -16,9 +16,25 @@ const {buildResearchSessionListing} = require('../src/components/gtp/programmes/
 const {buildCombinedProgrammeDays} = require('../src/components/gtp/programmes/combined-programme-days.ts');
 const {resolveActivityRegistration, participantEmailsFromRows, safeRegistrationUrl} = require('../src/lib/gtp-activity-registration.ts');
 const {prepareResearchSchedule} = require('./lib/gtp-research-schedule.ts');
+const {buildSpecialSessionRegistrationLink} = require('../src/lib/gtp-programme-session-link.ts');
+const {prepareWorkshopMigration} = require('./lib/gtp-workshop-migration.ts');
 
 let count = 0;
 function check(name, run) {run(); count++; console.log(`PASS ${name}`);}
+check('Special events opt into shared registration without changing category or other session buttons', () => {
+  const session = {type: 'special', subpageButtonLabel: ' Register to join this session '};
+  assert.deepEqual(buildSpecialSessionRegistrationLink(session, 'day3'), {
+    label: 'Register to join this session', href: '/events/gtp-2026/programmes/action-workshops#day-14',
+  });
+  assert.equal(buildSpecialSessionRegistrationLink(session, 'day2').href, '/events/gtp-2026/programmes/action-workshops#day-13');
+  assert.equal(buildSpecialSessionRegistrationLink(session, 'day1').href, '/events/gtp-2026/programmes/action-workshops#action-workshops');
+  assert.equal(buildSpecialSessionRegistrationLink({type: 'special'}, 'day3'), null);
+  assert.equal(buildSpecialSessionRegistrationLink({type: 'special', subpageButtonLabel: '  '}, 'day3'), null);
+  for (const type of ['concurrent', 'research', 'plenary', 'break']) {
+    assert.equal(buildSpecialSessionRegistrationLink({...session, type}, 'day3'), null);
+  }
+  assert.equal(session.type, 'special');
+});
 const base = {sectionTitle: 'Hosted By', name: 'Default host', subtitle: 'Default room', showSubtitle: true, logoUrl: '/default.svg', logoAlt: 'Default logo'};
 
 check('Legacy location-only override preserves host and logo', () => {
@@ -48,14 +64,23 @@ check('New research rows keep day/hall/presentation order and explicit room', ()
   assert.deepEqual(blocks[0].halls[1].presentations, []);
   assert.deepEqual(buildResearchSessionListing({day2: [], day3: []}), []);
 });
-check('Unmatched workshop posters and programme objectives survive', () => {
-  const listing = buildActionWorkshopListing({day2: [{type: 'concurrent', title: 'Workshops', time: '14:00–16:00', workshops: [{number: '1', title: 'Matched title', objective: 'Published objective'}]}], day3: [], entries: [
-    {title: 'Matched title', posterUrl: '/matched.jpg', description: 'Fallback objective'},
-    {title: 'Unmatched title', posterUrl: '/unmatched.jpg', dateLabel: '14 October 2026'},
-  ]});
-  assert.equal(listing.length, 2); assert.equal(listing[0].workshop.objective, 'Published objective');
-  assert.equal(listing[0].posterUrl, '/matched.jpg'); assert.equal(listing[1].posterUrl, '/unmatched.jpg');
-  assert.equal(listing[1].parent.time, 'Time to be confirmed');
+check('Only canonical workshop slots render, with stable identities and explicit artwork', () => {
+  const workshop = {id: 'w1', number: '10', title: 'Renamed workshop', objective: 'Published objective', posterUrl: '/canonical.jpg'};
+  const parent = {id: 's1', type: 'concurrent', title: 'Workshops', time: '14:00–16:00', workshops: [workshop, {id: 'w2', number: '10', title: 'Pending poster'}]};
+  // Legacy artwork is intentionally ignored, even if supplied by older callers.
+  const input = {day2: [], day3: [parent, {...parent, type: 'research'}, {...parent, type: 'special'}], entries: [{title: 'Old name', posterUrl: '/old.jpg'}]};
+  const listing = buildActionWorkshopListing(input);
+  assert.equal(listing.length, 2);
+  assert.equal(listing[0].posterUrl, '/canonical.jpg');
+  assert.equal(listing[0].workshop.objective, 'Published objective');
+  assert.equal(listing[1].posterUrl, undefined);
+  assert.equal(new Set(listing.map(item => item.id)).size, 2);
+  assert.equal(listing[0].dateLabel, '14 October 2026');
+  const identity = listing[0].id;
+  workshop.title = 'Another rename'; workshop.posterUrl = undefined;
+  const changed = buildActionWorkshopListing(input);
+  assert.equal(changed[0].id, identity);
+  assert.equal(changed[0].posterUrl, undefined);
 });
 check('Day groups preserve partner-only dates and empty research without fake rows', () => {
   const days = buildCombinedProgrammeDays({workshops: [], research: [], partnerDays: [
@@ -91,5 +116,67 @@ check('Research imports preserve existing metadata and refuse non-research targe
   assert.throws(() => prepareResearchSchedule(source, invalid), /non-research/);
   const duplicate = structuredClone(source); duplicate.sessions.push(duplicate.sessions[0]);
   assert.throws(() => prepareResearchSchedule(duplicate, document), /duplicate/);
+});
+function migrationFixture() {
+  const poster = {_type: 'image', asset: {_type: 'reference', _ref: 'image-existing'}, alt: '13', crop: {top: 0.1}, hotspot: {x: 0.4}};
+  const mapping = [
+    {_key: 'poster-1', artworkTitle: 'Old name', assetRef: 'image-existing', dayKey: 'nnQWSTO81w83COfmAOS6GV', sessionKey: 'nnQWSTO81w83COfmAOS6Mz', workshopKey: 'w1', workshopTitle: 'Renamed workshop', transferPoster: true},
+    {_key: 'action-workshops-10', artworkTitle: 'Rethinking', assetRef: 'image-existing', dayKey: 'nnQWSTO81w83COfmAOS6GV', sessionKey: 'nnQWSTO81w83COfmAOS6Mz', workshopKey: 'w2', workshopTitle: 'Rethinking', transferPoster: false},
+    {_key: 'retired', artworkTitle: 'Retired workshop', assetRef: 'image-existing', archived: true},
+  ];
+  const programme = {_id: 'gtp2026Programme', _rev: 'p-rev', days: [{_key: 'nnQWSTO81w83COfmAOS6GV', tabId: 'day3', sessions: [
+    {_key: 'nnQWSTO81w83COfmAOS6Mz', type: 'concurrent', time: '14:00–16:00', workshops: [
+      {_key: 'w1', number: '2', title: 'Renamed workshop', objective: 'Published objective', speakers: [{name: 'Person', image: {asset: {_ref: 'headshot'}}}]},
+      {_key: 'w2', number: '10', title: 'Rethinking'},
+      {_key: '24519529148b', title: 'REACH - Advancing Research for Climate and Health in Asia'},
+    ]},
+    {_key: '696b4f0c831f', type: 'research', title: 'REACH - Advancing Research for Climate and Health in Asia', time: '14:00', speakers: [{name: 'REACH person'}], hostedByLogo: poster, venueLine: 'Room A'},
+    {_key: 'research', type: 'research', title: 'Research', workshops: [{title: 'Hall', presentations: [{presenterName: 'Research person'}]}]},
+  ]}]};
+  const artwork = {_id: 'gtp2026ProgrammeActivityPage-action-workshops', _rev: 'a-rev', hero: poster, entries: mapping.map(row => ({_key: row._key, title: row.artworkTitle, description: 'Fallback objective', dateLabel: '13 October 2026', poster}))};
+  const draft = {...structuredClone(programme), _id: 'drafts.gtp2026Programme', _rev: 'd-rev', internalTitle: 'Unpublished editor change'};
+  return {documents: [programme, artwork, draft], mapping};
+}
+check('Migration preserves assets and draft edits, removes only REACH duplicate, archives obsolete artwork', () => {
+  const {documents, mapping} = migrationFixture();
+  const original = structuredClone(documents);
+  const {preview, patches} = prepareWorkshopMigration(documents, mapping);
+  assert.deepEqual(documents, original);
+  const sessions = preview[0].days[0].sessions;
+  assert.equal(sessions[0].workshops.length, 2);
+  const workshop = sessions[0].workshops[0];
+  assert.deepEqual(workshop.poster.crop, {top: 0.1}); assert.deepEqual(workshop.poster.hotspot, {x: 0.4});
+  assert.equal(workshop.poster.asset._ref, 'image-existing');
+  assert.equal(workshop.poster.alt, 'Renamed workshop poster');
+  assert.equal(workshop.objective, 'Published objective'); assert.equal(workshop.speakers[0].image.asset._ref, 'headshot');
+  assert.equal(sessions[0].workshops[1].poster, undefined); assert.equal(sessions[0].workshops[1].objective, 'Fallback objective');
+  assert.equal(sessions[1].type, 'special'); assert.equal(sessions[1].subpageButtonLabel, 'Register to Join this Session');
+  assert.deepEqual(sessions[1].speakers, original[0].days[0].sessions[1].speakers);
+  assert.deepEqual(sessions[1].hostedByLogo, original[0].days[0].sessions[1].hostedByLogo);
+  assert.deepEqual(sessions[2], original[0].days[0].sessions[2]);
+  assert.equal(preview[2].internalTitle, 'Unpublished editor change');
+  assert.equal(preview[1].entries.length, original[1].entries.length);
+  assert.deepEqual(preview[1].entries[2], original[1].entries[2]);
+  assert.equal(preview[1].entries[1].dateLabel, '14 October 2026');
+  assert.equal(patches.length, 3); assert.equal(patches[0].revision, 'p-rev');
+  assert.equal(patches[0].unset.length, 1);
+  assert.ok(Object.keys(patches[0].set).every(path => path !== 'days' && !path.endsWith('.workshops')));
+});
+check('Migration cannot resurrect artwork after an editor clears it and preserves existing posters', () => {
+  const {documents, mapping} = migrationFixture();
+  const existing = {_type: 'image', asset: {_ref: 'editor-selected'}};
+  documents[0].days[0].sessions[0].workshops[0].poster = existing;
+  const first = prepareWorkshopMigration(documents, mapping);
+  assert.deepEqual(first.preview[0].days[0].sessions[0].workshops[0].poster, existing);
+  delete first.preview[0].days[0].sessions[0].workshops[0].poster;
+  assert.deepEqual(prepareWorkshopMigration(first.preview, mapping).patches, []);
+});
+check('Migration refuses ambiguous mappings, changed titles and changed image references', () => {
+  const {documents, mapping} = migrationFixture();
+  assert.throws(() => prepareWorkshopMigration(documents, [...mapping, mapping[0]]), /Duplicate/);
+  const titleChange = structuredClone(documents); titleChange[0].days[0].sessions[0].workshops[0].title = 'Editor changed title';
+  assert.throws(() => prepareWorkshopMigration(titleChange, mapping), /Title changed/);
+  const assetChange = structuredClone(documents); assetChange[1].entries[0].poster.asset._ref = 'new-upload';
+  assert.throws(() => prepareWorkshopMigration(assetChange, mapping), /Artwork changed/);
 });
 console.log(`${count} behavior checks passed.`);
