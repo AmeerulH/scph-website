@@ -521,6 +521,8 @@ type SanityProgrammeActivityPage = {
   actionWorkshopsTitle?: string | null;
   researchSessionsTitle?: string | null;
   researchSessionsIntro?: string | null;
+  researchPresenterColumnLabel?: string | null;
+  researchPresentationColumnLabel?: string | null;
   registrationStatus?: string | null;
   registrationLabel?: string | null;
   registrationUrl?: string | null;
@@ -582,6 +584,8 @@ const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" &&
   actionWorkshopsTitle,
   researchSessionsTitle,
   researchSessionsIntro,
+  researchPresenterColumnLabel,
+  researchPresentationColumnLabel,
   registrationStatus,
   registrationLabel,
   registrationUrl,
@@ -724,6 +728,8 @@ export async function getGtpProgrammeActivityPage(
     actionWorkshopsTitle: doc.actionWorkshopsTitle?.trim() || fallback.actionWorkshopsTitle,
     researchSessionsTitle: doc.researchSessionsTitle?.trim() || fallback.researchSessionsTitle,
     researchSessionsIntro: doc.researchSessionsIntro?.trim() || fallback.researchSessionsIntro,
+    researchPresenterColumnLabel: doc.researchPresenterColumnLabel?.trim() || fallback.researchPresenterColumnLabel,
+    researchPresentationColumnLabel: doc.researchPresentationColumnLabel?.trim() || fallback.researchPresentationColumnLabel,
     registrationStatus: status,
     registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
     registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,

@@ -132,6 +132,33 @@ check('Missing research assignments stay visible and separate; different time bl
   assert.deepEqual(blocks[0].halls.map((hall) => hall.title), ['Session 1', 'Session to be confirmed']);
   assert.equal(blocks[0].halls[1].presentations[0].presentationTitle, 'Unassigned paper');
 });
+check('Research table overrides rename and reorder tables without moving papers or changing photos', () => {
+  const paper = (id, venueLine) => ({id, title: `Paper ${id}`, venueLine, speakers: [{name: id, imageUrl: `/${id}.jpg`}]});
+  const session = {id: 'r', type: 'research', time: '14:00', workshops: [paper('a', 'Hall 1'), paper('b', 'Hall 2'), paper('c', 'Hall 1')], researchTables: [
+    {sourceVenue: ' hall  2 ', title: ' Oceans and resilience ', venueLabel: ' Seminar Room B '},
+    {sourceVenue: 'Hall 1', title: 'Climate and health'},
+    {sourceVenue: 'No matching room', title: 'Never creates a table'},
+  ]};
+  const original = structuredClone(session);
+  const [block] = buildResearchSessionListing({day2: [session], day3: []});
+  assert.deepEqual(block.halls.map((hall) => [hall.title, hall.venue]), [['Oceans and resilience', 'Seminar Room B'], ['Climate and health', 'Hall 1']]);
+  assert.deepEqual(block.halls.map((hall) => hall.presentations.map((row) => row.presentationTitle)), [['Paper b'], ['Paper a', 'Paper c']]);
+  assert.equal(block.halls[1].presentations[1].presenters[0].imageUrl, '/c.jpg');
+  assert.deepEqual(session, original);
+});
+check('Blank research table copy retains defaults and unconfigured or pending tables stay visible', () => {
+  const session = {id: 'r', type: 'research', time: '14:00', workshops: [
+    {id: 'one', title: 'Paper', venueLine: 'Hall 1', speakers: [{name: 'Presenter'}]},
+    {id: 'two', title: 'Hall 2', venueLine: 'Hall 2', presentations: [{id: 'p', presenterName: 'Second', presentationTitle: 'Second paper'}]},
+    {id: 'pending', title: 'Pending', speakers: [{name: 'Third'}]},
+  ]};
+  const [original] = buildResearchSessionListing({day2: [session], day3: []});
+  const [withBlank] = buildResearchSessionListing({day2: [{...session, researchTables: [{sourceVenue: 'Hall 1', title: ' ', venueLabel: ' '}, {sourceVenue: 'Hall 1', title: 'Duplicate ignored'}]}], day3: []});
+  assert.deepEqual(withBlank, original);
+  const [withOverride] = buildResearchSessionListing({day2: [{...session, researchTables: [{sourceVenue: 'Hall 2', title: 'Confirmed session'}]}], day3: []});
+  assert.deepEqual(withOverride.halls.map((hall) => hall.title), ['Confirmed session', 'Session 1', 'Session to be confirmed']);
+  assert.equal(withOverride.halls[0].presentations[0].id, 'p');
+});
 check('Only canonical workshop slots render, with stable identities and explicit artwork', () => {
   const workshop = {id: 'w1', number: '10', title: 'Renamed workshop', objective: 'Published objective', posterUrl: '/canonical.jpg'};
   const parent = {id: 's1', type: 'concurrent', title: 'Workshops', time: '14:00–16:00', workshops: [workshop, {id: 'w2', number: '10', title: 'Pending poster'}]};
@@ -176,7 +203,7 @@ check('Only approved email columns grant eligibility, normalized and deduplicate
 check('Research imports preserve existing metadata and refuse non-research targets', () => {
   const source = {sessions: [{key: 'r13', day: 'day2', title: 'Research', time: '14:00–16:00', halls: [{key: 'hall', number: '1', title: 'Hall 1', presentations: [{key: 'p', presenterName: 'Presenter', presentationTitle: 'Paper'}]}]}]};
   const document = {days: [{_key: 'd2', tabId: 'day2', sessions: [{
-    _key: 'r13', type: 'research', hostedByLogo: {asset: {_ref: 'logo'}},
+    _key: 'r13', type: 'research', hostedByLogo: {asset: {_ref: 'logo'}}, researchTables: [{sourceVenue: 'Existing room', title: 'Edited heading', venueLabel: 'Edited venue'}],
     workshops: [{
       _key: 'hall', venueLine: 'Existing room', speakers: [{name: 'Chair', image: {asset: {_ref: 'photo'}}}],
       presentations: [{_key: 'p', presenterImage: {asset: {_ref: 'presenter-photo'}}}],
@@ -184,6 +211,7 @@ check('Research imports preserve existing metadata and refuse non-research targe
   }]}]};
   const [operation] = prepareResearchSchedule(source, document);
   assert.equal(operation.existing, true); assert.deepEqual(operation.session.hostedByLogo, {asset: {_ref: 'logo'}});
+  assert.deepEqual(operation.session.researchTables, document.days[0].sessions[0].researchTables);
   assert.equal(operation.session.workshops[0].venueLine, 'Existing room');
   assert.equal(operation.session.workshops[0].speakers[0].image.asset._ref, 'photo');
   assert.equal(operation.session.workshops[0].presentations[0].presenterImage.asset._ref, 'presenter-photo');

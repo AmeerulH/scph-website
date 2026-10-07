@@ -47,7 +47,7 @@ export function CombinedProgrammePage({page, workshops, research, hostedBy, regi
                 {!day.research.some((block) => block.halls.some((hall) => hall.presentations.length)) ? <span className="rounded-full bg-gtp-dark-teal/5 px-3 py-1 text-xs font-medium text-gtp-dark-teal">Schedule coming soon</span> : null}
               </div>
               {page.researchSessionsIntro ? <p className="mt-3 max-w-[70ch] text-sm leading-relaxed text-gtp-dark-teal/85 sm:text-base">{page.researchSessionsIntro}</p> : null}
-              <ResearchSessionsSchedule blocks={day.research} />
+              <ResearchSessionsSchedule blocks={day.research} presenterLabel={page.researchPresenterColumnLabel} presentationLabel={page.researchPresentationColumnLabel} />
             </section>
           </section>)}
         </div>

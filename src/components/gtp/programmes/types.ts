@@ -108,6 +108,8 @@ export interface Session {
   /** Conference pathway — theme filter on the programme page */
   theme?: ConferenceThemeId;
   workshops?: Workshop[];
+  /** Optional research table labels/order, matched to the papers' existing room. */
+  researchTables?: {sourceVenue: string; title?: string; venueLabel?: string}[];
   /** CMS: workshop/research overview text, or opt-in Special-event shared registration link. */
   subpageButtonLabel?: string;
   breakLabel?: string;

@@ -13,7 +13,9 @@ function ResearchPresenters({row}: {row: ResearchPresentation}) {
   </ul>;
 }
 
-export function ResearchSessionsSchedule({blocks}: {blocks: ResearchSessionBlock[]}) {
+export function ResearchSessionsSchedule({blocks, presenterLabel, presentationLabel}: {blocks: ResearchSessionBlock[]; presenterLabel?: string; presentationLabel?: string}) {
+  const presenterHeading = presenterLabel?.trim() || "Presenter";
+  const presentationHeading = presentationLabel?.trim() || "Presentation title";
   if (!blocks.length) {
     return <p className="mt-5 rounded-xl border border-gtp-dark-teal/15 bg-white px-5 py-6 text-sm leading-relaxed text-gtp-dark-teal/80">The research schedule will be published once the details are confirmed.</p>;
   }
@@ -26,18 +28,18 @@ export function ResearchSessionsSchedule({blocks}: {blocks: ResearchSessionBlock
       <div className="grid items-start gap-5 lg:grid-cols-2">
         {block.halls.map((hall) => <section key={hall.id} className={`min-w-0 overflow-hidden rounded-xl border border-gtp-dark-teal/15 bg-white${hall.title === "Session to be confirmed" ? " lg:col-span-2" : ""}`} aria-labelledby={`research-hall-${block.id}-${hall.id}`}>
           <div className="flex flex-wrap items-center justify-between gap-2 bg-gtp-dark-teal/5 px-4 py-3 sm:px-5">
-            <h4 id={`research-hall-${block.id}-${hall.id}`} className="font-heading text-base font-semibold text-gtp-dark-teal">{hall.title}</h4>
-            <p className="flex max-w-full items-start gap-1.5 text-xs leading-relaxed text-gtp-dark-teal/80"><MapPin className="mt-0.5 size-3.5 shrink-0" aria-hidden />{hall.venue}</p>
+            <h4 id={`research-hall-${block.id}-${hall.id}`} className="min-w-0 font-heading text-base font-semibold text-gtp-dark-teal wrap-anywhere">{hall.title}</h4>
+            <p className="flex max-w-full items-start gap-1.5 text-xs leading-relaxed text-gtp-dark-teal/80 wrap-anywhere"><MapPin className="mt-0.5 size-3.5 shrink-0" aria-hidden />{hall.venue}</p>
           </div>
           {hall.presentations.length ? <>
             <table className="hidden w-full table-fixed text-left text-sm sm:table">
-              <caption className="sr-only">{hall.title} · {block.time} · Presenters and presentation titles</caption>
-              <thead className="bg-gtp-paper text-xs text-gtp-dark-teal"><tr><th scope="col" className="w-[38%] px-5 py-3 font-semibold">Presenter</th><th scope="col" className="px-5 py-3 font-semibold">Presentation title</th></tr></thead>
+              <caption className="sr-only">{hall.title} · {block.time} · {presenterHeading} / {presentationHeading}</caption>
+              <thead className="bg-gtp-paper text-xs text-gtp-dark-teal"><tr><th scope="col" className="w-[38%] px-5 py-3 font-semibold wrap-anywhere">{presenterHeading}</th><th scope="col" className="px-5 py-3 font-semibold wrap-anywhere">{presentationHeading}</th></tr></thead>
               <tbody>{hall.presentations.map((row) => <tr key={row.id} className="border-t border-gtp-dark-teal/10 align-top"><th scope="row" className="px-5 py-4"><ResearchPresenters row={row} /></th><td className="px-5 py-4 leading-relaxed text-gtp-dark-teal/85 wrap-anywhere">{row.presentationTitle}</td></tr>)}</tbody>
             </table>
             <dl className="sm:hidden">{hall.presentations.map((row) => <div key={row.id} className="border-t border-gtp-dark-teal/10 px-4 py-4 text-sm">
-              <dt className="text-xs font-semibold text-gtp-dark-teal/80">Presenter</dt><dd className="mt-2"><ResearchPresenters row={row} /></dd>
-              <dt className="mt-3 text-xs font-semibold text-gtp-dark-teal/80">Presentation title</dt><dd className="mt-1 leading-relaxed text-gtp-dark-teal wrap-anywhere">{row.presentationTitle}</dd>
+              <dt className="text-xs font-semibold text-gtp-dark-teal/80 wrap-anywhere">{presenterHeading}</dt><dd className="mt-2"><ResearchPresenters row={row} /></dd>
+              <dt className="mt-3 text-xs font-semibold text-gtp-dark-teal/80 wrap-anywhere">{presentationHeading}</dt><dd className="mt-1 leading-relaxed text-gtp-dark-teal wrap-anywhere">{row.presentationTitle}</dd>
             </div>)}</dl>
           </> : <p className="px-5 py-6 text-sm text-gtp-dark-teal/80">Presentations for this session will be confirmed.</p>}
         </section>)}

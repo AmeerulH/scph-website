@@ -166,6 +166,7 @@ interface SanitySessionRow extends SanityHostedByFields {
   speakers?: SanitySpeakerRow[];
   facilitators?: SanitySpeakerRow[];
   workshops?: SanityWorkshopRow[];
+  researchTables?: {sourceVenue?: string | null; title?: string | null; venueLabel?: string | null}[] | null;
   breakLabel?: string;
   breakIcon?: string;
   workshopNote?: string;
@@ -266,6 +267,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         "imageUrl": image.asset->url
       },
       ${hostedByProjection},
+      researchTables[]{_key, sourceVenue, title, venueLabel},
       workshops[]{
         _key,
         number,
@@ -655,6 +657,13 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     const workshops = row.workshops.map(mapWorkshop).filter((w): w is Workshop => w !== null);
     if (workshops.length > 0) session.workshops = workshops;
   }
+
+  const researchTables = (row.researchTables ?? []).flatMap((table) => {
+    const sourceVenue = table.sourceVenue?.trim();
+    if (!sourceVenue) return [];
+    return [{sourceVenue, title: table.title?.trim() || undefined, venueLabel: table.venueLabel?.trim() || undefined}];
+  });
+  if (researchTables.length) session.researchTables = researchTables;
 
   if (typeof row.breakLabel === "string" && row.breakLabel.trim()) {
     session.breakLabel = row.breakLabel.trim();

@@ -60,6 +60,8 @@ export type GtpProgrammeActivityPage = {
   actionWorkshopsTitle?: string;
   researchSessionsTitle?: string;
   researchSessionsIntro?: string;
+  researchPresenterColumnLabel?: string;
+  researchPresentationColumnLabel?: string;
   registrationStatus: "open" | "comingSoon" | "closed";
   registrationLabel: string;
   registrationUrl?: string;

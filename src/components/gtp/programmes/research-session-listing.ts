@@ -57,7 +57,18 @@ function researchSessionGroups(session: Session, id: string): ResearchSessionBlo
     // Legacy slots are individual papers; their published venue defines the shared session table.
     if (isLegacyPaper) legacyGroups.set(venueKey, group);
   }
-  return halls;
+  // Table copy is edited once per room; it never changes the source papers or their grouping.
+  const normalizeVenue = (venue: string) => venue.trim().replace(/\s+/g, " ").toLowerCase();
+  const configured = new Set<ResearchSessionBlock["halls"][number]>();
+  const ordered: ResearchSessionBlock["halls"] = [];
+  for (const table of session.researchTables ?? []) {
+    const matches = halls.filter((hall) => normalizeVenue(hall.venue) === normalizeVenue(table.sourceVenue) && !configured.has(hall));
+    for (const hall of matches) {
+      configured.add(hall);
+      ordered.push({...hall, title: table.title?.trim() || hall.title, venue: table.venueLabel?.trim() || hall.venue});
+    }
+  }
+  return [...ordered, ...halls.filter((hall) => !configured.has(hall))];
 }
 
 export function buildResearchSessionListing(input: {day2: Session[]; day3: Session[]}): ResearchSessionBlock[] {

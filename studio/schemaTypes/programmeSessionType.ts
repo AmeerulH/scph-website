@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
 import {programmeHostedByFields} from './programmeHostedByFields'
 
 export const programmeSessionType = defineType({
@@ -122,7 +122,22 @@ export const programmeSessionType = defineType({
       type: 'array',
       of: [{type: 'programmeWorkshop'}],
       description:
-        'Each Action Workshop is edited entirely here: title, Workshop poster, objective, room and people. The parent session/day supplies time/date. Publish Programme to update its card and popup. The activity page owns headings, partners and shared registration only. Research sessions use one slot per hall with Research presentations.',
+        'Each Action Workshop is edited entirely here: title, Workshop poster, objective, room and people. The parent session/day supplies time/date. Publish Programme to update its card and popup. Research: existing one-paper-per-slot rows use Title for the paper and Facilitators/Speakers for presenters, grouped by Room / hall (public). New schedules can use one slot per hall with ordered Research presentations. Drag rows to reorder; add or remove rows here.',
+    }),
+    defineField({
+      name: 'researchTables',
+      title: 'Research table headings and venues',
+      type: 'array',
+      of: [defineArrayMember({type: 'programmeResearchTable'})],
+      hidden: ({parent}) => parent?.type !== 'research',
+      description: 'Optional overrides for the existing research tables in this time block. Add one item per room / hall, then edit its table heading or public venue text. Drag these items to order tables. Unlisted tables keep their existing order and Session 1 / Session 2 headings. Publish Programme to apply changes.',
+      validation: (rule) => rule.custom((items) => {
+        const venues = (items ?? []).flatMap((item) => {
+          if (!item || typeof item !== 'object' || !('sourceVenue' in item) || typeof item.sourceVenue !== 'string') return []
+          return [item.sourceVenue.trim().replace(/\s+/g, ' ').toLowerCase()]
+        }).filter(Boolean)
+        return new Set(venues).size === venues.length || 'Use each room / hall only once'
+      }),
     }),
     defineField({
       name: 'breakLabel',

@@ -290,6 +290,16 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       description: 'Approved introduction to the research schedule. Presenter/title rows are edited under research sessions in GTP 2026 Programme, not Activities here.',
     }),
     defineField({
+      name: 'researchPresenterColumnLabel', title: 'Research presenter column label', type: 'string',
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Label for presenter names on desktop and mobile. Leave empty to use Presenter. Publish this activity page to update both dates.',
+    }),
+    defineField({
+      name: 'researchPresentationColumnLabel', title: 'Research presentation column label', type: 'string',
+      hidden: ({document}) => document?.slug !== 'action-workshops',
+      description: 'Label for paper titles on desktop and mobile. Leave empty to use Presentation title. Publish this activity page to update both dates.',
+    }),
+    defineField({
       name: 'intro',
       title: 'Description',
       type: 'text',
