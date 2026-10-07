@@ -9,6 +9,7 @@ require.extensions['.ts'] = (module, filename) => {
   });
   module._compile(outputText, filename);
 };
+require.extensions['.tsx'] = require.extensions['.ts'];
 
 const {resolveProgrammeHostedBy} = require('../src/components/gtp/programmes/resolve-hosted-by.ts');
 const {buildActionWorkshopListing} = require('../src/components/gtp/programmes/action-workshop-listing.ts');
@@ -18,9 +19,33 @@ const {resolveActivityRegistration, participantEmailsFromRows, safeRegistrationU
 const {prepareResearchSchedule} = require('./lib/gtp-research-schedule.ts');
 const {buildSpecialSessionRegistrationLink} = require('../src/lib/gtp-programme-session-link.ts');
 const {prepareWorkshopMigration, sameWorkshopMigrationChanges} = require('./lib/gtp-workshop-migration.ts');
+const {actionWorkshopPeople, programmePersonRoleLabel} = require('../src/components/gtp/programmes/programme-person-roles.ts');
+const {ProgrammeRoleOptionsInput} = require('../studio/components/programme-role-options-input.tsx');
+const {PatchEvent, set, unset} = require('../studio/node_modules/sanity');
 
 let count = 0;
 function check(name, run) {run(); count++; console.log(`PASS ${name}`);}
+check('Studio saves cleared role checkboxes as an empty selection and preserves other patches', () => {
+  let saved;
+  const input = ProgrammeRoleOptionsInput({onChange: (event) => {saved = event;}, renderDefault: (props) => props});
+  input.onChange(PatchEvent.from(unset()));
+  assert.deepEqual(saved.patches, [set([])]);
+  input.onChange(PatchEvent.from([set(['facilitator']), unset(['unrelated'])]));
+  assert.deepEqual(saved.patches, [set(['facilitator']), unset(['unrelated'])]);
+});
+check('Cleared roles hide generic labels while people, affiliations, photos and written roles survive', () => {
+  const person = {name: 'Person', roles: [], designation: 'Organisation', imageUrl: '/photo.jpg'};
+  const [visible] = actionWorkshopPeople({speakers: [person]});
+  assert.deepEqual(visible, person);
+  assert.equal(programmePersonRoleLabel(visible), '');
+  assert.equal(programmePersonRoleLabel({...visible, sessionRole: 'Speaker'}), '');
+  assert.equal(programmePersonRoleLabel({...visible, sessionRole: 'Moderator'}), 'Moderator');
+  assert.equal(programmePersonRoleLabel(actionWorkshopPeople({speakers: [{name: 'Legacy'}]})[0]), 'Speaker');
+  assert.equal(programmePersonRoleLabel(actionWorkshopPeople({facilitators: [{name: 'Legacy'}]})[0]), 'Facilitator');
+  assert.equal(programmePersonRoleLabel({...person, roles: ['speaker', 'facilitator']}), 'Speaker & Facilitator');
+  assert.equal(programmePersonRoleLabel({...person, roles: ['speaker'], sessionRole: 'Speaker (Virtual)'}), 'Speaker (Virtual)');
+  assert.equal(actionWorkshopPeople({speakers: [person], facilitators: [{name: 'Person', roles: []}]}).length, 1);
+});
 check('Special events opt into shared registration without changing category or other session buttons', () => {
   const session = {type: 'special', subpageButtonLabel: ' Register to join this session '};
   assert.deepEqual(buildSpecialSessionRegistrationLink(session, 'day3'), {
@@ -63,6 +88,21 @@ check('New research rows keep day/hall/presentation order and explicit room', ()
   assert.deepEqual(blocks[0].halls[0].presentations.map((row) => row.id), ['p2', 'p1']);
   assert.deepEqual(blocks[0].halls[1].presentations, []);
   assert.deepEqual(buildResearchSessionListing({day2: [], day3: []}), []);
+});
+check('Existing research speaker rows supply presenters without replacing explicit presentations or inferring chairs', () => {
+  const publishedRows = [{id: 'p', presenterName: 'Confirmed presenter', presentationTitle: 'Confirmed paper'}];
+  const session = {id: 'r', type: 'research', time: '14:00–16:00', workshops: [
+    {id: 'legacy', title: ' Existing paper ', venueLine: 'Hall 1', speakers: [{name: ' Presenter ', roles: []}, {name: 'presenter', imageUrl: '/presenter.jpg'}, {name: 'Co-presenter', imageUrl: '/co-presenter.jpg'}]},
+    {id: 'new', title: 'Hall 2', presentations: publishedRows, speakers: [{name: 'Chair'}]},
+    {id: 'pending', title: 'Pending paper', facilitators: [{name: 'Facilitator'}]},
+  ]};
+  const original = structuredClone(session);
+  const blocks = buildResearchSessionListing({day2: [session], day3: [session]});
+  assert.deepEqual(blocks.map((block) => block.dayId), ['day2', 'day3']);
+  assert.deepEqual(blocks[0].halls[0].presentations, [{id: 'legacy-presentation', presenterName: 'Presenter, Co-presenter', presentationTitle: 'Existing paper', presenters: [{name: 'Presenter', imageUrl: '/presenter.jpg'}, {name: 'Co-presenter', imageUrl: '/co-presenter.jpg'}]}]);
+  assert.equal(blocks[0].halls[1].presentations, publishedRows);
+  assert.deepEqual(blocks[0].halls[2].presentations, []);
+  assert.deepEqual(session, original);
 });
 check('Only canonical workshop slots render, with stable identities and explicit artwork', () => {
   const workshop = {id: 'w1', number: '10', title: 'Renamed workshop', objective: 'Published objective', posterUrl: '/canonical.jpg'};
@@ -107,11 +147,18 @@ check('Only approved email columns grant eligibility, normalized and deduplicate
 });
 check('Research imports preserve existing metadata and refuse non-research targets', () => {
   const source = {sessions: [{key: 'r13', day: 'day2', title: 'Research', time: '14:00–16:00', halls: [{key: 'hall', number: '1', title: 'Hall 1', presentations: [{key: 'p', presenterName: 'Presenter', presentationTitle: 'Paper'}]}]}]};
-  const document = {days: [{_key: 'd2', tabId: 'day2', sessions: [{_key: 'r13', type: 'research', hostedByLogo: {asset: {_ref: 'logo'}}, workshops: [{_key: 'hall', venueLine: 'Existing room', speakers: [{name: 'Chair', image: {asset: {_ref: 'photo'}}}], presentations: []}]}]}]};
+  const document = {days: [{_key: 'd2', tabId: 'day2', sessions: [{
+    _key: 'r13', type: 'research', hostedByLogo: {asset: {_ref: 'logo'}},
+    workshops: [{
+      _key: 'hall', venueLine: 'Existing room', speakers: [{name: 'Chair', image: {asset: {_ref: 'photo'}}}],
+      presentations: [{_key: 'p', presenterImage: {asset: {_ref: 'presenter-photo'}}}],
+    }],
+  }]}]};
   const [operation] = prepareResearchSchedule(source, document);
   assert.equal(operation.existing, true); assert.deepEqual(operation.session.hostedByLogo, {asset: {_ref: 'logo'}});
   assert.equal(operation.session.workshops[0].venueLine, 'Existing room');
   assert.equal(operation.session.workshops[0].speakers[0].image.asset._ref, 'photo');
+  assert.equal(operation.session.workshops[0].presentations[0].presenterImage.asset._ref, 'presenter-photo');
   const invalid = structuredClone(document); invalid.days[0].sessions[0].type = 'concurrent';
   assert.throws(() => prepareResearchSchedule(source, invalid), /non-research/);
   const duplicate = structuredClone(source); duplicate.sessions.push(duplicate.sessions[0]);

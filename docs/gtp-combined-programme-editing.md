@@ -24,6 +24,12 @@ Legacy Action Workshop **Activities** rows remain in the dataset for recovery an
 
 **Special-event registration buttons:** Keep the session type **Special event**. Populate **Subpage button text** to show the same link on its programme card and popup. Day 2 links to the 13 October date section; Day 3 links to 14 October, where the existing shared registration control handles eligibility and pending/closed status. Other days link to the combined page introduction. An empty label hides the button. This requires the updated frontend and Studio/schema to be deployed; publishing a label alone does not open registration. Do not reclassify a Special event as Research sessions to expose this field.
 
+## Hide a person's role label
+
+On a Programme person, untick both **Roles** checkboxes and clear **Role in this session** if it contains a written label. Publish Programme. The person, affiliation and photo remain visible, with no generic Speaker/Facilitator line. Written labels such as Moderator remain visible if supplied.
+
+The updated Studio input saves an explicitly empty Roles selection; the standard input removes the field and cannot distinguish a cleared selection from an older entry. Deploy both the updated Studio and frontend for this behavior. Older entries with no Roles field keep their existing inferred labels. The four people in The Power of Narrative still had Speaker selected in the published document checked on 7 October; clear and publish those selections through the updated Studio to hide their labels.
+
 ## Add co-hosts
 
 1. Find the correct roundtable date. It exists on both 13 and 14 October; the team must confirm which entries receive the hosts.
@@ -38,7 +44,7 @@ Legacy Action Workshop **Activities** rows remain in the dataset for recovery an
 1. Open GTP 2026 Programme and the relevant day: Day 2 = 13 October; Day 3 = 14 October.
 2. Add a session with type **Research sessions**, its approved title/time block and venue if applicable. Different time blocks should use separate sessions.
 3. Under **Workshops / parallel slots**, add one slot per hall. Set its required Number and Title, then **Room / hall (public)**. A slot's explicit room takes precedence over the older Hosted by location; the parent venue is the fallback.
-4. Under each slot's **Research presentations**, add approved presenter names and presentation titles. Drag rows to match the original schedule. Do not use a speaker's designation as their paper title.
+4. Under each slot's **Research presentations**, add approved presenter names and presentation titles. Drag rows to match the original schedule. Do not use a speaker's designation as their paper title. Existing records entered as one paper per parallel slot are also supported: the slot's **Title** is the paper title and its **Facilitators/Speakers** names are the presenters. A nonempty Research presentations list takes precedence; facilitator-only rows are not inferred as presenters. Existing names do not need to be entered again. For these existing entries, upload **Profile photo** on the corresponding Facilitators/Speakers person. New Research presentations rows have their own **Presenter profile photo** field. Publish Programme to show photos beside the presenter names; missing photos use the standard avatar placeholder.
 5. Publish Programme. Check both the main programme's Research filter/link and the combined page's date/hall tables against the source.
 6. Edit/publish the Research Sessions heading/description in the activity-page document separately.
 

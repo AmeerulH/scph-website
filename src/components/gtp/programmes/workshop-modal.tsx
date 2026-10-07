@@ -227,20 +227,21 @@ function FacilitatorsSpeakersBlock({ workshop }: { workshop: Workshop }) {
       <h3 id={headingId} className="mb-4 text-sm font-semibold text-gtp-dark-teal">Facilitators/Speakers</h3>
       {people.length > 0 ? (
         <ul className="grid grid-cols-1 gap-x-8 gap-y-5 @xl:grid-cols-2">
-          {people.map((person, index) => (
-            <li key={`${person.name}-${index}`} className="flex items-start gap-3">
-              <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
-              <div className="min-w-0">
-                <p className="wrap-anywhere text-sm font-semibold leading-snug text-gtp-dark-teal">{person.name}</p>
-                <p className="mt-1 text-xs font-medium leading-relaxed text-gtp-dark-teal/75">
-                  {programmePersonRoleLabel(person)}
-                </p>
-                {person.designation ? (
-                  <p className="mt-1 wrap-anywhere text-xs leading-relaxed text-gray-600">{person.designation}</p>
-                ) : null}
-              </div>
-            </li>
-          ))}
+          {people.map((person, index) => {
+            const role = programmePersonRoleLabel(person);
+            return (
+              <li key={`${person.name}-${index}`} className="flex items-start gap-3">
+                <ProgrammeSpeakerAvatar imageUrl={person.imageUrl} name={person.name} />
+                <div className="min-w-0">
+                  <p className="wrap-anywhere text-sm font-semibold leading-snug text-gtp-dark-teal">{person.name}</p>
+                  {role ? <p className="mt-1 text-xs font-medium leading-relaxed text-gtp-dark-teal/75">{role}</p> : null}
+                  {person.designation ? (
+                    <p className="mt-1 wrap-anywhere text-xs leading-relaxed text-gray-600">{person.designation}</p>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       ) : (
         <div className="text-gray-600">

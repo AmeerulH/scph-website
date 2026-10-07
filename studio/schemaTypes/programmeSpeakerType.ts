@@ -1,4 +1,5 @@
 import {defineField, defineType} from 'sanity'
+import {ProgrammeRoleOptionsInput} from '../components/programme-role-options-input'
 
 export const programmeSpeakerType = defineType({
   name: 'programmeSpeaker',
@@ -27,6 +28,7 @@ export const programmeSpeakerType = defineType({
       title: 'Roles',
       type: 'array',
       of: [{type: 'string'}],
+      components: {input: ProgrammeRoleOptionsInput},
       options: {
         list: [
           {title: 'Speaker', value: 'speaker'},
@@ -34,14 +36,14 @@ export const programmeSpeakerType = defineType({
         ],
       },
       description:
-        'Optional. Tick Speaker, Facilitator, or both. Leave empty to keep the role implied by the list this person is in, or by Role in this session.',
+        'Tick Speaker, Facilitator, or both. Untick all roles to hide the generic role label while keeping the person visible. A written label such as Moderator in Role in this session still appears. Older entries without a Roles selection keep their existing labels.',
     }),
     defineField({
       name: 'sessionRole',
       title: 'Role in this session',
       type: 'string',
       description:
-        'Optional label such as Moderator or Panelist. Leave empty for a generic line. “Speaker” or “Facilitator” here is still read when Roles is empty.',
+        'Optional written label such as Moderator or Panelist. To show no role line, clear this field and untick all Roles, then publish Programme.',
     }),
   ],
   preview: {

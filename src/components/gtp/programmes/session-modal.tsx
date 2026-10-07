@@ -362,7 +362,7 @@ function SpeakerRow({
     >
       <ProgrammeSpeakerAvatar imageUrl={speaker.imageUrl} name={speaker.name} />
       <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p>
+        {role ? <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p> : null}
         <p className="text-sm font-semibold text-gray-800">{speaker.name}</p>
         {speaker.designation && (
           <p className="text-xs text-gtp-teal leading-relaxed">{speaker.designation}</p>

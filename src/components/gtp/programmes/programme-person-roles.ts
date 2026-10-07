@@ -18,7 +18,7 @@ export function actionWorkshopPeople(source: {
 
   const add = (person: Speaker, fromList: ProgrammePersonRole) => {
     const key = person.name.trim().toLowerCase();
-    const incoming = person.roles?.length ? person.roles : [fromList];
+    const incoming = person.roles ?? [fromList];
     const existing = byKey.get(key);
     if (!existing) {
       byKey.set(key, { ...person, roles: uniqueRoles(incoming) });
@@ -45,6 +45,7 @@ export function programmePersonRoleLabel(person: Speaker): string {
   const roles = new Set(person.roles ?? []);
   const free = person.sessionRole?.trim() ?? "";
   const freeNorm = free.toLowerCase();
+  if (person.roles?.length === 0) return GENERIC_ROLE.has(freeNorm) ? "" : free;
   const writtenSpeaker = freeNorm.startsWith("speaker");
   const writtenFacilitator = freeNorm.startsWith("facilitator");
 

@@ -135,7 +135,7 @@ interface SanityWorkshopRow extends SanityHostedByFields {
   _key?: string;
   poster?: {alt?: string | null; asset?: {url?: string | null} | null} | null;
   venueLine?: string | null;
-  presentations?: {_key?: string | null; presenterName?: string | null; presentationTitle?: string | null}[] | null;
+  presentations?: {_key?: string | null; presenterName?: string | null; presentationTitle?: string | null; presenterImageUrl?: string | null}[] | null;
   number?: string;
   title?: string;
   objective?: string;
@@ -273,7 +273,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         poster {alt, asset->{url}},
         objective,
         venueLine,
-        presentations[]{_key, presenterName, presentationTitle},
+        presentations[]{_key, presenterName, presentationTitle, "presenterImageUrl": presenterImage.asset->url},
         speakerCount,
         speakers[]{
           name,
@@ -456,12 +456,13 @@ function legacyTextRoles(sessionRole: string | undefined): StoredPersonRole[] {
 }
 
 /**
- * Roles checkboxes win when set. Otherwise legacy “Speaker” / “Facilitator” text wins,
+ * An explicitly empty Roles selection hides generic labels. Otherwise legacy text wins,
  * so a facilitator typed into the speakers list stays a facilitator. The list they were
  * saved in is the fallback.
  */
 function rolesForRow(row: SanitySpeakerRow, fromList: StoredPersonRole): StoredPersonRole[] {
   const checks = checkboxRoles(row);
+  if (Array.isArray(row.roles) && row.roles.length === 0) return [];
   const text = legacyTextRoles(
     typeof row.sessionRole === "string" ? row.sessionRole : undefined,
   );
@@ -506,7 +507,7 @@ function splitSpeakersAndFacilitators(
 ): { speakers: Speaker[]; facilitators: Speaker[] } {
   const people = mergeProgrammePeople(speakerRows, facilitatorRows);
   return {
-    speakers: people.filter((person) => person.roles?.includes("speaker")),
+    speakers: people.filter((person) => !person.roles?.length || person.roles.includes("speaker")),
     facilitators: people.filter((person) => person.roles?.includes("facilitator")),
   };
 }
@@ -572,7 +573,11 @@ function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
     const presenterName = presentation.presenterName?.trim();
     const presentationTitle = presentation.presentationTitle?.trim();
     if (!presenterName || !presentationTitle) return [];
-    return [{id: presentation._key || `presentation-${index}`, presenterName, presentationTitle}];
+    const imageUrl = presentation.presenterImageUrl?.trim();
+    return [{
+      id: presentation._key || `presentation-${index}`, presenterName, presentationTitle,
+      presenters: [{name: presenterName, ...(imageUrl ? {imageUrl} : {})}],
+    }];
   });
   if (presentations.length) workshop.presentations = presentations;
 

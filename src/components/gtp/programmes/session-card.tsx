@@ -186,6 +186,7 @@ export function SessionCard({
               const isMatched =
                 !!speakerKey && normalizeSpeakerName(sp.name) === speakerKey;
               const isMuted = !!speakerKey && !isMatched;
+              const role = programmePersonRoleLabel(sp);
               return (
                 <button
                   type="button"
@@ -211,9 +212,7 @@ export function SessionCard({
                     sizeClassName="h-8 w-8"
                   />
                   <div className="min-w-0">
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                      {programmePersonRoleLabel(sp)}
-                    </p>
+                    {role ? <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p> : null}
                     <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
                     {sp.designation && (
                       <p className="text-xs text-gray-400">{sp.designation}</p>

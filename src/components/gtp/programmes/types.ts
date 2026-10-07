@@ -32,7 +32,7 @@ export interface Speaker {
   imageUrl?: string;
   /** Shown on cards/modal (e.g. Moderator, Panelist) */
   sessionRole?: string;
-  /** Speaker, facilitator, or both. Combined from Roles, list membership, and legacy role text. */
+  /** Empty means the editor cleared generic role labels; missing retains legacy list inference. */
   roles?: ProgrammePersonRole[];
 }
 
@@ -62,6 +62,7 @@ export interface ResearchPresentation {
   id: string;
   presenterName: string;
   presentationTitle: string;
+  presenters?: {name: string; imageUrl?: string}[];
 }
 
 export interface Workshop {
