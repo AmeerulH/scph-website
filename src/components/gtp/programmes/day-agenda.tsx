@@ -90,24 +90,12 @@ export function DayAgenda({
           if (session.type === "break") {
             return <BreakStrip key={i} session={session} />;
           }
-          if (session.type === "concurrent") {
+          if (session.type === "concurrent" || session.type === "research") {
             return (
               <ConcurrentBlock
                 key={i}
                 session={session}
                 calendarTabId={calendarTabId}
-              />
-            );
-          }
-          if (session.type === "research") {
-            return (
-              <ConcurrentBlock
-                key={i}
-                session={session}
-                calendarTabId={calendarTabId}
-                onClick={() => setSelectedSession(session)}
-                onWorkshopClick={(w) => openWorkshop(w, session)}
-                highlightSpeaker={highlightSpeaker}
               />
             );
           }
