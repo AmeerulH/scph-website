@@ -168,6 +168,87 @@
   }
 }
 
+/* Strong ease-out for UI that responds to a tap. Named apart from Tailwind's `ease-out` on purpose. */
+:root {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Visual Synthesis landing: the header arrives in three beats. CSS only, so content is visible
+   without JS and the animation does not wait for hydration. Delay comes from --synth-delay. */
+@keyframes synth-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+@keyframes synth-arrive-fade {
+  from {
+    opacity: 0;
+  }
+}
+.synth-arrive {
+  animation: synth-arrive 500ms var(--ease-out-strong) var(--synth-delay, 0ms) both;
+}
+/* Reduced motion: keep a short fade, drop the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .synth-arrive {
+    animation-name: synth-arrive-fade !important;
+    animation-duration: 200ms !important;
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Visual Synthesis full-size viewer: fade and settle in, fade out faster. Stays centred. */
+dialog.synthesis-viewer {
+  opacity: 0;
+  transform: scale(0.97);
+  transition:
+    opacity 150ms var(--ease-out-strong),
+    transform 150ms var(--ease-out-strong),
+    overlay 150ms allow-discrete,
+    display 150ms allow-discrete;
+}
+dialog.synthesis-viewer[open] {
+  opacity: 1;
+  transform: none;
+  transition-duration: 200ms;
+}
+dialog.synthesis-viewer::backdrop {
+  background-color: rgb(0 0 0 / 0);
+  transition:
+    background-color 150ms var(--ease-out-strong),
+    overlay 150ms allow-discrete,
+    display 150ms allow-discrete;
+}
+dialog.synthesis-viewer[open]::backdrop {
+  background-color: rgb(0 0 0 / 0.8);
+  transition-duration: 200ms;
+}
+@starting-style {
+  dialog.synthesis-viewer[open] {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  dialog.synthesis-viewer[open]::backdrop {
+    background-color: rgb(0 0 0 / 0);
+  }
+}
+/* Keep the page behind from scrolling while the viewer is open. */
+body:has(dialog.synthesis-viewer[open]) {
+  overflow: hidden;
+}
+/* Reduced motion: keep the gentle fade (150ms), drop the scale. */
+@media (prefers-reduced-motion: reduce) {
+  dialog.synthesis-viewer,
+  dialog.synthesis-viewer[open] {
+    transform: none !important;
+    transition-duration: 150ms !important;
+  }
+  dialog.synthesis-viewer::backdrop {
+    transition-duration: 150ms !important;
+  }
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

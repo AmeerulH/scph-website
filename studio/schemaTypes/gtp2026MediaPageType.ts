@@ -127,6 +127,75 @@ const videoItem = defineArrayMember({
   preview: {select: {title: 'title', subtitle: 'topic', media: 'thumbnail'}},
 })
 
+const synthesisMap = defineArrayMember({
+  name: 'gtpMediaSynthesisMap',
+  title: 'Synthesis map',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'day',
+      title: 'Day',
+      type: 'string',
+      options: {
+        layout: 'radio',
+        list: [
+          {title: 'Day 1 (12 Oct)', value: '1'},
+          {title: 'Day 2 (13 Oct)', value: '2'},
+          {title: 'Day 3 (14 Oct)', value: '3'},
+          {title: 'Day 4 (15 Oct)', value: '4'},
+          {title: 'Final synthesis', value: 'final'},
+        ],
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'title',
+      title: 'Plenary title',
+      type: 'string',
+      description: 'Use the plenary name as it appears on the map.',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'timeLabel',
+      title: 'Time (optional)',
+      type: 'string',
+      description: 'e.g. 9:00 to 10:30.',
+    }),
+    defineField({
+      name: 'image',
+      title: 'Map image',
+      type: 'image',
+      description:
+        'PNG, landscape 16:9, at least 2400 px wide so the small text stays readable. Not a PDF. The image is always shown whole and never cropped.',
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          description: 'Short, e.g. "Visual map of the plenary The Power of Nature".',
+          validation: (rule) => rule.required(),
+        }),
+      ],
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'summary',
+      title: 'Summary',
+      type: 'text',
+      rows: 3,
+      description:
+        '1 to 3 sentences on what this plenary map shows or concluded. Shown under the map as the text version of its content.',
+      validation: (rule) => rule.required(),
+    }),
+  ],
+  preview: {
+    select: {title: 'title', day: 'day', media: 'image'},
+    prepare({title, day, media}) {
+      return {title, subtitle: day === 'final' ? 'Final synthesis' : `Day ${day}`, media}
+    },
+  },
+})
+
 /** GTP 2026 /media: hero, photo albums, podcast and video sections. */
 export const gtp2026MediaPageType = defineType({
   name: 'gtp2026MediaPage',
@@ -137,6 +206,7 @@ export const gtp2026MediaPageType = defineType({
     {name: 'photos', title: 'Photo gallery'},
     {name: 'podcasts', title: 'Podcasts'},
     {name: 'videos', title: 'Videos'},
+    {name: 'synthesis', title: 'Visual Synthesis'},
     {name: 'legacy', title: 'Legacy'},
   ],
   fields: [
@@ -217,6 +287,95 @@ export const gtp2026MediaPageType = defineType({
       of: [videoItem],
       description: 'The first video is the featured player.',
       group: 'videos',
+    }),
+
+    defineField({
+      name: 'synthesisTitle',
+      title: 'Page title',
+      type: 'string',
+      initialValue: 'Visual Synthesis',
+      group: 'synthesis',
+    }),
+    defineField({
+      name: 'synthesisIntro',
+      title: 'Intro',
+      type: 'text',
+      rows: 5,
+      description:
+        'Leave empty to use the standard wording, which switches to past tense automatically after the conference (15 Oct 2026). Filling this in overrides it and stops the automatic switch. Separate paragraphs with a blank line.',
+      group: 'synthesis',
+    }),
+    defineField({
+      name: 'synthesisLiveNote',
+      title: 'Live note',
+      type: 'text',
+      rows: 2,
+      description:
+        'Small line under the intro, e.g. that new syntheses are posted through the days. Leave empty for the standard note, which disappears after the conference.',
+      group: 'synthesis',
+    }),
+    defineField({
+      name: 'synthesisCreditLine',
+      title: 'Credit line',
+      type: 'text',
+      rows: 3,
+      description:
+        'Required credit for Bigger Picture and the contributor; it always appears under the intro. The contributor name and "Bigger Picture" inside it are formatted and linked automatically.',
+      group: 'synthesis',
+    }),
+    defineField({
+      name: 'synthesisContributor',
+      title: 'Contributor',
+      type: 'object',
+      group: 'synthesis',
+      fields: [
+        defineField({name: 'name', title: 'Name', type: 'string'}),
+        defineField({name: 'role', title: 'Role line', type: 'string'}),
+        defineField({
+          name: 'headshot',
+          title: 'Headshot',
+          type: 'image',
+          description: 'Shown whole, never cropped. Portrait or square, at least 800 px wide.',
+          fields: [altField],
+        }),
+        defineField({
+          name: 'bio',
+          title: 'Bio',
+          type: 'text',
+          rows: 8,
+          description: 'Separate paragraphs with a blank line.',
+        }),
+        defineField({
+          name: 'links',
+          title: 'Links',
+          type: 'array',
+          of: [
+            defineArrayMember({
+              type: 'object',
+              name: 'gtpMediaSynthesisLink',
+              fields: [
+                defineField({name: 'label', title: 'Label', type: 'string', validation: (rule) => rule.required()}),
+                defineField({
+                  name: 'url',
+                  title: 'URL',
+                  type: 'url',
+                  validation: (rule) => rule.required().uri({scheme: ['https']}),
+                }),
+              ],
+              preview: {select: {title: 'label', subtitle: 'url'}},
+            }),
+          ],
+        }),
+      ],
+    }),
+    defineField({
+      name: 'synthesisMaps',
+      title: 'Maps',
+      type: 'array',
+      of: [synthesisMap],
+      description:
+        'Add each plenary map under its day, with no limit. Within a day they appear in this order. Use "Final synthesis" for the overall map.',
+      group: 'synthesis',
     }),
 
     defineField({

@@ -85,13 +85,13 @@ const mediaPageQuery = `*[_type == "gtp2026MediaPage"][0]{
   }
 }`;
 
-const s = (v: Str, fallback: string) => v?.trim() || fallback;
-const opt = (v: Str) => v?.trim() || undefined;
-const paragraphs = (v: Str, fallback: string[]) => {
+export const s = (v: Str, fallback: string) => v?.trim() || fallback;
+export const opt = (v: Str) => v?.trim() || undefined;
+export const paragraphs = (v: Str, fallback: string[]) => {
   const parts = v?.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   return parts?.length ? parts : fallback;
 };
-const httpsUrl = (v: Str) => {
+export const httpsUrl = (v: Str) => {
   const t = v?.trim();
   return t && /^https:\/\//i.test(t) ? t : undefined;
 };

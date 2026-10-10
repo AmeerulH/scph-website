@@ -5,6 +5,11 @@
  * podcast/video entries and any edited copy) are never replaced. Images are not seeded;
  * the site shows GTP 2025 placeholder photos until albums are filled in Studio.
  *
+ * Also seeds the Visual Synthesis contributor copy (title, credit line, name, role, bio, links) and an
+ * empty `synthesisMaps` list. It deliberately does NOT seed the intro or live note, so the page keeps
+ * using its date-based default wording (past tense after the conference) until an editor overrides it.
+ * No maps or headshot are ever seeded.
+ *
  * Prerequisites: SANITY_API_TOKEN in .env.local (Editor+), schema deployed
  * (`cd studio && npx sanity schema deploy`).
  * Refuses to run against `production` unless ALLOW_PRODUCTION=1.
@@ -19,6 +24,7 @@ import * as dotenv from "dotenv";
 import * as path from "path";
 
 import { GTP_MEDIA_DEFAULTS } from "../src/data/gtp-media-page-defaults";
+import { GTP_VISUAL_SYNTHESIS_DEFAULTS } from "../src/data/gtp-visual-synthesis-defaults";
 
 dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
@@ -44,6 +50,19 @@ function buildFields() {
     videosTitle: d.videos.title,
     videosIntro: d.videos.intro.join("\n\n"),
     ...(d.videos.channelUrl ? { youtubeChannelUrl: d.videos.channelUrl } : {}),
+    synthesisTitle: GTP_VISUAL_SYNTHESIS_DEFAULTS.title,
+    synthesisCreditLine: GTP_VISUAL_SYNTHESIS_DEFAULTS.creditLine,
+    synthesisContributor: {
+      name: GTP_VISUAL_SYNTHESIS_DEFAULTS.contributor.name,
+      role: GTP_VISUAL_SYNTHESIS_DEFAULTS.contributor.role,
+      bio: GTP_VISUAL_SYNTHESIS_DEFAULTS.contributor.bio.join("\n\n"),
+      links: GTP_VISUAL_SYNTHESIS_DEFAULTS.contributor.links.map((l) => ({
+        _type: "gtpMediaSynthesisLink",
+        label: l.label,
+        url: l.url,
+      })),
+    },
+    synthesisMaps: [],
   };
 }
 

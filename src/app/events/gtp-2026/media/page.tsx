@@ -5,6 +5,7 @@ import { PhotoAlbums } from "@/components/gtp/media/photo-albums";
 import { PodcastSection } from "@/components/gtp/media/podcast-section";
 import { VideoSection } from "@/components/gtp/media/video-section";
 import { getGtpMediaPage } from "@/sanity/gtp-media-page";
+import { getGtpVisualSynthesis, synthesisHeroMeta } from "@/sanity/gtp-visual-synthesis";
 
 const description =
   "Photos, podcasts and videos from the Global Tipping Points Conference 2026, hosted by Sunway Centre for Planetary Health in Kuala Lumpur.";
@@ -28,12 +29,13 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function GtpMediaPage() {
-  const media = await getGtpMediaPage();
+  const [media, synthesis] = await Promise.all([getGtpMediaPage(), getGtpVisualSynthesis()]);
 
   return (
     <div className="bg-gtp-dark-teal-dark">
       <MediaHero
         hero={media.hero}
+        synthesisMeta={synthesisHeroMeta(synthesis.maps)}
         counts={{
           albums: media.photos.albums.length,
           episodes: media.podcasts.episodes.length,

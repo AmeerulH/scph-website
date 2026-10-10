@@ -69,7 +69,7 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-about-gallery-images` | `scripts/seed-gtp-about-gallery-images.ts` | Alias — patches all About image bands (same as `seed-gtp-about-page-images`) |
 | `seed-gtp-about-page-images` | `scripts/seed-gtp-about-page-images.ts` | Patches `gtp2026AboutPage` gallery + why-matters + quote photos (published + draft); removes legacy `*Src` fields |
 | `seed-gtp-about-accommodation-activities` | `scripts/seed-gtp-about-accommodation-activities.ts` | Patches `gtp2026AboutPage.accommodationActivitiesBand` (carousel hotels/activities; published + draft) |
-| `seed-gtp-media-page` | `scripts/seed-gtp-media-page.ts` | `gtp2026MediaPage` copy + empty album shells (`createIfNotExists` + `setIfMissing`; no images; refuses production) |
+| `seed-gtp-media-page` | `scripts/seed-gtp-media-page.ts` | `gtp2026MediaPage` copy + empty album shells, plus Visual Synthesis contributor copy and an empty `synthesisMaps` list (`createIfNotExists` + `setIfMissing`; no images or maps; intro/live note intentionally not seeded; refuses production) |
 | `seed-gtp-book-launch-page` | `scripts/seed-gtp-book-launch-page.ts` | `gtp2026BookLaunchPage` singleton: placeholder copy only; no book facts or images (`setIfMissing`; refuses production) |
 | `seed-gtp-sustainability-page` | `scripts/seed-gtp-sustainability-page.ts` | `gtp2026SustainabilityPage` singleton: intro, 5 commitments, Home teaser copy (`setIfMissing`; refuses production) |
 | `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage` (create-if-missing only), `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
@@ -111,6 +111,12 @@ Prefer **colocating** feature UI under `src/components/` with names that match d
 - **Reuse** — Extend existing merge helpers, section renderers, and UI primitives (`src/components/ui/`) before adding parallel systems.
 - **Types** — Keep TypeScript strict and honest at Sanity boundaries (null/undefined from GROQ).
 - **Comments** — Short and only where behaviour is non-obvious; do not restate the code.
+
+### 6.1 UI craft: Impeccable and Emil Kowalski
+
+Impeccable leads every UI task (brand, `PRODUCT.md`, surface brief, craft floor). Emil Kowalski's skills, installed globally from `emilkowalski/skill`, refine motion and feel after that world is set. The handoff, the skill table, and the rule against pinning `/animate` live in [`.cursor/rules/impeccable-emil.mdc`](.cursor/rules/impeccable-emil.mdc). Human setup notes are in [`README.md`](README.md) under **UI craft skills**.
+
+Do not open a site-wide animation pass unless asked. When asked to improve animations or feel, plan first with `improve-animations` or `find-animation-opportunities`, implement only what is approved, and keep the performance bar in §7.
 
 ---
 

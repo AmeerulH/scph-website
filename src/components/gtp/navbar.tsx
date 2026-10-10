@@ -78,6 +78,7 @@ const navItems: NavItem[] = [
       { label: "Photo Gallery", href: "/events/gtp-2026/media#photos" },
       { label: "Podcasts", href: "/events/gtp-2026/media#podcasts" },
       { label: "Videos", href: "/events/gtp-2026/media#videos" },
+      { label: "Visual Synthesis", href: "/events/gtp-2026/media/visual-synthesis" },
     ],
   },
   {
