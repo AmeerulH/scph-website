@@ -15,9 +15,20 @@ export function SpecialSessionRegistrationLink({ session, calendarTabId }: {
   return (
     <div className="mt-6">
       <Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild>
-        <Link href={link.href} onClick={(event) => event.stopPropagation()}>
-          {link.label}
-        </Link>
+        {link.external ? (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {link.label}
+          </a>
+        ) : (
+          <Link href={link.href} onClick={(event) => event.stopPropagation()}>
+            {link.label}
+          </Link>
+        )}
       </Button>
     </div>
   );

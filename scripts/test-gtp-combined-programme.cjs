@@ -49,7 +49,7 @@ check('Cleared roles hide generic labels while people, affiliations, photos and 
 check('Special events opt into shared registration without changing category or other session buttons', () => {
   const session = {type: 'special', subpageButtonLabel: ' Register to join this session '};
   assert.deepEqual(buildSpecialSessionRegistrationLink(session, 'day3'), {
-    label: 'Register to join this session', href: '/events/gtp-2026/programmes/action-workshops#day-14',
+    label: 'Register to join this session', href: '/events/gtp-2026/programmes/action-workshops#day-14', external: false,
   });
   assert.equal(buildSpecialSessionRegistrationLink(session, 'day2').href, '/events/gtp-2026/programmes/action-workshops#day-13');
   assert.equal(buildSpecialSessionRegistrationLink(session, 'day1').href, '/events/gtp-2026/programmes/action-workshops#action-workshops');
@@ -59,6 +59,14 @@ check('Special events opt into shared registration without changing category or 
     assert.equal(buildSpecialSessionRegistrationLink({...session, type}, 'day3'), null);
   }
   assert.equal(session.type, 'special');
+  const form = 'https://forms.gle/y8EMUbzBb9dLGx939';
+  assert.deepEqual(buildSpecialSessionRegistrationLink({
+    type: 'special', subpageButtonLabel: 'Register Here', subpageButtonUrl: ` ${form} `,
+  }, 'day3'), {label: 'Register Here', href: form, external: true});
+  assert.equal(buildSpecialSessionRegistrationLink({
+    type: 'special', subpageButtonLabel: 'Register Here', subpageButtonUrl: 'http://forms.gle/nope',
+  }, 'day3').href, '/events/gtp-2026/programmes/action-workshops#day-14');
+  assert.equal(buildSpecialSessionRegistrationLink({type: 'special', subpageButtonUrl: form}, 'day3'), null);
 });
 const base = {sectionTitle: 'Hosted By', name: 'Default host', subtitle: 'Default room', showSubtitle: true, logoUrl: '/default.svg', logoAlt: 'Default logo'};
 

@@ -142,6 +142,7 @@ async function mapSession(client: SanityClient, s: Session) {
   if (s.durationMins != null) row.durationMins = s.durationMins
   if (s.objective?.trim()) row.objective = s.objective.trim()
   if (s.subpageButtonLabel?.trim()) row.subpageButtonLabel = s.subpageButtonLabel.trim()
+  if (s.subpageButtonUrl?.trim()) row.subpageButtonUrl = s.subpageButtonUrl.trim()
   if (s.theme) row.theme = s.theme
   if (s.speakerCount != null) row.speakerCount = s.speakerCount
   if (s.speakers?.length) row.speakers = s.speakers.map(mapSpeaker)

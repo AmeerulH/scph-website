@@ -68,9 +68,18 @@ export const programmeSessionType = defineType({
       title: 'Subpage button text',
       type: 'string',
       description:
-        'Text on this session’s button linking to the combined Action Workshops and Research Sessions page. For Special events, enter text to show a button on the card and popup; leave empty to hide it. The link uses the matching date’s shared registration section. Action Workshops and Research Sessions keep their default wording when empty. This changes the wording only, not registration availability. Publish Programme to update the website.',
+        'Text on this session’s button. For Special events, enter text to show a button on the card and popup; leave empty to hide it. Without a Registration form URL, the button opens the matching date’s shared Action Workshops registration section. Action Workshops and Research Sessions keep their default wording when empty. This changes the wording only, not registration availability. Publish Programme to update the website.',
       hidden: ({parent}) =>
         parent?.type !== 'concurrent' && parent?.type !== 'research' && parent?.type !== 'special',
+    }),
+    defineField({
+      name: 'subpageButtonUrl',
+      title: 'Registration form URL',
+      type: 'url',
+      description:
+        'Special events only. Paste an HTTPS registration form to open it in a new tab instead of the shared Action Workshops page. Use this when the event is open to everyone and has its own form. Leave empty to keep the shared registration link. Publish Programme to update the website.',
+      hidden: ({parent}) => parent?.type !== 'special',
+      validation: (rule) => rule.uri({scheme: ['https']}),
     }),
     defineField({
       name: 'theme',

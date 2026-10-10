@@ -1,15 +1,29 @@
+import { safeRegistrationUrl } from "./gtp-activity-registration";
+
 /** Programme day tabs that deep-link via `?tab=` on /events/gtp-2026/programmes. */
 export type ProgrammeDayTab = "day1" | "day2" | "day3" | "day4";
 
-/** Special-event buttons opt into the existing shared registration page. */
+export type SpecialSessionRegistrationLink = {
+  label: string;
+  href: string;
+  /** True when the button opens this session’s own HTTPS form. */
+  external: boolean;
+};
+
+/**
+ * Special-event buttons opt into the shared registration page.
+ * A session form URL sends that button to the form instead.
+ */
 export function buildSpecialSessionRegistrationLink(
-  session: { type: string; subpageButtonLabel?: string },
+  session: { type: string; subpageButtonLabel?: string; subpageButtonUrl?: string },
   tab: ProgrammeDayTab,
-): { label: string; href: string } | null {
+): SpecialSessionRegistrationLink | null {
   const label = session.subpageButtonLabel?.trim();
   if (session.type !== "special" || !label) return null;
+  const formUrl = safeRegistrationUrl(session.subpageButtonUrl);
+  if (formUrl) return { label, href: formUrl, external: true };
   const anchor = tab === "day2" ? "day-13" : tab === "day3" ? "day-14" : "action-workshops";
-  return { label, href: `/events/gtp-2026/programmes/action-workshops#${anchor}` };
+  return { label, href: `/events/gtp-2026/programmes/action-workshops#${anchor}`, external: false };
 }
 
 const DAY_TAB_RE = /Day\s*([1-4])/i;

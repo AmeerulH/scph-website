@@ -161,6 +161,7 @@ interface SanitySessionRow extends SanityHostedByFields {
   title?: string;
   objective?: string;
   subpageButtonLabel?: string | null;
+  subpageButtonUrl?: string | null;
   theme?: string;
   speakerCount?: number;
   speakers?: SanitySpeakerRow[];
@@ -301,6 +302,7 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       venueLine,
       formatLabel,
       subpageButtonLabel,
+      subpageButtonUrl,
       carouselBackgroundImage {
         alt,
         asset->{ url }
@@ -693,6 +695,10 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
 
   if (typeof row.subpageButtonLabel === "string" && row.subpageButtonLabel.trim()) {
     session.subpageButtonLabel = row.subpageButtonLabel.trim();
+  }
+
+  if (typeof row.subpageButtonUrl === "string" && row.subpageButtonUrl.trim()) {
+    session.subpageButtonUrl = row.subpageButtonUrl.trim();
   }
 
   const carouselBg = row.carouselBackgroundImage;

@@ -110,8 +110,10 @@ export interface Session {
   workshops?: Workshop[];
   /** Optional research table labels/order, matched to the papers' existing room. */
   researchTables?: {sourceVenue: string; title?: string; venueLabel?: string}[];
-  /** CMS: workshop/research overview text, or opt-in Special-event shared registration link. */
+  /** CMS: workshop/research overview text, or opt-in Special-event registration button. */
   subpageButtonLabel?: string;
+  /** CMS: Special-event HTTPS form. When set, the button opens this instead of Action Workshops. */
+  subpageButtonUrl?: string;
   breakLabel?: string;
   breakIcon?: "coffee" | "lunch";
   /** Temp: concurrent workshop notice for team review (Day 2 & 3 coffee breaks) */
