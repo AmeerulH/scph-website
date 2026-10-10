@@ -1,4 +1,5 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
+import {ActionWorkshopIndexInput} from '../components/action-workshop-index-input'
 
 const activityEntry = defineArrayMember({
   name: 'gtpProgrammeActivityEntry',
@@ -388,9 +389,11 @@ export const gtp2026ProgrammeActivityPageType = defineType({
       title: 'Activities',
       type: 'array',
       of: [activityEntry],
+      components: {input: ActionWorkshopIndexInput},
       description:
-        'Artificial Intelligence Sessions: one row per session, with its own date, poster and registration link. Legacy Action Workshop rows are retained for recovery only. Edit active workshop titles, posters, objectives, rooms and people in GTP 2026 Programme → day → Action Workshops → Workshops / parallel slots.',
-      hidden: ({document}) => document?.slug !== 'ai-thinkers-networking-breakfast',
+        'Action Workshops: this list shows every current Programme workshop, including those without posters. Select a workshop title to edit it and publish Programme. Artificial Intelligence Sessions: edit each activity here and publish this page.',
+      readOnly: ({document}) => document?.slug === 'action-workshops',
+      hidden: ({document}) => document?.slug !== 'ai-thinkers-networking-breakfast' && document?.slug !== 'action-workshops',
     }),
     defineField({
       name: 'knowledgePartnerDays',
