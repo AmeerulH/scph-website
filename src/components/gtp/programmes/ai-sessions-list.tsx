@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { ArrowUpRight, Clock3, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ProgrammePosterImage } from "./programme-poster-image";
 import type {
   GtpProgrammeActivityEntry,
   GtpProgrammeActivityPage,
@@ -145,7 +145,7 @@ function DateOverview({ groups }: { groups: DateGroup[] }) {
   );
 }
 
-function SessionPoster({ poster }: { poster: { url: string; alt: string } | null }) {
+function SessionPoster({ poster }: { poster: { url: string; alt: string; width?: number; height?: number } | null }) {
   if (!poster) {
     return (
       <div className="flex aspect-3/4 w-full max-w-40 items-end border border-dashed border-gtp-teal/35 bg-white p-3 sm:max-w-48">
@@ -156,16 +156,15 @@ function SessionPoster({ poster }: { poster: { url: string; alt: string } | null
     );
   }
   return (
-    <div className="w-full max-w-40 bg-gtp-dark-teal p-2 sm:max-w-48">
-      <div className="relative aspect-3/4 bg-gtp-dark-teal">
-        <Image
-          src={poster.url}
-          alt={poster.alt}
-          fill
-          className="object-contain"
-          sizes="192px"
-        />
-      </div>
+    <div className="w-full max-w-72 sm:max-w-none">
+      <ProgrammePosterImage
+        src={poster.url}
+        alt={poster.alt}
+        width={poster.width}
+        height={poster.height}
+        className="lg:max-h-[calc(100dvh-9rem)] lg:max-w-[calc((100dvh-9rem)*var(--poster-ratio))]"
+        sizes="(max-width: 640px) min(80vw, 18rem), (max-width: 1024px) 192px, 288px"
+      />
     </div>
   );
 }
@@ -218,7 +217,7 @@ export function AiSessionsList({ page }: { page: GtpProgrammeActivityPage }) {
   const sessions = sortSessions(page.entries.filter((entry) => entry.title.trim()));
   const groups = groupByDate(sessions);
   const pageLevelPoster = page.showcasePosterUrl
-    ? { url: page.showcasePosterUrl, alt: page.showcasePosterAlt || `${page.pageTitle} poster` }
+    ? { url: page.showcasePosterUrl, alt: page.showcasePosterAlt || `${page.pageTitle} poster`, width: page.showcasePosterWidth, height: page.showcasePosterHeight }
     : null;
   // Legacy pages have one page-level link; once any session has its own, links are per session.
   const usePageLevelLink = !sessions.some((entry) => entry.registrationUrl);
@@ -253,7 +252,7 @@ export function AiSessionsList({ page }: { page: GtpProgrammeActivityPage }) {
                 <ol className="space-y-10 [&>li+li]:border-t [&>li+li]:border-gtp-dark-teal/10 [&>li+li]:pt-10">
                   {group.sessions.map(({ entry, id, isFirst }) => {
                     const poster = entry.posterUrl
-                      ? { url: entry.posterUrl, alt: entry.posterAlt || `${entry.title} poster` }
+                      ? { url: entry.posterUrl, alt: entry.posterAlt || `${entry.title} poster`, width: entry.posterWidth, height: entry.posterHeight }
                       : isFirst
                         ? pageLevelPoster
                         : null;
@@ -264,9 +263,9 @@ export function AiSessionsList({ page }: { page: GtpProgrammeActivityPage }) {
                         key={id}
                         id={id}
                         aria-labelledby={`${id}-title`}
-                        className="grid scroll-mt-28 gap-6 sm:grid-cols-[minmax(0,1fr)_12rem] sm:gap-10"
+                        className="grid scroll-mt-28 gap-6 sm:grid-cols-[minmax(0,1fr)_12rem] sm:gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-10"
                       >
-                        <div className="order-first sm:order-last">
+                        <div className="order-first sm:order-last lg:sticky lg:top-28 lg:self-start">
                           <SessionPoster poster={poster} />
                         </div>
                         <div className="min-w-0 max-w-[68ch]">

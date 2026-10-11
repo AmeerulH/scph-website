@@ -59,12 +59,12 @@ export function ActionWorkshopRow({
           return <button key={workshop.id}
             ref={highlighted ? selection?.highlightedRef : undefined} type="button" onClick={() => selection?.onSelect(workshop)}
             aria-label={`View details: ${workshop.title}`} aria-current={highlighted ? "true" : undefined}
-            className={cn("group relative flex h-[318px] w-52 shrink-0 flex-col overflow-hidden rounded-xl bg-gtp-dark-teal text-left text-white transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-orange focus-visible:ring-offset-2 sm:h-[360px] sm:w-60", highlighted && "ring-3 ring-gtp-orange ring-offset-2")}>
+            className={cn("group relative flex h-[318px] w-52 shrink-0 flex-col overflow-hidden rounded-xl text-left text-gtp-dark-teal transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-orange focus-visible:ring-offset-2 sm:h-[360px] sm:w-60", highlighted && "ring-3 ring-gtp-orange ring-offset-2")}>
             <div className="relative min-h-0 flex-1">
               {workshop.posterUrl ? <Image src={workshop.posterUrl} alt={workshop.posterAlt || `${workshop.title} poster`} fill sizes="(max-width: 640px) 208px, 240px" fetchPriority="low" className="object-contain" />
                 : <div className="flex h-full items-center p-5"><span className="line-clamp-9 font-heading text-lg font-bold leading-snug">{workshop.title}</span></div>}
             </div>
-            <span className="flex h-11 shrink-0 items-center justify-between gap-3 px-4 text-xs font-semibold transition-colors group-hover:bg-gtp-orange-dark">View details<ArrowRight className="size-4" aria-hidden /></span>
+            <span className="flex h-11 shrink-0 items-center justify-between gap-3 bg-gtp-dark-teal px-4 text-xs font-semibold text-white transition-colors group-hover:bg-gtp-orange-dark">View details<ArrowRight className="size-4" aria-hidden /></span>
           </button>;
         })}
       </div>

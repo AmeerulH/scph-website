@@ -28,20 +28,21 @@ export function CombinedProgrammePage({page, workshops, research, hostedBy, regi
       </div>
       <ActionWorkshopsCarousel items={workshops} hostedBy={hostedBy} registration={registration} verificationEndpoint={verificationEndpoint}>
         <div className="divide-y divide-gtp-dark-teal/15">
-          {days.map((day) => <section key={day.id} id={day.id} aria-labelledby={`${day.id}-heading`} className="scroll-mt-24 py-9 sm:py-12">
-            <div className="mb-8 flex flex-col items-start justify-between gap-5 sm:flex-row">
+          {days.map((day) => <section key={day.id} id={day.id} aria-labelledby={`${day.id}-heading`} className="scroll-mt-28 py-9 sm:py-12">
+            <div className="sticky top-20 z-20 mb-5 flex items-start justify-between gap-5 border-b border-gtp-dark-teal/15 bg-gtp-paper py-2 sm:mb-8">
               <div>
                 <h2 id={`${day.id}-heading`} className="font-heading text-2xl font-bold text-gtp-dark-teal sm:text-3xl">{day.dateLabel}</h2>
-                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-gtp-dark-teal/80 sm:text-sm">
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-gtp-dark-teal/80 sm:text-sm">
                   {day.weekday ? <span>{day.weekday}</span> : null}
                   {day.workshopTimes.length ? <span className="inline-flex items-center gap-1.5"><Clock3 className="size-3.5" aria-hidden />Workshops {day.workshopTimes.join(" · ")}</span> : null}
-                  {day.id === "day-13" || day.id === "day-14" ? <span className="rounded-full border border-gtp-dark-teal/15 px-2 py-1 text-[11px] font-semibold text-gtp-dark-teal">Running in parallel</span> : null}
+                  {day.id === "day-13" || day.id === "day-14" ? <span className="hidden rounded-full border border-gtp-dark-teal/15 px-2 py-1 text-[11px] font-semibold text-gtp-dark-teal sm:inline-block">Running in parallel</span> : null}
                 </div>
               </div>
-              <ActionWorkshopRegistration dateLabel={day.dateLabel} registration={registration} verificationEndpoint={verificationEndpoint} />
+              <div className="hidden sm:block"><ActionWorkshopRegistration dateLabel={day.dateLabel} registration={registration} verificationEndpoint={verificationEndpoint} /></div>
             </div>
+            <div className="mb-8 sm:hidden"><ActionWorkshopRegistration dateLabel={day.dateLabel} registration={registration} verificationEndpoint={verificationEndpoint} /></div>
             <ActionWorkshopRow id={day.id} title={page.actionWorkshopsTitle || "Action Workshops"} description={page.intro} workshops={day.workshops} partnerDays={day.partnerDays} />
-            <section id={`${day.id}-research`} aria-labelledby={`${day.id}-research-heading`} className="mt-9 scroll-mt-24 sm:mt-11">
+            <section id={`${day.id}-research`} aria-labelledby={`${day.id}-research-heading`} className="mt-9 scroll-mt-60 sm:mt-11 sm:scroll-mt-64">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h3 id={`${day.id}-research-heading`} className="font-heading text-xl font-bold text-gtp-dark-teal sm:text-2xl">{page.researchSessionsTitle || "Research Sessions"}</h3>
                 {!day.research.some((block) => block.halls.some((hall) => hall.presentations.length)) ? <span className="rounded-full bg-gtp-dark-teal/5 px-3 py-1 text-xs font-medium text-gtp-dark-teal">Schedule coming soon</span> : null}

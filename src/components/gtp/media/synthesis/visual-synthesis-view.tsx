@@ -11,6 +11,7 @@ import {
 import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { cn } from "@/lib/utils";
 import { SynthesisMaps } from "./synthesis-maps";
+import styles from "./visual-synthesis-view.module.css";
 
 type Props = {
   data: GtpVisualSynthesisResolved;
@@ -71,7 +72,7 @@ function DayNav({
   return (
     <nav
       aria-label="Days"
-      className="flex flex-wrap gap-2 lg:flex-col lg:gap-0 lg:border-t lg:border-white/15"
+      className="flex flex-wrap gap-2 lg:sticky lg:top-20 lg:max-h-[calc(100dvh-6rem)] lg:self-start lg:flex-col lg:flex-nowrap lg:gap-0 lg:overflow-y-auto lg:overscroll-contain lg:border-t lg:border-white/15"
     >
       {GTP_SYNTHESIS_DAYS.map((day) => {
         const selected = day.id === activeDayId;
@@ -82,13 +83,13 @@ function DayNav({
             href={`${basePath}?day=${day.id}#maps`}
             aria-current={selected ? "page" : undefined}
             className={cn(
-              "touch-manipulation rounded-full border px-5 py-2.5 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out-strong)] active:scale-[0.97] lg:rounded-none lg:active:scale-100 lg:border-0 lg:border-b lg:border-white/15 lg:px-0 lg:py-4",
+              "touch-manipulation rounded-full border px-5 py-2.5 transition-[color,background-color,transform] duration-150 ease-[var(--ease-out-strong)] active:scale-[0.97] lg:shrink-0 lg:rounded-none lg:active:scale-100 lg:border-0 lg:border-b lg:border-white/15 lg:px-0 lg:py-4",
               focusRing,
               selected
                 ? "border-white bg-white text-gtp-dark-teal-dark lg:bg-transparent lg:text-white"
                 : published
                   ? "border-white/25 text-white/75 hover:text-white"
-                  : "border-white/15 text-white/45 hover:text-white/80",
+                  : "border-white/15 text-white/75 hover:text-white",
             )}
           >
             <span className="flex items-baseline gap-3">
@@ -101,7 +102,7 @@ function DayNav({
               />
               <span className="font-heading text-sm font-semibold whitespace-nowrap lg:text-lg">{day.label}</span>
             </span>
-            <span className="hidden pl-5 text-sm text-white/55 lg:block">{day.dateLabel}</span>
+            <span className="hidden pl-5 text-sm text-white/75 lg:block">{day.dateLabel}</span>
             {!published ? <span className="sr-only"> (no maps published yet)</span> : null}
           </Link>
         );
@@ -120,7 +121,7 @@ function EmptyDay({ day, afterConference }: { day: GtpSynthesisDay; afterConfere
   return (
     <div role="status" className="border border-dashed border-white/25 px-6 py-14 sm:px-10 sm:py-20">
       <p className="font-heading text-2xl font-semibold text-balance text-white sm:text-3xl">{message}</p>
-      {!afterConference && !isFinal ? <p className="mt-3 text-base text-white/60">{day.dateLabel}</p> : null}
+      {!afterConference && !isFinal ? <p className="mt-3 text-base text-white/75">{day.dateLabel}</p> : null}
     </div>
   );
 }
@@ -132,13 +133,13 @@ export function VisualSynthesisView({ data, activeDayId, basePath }: Props) {
   const { contributor, credit } = data;
 
   return (
-    <div className="bg-gtp-dark-teal-dark selection:bg-gtp-orange/45 selection:text-white">
+    <div className={cn(styles.page, "selection:bg-gtp-orange/45 selection:text-white")}>
       <header className="px-4 pb-16 pt-32 sm:px-6 lg:px-8 lg:pb-24 lg:pt-44">
         <div className="mx-auto max-w-7xl">
           <Link
             href="/events/gtp-2026/media"
             className={cn(
-              "inline-flex items-center gap-2 text-sm font-medium text-white/65 transition-colors hover:text-white",
+              "inline-flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-white",
               focusRing,
             )}
           >
@@ -161,7 +162,7 @@ export function VisualSynthesisView({ data, activeDayId, basePath }: Props) {
                 ))}
               </div>
               {data.liveNote ? (
-                <p className="mt-5 flex max-w-[65ch] items-start gap-3 text-base leading-relaxed text-white/60">
+                <p className="mt-5 flex max-w-[65ch] items-start gap-3 text-base leading-relaxed text-white/75">
                   <span aria-hidden className="mt-2.5 size-2 shrink-0 rounded-full bg-gtp-orange" />
                   {data.liveNote}
                 </p>
@@ -187,7 +188,7 @@ export function VisualSynthesisView({ data, activeDayId, basePath }: Props) {
                 <h2 id="day-heading" className="font-heading text-2xl font-bold text-white md:text-3xl">
                   {day.label}
                 </h2>
-                <p className="text-sm text-white/60">{day.dateLabel}</p>
+                <p className="text-sm text-white/75">{day.dateLabel}</p>
               </div>
 
               {dayMaps.length ? (
@@ -205,25 +206,25 @@ export function VisualSynthesisView({ data, activeDayId, basePath }: Props) {
         aria-labelledby="contributor-heading"
         className="border-t border-white/15 px-4 py-16 sm:px-6 lg:px-8 lg:py-24"
       >
-        <ScrollReveal className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-12 lg:gap-16">
+        <ScrollReveal className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-12 lg:gap-16">
           {contributor.headshot ? (
-            <div className="max-w-[16rem] lg:col-span-3">
+            <div className="mx-auto w-full max-w-sm lg:col-span-5 lg:mx-0 lg:max-w-none">
               <Image
                 src={contributor.headshot.src}
                 alt={contributor.headshot.alt}
                 width={contributor.headshot.width}
                 height={contributor.headshot.height}
-                sizes="(min-width: 1024px) 18rem, 16rem"
+                sizes="(min-width: 1344px) 496px, (min-width: 1024px) calc(41.667vw - 64px), (min-width: 640px) 384px, calc(100vw - 2rem)"
                 className="h-auto w-full"
               />
             </div>
           ) : null}
 
-          <div className={cn(contributor.headshot ? "lg:col-span-8" : "lg:col-span-8 lg:col-start-4")}>
+          <div className={cn(contributor.headshot ? "lg:col-span-7" : "lg:col-span-8 lg:col-start-4")}>
             <h2 id="contributor-heading" className="font-heading text-3xl font-bold text-white md:text-4xl">
               {contributor.name}
             </h2>
-            <p className="mt-2 text-base text-gtp-teal-light">{contributor.role}</p>
+            <p className={cn(styles.role, "mt-2 text-base")}>{contributor.role}</p>
             <div className="mt-8 max-w-[65ch] space-y-4 text-base leading-relaxed text-white/80">
               {contributor.bio.map((p) => (
                 <p key={p}>{p}</p>

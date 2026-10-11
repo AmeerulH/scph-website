@@ -257,7 +257,7 @@ export function SynthesisMaps({ maps }: { maps: GtpSynthesisMap[] }) {
                   href={`#map-${m.id}`}
                   className="text-white/70 underline decoration-white/25 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gtp-teal-light"
                 >
-                  <span className="tabular-nums text-white/45">{i + 1}.</span>{" "}
+                  <span className="tabular-nums text-white/75">{i + 1}.</span>{" "}
                   {m.title}
                 </a>
               </li>
@@ -277,7 +277,7 @@ export function SynthesisMaps({ maps }: { maps: GtpSynthesisMap[] }) {
                     {m.title}
                   </h3>
                   {m.timeLabel ? (
-                    <p className="text-sm tabular-nums text-white/60">
+                    <p className="text-sm tabular-nums text-white/75">
                       {m.timeLabel}
                     </p>
                   ) : null}

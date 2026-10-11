@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ProgrammePosterImage } from "@/components/gtp/programmes/programme-poster-image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -66,36 +67,42 @@ function LaunchRegistration({
   );
 }
 
+function LaunchActions({
+  registration,
+  className = "",
+}: {
+  registration: GtpBookLaunchResolved["registration"];
+  className?: string;
+}) {
+  return (
+    <div className={`flex flex-col items-start gap-5 ${className}`}>
+      <LaunchRegistration registration={registration} />
+      <Link
+        href="/events/gtp-2026/programmes"
+        className="text-sm font-semibold text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-teal"
+      >
+        Back to the conference programme
+      </Link>
+    </div>
+  );
+}
+
 /** The cover as supplied, uncropped. Without one, a designed stand-in carries the title. */
 function Cover({ page }: { page: GtpBookLaunchResolved }) {
   const { cover } = page;
   const shadow = "shadow-[0_44px_90px_-24px_oklch(0.1_0.03_220/0.8)]";
 
-  if (cover?.width && cover.height) {
+  if (cover) {
     return (
-      <Image
+      <ProgrammePosterImage
         src={cover.src}
         alt={cover.alt}
         width={cover.width}
         height={cover.height}
         priority
         sizes="(max-width: 1024px) 80vw, 440px"
-        className={`h-auto w-full ${shadow}`}
+        className={`lg:max-h-[calc(100dvh-9rem)] lg:max-w-[calc((100dvh-9rem)*var(--poster-ratio))] ${shadow}`}
       />
-    );
-  }
-  if (cover) {
-    return (
-      <div className={`relative aspect-2/3 w-full ${shadow}`}>
-        <Image
-          src={cover.src}
-          alt={cover.alt}
-          fill
-          priority
-          sizes="(max-width: 1024px) 80vw, 440px"
-          className="object-contain"
-        />
-      </div>
     );
   }
   return (
@@ -139,7 +146,7 @@ function Detail({ label, value, fallback }: { label: string; value: string; fall
 function Hero({ page }: { page: GtpBookLaunchResolved }) {
   const hasTitle = Boolean(page.bookTitle);
   return (
-    <header className="relative isolate overflow-hidden bg-gtp-dark-teal-dark">
+    <header className="relative isolate overflow-clip bg-gtp-dark-teal-dark">
       <Image
         src={page.heroImage.src}
         alt={page.heroImage.alt}
@@ -162,7 +169,7 @@ function Hero({ page }: { page: GtpBookLaunchResolved }) {
             {hasTitle ? page.pageTitle : "GTP 2026"}
           </Label>
           <h1
-            className={`mt-6 font-heading text-[clamp(2.75rem,7vw,6rem)] font-bold leading-[0.98] tracking-tight text-balance ${IVORY_TEXT}`}
+            className={`mt-6 font-heading text-[clamp(2.25rem,4.5vw,4rem)] font-bold leading-[1.08] tracking-tight text-balance ${IVORY_TEXT}`}
           >
             {page.bookTitle || page.pageTitle}
           </h1>
@@ -192,7 +199,7 @@ function Hero({ page }: { page: GtpBookLaunchResolved }) {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-72 sm:max-w-sm lg:col-span-5 lg:max-w-md lg:justify-self-end">
+        <div className="mx-auto w-full max-w-72 sm:max-w-sm lg:sticky lg:top-28 lg:col-span-5 lg:max-w-md lg:self-start lg:justify-self-end">
           <Cover page={page} />
         </div>
       </div>
@@ -206,15 +213,20 @@ function AboutTheBook({ page }: { page: GtpBookLaunchResolved }) {
       aria-labelledby="book-launch-about"
       className={`${IVORY_BG} px-4 py-20 sm:px-6 lg:px-8 lg:py-28`}
     >
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-12 lg:gap-16">
-        <h2 id="book-launch-about" className="lg:col-span-4">
-          <Label className="text-gtp-orange-dark">About the book</Label>
-        </h2>
-        <div className="lg:col-span-8">
-          <p className="font-heading text-2xl font-semibold leading-snug text-gtp-dark-teal-dark md:text-3xl lg:text-4xl lg:leading-snug">
+      <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <h2
+            id="book-launch-about"
+            className="scroll-mt-28 font-heading text-3xl font-bold leading-tight text-gtp-dark-teal-dark sm:text-4xl"
+          >
+            About the book
+          </h2>
+          <p className="mt-6 font-heading text-xl font-medium leading-relaxed text-gtp-dark-teal-dark sm:text-2xl">
             {page.introLead}
           </p>
-          <div className="mt-8 max-w-[65ch] space-y-5 text-base leading-relaxed text-slate-700 lg:text-lg">
+        </div>
+        <div className="lg:col-span-7">
+          <div className="max-w-[65ch] space-y-5 text-base leading-relaxed text-slate-700 lg:text-lg">
             {page.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
@@ -286,6 +298,14 @@ function Author({ page }: { page: GtpBookLaunchResolved }) {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {!page.thanks.enabled ? (
+            <div className="mt-10 border-t border-white/15 pt-8">
+              <LaunchActions
+                registration={page.registration}
+                className="sm:flex-row sm:items-center sm:gap-8"
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
@@ -294,10 +314,14 @@ function Author({ page }: { page: GtpBookLaunchResolved }) {
 
 function Closing({ page }: { page: GtpBookLaunchResolved }) {
   const { thanks } = page;
+  if (!thanks.enabled && (page.author.photo || page.author.bio.length > 0)) {
+    return null;
+  }
+
   return (
     <section
       aria-label={thanks.enabled ? thanks.title : "Register"}
-      className="relative isolate overflow-hidden bg-gtp-dark-teal-dark px-4 py-24 sm:px-6 lg:px-8 lg:py-32"
+      className={`relative isolate overflow-hidden bg-gtp-dark-teal-dark px-4 sm:px-6 lg:px-8 ${thanks.enabled ? "py-24 lg:py-32" : "py-12 lg:py-16"}`}
     >
       <div
         aria-hidden
@@ -318,19 +342,15 @@ function Closing({ page }: { page: GtpBookLaunchResolved }) {
               </p>
             ) : null}
           </div>
-        ) : null}
+        ) : (
+          <h2 className={`font-heading text-2xl font-semibold leading-snug lg:col-span-8 lg:text-3xl ${IVORY_TEXT}`}>
+            {page.bookTitle || page.pageTitle}
+          </h2>
+        )}
         <div
-          className={`flex flex-col items-start gap-5 ${
-            thanks.enabled ? "lg:col-span-4 lg:items-end" : "lg:col-span-12"
-          }`}
+          className="lg:col-span-4"
         >
-          <LaunchRegistration registration={page.registration} />
-          <Link
-            href="/events/gtp-2026/programmes"
-            className="text-sm font-semibold text-white/75 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-gtp-teal"
-          >
-            Back to the conference programme
-          </Link>
+          <LaunchActions registration={page.registration} className="lg:items-end" />
         </div>
       </div>
     </section>

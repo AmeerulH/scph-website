@@ -10,6 +10,7 @@ import type {
 import { DEFAULT_SESSION_MODAL_HOSTED_BY } from "@/sanity/gtp-programme";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { AiSessionsList } from "./ai-sessions-list";
+import { ProgrammePosterImage } from "./programme-poster-image";
 import { ActionWorkshopRegistration } from "./action-workshop-registration";
 import { CombinedProgrammePage } from "./combined-programme-page";
 import { SensorialStationRegistration } from "./sensorial-station-registration";
@@ -75,30 +76,16 @@ function ProgrammePoster({
 }: {
   poster: ReturnType<typeof posterFor>;
 }) {
-  if (poster?.width && poster.height) {
+  if (poster) {
     return (
-      <Image
+      <ProgrammePosterImage
         src={poster.url}
         alt={poster.alt}
         width={poster.width}
         height={poster.height}
-        sizes="(max-width: 1024px) min(80vw, 24rem), 26rem"
-        className="h-auto w-full rounded-md shadow-[0_28px_50px_-32px_oklch(0.28_0.045_210/0.55)]"
+        sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 1024px) 384px, 416px"
+        className="rounded-md shadow-[0_28px_50px_-32px_oklch(0.28_0.045_210/0.55)] lg:max-h-[calc(100dvh-9rem)] lg:max-w-[calc((100dvh-9rem)*var(--poster-ratio))]"
       />
-    );
-  }
-
-  if (poster) {
-    return (
-      <div className="relative aspect-3/4 w-full">
-        <Image
-          src={poster.url}
-          alt={poster.alt}
-          fill
-          className="rounded-md object-contain"
-          sizes="(max-width: 1024px) min(80vw, 24rem), 26rem"
-        />
-      </div>
     );
   }
 
@@ -122,7 +109,7 @@ function ProgrammePosterLayout({ page }: { page: GtpProgrammeActivityPage }) {
   return (
     <section className="bg-slate-50">
       <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[minmax(16rem,26rem)_minmax(0,1fr)] lg:gap-16 lg:px-8 lg:py-20">
-        <div className="mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none">
+        <div className="mx-auto w-full max-w-sm lg:sticky lg:top-28 lg:mx-0 lg:max-w-none lg:self-start">
           <ProgrammePoster poster={poster} />
         </div>
 
