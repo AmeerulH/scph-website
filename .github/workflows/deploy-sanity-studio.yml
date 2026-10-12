@@ -40,6 +40,14 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check Studio types
         run: npx tsc --noEmit --incremental false
+      - name: Validate Studio schema
+        run: |
+          npx sanity schema validate --format json > "$RUNNER_TEMP/scph-schema-validation.json"
+          node -e "const fs = require('node:fs'); const assert = require('node:assert/strict'); const report = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + '/scph-schema-validation.json', 'utf8')); assert.equal(report.flatMap(group => group.problems ?? []).length, 0, 'Resolve all schema errors and warnings before deployment'); console.log('Schema validation: zero errors and warnings');"
+      - name: Verify production target and exact schema changes
+        run: |
+          npx sanity manifest extract --path "$RUNNER_TEMP/scph-studio-manifest"
+          node --experimental-strip-types ../scripts/verify-sanity-studio-deployment.mjs before "$RUNNER_TEMP/scph-studio-manifest"
       - name: Deploy hosted Studio and production schema
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
@@ -49,3 +57,9 @@ jobs:
             exit 1
           fi
           npm run deploy -- --yes --schema-required
+      - name: Verify deployed schema registry
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: npx sanity schema list
+      - name: Verify live Studio schema
+        run: node --experimental-strip-types ../scripts/verify-sanity-studio-deployment.mjs after "$RUNNER_TEMP/scph-studio-manifest"
