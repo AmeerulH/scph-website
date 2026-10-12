@@ -31,7 +31,7 @@ assert.equal(sponsorField(planned).validation, undefined);
 
 async function getJson(relativePath) {
   const url = new URL(relativePath, 'https://scph.sanity.studio/static/');
-  url.searchParams.set('verification', process.env.GITHUB_SHA ?? Date.now().toString());
+  url.searchParams.set('verification', [process.env.GITHUB_SHA ?? 'local', mode, Date.now()].join('-'));
   const response = await fetch(url, {cache: 'no-store', signal: AbortSignal.timeout(20000)});
   assert.ok(response.ok, 'Hosted Studio request failed: ' + response.status);
   return response.json();
@@ -72,4 +72,3 @@ if (mode === 'before') {
     }
   }
 }
-
