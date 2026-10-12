@@ -1,0 +1,51 @@
+name: Deploy Sanity Studio (sponsor limit fix)
+
+on:
+  push:
+    branches:
+      - codex/deploy-sanity-studio
+    paths:
+      - studio/**
+      - .github/workflows/deploy-sanity-studio.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scph-sanity-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: studio
+    env:
+      CI: 'true'
+      SANITY_DATASET: production
+    steps:
+      - name: Check out the sponsor limit fix
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      - name: Install Studio dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check Studio types
+        run: npx tsc --noEmit --incremental false
+      - name: Deploy hosted Studio and production schema
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$SANITY_AUTH_TOKEN" ]; then
+            echo '::error::Add the SANITY_AUTH_TOKEN repository secret before deploying.'
+            exit 1
+          fi
+          npm run deploy -- --yes --schema-required
