@@ -575,7 +575,6 @@ function pushLogoIntoTiers(
 ) {
   if (!entry.tier) return;
   const list = tiers[entry.tier];
-  if (list.length >= 5) return;
   list.push({
     name: entry.name,
     logoUrl: entry.logoUrl,

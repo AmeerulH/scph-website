@@ -381,31 +381,6 @@ export const gtpAboutPartnerLogoType = defineType({
   },
 })
 
-const GTP_LOGO_TIER_MAX = 5
-
-function validateLogosMaxPerTier(
-  logos: Array<{tier?: string} | undefined> | undefined,
-): true | string {
-  if (!logos?.length) return true
-  const counts: Record<string, number> = {
-    platinum: 0,
-    gold: 0,
-    silver: 0,
-    bronze: 0,
-    others: 0,
-  }
-  for (const row of logos) {
-    const t = row?.tier
-    if (t && t in counts) counts[t] += 1
-  }
-  for (const [tier, count] of Object.entries(counts)) {
-    if (count > GTP_LOGO_TIER_MAX) {
-      return `At most ${GTP_LOGO_TIER_MAX} logos per tier (${tier} has ${count}).`
-    }
-  }
-  return true
-}
-
 export const gtpAboutSponsorsBandType = defineType({
   name: 'gtpAboutSponsorsBand',
   title: 'Sponsors band',
@@ -420,8 +395,7 @@ export const gtpAboutSponsorsBandType = defineType({
       type: 'array',
       of: [{type: 'gtpAboutSponsorLogo'}],
       description:
-        'Set Tier on each logo (Platinum–Others). Logos without a tier stay hidden on the site. Max 5 per tier.',
-      validation: (rule) => rule.custom(validateLogosMaxPerTier),
+        'Set Tier on each logo (Platinum–Others). Logos without a tier stay hidden on the site. No limit per tier.',
     }),
     defineField({
       name: 'platinum',
