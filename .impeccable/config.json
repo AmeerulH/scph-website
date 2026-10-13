@@ -1,1 +1,18 @@
-{"buildPath": "code"}
+{
+  "buildPath": "code",
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/components/gtp/media/news/news.module.css"
+        ],
+        "createdAt": "2026-10-13T04:16:15.325Z",
+        "reason": "User confirmed Option 1: approved on-the-news-spotlight.png explicitly uses a lime selected-story rule; retain this functional selection marker only on the news surface."
+      }
+    ]
+  }
+}
