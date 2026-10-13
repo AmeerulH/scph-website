@@ -1,20 +1,6 @@
 .page {
   color: #fff;
-  background:
-    radial-gradient(ellipse 30rem 26rem at -4rem -3rem, #ff6a14 0%, #e0651c 25%, #a85a30aa 52%, transparent 80%),
-    radial-gradient(ellipse 34rem 24rem at calc(100% + 5rem) -2rem, #ffb812 0%, #e89a22 25%, #b88538a0 52%, transparent 80%),
-    radial-gradient(ellipse 18rem 34rem at calc(100% + 1rem) 17rem, #7a8a3acc 0%, #4a7a4a99 45%, transparent 85%),
-    radial-gradient(ellipse 22rem 30rem at calc(100% + 2rem) 36rem, #a4c82ee6 0%, #6aa83fb0 38%, #2f8a5a66 62%, transparent 85%),
-    radial-gradient(ellipse 22rem 22rem at calc(100% + 3rem) 52rem, #1d8a78 0%, #0f706c88 50%, transparent 85%),
-    radial-gradient(ellipse 22rem 28rem at -3rem 12rem, #2f8a6a99 0%, #1a6f72 40%, transparent 85%),
-    radial-gradient(ellipse 22rem 20rem at -5rem 44rem, #14a0a4 0%, #0f7e85b0 45%, transparent 85%),
-    radial-gradient(ellipse 28rem 22rem at -5rem 64rem, #ff7a1e 0%, #d4813a 28%, #8e925f88 58%, transparent 85%),
-    radial-gradient(ellipse 26rem 24rem at calc(100% + 3rem) 64rem, #7bb843 0%, #3f9a56a0 45%, transparent 85%),
-    linear-gradient(112deg, transparent 12%, #00a8c844 26%, #1fb89444 38%, transparent 52%),
-    linear-gradient(112deg, transparent 40%, #00a0c038 54%, #3cc08a44 66%, transparent 80%),
-    radial-gradient(ellipse 40rem 22rem at 34% 14rem, #0095b866 0%, transparent 78%),
-    radial-gradient(ellipse 42rem 24rem at 66% 46rem, #2fb08a55 0%, transparent 78%),
-    linear-gradient(180deg, #00364a 0%, #013d50 40%, #004a5c 75%, #00576a 100%);
+  background: #013f52 url("/images/gtp/media/on-the-news-aurora.webp") center top / 100% calc(2 * max(64rem, 100svh)) repeat-y;
   min-height: 85svh;
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
@@ -154,3 +140,4 @@
 
 .page :is(button, .filters a, .pagination a, .action) { touch-action: manipulation; }
 .page button { user-select: none; }
+@media (max-width: 40rem) { .page { background-size: 130% calc(2 * max(64rem, 100svh)); } }
