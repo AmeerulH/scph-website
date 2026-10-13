@@ -1,12 +1,6 @@
 .page {
   color: #fff;
-  background: radial-gradient(ellipse 36rem 26rem at -9rem -5rem, #ff7a10 12%, transparent 75%),
-    radial-gradient(ellipse 32rem 22rem at calc(100% + 8rem) 39rem, #a3db27 12%, transparent 72%),
-    radial-gradient(ellipse 36rem 24rem at calc(100% + 8rem) -10rem, #b7e635 12%, transparent 75%),
-    radial-gradient(ellipse 40rem 14rem at 40% 10rem, #009cb4ce, transparent 78%),
-    radial-gradient(ellipse 50rem 24rem at 30% 21rem, #009cb4b8, transparent 78%),
-    radial-gradient(ellipse 37rem 30rem at -14rem 92%, #ff790ad9, transparent 75%),
-    linear-gradient(90deg, #00526a, #002c40 68%, #00687a);
+  background: #013f52 url("/images/gtp/media/on-the-news-aurora.webp") center top / 100% calc(2 * max(64rem, 100svh)) repeat-y;
   min-height: 85svh;
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
@@ -146,3 +140,4 @@
 
 .page :is(button, .filters a, .pagination a, .action) { touch-action: manipulation; }
 .page button { user-select: none; }
+@media (max-width: 40rem) { .page { background-size: 130% calc(2 * max(64rem, 100svh)); } }
