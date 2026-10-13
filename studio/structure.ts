@@ -6,7 +6,7 @@ import type {StructureResolver} from 'sanity/structure'
  * All other document types auto-generate via S.documentTypeListItems().
  */
 export const structure: StructureResolver = (S) => {
-  const CUSTOMISED_TYPES = new Set(['gtp2026SpeakersPage', 'gtp2026Speaker'])
+  const CUSTOMISED_TYPES = new Set(['gtp2026SpeakersPage', 'gtp2026Speaker', 'gtp2026NewsArticle'])
 
   return S.list()
     .title('Content')
@@ -36,6 +36,19 @@ export const structure: StructureResolver = (S) => {
                 ),
             ]),
         ),
+
+      S.listItem()
+        .title('GTP 2026 On the News')
+        .schemaType('gtp2026NewsArticle')
+        .child(S.list().title('On the News').items([
+          S.listItem().title('Articles').child(
+            S.documentTypeList('gtp2026NewsArticle').title('News articles')
+              .defaultOrdering([{field: 'publishedAt', direction: 'desc'}, {field: '_createdAt', direction: 'desc'}]),
+          ),
+          S.listItem().title('Page settings & spotlight (Media → On the News)').child(
+            S.document().schemaType('gtp2026MediaPage').documentId('gtp2026MediaPage'),
+          ),
+        ])),
 
       S.divider(),
 

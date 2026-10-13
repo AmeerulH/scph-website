@@ -86,7 +86,7 @@ const gtpCmsPages = [
     docTypes: "gtp2026MediaPage",
     title: "Media",
     notes:
-      "Three sections on one page. **Photo gallery:** add albums (Day 1 to 4, Special Events, Action Workshops), drag in photos (about 9 per album; the first is shown large, add alt text), and paste Google Drive \"More photos\" links. Empty albums show GTP 2025 preview photos. **Podcasts:** cover art, Spotify / Apple Podcasts / YouTube links, and episodes (newest first). **Videos:** paste YouTube URLs; the first video is the featured player and thumbnails load automatically. Empty links and lists are hidden, never shown as broken. **Visual Synthesis** is its own page (next entry) edited in the same document.",
+      "Three sections on one page. **Photo gallery:** add albums (Day 1 to 4, Special Events, Action Workshops), drag in photos (about 9 per album; the first is shown large, add alt text), and paste Google Drive \"More photos\" links. Empty albums show GTP 2025 preview photos. **Podcasts:** cover art, Spotify / Apple Podcasts / YouTube links, and episodes (newest first). **Videos:** paste YouTube URLs; the first video is the featured player and thumbnails load automatically. Empty links and lists are hidden, never shown as broken. **Visual Synthesis** and **On the News** are separate subpages; their settings live in the same Media document.",
   },
   {
     route: "/events/gtp-2026/media/visual-synthesis",
@@ -94,6 +94,12 @@ const gtpCmsPages = [
     title: "Media: Visual Synthesis",
     notes:
       "Edited in the **Visual Synthesis** group of the Media document. Add each plenary map under **Maps**: choose its **Day** (or Final synthesis), type the plenary title, upload the image (PNG, landscape 16:9, at least 2400 px wide; not a PDF), and fill in the short alt text and a 1 to 3 sentence **Summary**. There is no limit per day, and maps show in the order listed. Publish to make them appear. Days without maps show \"will appear here after that day's plenaries\". **Intro** and **Live note**: leave empty to use the standard wording, which switches to past tense automatically after 15 Oct 2026; filling them in overrides it. The **Credit line** (Bigger Picture and the contributor) is required and always shown. **Contributor** holds the name, role line, headshot (shown whole), bio and links. The newsletter can link to the Media page, which lists Visual Synthesis as its fourth entry.",
+  },
+  {
+    route: "/events/gtp-2026/media/on-the-news",
+    docTypes: "gtp2026NewsArticle + gtp2026MediaPage",
+    title: "Media: On the News",
+    notes: "Studio → **GTP 2026 On the News → Articles**: create each story with its headline, publisher, HTTPS source link, uploaded image and image description, and category. Publication date and image credit are optional. **Publish** each article to show it; drafts stay private. In the Media document’s **On the News** group, edit the page wording and choose up to five spotlight articles, then drag to order and publish the Media document. Leave selections empty to feature the latest three valid published articles. Unpublishing a story removes it from the page. Visitors can search titles/publishers, filter categories and browse nine articles per page; whole article units open the original publication in a new tab.",
   },
   {
     route: "/events/gtp-2026/sustainability",

@@ -40,6 +40,7 @@ export function MediaHero({ hero, counts, synthesisMeta }: Props) {
       meta: synthesisMeta,
       page: true,
     },
+    { n: "05", href: "/events/gtp-2026/media/on-the-news", label: "On the News", meta: "Stories & coverage", page: true },
   ];
 
   return (
@@ -71,12 +72,12 @@ export function MediaHero({ hero, counts, synthesisMeta }: Props) {
         </p>
 
         <nav aria-label="Media sections" className="mt-16 lg:mt-24">
-          <ol className="grid border-t border-white/20 md:grid-cols-2 lg:grid-cols-4">
+          <ol className="grid border-t border-white/20 md:grid-cols-2 lg:grid-cols-6">
             {index.map((item, i) => {
               const rowClass = cn(
                 "group flex items-baseline gap-5 py-7 transition-colors hover:bg-white/5 md:py-8 md:pr-8",
                 i % 2 === 0 ? "md:pl-0" : "md:pl-8",
-                i === 0 ? "lg:pl-0" : "lg:pl-8",
+                i === 0 || i === 3 ? "lg:pl-0" : "lg:pl-8",
               );
               const body = (
                 <>
@@ -107,7 +108,7 @@ export function MediaHero({ hero, counts, synthesisMeta }: Props) {
               return (
                 <li
                   key={item.href}
-                  className="border-b border-white/20 md:odd:border-r lg:border-b-0 lg:border-r lg:last:border-r-0"
+                  className={cn("border-b border-white/20 md:odd:border-r lg:border-r", i === 4 && "md:col-span-2 md:border-r-0 lg:col-span-3", i < 3 ? "lg:col-span-2" : "lg:col-span-3", (i === 2 || i === 4) && "lg:border-r-0", i >= 3 && "lg:border-b-0")}
                 >
                   {item.page ? (
                     <Link href={item.href} className={rowClass}>

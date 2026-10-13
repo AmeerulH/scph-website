@@ -79,6 +79,7 @@ const navItems: NavItem[] = [
       { label: "Podcasts", href: "/events/gtp-2026/media#podcasts" },
       { label: "Videos", href: "/events/gtp-2026/media#videos" },
       { label: "Visual Synthesis", href: "/events/gtp-2026/media/visual-synthesis" },
+      { label: "On the News", href: "/events/gtp-2026/media/on-the-news" },
     ],
   },
   {
@@ -254,7 +255,7 @@ export function GtpNavbar() {
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <button
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:bg-white/10 lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:bg-white/10 lg:hidden"
               aria-label="Open menu"
             >
               <Menu className="h-4 w-4" />

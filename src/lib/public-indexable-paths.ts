@@ -30,6 +30,7 @@ export const GTP_2026_MARKETING_PATHS: readonly string[] = [
   "/events/gtp-2026/get-involved",
   "/events/gtp-2026/media",
   "/events/gtp-2026/media/visual-synthesis",
+  "/events/gtp-2026/media/on-the-news",
   "/events/gtp-2026/sustainability",
   "/events/gtp-2026/biz-forum",
   "/events/gtp-2026/organising-committee",
