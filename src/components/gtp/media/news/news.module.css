@@ -10,7 +10,10 @@
     radial-gradient(ellipse 22rem 20rem at -5rem 44rem, #14a0a4 0%, #0f7e85b0 45%, transparent 85%),
     radial-gradient(ellipse 28rem 22rem at -5rem 64rem, #ff7a1e 0%, #d4813a 28%, #8e925f88 58%, transparent 85%),
     radial-gradient(ellipse 26rem 24rem at calc(100% + 3rem) 64rem, #7bb843 0%, #3f9a56a0 45%, transparent 85%),
-    radial-gradient(ellipse 50rem 20rem at 40% 12rem, #00688455 0%, transparent 80%),
+    linear-gradient(112deg, transparent 12%, #00a8c844 26%, #1fb89444 38%, transparent 52%),
+    linear-gradient(112deg, transparent 40%, #00a0c038 54%, #3cc08a44 66%, transparent 80%),
+    radial-gradient(ellipse 40rem 22rem at 34% 14rem, #0095b866 0%, transparent 78%),
+    radial-gradient(ellipse 42rem 24rem at 66% 46rem, #2fb08a55 0%, transparent 78%),
     linear-gradient(180deg, #00364a 0%, #013d50 40%, #004a5c 75%, #00576a 100%);
   min-height: 85svh;
   overflow-wrap: anywhere;
