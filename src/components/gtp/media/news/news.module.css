@@ -1,12 +1,14 @@
 .page {
   color: #fff;
-  background: radial-gradient(ellipse 36rem 26rem at -9rem -5rem, #ff7a10 12%, transparent 75%),
-    radial-gradient(ellipse 32rem 22rem at calc(100% + 8rem) 39rem, #a3db27 12%, transparent 72%),
-    radial-gradient(ellipse 36rem 24rem at calc(100% + 8rem) -10rem, #b7e635 12%, transparent 75%),
-    radial-gradient(ellipse 40rem 14rem at 40% 10rem, #009cb4ce, transparent 78%),
-    radial-gradient(ellipse 50rem 24rem at 30% 21rem, #009cb4b8, transparent 78%),
-    radial-gradient(ellipse 37rem 30rem at -14rem 92%, #ff790ad9, transparent 75%),
-    linear-gradient(90deg, #00526a, #002c40 68%, #00687a);
+  background:
+    radial-gradient(ellipse 48rem 30rem at -8rem -6rem, #e4651a 0%, #b9602a 35%, transparent 75%),
+    radial-gradient(ellipse 44rem 28rem at calc(100% + 6rem) -5rem, #f4aa14 0%, #c98a38 35%, transparent 75%),
+    radial-gradient(ellipse 30rem 44rem at calc(100% + 9rem) 36rem, #4fa043 0%, #2f8a55b0 45%, transparent 78%),
+    radial-gradient(ellipse 34rem 26rem at calc(100% + 6rem) 56rem, #8fb52e 0%, #5fa043a0 42%, transparent 78%),
+    radial-gradient(ellipse 36rem 18rem at -10rem 52rem, #1f9a98 0%, #0f7e85a0 45%, transparent 78%),
+    radial-gradient(ellipse 40rem 28rem at -8rem calc(100% + 4rem), #ee7220 0%, #b98040a0 40%, transparent 78%),
+    radial-gradient(ellipse 40rem 24rem at calc(100% + 4rem) calc(100% + 3rem), #2c8a5e 0%, transparent 78%),
+    linear-gradient(180deg, #00394d 0%, #014458 45%, #00566a 100%);
   min-height: 85svh;
   overflow-wrap: anywhere;
   -webkit-tap-highlight-color: transparent;
