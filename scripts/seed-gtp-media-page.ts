@@ -8,7 +8,8 @@
  * Also seeds the Visual Synthesis contributor copy (title, credit line, name, role, bio, links) and an
  * empty `synthesisMaps` list. It deliberately does NOT seed the intro or live note, so the page keeps
  * using its date-based default wording (past tense after the conference) until an editor overrides it.
- * No maps or headshot are ever seeded.
+ * No maps or headshot are ever seeded. On the News seeds page copy and an empty
+ * spotlight reference list only. No article documents, images or links are seeded.
  *
  * Prerequisites: SANITY_API_TOKEN in .env.local (Editor+), schema deployed
  * (`cd studio && npx sanity schema deploy`).
@@ -23,6 +24,7 @@ import { createClient } from "@sanity/client";
 import * as dotenv from "dotenv";
 import * as path from "path";
 
+import { NEWS_DEFAULTS } from "../src/lib/gtp-news";
 import { GTP_MEDIA_DEFAULTS } from "../src/data/gtp-media-page-defaults";
 import { GTP_VISUAL_SYNTHESIS_DEFAULTS } from "../src/data/gtp-visual-synthesis-defaults";
 
@@ -63,6 +65,11 @@ function buildFields() {
       })),
     },
     synthesisMaps: [],
+    newsTitle: NEWS_DEFAULTS.title,
+    newsIntro: NEWS_DEFAULTS.intro,
+    newsEmptyTitle: NEWS_DEFAULTS.emptyTitle,
+    newsEmptyMessage: NEWS_DEFAULTS.emptyMessage,
+    newsFeaturedArticles: [],
   };
 }
 

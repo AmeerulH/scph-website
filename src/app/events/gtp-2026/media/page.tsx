@@ -8,7 +8,7 @@ import { getGtpMediaPage } from "@/sanity/gtp-media-page";
 import { getGtpVisualSynthesis, synthesisHeroMeta } from "@/sanity/gtp-visual-synthesis";
 
 const description =
-  "Photos, podcasts and videos from the Global Tipping Points Conference 2026, hosted by Sunway Centre for Planetary Health in Kuala Lumpur.";
+  "Articles, photos, podcasts and videos from the Global Tipping Points Conference 2026, hosted by Sunway Centre for Planetary Health in Kuala Lumpur.";
 
 export const metadata: Metadata = {
   title: "Media",

@@ -207,6 +207,7 @@ export const gtp2026MediaPageType = defineType({
     {name: 'podcasts', title: 'Podcasts'},
     {name: 'videos', title: 'Videos'},
     {name: 'synthesis', title: 'Visual Synthesis'},
+    {name: 'news', title: 'On the News'},
     {name: 'legacy', title: 'Legacy'},
   ],
   fields: [
@@ -234,6 +235,17 @@ export const gtp2026MediaPageType = defineType({
       description: 'Landscape, at least 2400 x 1200 px. Falls back to a GTP photo when empty.',
       fields: [altField],
       group: 'hero',
+    }),
+
+    defineField({name: 'newsTitle', title: 'Page title', type: 'string', group: 'news', initialValue: 'ON THE NEWS'}),
+    defineField({name: 'newsIntro', title: 'Introduction', type: 'text', rows: 2, group: 'news', description: 'Short introduction. Leave blank for the standard wording.'}),
+    defineField({name: 'newsEmptyTitle', title: 'Empty collection heading', type: 'string', group: 'news', description: 'Shown before any articles are published.'}),
+    defineField({name: 'newsEmptyMessage', title: 'Empty collection message', type: 'text', rows: 2, group: 'news'}),
+    defineField({
+      name: 'newsFeaturedArticles', title: 'Spotlight articles (in display order)', type: 'array', group: 'news',
+      description: 'Choose up to five published News articles and drag to order them. If empty, the latest three published articles appear. Publish this Media document to update the spotlight.',
+      of: [defineArrayMember({type: 'reference', weak: true, to: [{type: 'gtp2026NewsArticle'}]})],
+      validation: rule => rule.max(5).unique(),
     }),
 
     defineField({name: 'photosTitle', title: 'Section title', type: 'string', initialValue: 'Photo Gallery', group: 'photos'}),

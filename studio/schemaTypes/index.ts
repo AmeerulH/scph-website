@@ -6,6 +6,7 @@ import {gtp2026BizForumPageType} from './gtp2026BizForumPageType'
 import {gtp2026GetInvolvedPageType} from './gtp2026GetInvolvedPageType'
 import {gtp2026SpeakersPageType} from './gtp2026SpeakersPageType'
 import {gtp2026SpeakerType} from './gtp2026SpeakerType'
+import {gtp2026NewsArticleType} from './gtp2026NewsArticleType'
 import {gtp2026MediaPageType} from './gtp2026MediaPageType'
 import {gtp2026SustainabilityPageType} from './gtp2026SustainabilityPageType'
 import {gtp2026BookLaunchPageType} from './gtp2026BookLaunchPageType'
@@ -87,6 +88,7 @@ export const schemaTypes = [
   gtp2026SpeakersPageType,
   gtp2026SpeakerType,
   gtp2026MediaPageType,
+  gtp2026NewsArticleType,
   gtp2026SustainabilityPageType,
   gtp2026BookLaunchPageType,
   gtp2026BizForumPageType,
