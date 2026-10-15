@@ -46,6 +46,7 @@ import { GtpSpeakersHighlightInner } from "@/components/gtp/gtp-speaker-highligh
 import { GtpViewAllSpeakersCta } from "@/components/gtp/gtp-view-all-speakers-cta";
 import { GtpLogoTiersBand } from "@/components/gtp/gtp-logo-tiers-band";
 import { GtpRatesExcursionsSection } from "@/components/gtp/gtp-rates-excursions-section";
+import { ProgrammePosterImage } from "@/components/gtp/programmes/programme-poster-image";
 import { SustainabilityTeaser } from "@/components/gtp/sustainability/sustainability-teaser";
 import { getGtpSustainabilityPage } from "@/sanity/gtp-sustainability-page";
 import { IconCardGrid } from "@/components/sections/icon-card-grid";
@@ -262,14 +263,11 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
           </>
         }
         media={
-          <div className="relative mx-auto aspect-[210/297] w-full max-w-sm">
-            <Image
+          <div className="mx-auto w-full max-w-md bg-gtp-paper p-2 shadow-2xl shadow-black/35 sm:p-3">
+            <ProgrammePosterImage
               src={content.tallImageSrc}
               alt={content.tallImageAlt}
-              fill
-              className="object-contain"
-              sizes="(max-width: 416px) calc(100vw - 32px), 384px"
-              unoptimized={imgUnoptimized(content.tallImageSrc)}
+              sizes="(max-width: 480px) calc(100vw - 48px), 424px"
             />
           </div>
         }
