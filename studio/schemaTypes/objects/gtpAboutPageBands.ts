@@ -94,41 +94,22 @@ export const gtpAboutWhyMattersBandType = defineType({
     defineField({name: 'title', title: 'Heading', type: 'string'}),
     defineField({
       name: 'body',
-      title: 'Body (three paragraphs)',
+      title: 'Body',
       type: 'text',
       rows: 12,
-      description: 'Separate paragraphs with a blank line.',
+      description:
+        'Separate paragraphs with a blank line. Only the paragraphs entered here are shown; clear this field to hide the body text.',
     }),
     defineField({name: 'ctaLabel', title: 'CTA button label', type: 'string'}),
     defineField({name: 'ctaHref', title: 'CTA URL (path or full URL)', type: 'string'}),
     defineField({
       name: 'tallImage',
-      title: 'Tall left image',
+      title: 'Section image',
       type: 'image',
       options: {hotspot: true},
-      description: 'Uploaded via Sanity. Replaces the default leaves image.',
+      description: 'Shown in full beside the text. Upload the declaration cover or other section artwork.',
     }),
-    defineField({
-      name: 'topRightImage',
-      title: 'Top-right image',
-      type: 'image',
-      options: {hotspot: true},
-      description: 'Uploaded via Sanity. Replaces the default river image.',
-    }),
-    defineField({
-      name: 'bottomRightImage',
-      title: 'Bottom-right image',
-      type: 'image',
-      options: {hotspot: true},
-      description: 'Uploaded via Sanity. Replaces the default solar image.',
-    }),
-    defineField({name: 'tallImageAlt', title: 'Tall image alt text', type: 'string'}),
-    defineField({name: 'topRightImageAlt', title: 'Top-right image alt text', type: 'string'}),
-    defineField({
-      name: 'bottomRightImageAlt',
-      title: 'Bottom-right image alt text',
-      type: 'string',
-    }),
+    defineField({name: 'tallImageAlt', title: 'Section image alt text', type: 'string'}),
   ],
 })
 

@@ -209,7 +209,6 @@ function imgUnoptimized(src: string) {
 }
 
 function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
-  const [p1, p2, p3] = content.bodyParagraphs;
   const ctaInternal =
     content.ctaHref.startsWith("/") || content.ctaHref.startsWith("#");
 
@@ -224,20 +223,26 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
         align="start"
         text={
           <>
-            {p1 ? (
-              <p className="text-lg leading-relaxed text-white/80">{p1}</p>
-            ) : null}
-            {p2 ? (
-              <p className="mt-4 text-base leading-relaxed text-white/75">
-                {p2}
+            {content.bodyParagraphs.map((paragraph, index) => (
+              <p
+                key={index}
+                className={
+                  index === 0
+                    ? "text-lg leading-relaxed text-white/80"
+                    : index === 1
+                      ? "mt-4 text-base leading-relaxed text-white/75"
+                      : "mt-4 text-base leading-relaxed text-white/70"
+                }
+              >
+                {paragraph}
               </p>
-            ) : null}
-            {p3 ? (
-              <p className="mt-4 text-base leading-relaxed text-white/70">
-                {p3}
-              </p>
-            ) : null}
-            <Button variant="gtpSecondary" size="lg" className="mt-8" asChild>
+            ))}
+            <Button
+              variant="gtpSecondary"
+              size="lg"
+              className="mt-8 h-auto min-h-13 max-w-full whitespace-normal py-3 text-center"
+              asChild
+            >
               {ctaInternal ? (
                 <Link href={content.ctaHref}>
                   {content.ctaLabel}{" "}
@@ -257,40 +262,15 @@ function WhyItMattersSection({ content }: { content: GtpAboutWhyMattersCopy }) {
           </>
         }
         media={
-          <div className="grid grid-cols-2 grid-rows-2 gap-3">
-            <div className="relative row-span-2 min-h-[280px] overflow-hidden rounded-2xl">
-              <Image
-                src={content.tallImageSrc}
-                alt={content.tallImageAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                quality={60}
-                unoptimized={imgUnoptimized(content.tallImageSrc)}
-              />
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image
-                src={content.topRightImageSrc}
-                alt={content.topRightImageAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                quality={60}
-                unoptimized={imgUnoptimized(content.topRightImageSrc)}
-              />
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image
-                src={content.bottomRightImageSrc}
-                alt={content.bottomRightImageAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 50vw, 25vw"
-                quality={60}
-                unoptimized={imgUnoptimized(content.bottomRightImageSrc)}
-              />
-            </div>
+          <div className="relative mx-auto aspect-[210/297] w-full max-w-sm">
+            <Image
+              src={content.tallImageSrc}
+              alt={content.tallImageAlt}
+              fill
+              className="object-contain"
+              sizes="(max-width: 416px) calc(100vw - 32px), 384px"
+              unoptimized={imgUnoptimized(content.tallImageSrc)}
+            />
           </div>
         }
       />

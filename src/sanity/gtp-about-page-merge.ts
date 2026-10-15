@@ -94,11 +94,7 @@ export type GtpAboutWhyMattersBandRaw = {
   ctaLabel?: string | null;
   ctaHref?: string | null;
   tallImageSrc?: string | null;
-  topRightImageSrc?: string | null;
-  bottomRightImageSrc?: string | null;
   tallImageAlt?: string | null;
-  topRightImageAlt?: string | null;
-  bottomRightImageAlt?: string | null;
 } | null;
 
 export type GtpAboutThemeCardRaw = {
@@ -315,27 +311,14 @@ function mergeCampaignSlides(raw: GtpAboutHeroBandRaw): GtpAboutCampaignSlide[] 
   return slides?.length ? slides : DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES;
 }
 
-function splitThree(
-  body: string,
-  fallback: [string, string, string],
-): [string, string, string] {
-  const parts = body
-    .split(/\n\n/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  return [
-    parts[0] ?? fallback[0],
-    parts[1] ?? fallback[1],
-    parts[2] ?? fallback[2],
-  ];
-}
-
 function mergeWhyMatters(raw: GtpAboutWhyMattersBandRaw): GtpAboutWhyMattersCopy {
   const d = DEFAULT_GTP_WHY_MATTERS;
   if (!raw) return d;
-  const bodyParagraphs = raw.body?.trim()
-    ? splitThree(raw.body, d.bodyParagraphs)
-    : d.bodyParagraphs;
+  // A cleared CMS body is intentional; defaults apply only when the band is absent.
+  const bodyParagraphs = (raw.body ?? "")
+    .split(/\r?\n\s*\r?\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
   return {
     enabled: raw.enabled !== false,
     eyebrow: s(raw.eyebrow, d.eyebrow),
@@ -344,11 +327,7 @@ function mergeWhyMatters(raw: GtpAboutWhyMattersBandRaw): GtpAboutWhyMattersCopy
     ctaLabel: s(raw.ctaLabel, d.ctaLabel),
     ctaHref: s(raw.ctaHref, d.ctaHref),
     tallImageSrc: s(raw.tallImageSrc, d.tallImageSrc),
-    topRightImageSrc: s(raw.topRightImageSrc, d.topRightImageSrc),
-    bottomRightImageSrc: s(raw.bottomRightImageSrc, d.bottomRightImageSrc),
     tallImageAlt: s(raw.tallImageAlt, d.tallImageAlt),
-    topRightImageAlt: s(raw.topRightImageAlt, d.topRightImageAlt),
-    bottomRightImageAlt: s(raw.bottomRightImageAlt, d.bottomRightImageAlt),
   };
 }
 

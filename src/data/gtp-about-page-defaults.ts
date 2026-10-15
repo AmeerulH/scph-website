@@ -105,15 +105,11 @@ export type GtpAboutWhyMattersCopy = {
   enabled: boolean;
   eyebrow: string;
   title: string;
-  bodyParagraphs: [string, string, string];
+  bodyParagraphs: string[];
   ctaLabel: string;
   ctaHref: string;
   tallImageSrc: string;
-  topRightImageSrc: string;
-  bottomRightImageSrc: string;
   tallImageAlt: string;
-  topRightImageAlt: string;
-  bottomRightImageAlt: string;
 };
 
 export const DEFAULT_GTP_WHY_MATTERS: GtpAboutWhyMattersCopy = {
@@ -128,11 +124,7 @@ export const DEFAULT_GTP_WHY_MATTERS: GtpAboutWhyMattersCopy = {
   ctaLabel: "Explore the Programme",
   ctaHref: "/events/gtp-2026/programmes",
   tallImageSrc: "/images/gtp/conference/leaves.webp",
-  topRightImageSrc: "/images/gtp/conference/river.webp",
-  bottomRightImageSrc: "/images/gtp/conference/solar.webp",
   tallImageAlt: "Nature and sustainability",
-  topRightImageAlt: "River ecosystem",
-  bottomRightImageAlt: "Solar energy transition",
 };
 
 export type GtpAboutThemeIconKey = "trending-down" | "lightbulb" | "zap";

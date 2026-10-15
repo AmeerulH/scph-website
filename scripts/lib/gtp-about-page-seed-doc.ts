@@ -200,36 +200,20 @@ async function buildWhyMattersImageFields(
   const why = DEFAULT_GTP_WHY_MATTERS;
   const fields: Record<string, unknown> = {
     tallImageAlt: why.tallImageAlt,
-    topRightImageAlt: why.topRightImageAlt,
-    bottomRightImageAlt: why.bottomRightImageAlt,
   };
 
   if (dryRun) {
     return {
       ...fields,
       _dryRunTallImagePath: why.tallImageSrc,
-      _dryRunTopRightImagePath: why.topRightImageSrc,
-      _dryRunBottomRightImagePath: why.bottomRightImageSrc,
     };
   }
 
   if (!client) return fields;
 
   const tallImage = await uploadImage(client, why.tallImageSrc, why.tallImageAlt);
-  const topRightImage = await uploadImage(
-    client,
-    why.topRightImageSrc,
-    why.topRightImageAlt,
-  );
-  const bottomRightImage = await uploadImage(
-    client,
-    why.bottomRightImageSrc,
-    why.bottomRightImageAlt,
-  );
 
   if (tallImage) fields.tallImage = tallImage;
-  if (topRightImage) fields.topRightImage = topRightImage;
-  if (bottomRightImage) fields.bottomRightImage = bottomRightImage;
 
   return fields;
 }

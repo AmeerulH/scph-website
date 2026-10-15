@@ -130,11 +130,7 @@ const gtpAboutPageQuery = `*[_type == "gtp2026AboutPage"][0]{
     ctaLabel,
     ctaHref,
     "tallImageSrc": tallImage.asset->url,
-    "topRightImageSrc": topRightImage.asset->url,
-    "bottomRightImageSrc": bottomRightImage.asset->url,
-    tallImageAlt,
-    topRightImageAlt,
-    bottomRightImageAlt
+    tallImageAlt
   },
   themesBand {
     enabled,

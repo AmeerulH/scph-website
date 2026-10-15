@@ -312,7 +312,12 @@ export function TeamHandbookGtpSections() {
             <strong>About page bands</strong> — Fields are grouped (Hero, What
             is GTP, Themes, Quotes, …). Expand each collapsible group. Many
             fields have inline descriptions—read them before changing
-            structure.
+            structure. The declaration / “Why this meeting matters” band uses
+            one <strong>Section image</strong>, shown whole beside its text;
+            the former two right-hand images are no longer used. Remove any
+            unwanted paragraphs from <strong>Body</strong> and publish; clearing
+            Body hides all body text. Use <strong>Visible on site</strong> to
+            hide the whole band.
           </li>
           <li>
             <strong>Programme</strong> — Editing days/sessions affects both the

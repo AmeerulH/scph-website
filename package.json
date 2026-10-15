@@ -26,6 +26,7 @@
     "migrate-gtp-workshop-records": "npx tsx scripts/migrate-gtp-workshop-records.ts",
     "import-gtp-research-schedule": "npx tsx scripts/import-gtp-research-schedule.ts",
     "test-gtp-combined-programme": "node scripts/test-gtp-combined-programme.cjs",
+    "test-gtp-about-page-merge": "npx tsx scripts/test-gtp-about-page-merge.ts",
     "seed-gtp-speakers-page": "npx tsx scripts/seed-gtp-speakers-page.ts",
     "migrate-highlight-speakers-to-speakers": "npx tsx scripts/migrate-highlight-speakers-to-speakers.ts",
     "seed-scph-meet-the-team-page": "npx tsx scripts/seed-scph-meet-the-team-page.ts",

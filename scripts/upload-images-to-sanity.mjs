@@ -44,8 +44,6 @@ async function uploadImage(publicPath) {
 async function main() {
   console.log('\n── Why This Meeting Matters images ──')
   const leavesId   = await uploadImage('/images/gtp/conference/leaves.webp')
-  const riverId    = await uploadImage('/images/gtp/conference/river.webp')
-  const solarId    = await uploadImage('/images/gtp/conference/solar.webp')
 
   console.log('\n── Co-chair quote photos ──')
   const timId      = await uploadImage('/images/gtp/co-chairs/tim-lenton.jpg')
@@ -87,8 +85,6 @@ async function main() {
   const setPatch = {
     // whyMattersBand
     ...(leavesId  && { 'whyMattersBand.tallImage':        { _type: 'image', asset: { _type: 'reference', _ref: leavesId  } } }),
-    ...(riverId   && { 'whyMattersBand.topRightImage':    { _type: 'image', asset: { _type: 'reference', _ref: riverId   } } }),
-    ...(solarId   && { 'whyMattersBand.bottomRightImage': { _type: 'image', asset: { _type: 'reference', _ref: solarId   } } }),
     // quotes
     ...(timId     && { 'quotesBand.quotes[_key=="i18Da340mO8Zdpvc67utI4"].photo': { _type: 'image', asset: { _type: 'reference', _ref: timId     } } }),
     ...(johanId   && { 'quotesBand.quotes[_key=="i18Da340mO8Zdpvc67utLb"].photo': { _type: 'image', asset: { _type: 'reference', _ref: johanId   } } }),
