@@ -6,7 +6,7 @@ import type {StructureResolver} from 'sanity/structure'
  * All other document types auto-generate via S.documentTypeListItems().
  */
 export const structure: StructureResolver = (S) => {
-  const CUSTOMISED_TYPES = new Set(['gtp2026SpeakersPage', 'gtp2026Speaker', 'gtp2026NewsArticle'])
+  const CUSTOMISED_TYPES = new Set(['gtp2026SpeakersPage', 'gtp2026Speaker', 'gtp2026NewsArticle', 'gtp2026Resource', 'gtp2026ResourcesPage', 'gtp2026Video'])
 
   return S.list()
     .title('Content')
@@ -49,6 +49,28 @@ export const structure: StructureResolver = (S) => {
             S.document().schemaType('gtp2026MediaPage').documentId('gtp2026MediaPage'),
           ),
         ])),
+
+      S.listItem().title('GTP 2026 Resources').schemaType('gtp2026Resource').child(
+        S.list().title('Resources').items([
+          S.listItem().title('Page settings').child(S.document().schemaType('gtp2026ResourcesPage').documentId('gtp2026ResourcesPage')),
+          S.listItem().title('Resources & PDF downloads').child(S.documentTypeList('gtp2026Resource').title('Resources').defaultOrdering([{field: 'order', direction: 'asc'}])),
+        ]),
+      ),
+      S.listItem().title('GTP 2026 Videos').schemaType('gtp2026Video').child(
+        S.list().title('Videos').items([
+          S.listItem().title('Page settings (Media → Videos)').child(S.document().schemaType('gtp2026MediaPage').documentId('gtp2026MediaPage')),
+          ...[
+            {title: 'Daily Highlights', value: 'dailyHighlights'},
+            {title: 'Session Recordings', value: 'sessionRecordings'},
+            {title: 'GTP2026 Playlist', value: 'playlist'},
+          ].map(collection => S.listItem().title(collection.title).child(
+            S.documentList().title(collection.title).schemaType('gtp2026Video')
+              .filter('_type == "gtp2026Video" && collection == $collection').params({collection: collection.value})
+              .initialValueTemplates([S.initialValueTemplateItem(`gtp-video-${collection.value}`)])
+              .defaultOrdering([{field: 'day', direction: 'asc'}, {field: 'order', direction: 'asc'}]),
+          )),
+        ]),
+      ),
 
       S.divider(),
 

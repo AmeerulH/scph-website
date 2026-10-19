@@ -1,3 +1,6 @@
+import {gtp2026ResourceType} from './gtp2026ResourceType'
+import {gtp2026ResourcesPageType} from './gtp2026ResourcesPageType'
+import {gtp2026VideoType} from './gtp2026VideoType'
 import {cmsSandboxPageType} from './cmsSandboxPageType'
 import {gtpAboutPageBandObjectTypes} from './objects/gtpAboutPageBands'
 import {gtpAboutWhatIsBandType} from './objects/gtpAboutWhatIsBandType'
@@ -56,6 +59,9 @@ import {programmeResearchTableType} from './programmeResearchTableType'
 import {teamMemberType} from './teamMemberType'
 
 export const schemaTypes = [
+  gtp2026ResourceType,
+  gtp2026ResourcesPageType,
+  gtp2026VideoType,
   programmeSpeakerType,
   programmeResearchPresentationType,
   programmeResearchTableType,

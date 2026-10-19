@@ -77,11 +77,12 @@ const navItems: NavItem[] = [
     dropdown: [
       { label: "Photo Gallery", href: "/events/gtp-2026/media#photos" },
       { label: "Podcasts", href: "/events/gtp-2026/media#podcasts" },
-      { label: "Videos", href: "/events/gtp-2026/media#videos" },
+      { label: "Videos", href: "/events/gtp-2026/media/videos" },
       { label: "Visual Synthesis", href: "/events/gtp-2026/media/visual-synthesis" },
       { label: "On the News", href: "/events/gtp-2026/media/on-the-news" },
     ],
   },
+  { label: "Resources", href: "/events/gtp-2026/resources" },
   {
     label: "Get Involved",
     parentHref: "/events/gtp-2026/get-involved",
@@ -211,7 +212,7 @@ export function GtpNavbar() {
         </a>
 
         {/* Desktop nav links */}
-        <div className="hidden items-center gap-0.5 lg:flex">
+        <div className="hidden items-center gap-0.5 xl:flex">
           {navItems.map((item) =>
             item.dropdown ? (
               <DesktopDropdown
@@ -239,7 +240,7 @@ export function GtpNavbar() {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <Button variant="gtpCta" size="sm" asChild>
             <a
               href={GTP_2026_REGISTRATION_URL}
@@ -255,7 +256,7 @@ export function GtpNavbar() {
         <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <button
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:bg-white/10 lg:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:bg-white/10 xl:hidden"
               aria-label="Open menu"
             >
               <Menu className="h-4 w-4" />

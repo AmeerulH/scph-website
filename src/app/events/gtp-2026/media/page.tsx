@@ -4,6 +4,7 @@ import { MediaSectionNav } from "@/components/gtp/media/media-section-nav";
 import { PhotoAlbums } from "@/components/gtp/media/photo-albums";
 import { PodcastSection } from "@/components/gtp/media/podcast-section";
 import { VideoSection } from "@/components/gtp/media/video-section";
+import { getGtpVideoPreview } from "@/sanity/gtp-videos";
 import { getGtpMediaPage } from "@/sanity/gtp-media-page";
 import { getGtpVisualSynthesis, synthesisHeroMeta } from "@/sanity/gtp-visual-synthesis";
 
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function GtpMediaPage() {
-  const [media, synthesis] = await Promise.all([getGtpMediaPage(), getGtpVisualSynthesis()]);
+  const [media, synthesis, videoPreview] = await Promise.all([getGtpMediaPage(), getGtpVisualSynthesis(), getGtpVideoPreview()]);
 
   return (
     <div className="bg-gtp-dark-teal-dark">
@@ -39,7 +40,7 @@ export default async function GtpMediaPage() {
         counts={{
           albums: media.photos.albums.length,
           episodes: media.podcasts.episodes.length,
-          videos: media.videos.items.length,
+          videos: videoPreview.total,
         }}
       />
       <MediaSectionNav />
@@ -49,7 +50,7 @@ export default async function GtpMediaPage() {
         albums={media.photos.albums}
       />
       <PodcastSection podcasts={media.podcasts} />
-      <VideoSection videos={media.videos} />
+      <VideoSection title={media.videos.title} intro={media.videos.intro} preview={videoPreview} />
     </div>
   );
 }

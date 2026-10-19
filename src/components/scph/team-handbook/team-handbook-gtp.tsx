@@ -86,7 +86,19 @@ const gtpCmsPages = [
     docTypes: "gtp2026MediaPage",
     title: "Media",
     notes:
-      "Three sections on one page. **Photo gallery:** add albums (Day 1 to 4, Special Events, Action Workshops), drag in photos (about 9 per album; the first is shown large, add alt text), and paste Google Drive \"More photos\" links. Empty albums show GTP 2025 preview photos. **Podcasts:** cover art, Spotify / Apple Podcasts / YouTube links, and episodes (newest first). **Videos:** paste YouTube URLs; the first video is the featured player and thumbnails load automatically. Empty links and lists are hidden, never shown as broken. **Visual Synthesis** and **On the News** are separate subpages; their settings live in the same Media document.",
+      "Three sections on one page. **Photo gallery:** add albums (Day 1 to 4, Special Events, Action Workshops), drag in photos (about 9 per album; the first is shown large, add alt text), and paste Google Drive \"More photos\" links. Empty albums show GTP 2025 preview photos. **Podcasts:** cover art, Spotify / Apple Podcasts / YouTube links, and episodes (newest first). **Videos:** a short preview links to the dedicated Videos page. Manage individual videos under **GTP 2026 Videos** after the reviewed migration; until then the existing Media video list remains authoritative. **Visual Synthesis** and **On the News** are separate subpages; their settings live in the same Media document.",
+  },
+  {
+    route: "/events/gtp-2026/resources",
+    docTypes: "gtp2026ResourcesPage + gtp2026Resource",
+    title: "Resources",
+    notes: "Studio → **GTP 2026 Resources**. Page settings control the introduction and pending labels. Add each toolkit/report under **Resources & PDF downloads**, set Display order (lowest first; first item is featured), optional description/whole cover/credit, then labelled PDF downloads. Faith Based Toolkit has Summary booklet and Full toolkit under one resource. Leave individual files empty while pending; upload and publish to enable each download independently. File type and size are automatic. Publish resources separately; unpublishing removes them. No registration is required to download published PDFs.",
+  },
+  {
+    route: "/events/gtp-2026/media/videos",
+    docTypes: "gtp2026Video + gtp2026MediaPage",
+    title: "Media: Videos",
+    notes: "Studio → **GTP 2026 Videos**. Choose Daily Highlights, Session Recordings or GTP2026 Playlist, add a title and YouTube video link, then publish. Highlights and recordings need a conference day. A highlight with no link shows Coming soon. Recordings and playlist entries require a valid link. Speaker names and descriptions are searchable; Display order controls order within a day or the playlist. Optional durations, custom thumbnails and contributor credits are editor-managed. Upload to YouTube with embedding allowed; paste the video URL, never an iframe. Page headings, introductions, empty messages and channel URL remain in **Media → Videos**. Original video entries are retained for recovery; the developer migration enables the new library only after verifying the copy. Unpublishing videos after cutover never restores old entries.",
   },
   {
     route: "/events/gtp-2026/media/visual-synthesis",
