@@ -292,12 +292,26 @@ export const gtp2026MediaPageType = defineType({
     defineField({name: 'videosTitle', title: 'Section title', type: 'string', initialValue: 'Videos', group: 'videos'}),
     defineField({name: 'videosIntro', title: 'Intro', type: 'text', rows: 5, group: 'videos'}),
     defineField({name: 'youtubeChannelUrl', title: 'YouTube channel URL', type: 'url', group: 'videos'}),
+    defineField({name: 'useVideoLibrary', title: 'Individual video library active', type: 'boolean', group: 'videos', readOnly: true,
+      description: 'Enabled only by the reviewed migration after content parity checks. The original video list is retained for recovery.'}),
+    ...[
+      ['dailyHighlightsTitle', 'Daily Highlights heading', 'string'],
+      ['dailyHighlightsIntro', 'Daily Highlights introduction', 'text'],
+      ['sessionRecordingsTitle', 'Session recordings heading', 'string'],
+      ['sessionRecordingsIntro', 'Session recordings introduction', 'text'],
+      ['playlistTitle', 'Playlist heading', 'string'],
+      ['playlistIntro', 'Playlist introduction', 'text'],
+      ['videosEmptyMessage', 'Empty collection message', 'text'],
+      ['videosPendingLabel', 'Coming soon label', 'string'],
+    ].map(([name, title, type]) => defineField({name, title, type, group: 'videos'})),
+
     defineField({
       name: 'videos',
       title: 'Videos',
       type: 'array',
       of: [videoItem],
-      description: 'The first video is the featured player.',
+      description: 'Original video list. Used until the reviewed migration enables the individual library; retained afterwards for recovery.',
+      readOnly: ({document}) => document?.useVideoLibrary === true,
       group: 'videos',
     }),
 

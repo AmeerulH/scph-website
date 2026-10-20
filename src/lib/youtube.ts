@@ -29,5 +29,5 @@ export function youTubeThumbnailUrl(id: string): string {
 }
 
 export function youTubeEmbedUrl(id: string): string {
-  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
+  return `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1`;
 }

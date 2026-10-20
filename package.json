@@ -39,7 +39,12 @@
     "seed-footers": "npx tsx scripts/seed-footers.ts",
     "inventory-drive-folder": "npx tsx scripts/inventory-drive-folder.ts",
     "unlighthouse:scan": "node scripts/unlighthouse-scan.mjs",
-    "unlighthouse:scan:desktop": "node scripts/unlighthouse-scan.mjs --desktop"
+    "unlighthouse:scan:desktop": "node scripts/unlighthouse-scan.mjs --desktop",
+    "seed-gtp-resources-page": "npx tsx scripts/seed-gtp-resources-page.ts",
+    "seed-gtp-video-library": "npx tsx scripts/seed-gtp-video-library.ts",
+    "migrate-gtp-media-videos": "npx tsx scripts/migrate-gtp-media-videos.ts",
+    "test-gtp-library": "npx tsx scripts/test-gtp-library.ts",
+    "test-gtp-library:browser": "npx tsx scripts/test-gtp-library-browser.ts"
   },
   "dependencies": {
     "@sanity/client": "^7.22.1",

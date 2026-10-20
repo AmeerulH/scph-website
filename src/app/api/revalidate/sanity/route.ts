@@ -32,7 +32,10 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   gtp2026FaqGroup: ["/events/gtp-2026/faq"],
   gtp2026GetInvolvedPage: ["/events/gtp-2026/get-involved"],
   gtp2026SubmissionsPage: ["/events/gtp-2026/submissions"],
-  gtp2026MediaPage: ["/events/gtp-2026/media", "/events/gtp-2026/media/visual-synthesis", "/events/gtp-2026/media/on-the-news"],
+  gtp2026Resource: ["/events/gtp-2026/resources"],
+  gtp2026ResourcesPage: ["/events/gtp-2026/resources"],
+  gtp2026Video: ["/events/gtp-2026/media", "/events/gtp-2026/media/videos"],
+  gtp2026MediaPage: ["/events/gtp-2026/media/videos", "/events/gtp-2026/media", "/events/gtp-2026/media/visual-synthesis", "/events/gtp-2026/media/on-the-news"],
   gtp2026NewsArticle: ["/events/gtp-2026/media/on-the-news"],
   gtp2026SustainabilityPage: [
     "/events/gtp-2026/sustainability",

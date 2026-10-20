@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-19",
+  "mode": "mobile",
+  "firstScan": [
+    {
+      "path": "/events/gtp-2026/media",
+      "score": 0.93,
+      "performance": 0.78,
+      "accessibility": 0.97,
+      "best-practices": 0.96,
+      "seo": 1
+    },
+    {
+      "path": "/events/gtp-2026/media/videos",
+      "score": 0.94,
+      "performance": 0.82,
+      "accessibility": 0.96,
+      "best-practices": 0.96,
+      "seo": 1
+    },
+    {
+      "path": "/events/gtp-2026/resources",
+      "score": 0.95,
+      "performance": 0.86,
+      "accessibility": 0.96,
+      "best-practices": 0.96,
+      "seo": 1
+    }
+  ],
+  "mediaConfirmation": {
+    "samples": 3,
+    "selection": "Unlighthouse computeMedianRun",
+    "results": [
+      {
+        "path": "/events/gtp-2026/media",
+        "score": 0.93,
+        "performance": 0.8,
+        "accessibility": 0.97,
+        "best-practices": 0.96,
+        "seo": 1
+      }
+    ]
+  },
+  "notes": [
+    "No source changes between scans.",
+    "Media initial 78 retained; follow-up median 80 has little margin.",
+    "Current published content only; not field performance."
+  ]
+}

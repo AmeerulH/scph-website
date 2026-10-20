@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "port": 3027,
+      "path": "/dev/gtp-library-review?view=resources&case=partial",
+      "status": 404,
+      "sample": false
+    },
+    {
+      "port": 3027,
+      "path": "/dev/gtp-library-review/child?VERCEL_ENV=preview&GTP_LIBRARY_REVIEW_MODE=1",
+      "status": 404,
+      "sample": false
+    },
+    {
+      "port": 3028,
+      "path": "/dev/gtp-library-review?view=resources&case=partial",
+      "status": 200,
+      "sample": true
+    },
+    {
+      "port": 3028,
+      "path": "/dev/gtp-library-review?case=many",
+      "status": 200,
+      "sample": true
+    },
+    {
+      "port": 3028,
+      "path": "/events/gtp-2026/resources?view=resources&case=partial",
+      "status": 200,
+      "sample": false
+    },
+    {
+      "port": 3027,
+      "path": "/events/gtp-2026/media/videos",
+      "status": 200,
+      "sample": false
+    }
+  ]
+}

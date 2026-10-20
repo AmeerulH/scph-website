@@ -1,0 +1,121 @@
+import { chromium } from "playwright";
+import assert from "node:assert/strict";
+import { expect } from "playwright/test";
+import fs from "node:fs";
+import { resolve } from "node:path";
+async function main() {
+ const browser=await chromium.launch({channel:'chrome',headless:true});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const origin=process.env.GTP_LIBRARY_TEST_ORIGIN || 'http://127.0.0.1:3026';
+ const out=resolve('.impeccable/review/gtp-library');
+ fs.mkdirSync(out,{recursive:true});
+ try {
+ const errors: string[]=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(origin+'/events/gtp-2026/media/videos');
+ await page.getByRole('heading',{name:'Videos',exact:true}).waitFor();
+ assert.equal(await page.locator('iframe').count(),0);
+ assert.equal(await page.locator('#daily-highlights li').count(),4);
+ assert.equal(await page.getByRole('link',{name:'Resources',exact:true}).count(),1);
+ const first=page.getByRole('button',{name:'Play All Rise! | Wellcome',exact:true});
+ await first.click();
+ await page.getByRole('dialog').waitFor();
+ assert.equal(await page.locator('iframe').count(),1);
+ assert.match((await page.locator('iframe').getAttribute('src')) || '',/youtube-nocookie.com\/embed\/IR0MfiOyHtk/);
+ await page.keyboard.press('Escape');
+ await page.getByRole('dialog').waitFor({state:'hidden'});
+ assert.equal(await page.locator('iframe').count(),0);
+ await page.waitForFunction(()=>document.activeElement?.getAttribute('aria-label')==='Play All Rise! | Wellcome');
+ await page.getByRole('button',{name:'Play Living River',exact:true}).click();
+ assert.equal(await page.locator('iframe').count(),1);
+ await page.getByRole('button',{name:'Close video'}).click();
+ await page.goto(origin+'/events/gtp-2026/resources');
+ await page.getByRole('heading',{name:'Resources',exact:true}).waitFor();
+ await page.goto(origin+'/dev/gtp-library-review?view=resources&case=partial');
+ assert.equal(await page.locator('a[href*="sample-booklet.pdf"]').count(),1);
+ assert.equal(await page.locator('a').filter({hasText:'Full toolkit'}).count(),0);
+ await page.getByRole('heading',{name:/^(Resources|Videos)$/,exact:true}).waitFor({state:'visible'});
+ await page.evaluate(()=>document.fonts.ready);
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('heading',{name:/^(Resources|Videos)$/,exact:true}).waitFor({state:'visible'});
+ await page.evaluate(()=>document.fonts.ready);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ await page.getByRole('button',{name:'Open menu'}).click();
+ await page.getByRole('link',{name:'Resources',exact:true}).last().click();
+ await page.waitForURL(url=>url.pathname==='/events/gtp-2026/resources');
+ await page.goto(origin+'/dev/gtp-library-review?case=many');
+ await page.getByLabel('Search recordings').fill('Sample speaker 2');
+ await page.getByLabel('Conference day').selectOption('2');
+ await page.getByRole('button',{name:'Search',exact:true}).click();
+ await page.waitForURL(url=>url.searchParams.get('day')==='2');
+ assert.equal(await page.locator('#session-recordings li').count(),12);
+ assert.equal(new URL(page.url()).searchParams.get('case'),'many');
+ await expect(page.getByLabel('Search recordings')).toHaveValue('Sample speaker 2');
+ await page.getByRole('link',{name:'Clear filters'}).click();
+ await page.waitForURL(url=>!url.searchParams.has('q'));
+ await expect(page.getByLabel('Conference day')).toHaveValue('all');
+ await expect(page.getByLabel('Search recordings')).toHaveValue('');
+ await page.goBack();
+ await page.waitForURL(url=>url.searchParams.get('day')==='2');
+ await expect(page.getByLabel('Conference day')).toHaveValue('2');
+ await expect(page.getByLabel('Search recordings')).toHaveValue('Sample speaker 2');
+ await page.getByRole('link',{name:'Clear filters'}).click();
+ await page.waitForURL(url=>!url.searchParams.has('q'));
+ await page.getByRole('link',{name:'Next',exact:true}).click();
+ await page.waitForURL(url=>url.searchParams.get('page')==='2');
+ assert.equal(await page.locator('#session-recordings li').count(),12);
+ assert.equal(new URL(page.url()).searchParams.get('case'),'many');
+ await page.goBack();
+ assert.equal(new URL(page.url()).searchParams.has('page'),false);
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto(origin+'/dev/gtp-library-review');
+ await page.getByRole('heading',{name:/^(Resources|Videos)$/,exact:true}).waitFor({state:'visible'});
+ await page.evaluate(()=>document.fonts.ready);
+ await page.setViewportSize({width:390,height:844});
+ await page.getByRole('heading',{name:/^(Resources|Videos)$/,exact:true}).waitFor({state:'visible'});
+ await page.evaluate(()=>document.fonts.ready);
+ for(const view of ['resources','videos'])for(const variant of ['long','empty','error']){
+  await page.goto(origin+`/dev/gtp-library-review?view=${view}&case=${variant}`);
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,view+' '+variant+' overflow');
+  if(variant==='error')assert.match(await page.locator('[role=status]').innerText(),/could not be loaded/);
+ }
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:width===390?844:1000});
+  await page.goto(origin+'/dev/gtp-library-review');
+  const collections=page.getByRole('navigation',{name:'Video collections'});
+  for(const [name,anchor] of [['Session Recordings','#session-recordings'],['GTP2026 Playlist','#gtp2026-playlist']]){
+   await collections.getByRole('link',{name,exact:true}).click();
+   await expect(collections.locator('[aria-current="true"]')).toHaveAttribute('href',anchor);
+  }
+  const bounds=await collections.boundingBox();
+  assert.ok(bounds&&bounds.width<width-16,'The selector stays a floating pill within the viewport');
+  const selected=await collections.locator('[aria-current="true"]').boundingBox();
+  assert.ok(selected&&selected.x>=bounds.x&&selected.x+selected.width<=bounds.x+bounds.width,'The selected pill stays visible');
+  await collections.getByRole('link',{name:'Session Recordings',exact:true}).click();
+  await expect(page.getByLabel('Conference day')).toHaveCSS('padding-right','48px');
+  assert.equal(await page.getByLabel('Conference day').evaluate(el=>{
+   const select=el.getBoundingClientRect(),icon=el.parentElement!.querySelector('svg')!.getBoundingClientRect();
+   return select.right-icon.right;
+  }),16);
+  await collections.getByRole('link',{name:'Daily Highlights',exact:true}).focus();
+  await page.keyboard.press('Enter');
+  await expect(collections.locator('[aria-current="true"]')).toHaveAttribute('href','#daily-highlights');
+  await expect(collections.getByRole('link',{name:'Daily Highlights',exact:true})).toHaveCSS('transition-duration','0s');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ }
+ await page.goto(origin+'/events/gtp-2026/media');
+ const mediaNav=page.getByRole('navigation',{name:'Jump to section'});
+ await mediaNav.getByRole('link',{name:'Videos',exact:true}).click();
+ await expect(mediaNav.locator('[aria-current="true"]')).toHaveAttribute('href','#videos');
+ await page.setViewportSize({width:1280,height:900});
+ await page.goto(origin+'/events/gtp-2026/media/videos');
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+ const nav=await page.locator('header nav').first().evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+ assert.ok(nav.scroll<=nav.width);
+ await page.setViewportSize({width:1024,height:768});
+ assert.equal(await page.getByRole('button',{name:'Open menu'}).isVisible(),true);
+ fs.writeFileSync(out+'/browser-results.json',JSON.stringify({passed:true,errors,checks:['public routes','four pending days','legacy content preservation','single iframe','Escape and focus restoration','partial downloads','mobile navigation','search/day filter','pagination and Back','long/empty/error states','floating collection pills and short final-section scrollspy','native dropdown chevron spacing','keyboard pill activation','existing Media selector','1280/1024 navigation']},null,2));
+ assert.deepEqual(errors,[]);
+ console.log('Browser checks passed.');
+ } finally { await browser.close(); }
+}
+main().catch(error => { console.error(error); process.exitCode=1; });
