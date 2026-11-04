@@ -1,0 +1,48 @@
+name: Deploy Sanity Studio
+
+on:
+  push:
+    branches:
+      - cursor/deploy-sanity-schema-65fc
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scph-sanity-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: studio
+    env:
+      CI: "true"
+      SANITY_DATASET: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: studio/package-lock.json
+      - name: Install Studio dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Deploy hosted Studio and production schema
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: |
+          if [ -z "$SANITY_AUTH_TOKEN" ]; then
+            echo "::error::SANITY_AUTH_TOKEN is not available to this workflow."
+            exit 1
+          fi
+          npm run deploy -- --yes --schema-required
+      - name: Confirm the schema registry
+        env:
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: npx sanity schema list
