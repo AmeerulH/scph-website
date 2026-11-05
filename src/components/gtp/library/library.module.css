@@ -16,8 +16,6 @@
 .credit { margin-top: .75rem; font-size: .875rem; line-height: 1.5; }
 .downloads { margin-top: 1.75rem; display: flex; flex-direction: column; gap: .75rem; }
 .forms { margin-top: 1.75rem; display: grid; gap: .75rem; }
-.formAction { display: flex; flex-direction: column; align-items: stretch; gap: .35rem; }
-.formPending { font-size: .875rem; font-weight: 500; line-height: 1.4; color: #42626a; }
 .download { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; min-height: 64px; border: 1px solid #a5bdc2; border-radius: 12px; padding: 1rem 1.25rem; text-decoration: none; }
 .downloadName { display: flex; align-items: center; gap: .75rem; font-weight: 600; }
 .downloadMeta { font-size: .875rem; font-weight: 500; }

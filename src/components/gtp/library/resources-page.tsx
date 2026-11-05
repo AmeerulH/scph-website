@@ -22,23 +22,21 @@ function Downloads({ resource, pendingLabel }: { resource: Resource; pendingLabe
 function Forms({ resource, pendingLabel }: { resource: Resource; pendingLabel: string }) {
   if (!resource.forms?.length) return null;
   return <div className={styles.forms} role="group" aria-label={`${resource.title} forms`}>
-    {resource.forms.map(form => {
-      const pendingId = `${resource.id}-${form.id}-pending`;
-      return form.href ? (
-        <Button key={form.id} variant="gtpCta" asChild className="w-full">
-          <a href={form.href} target="_blank" rel="noopener noreferrer">
-            {form.label}
-            <ArrowUpRight aria-hidden />
-            <span className="sr-only">(opens in a new tab)</span>
-          </a>
-        </Button>
-      ) : (
-        <div key={form.id} className={styles.formAction}>
-          <Button type="button" variant="gtpCta" disabled aria-describedby={pendingId} className="w-full disabled:opacity-100">{form.label}</Button>
-          <p id={pendingId} className={styles.formPending}>{pendingLabel}</p>
-        </div>
-      );
-    })}
+    {resource.forms.map(form => form.href ? (
+      <Button key={form.id} variant="gtpCta" asChild className="w-full">
+        <a href={form.href} target="_blank" rel="noopener noreferrer">
+          {form.label}
+          <ArrowUpRight aria-hidden />
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
+      </Button>
+    ) : (
+      <Button key={form.id} type="button" variant="outline" disabled
+        className="h-auto min-h-11 w-full flex-col gap-0.5 border-gtp-orange/35 bg-gtp-orange/15 px-5 py-2.5 text-[#7a3a0e] shadow-none hover:bg-gtp-orange/15 hover:text-[#7a3a0e] hover:shadow-none hover:scale-100 disabled:opacity-100">
+        <span>{form.label}</span>
+        <span className="text-xs font-medium">{pendingLabel}</span>
+      </Button>
+    ))}
   </div>;
 }
 
