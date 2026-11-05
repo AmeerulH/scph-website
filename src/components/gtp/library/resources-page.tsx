@@ -1,6 +1,7 @@
 import Image from "next/image";
-import { Download, FileText } from "lucide-react";
+import { ArrowUpRight, Download, FileText } from "lucide-react";
 import type { Resource, ResourcePageData } from "@/lib/gtp-resources";
+import { Button } from "@/components/ui/button";
 import { LibraryHeader } from "./library-header";
 import styles from "./library.module.css";
 
@@ -18,6 +19,31 @@ function Downloads({ resource, pendingLabel }: { resource: Resource; pendingLabe
   </ul>;
 }
 
+function Forms({ resource, pendingLabel }: { resource: Resource; pendingLabel: string }) {
+  if (!resource.forms?.length) return null;
+  return <div className={styles.forms} role="group" aria-label={`${resource.title} forms`}>
+    {resource.forms.map(form => form.href ? (
+      <Button key={form.id} variant="gtpCta" asChild className="w-full">
+        <a href={form.href} target="_blank" rel="noopener noreferrer">
+          {form.label}
+          <ArrowUpRight aria-hidden />
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
+      </Button>
+    ) : (
+      <Button key={form.id} type="button" variant="outline" disabled
+        className="h-auto min-h-11 w-full flex-col gap-0.5 border-gtp-orange/35 bg-gtp-orange/15 px-5 py-2.5 text-[#7a3a0e] shadow-none hover:bg-gtp-orange/15 hover:text-[#7a3a0e] hover:shadow-none hover:scale-100 disabled:opacity-100">
+        <span>{form.label}</span>
+        <span className="text-xs font-medium">{pendingLabel}</span>
+      </Button>
+    ))}
+  </div>;
+}
+
+function ResourceFiles({ resource, pendingLabel }: { resource: Resource; pendingLabel: string }) {
+  return <><Downloads resource={resource} pendingLabel={pendingLabel} /><Forms resource={resource} pendingLabel={pendingLabel} /></>;
+}
+
 function Cover({ resource }: { resource: Resource }) {
   return resource.cover ? <figure><Image src={resource.cover.src} alt={resource.cover.alt || `${resource.title} cover`}
     width={resource.cover.width} height={resource.cover.height} sizes="(min-width: 900px) 450px, 90vw" className={styles.cover} />
@@ -33,14 +59,14 @@ export function ResourcesPage({ data }: { data: ResourcePageData }) {
         <article className={styles.feature}>
           <div><h2>{featured.title}</h2>{featured.description && <p className={styles.description}>{featured.description}</p>}
             {!featured.cover && featured.credit && <p className={styles.credit}>{featured.credit}</p>}
-            {featured.cover && <Downloads resource={featured} pendingLabel={data.settings.pendingLabel} />}</div>
-          {featured.cover ? <Cover resource={featured} /> : <Downloads resource={featured} pendingLabel={data.settings.pendingLabel} />}
+            {featured.cover && <ResourceFiles resource={featured} pendingLabel={data.settings.pendingLabel} />}</div>
+          {featured.cover ? <Cover resource={featured} /> : <ResourceFiles resource={featured} pendingLabel={data.settings.pendingLabel} />}
         </article>
         {remaining.map(resource => <article key={resource.id} className={styles.resource}>
           <div><h2>{resource.title}</h2>{resource.description && <p className={styles.description}>{resource.description}</p>}
             {!resource.cover && resource.credit && <p className={styles.credit}>{resource.credit}</p>}
-            {resource.cover && <Downloads resource={resource} pendingLabel={data.settings.pendingLabel} />}</div>
-          {resource.cover ? <Cover resource={resource} /> : <Downloads resource={resource} pendingLabel={data.settings.pendingLabel} />}
+            {resource.cover && <ResourceFiles resource={resource} pendingLabel={data.settings.pendingLabel} />}</div>
+          {resource.cover ? <Cover resource={resource} /> : <ResourceFiles resource={resource} pendingLabel={data.settings.pendingLabel} />}
         </article>)}
       </> : <div className={styles.notice}><h2>{data.settings.emptyTitle}</h2><p>{data.settings.emptyMessage}</p></div>}
     </div></div>

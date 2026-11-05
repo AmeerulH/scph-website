@@ -1,5 +1,11 @@
 import {defineArrayMember, defineField, defineType} from 'sanity'
 
+const FAITH_TOOLKIT_RESOURCE_ID = 'gtp-resource-faith-based-toolkit'
+
+function isFaithToolkit(document?: {_id?: string}) {
+  return document?._id?.replace(/^drafts\./, '') === FAITH_TOOLKIT_RESOURCE_ID
+}
+
 export const gtp2026ResourceType = defineType({
   name: 'gtp2026Resource', title: 'GTP 2026 Resource', type: 'document',
   fields: [
@@ -20,6 +26,20 @@ export const gtp2026ResourceType = defineType({
         })}),
       ], preview: {select: {title: 'label'}}})], validation: rule => rule.min(1),
     }),
+    defineField({name: 'successStoryFormLabel', title: 'Success story button label', type: 'string', initialValue: 'Share a success story',
+      description: 'Shown under the Faith Based Toolkit downloads. Leave the URL empty to keep Coming soon.',
+      hidden: ({document}) => !isFaithToolkit(document)}),
+    defineField({name: 'successStoryFormUrl', title: 'Success story form URL', type: 'url',
+      description: 'Paste the Google Form link, then publish. HTTPS only.',
+      hidden: ({document}) => !isFaithToolkit(document),
+      validation: rule => rule.uri({scheme: ['https'], allowRelative: false})}),
+    defineField({name: 'feedbackFormLabel', title: 'Feedback button label', type: 'string', initialValue: 'Share feedback',
+      description: 'Shown under the success story button.',
+      hidden: ({document}) => !isFaithToolkit(document)}),
+    defineField({name: 'feedbackFormUrl', title: 'Feedback form URL', type: 'url',
+      description: 'Paste the Google Form link, then publish. HTTPS only.',
+      hidden: ({document}) => !isFaithToolkit(document),
+      validation: rule => rule.uri({scheme: ['https'], allowRelative: false})}),
   ],
   orderings: [{title: 'Display order', name: 'displayOrder', by: [{field: 'order', direction: 'asc'}, {field: 'title', direction: 'asc'}]}],
   preview: {select: {title: 'title', media: 'cover'}},

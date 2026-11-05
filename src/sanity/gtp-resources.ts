@@ -6,6 +6,7 @@ const resourcesQuery = defineQuery(`{
   "settings": *[_id == "gtp2026ResourcesPage"][0]{title, intro, emptyTitle, emptyMessage, pendingLabel},
   "resources": *[_type == "gtp2026Resource" && !(_id in path("drafts.**")) && !(_id in path("versions.**"))]{
     _id, title, description, credit, order,
+    successStoryFormLabel, successStoryFormUrl, feedbackFormLabel, feedbackFormUrl,
     "cover": {"url": cover.asset->url, "alt": cover.alt,
       "width": cover.asset->metadata.dimensions.width, "height": cover.asset->metadata.dimensions.height},
     downloads[]{_key, label, "url": file.asset->url, "mimeType": file.asset->mimeType,
