@@ -15,6 +15,9 @@
 .cover { width: 100%; max-height: 520px; object-fit: contain; object-position: top; }
 .credit { margin-top: .75rem; font-size: .875rem; line-height: 1.5; }
 .downloads { margin-top: 1.75rem; display: flex; flex-direction: column; gap: .75rem; }
+.forms { margin-top: 1.75rem; display: grid; gap: .75rem; }
+.formAction { display: flex; flex-direction: column; align-items: stretch; gap: .35rem; }
+.formPending { font-size: .875rem; font-weight: 500; line-height: 1.4; color: #42626a; }
 .download { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; min-height: 64px; border: 1px solid #a5bdc2; border-radius: 12px; padding: 1rem 1.25rem; text-decoration: none; }
 .downloadName { display: flex; align-items: center; gap: .75rem; font-weight: 600; }
 .downloadMeta { font-size: .875rem; font-weight: 500; }
@@ -96,6 +99,6 @@ a.download:focus-visible, .button:focus-visible, .close:focus-visible, .videoBut
   a.download:active:not(:focus-visible), .button:active:not(:focus-visible), .close:active:not(:focus-visible), .videoButton:active:not(:focus-visible) .play, a.download:hover .downloadName svg { transform: none; }
 }
 .dialog[data-instant], .overlay[data-instant] { transition-duration: 0ms !important; }
-@media (min-width: 640px) { .highlights { grid-template-columns: repeat(2,minmax(0,1fr)); } .playlistGrid { grid-template-columns: repeat(2,minmax(0,1fr)); } .recording .videoButton { grid-template-columns: 220px minmax(0,1fr); } }
+@media (min-width: 640px) { .forms { grid-template-columns: repeat(2, minmax(0, 1fr)); } .highlights { grid-template-columns: repeat(2,minmax(0,1fr)); } .playlistGrid { grid-template-columns: repeat(2,minmax(0,1fr)); } .recording .videoButton { grid-template-columns: 220px minmax(0,1fr); } }
 @media (min-width: 900px) { .feature { grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: 5rem; } .resource { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 4rem; } .playlistGrid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 @media (max-width: 639px) { .header { padding-top: 8rem; } .dialog { padding: 1rem; } }

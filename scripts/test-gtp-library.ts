@@ -63,7 +63,32 @@ test("PDF validation, safe download headers and partial availability", () => {
   assert.equal(resource.downloads[0].size, "1.0 MB");
   assert.ok(resource.downloads.slice(1).every(d => !d.href));
   assert.equal(resolveResource({_id: "drafts.toolkit", title: "Toolkit"}), undefined);
+  assert.equal(resource.forms, undefined);
   assert.equal(resolveResourceSettings({title: "Editor title", intro: " "}).title, "Editor title");
+});
+test("Faith toolkit forms stay pending until a safe HTTPS link is published", () => {
+  const id = "gtp-resource-faith-based-toolkit";
+  const pending = resolveResource({_id: id, title: "Faith Based Toolkit"})!;
+  assert.deepEqual(pending.forms?.map(form => [form.label, form.href]), [
+    ["Share a success story", undefined],
+    ["Share feedback", undefined],
+  ]);
+  const live = resolveResource({
+    _id: id, title: "Faith Based Toolkit",
+    successStoryFormLabel: "  Our stories  ",
+    successStoryFormUrl: " https://docs.google.com/forms/d/e/example/viewform ",
+    feedbackFormLabel: " ",
+    feedbackFormUrl: "https://user:pass@docs.google.com/forms/d/e/hidden/viewform",
+  })!;
+  assert.equal(live.forms?.[0].label, "Our stories");
+  assert.equal(live.forms?.[0].href, "https://docs.google.com/forms/d/e/example/viewform");
+  assert.equal(live.forms?.[1].label, "Share feedback");
+  assert.equal(live.forms?.[1].href, undefined);
+  for (const url of ["http://docs.google.com/forms/d/e/example/viewform", "javascript:alert(1)", "not a url"]) {
+    assert.equal(resolveResource({_id: id, title: "Faith Based Toolkit", feedbackFormUrl: url})!.forms?.[1].href, undefined);
+  }
+  assert.equal(resolveResource({_id: "gtp-resource-kl-tipping-points-declaration", title: "Declaration", successStoryFormUrl: "https://docs.google.com/forms/d/e/example/viewform"})!.forms, undefined);
+  assert.equal(resolveResource({_id: `drafts.${id}`, title: "Faith Based Toolkit"}), undefined);
 });
 test("Migration preserves all original content and image references", () => {
   const source = {_id: "gtp2026MediaPage", _type: "gtp2026MediaPage", videos: [{_key: "existing", _type: "gtpMediaVideo", title: "Original title", topic: "Original topic", youtubeUrl: base.youtubeUrl, thumbnail: {asset: {_ref: "image-original"}}}]};

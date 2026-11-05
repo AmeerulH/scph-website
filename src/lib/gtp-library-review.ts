@@ -5,7 +5,8 @@ import { VIDEO_DEFAULTS, selectVideoPage, type LibraryVideo, type VideoPageData,
 export function resourceReviewData(variant: string): ResourcePageData {
   const resources = [
     { id: "sample-toolkit", title: "Sample Faith Based Toolkit", order: 0, description: "Sample content for layout review. The final booklet, toolkit and descriptions will be supplied by the conference team.",
-      downloads: [{ id: "summary", label: "Summary booklet", ...(variant === "partial" ? {href: "https://cdn.sanity.io/files/y0tkemxm/development/sample-booklet.pdf?dl=sample-booklet.pdf", size: "2.4 MB"} : {}) }, { id: "full", label: "Full toolkit" }] },
+      downloads: [{ id: "summary", label: "Summary booklet", ...(variant === "partial" ? {href: "https://cdn.sanity.io/files/y0tkemxm/development/sample-booklet.pdf?dl=sample-booklet.pdf", size: "2.4 MB"} : {}) }, { id: "full", label: "Full toolkit" }],
+      forms: [{ id: "success-story", label: "Share a success story", ...(variant === "partial" ? {href: "https://example.com/faith-toolkit-success-story"} : {}) }, { id: "feedback", label: "Share feedback" }] },
     { id: "sample-declaration", title: "Sample KL Tipping Points Declaration", order: 10, downloads: [{ id: "declaration", label: "Declaration" }] },
     { id: "sample-report", title: "Sample Outcome Report for Potsdam Handover", order: 20, downloads: [{ id: "report", label: "Outcome report" }] },
   ];

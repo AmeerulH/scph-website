@@ -92,7 +92,7 @@ const gtpCmsPages = [
     route: "/events/gtp-2026/resources",
     docTypes: "gtp2026ResourcesPage + gtp2026Resource",
     title: "Resources",
-    notes: "Studio → **GTP 2026 Resources**. Page settings control the introduction and pending labels. Add each toolkit/report under **Resources & PDF downloads**, set Display order (lowest first; first item is featured), optional description/whole cover/credit, then labelled PDF downloads. Faith Based Toolkit has Summary booklet and Full toolkit under one resource. Leave individual files empty while pending; upload and publish to enable each download independently. File type and size are automatic. Publish resources separately; unpublishing removes them. No registration is required to download published PDFs.",
+    notes: "Studio → **GTP 2026 Resources**. Page settings control the introduction and pending labels. Add each toolkit/report under **Resources & PDF downloads**, set Display order (lowest first; first item is featured), optional description/whole cover/credit, then labelled PDF downloads. Faith Based Toolkit has Summary booklet and Full toolkit under one resource. The same document has two form buttons under those downloads: Share a success story and Share feedback. Paste each HTTPS form link and publish to turn that button into a link. Leave a URL empty and the button stays Coming soon. These fields appear only on Faith Based Toolkit. Leave individual files empty while pending; upload and publish to enable each download independently. File type and size are automatic. Publish resources separately; unpublishing removes them. No registration is required to download published PDFs.",
   },
   {
     route: "/events/gtp-2026/media/videos",

@@ -1,4 +1,7 @@
+import { safeRegistrationUrl } from "./gtp-activity-registration";
 import { libraryCopy, libraryImage, publishedId, sanityAssetUrl, type LibraryImage, type RawLibraryImage } from "./gtp-library";
+
+export const FAITH_TOOLKIT_RESOURCE_ID = "gtp-resource-faith-based-toolkit";
 
 export const RESOURCE_DEFAULTS = {
   title: "Resources",
@@ -14,10 +17,13 @@ export type RawResource = {
   order?: number | null; cover?: RawLibraryImage | null;
   downloads?: ({ _key?: string | null; label?: string | null; url?: string | null;
     mimeType?: string | null; size?: number | null; filename?: string | null } | null)[] | null;
+  successStoryFormLabel?: string | null; successStoryFormUrl?: string | null;
+  feedbackFormLabel?: string | null; feedbackFormUrl?: string | null;
 };
 export type ResourceDownload = { id: string; label: string; href?: string; size?: string };
+export type ResourceForm = { id: string; label: string; href?: string };
 export type Resource = { id: string; title: string; description?: string; credit?: string; order: number;
-  cover?: LibraryImage; downloads: ResourceDownload[] };
+  cover?: LibraryImage; downloads: ResourceDownload[]; forms?: ResourceForm[] };
 export type ResourcePageData = { settings: ResourceSettings; resources: Resource[]; unavailable: boolean };
 
 export function resolveResourceSettings(raw?: RawResourceSettings | null): ResourceSettings {
@@ -31,6 +37,10 @@ export function resolveResource(raw: RawResource): Resource | undefined {
   return {
     id: raw._id, title, description: raw.description?.trim() || undefined, credit: raw.credit?.trim() || undefined,
     order: Number.isFinite(raw.order) ? raw.order! : 1000, cover: libraryImage(raw.cover),
+    forms: raw._id === FAITH_TOOLKIT_RESOURCE_ID ? [
+      { id: "success-story", label: libraryCopy(raw.successStoryFormLabel, "Share a success story"), href: safeRegistrationUrl(raw.successStoryFormUrl ?? undefined) ?? undefined },
+      { id: "feedback", label: libraryCopy(raw.feedbackFormLabel, "Share feedback"), href: safeRegistrationUrl(raw.feedbackFormUrl ?? undefined) ?? undefined },
+    ] : undefined,
     downloads: (raw.downloads ?? []).flatMap((file, i) => {
       const label = file?.label?.trim();
       if (!file || !label) return [];
