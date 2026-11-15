@@ -1,6 +1,9 @@
 # Design System
 
-The MPN design system is derived directly from the approved HTML prototype (`media-portal-demo.html`). The prototype is the source of truth — no new design decisions in implementation.
+The MPN design system is derived directly from the approved HTML prototype
+(`media-portal-demo.html`). The prototype is the source of truth. See
+[`../DESIGN.md`](../DESIGN.md) for the canonical implementation contract; no
+new design decisions are permitted in implementation.
 
 ---
 

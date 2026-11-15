@@ -5,7 +5,7 @@
 | Route | Description |
 |-------|-------------|
 | `/events` | Events listing — public page |
-| `/webinars` | Webinar library — members only |
+| `/webinars` | Webinar library — public |
 
 ---
 
@@ -50,7 +50,9 @@ There's no cron job — admin manually sets `status = 'past'` after an event end
 
 ### UI (from POC)
 
-- **Access:** Members only
+- **Access:** Public. The catalogue and embeds are indexable; a future
+  members-only webinar must withhold its video URL until its access rule is
+  explicitly designed.
 - **Layout:** Filter sidebar (Theme) + webinar grid
 - **Webinar card:** thumbnail, title, speaker, date, duration, theme badge
 - Clicking a card opens an embedded video player (YouTube/Vimeo iframe) in a modal

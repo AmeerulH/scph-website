@@ -29,7 +29,10 @@
 - Expertise tags
 - Bio paragraph
 - Contact buttons:
-  - **Email** — copies email to clipboard. Only shown if `email` field is set AND viewer is logged in (RLS gates the email column to authenticated users)
+  - **Email** — copies email to clipboard. Only shown if `email` is set and
+    the viewer is logged in. Public queries use `experts_public`, which omits
+    email; authenticated server-side code returns contact email after session
+    validation because RLS cannot gate an individual column.
   - **LinkedIn** — opens linkedin_url in new tab (always visible)
 - Publication count badge
 
@@ -40,7 +43,7 @@
 ### Listing
 ```ts
 const { data } = await supabase
-  .from('experts')
+  .from('experts_public')
   .select('id, full_name, role, organisation, country, expertise, photo_url, publication_count')
   .eq('is_active', true)
   .order('full_name')
@@ -59,8 +62,8 @@ query = query.eq('country', country)
 ### Detail page
 ```ts
 const { data } = await supabase
-  .from('experts')
-  .select('*')   // includes email (RLS ensures members only can see it)
+  .from('experts_public')
+  .select('*')   // public projection; authenticated contact lookup is separate
   .eq('id', id)
   .single()
 ```

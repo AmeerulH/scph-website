@@ -31,7 +31,7 @@
 
 - Fields: Title, Outlet, Published Date, Country, Language, Type, Theme, Description, Tags, Article URL (optional), PDF upload (optional)
 - At least one of article_url or PDF must be provided
-- On submit → `POST /api/publications/submit` → success confirmation screen
+- On submit → `POST /api/mpn/publications/submit` → success confirmation screen
 - Status shows as "Pending Review" on the member's profile until approved
 
 ---
@@ -84,8 +84,8 @@ const { data } = await supabase
   .eq('status', 'approved')
   .single()
 
-// Increment view count (fire-and-forget)
-supabase.from('publications').update({ view_count: data.view_count + 1 }).eq('id', id)
+// Increment view count through a server-side endpoint or RPC. Do not give
+// public clients UPDATE permission on publication rows merely for this counter.
 ```
 
 ### Member's own publications (profile page)

@@ -38,7 +38,13 @@ export const GTP_2026_MARKETING_PATHS: readonly string[] = [
   "/events/gtp-2026/organising-committee",
 ];
 
+export const MPN_PUBLIC_PATHS: readonly string[] = [
+  "/community/mpn",
+  "/community/mpn/resources",
+];
+
 export const ALL_PUBLIC_INDEXABLE_PATHS: readonly string[] = [
   ...SCPH_MARKETING_PATHS,
   ...GTP_2026_MARKETING_PATHS,
+  ...MPN_PUBLIC_PATHS,
 ];

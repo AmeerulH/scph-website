@@ -1,6 +1,8 @@
 # Development Roadmap
 
-5 phases across ~7 weeks. Resolve [Open Questions](../README.md#open-questions) before Phase 1.
+5 phases across ~7 weeks. Resolved Phase 0 decisions are in
+[`../DECISIONS.md`](../DECISIONS.md); remaining launch choices do not block the
+foundation.
 
 ---
 
@@ -10,11 +12,11 @@
 
 - [ ] Supabase project setup (tables, RLS policies, storage buckets, triggers)
 - [ ] Next.js project scaffold (Tailwind, Supabase client, SCPH tokens)
-- [ ] `middleware.ts` — route protection by role
+- [ ] `proxy.ts` — session refresh and route protection by role (Next.js 16)
 - [ ] Login / Register page (Supabase Auth, email verification)
 - [ ] Pending approval holding page
 - [ ] DB trigger: auto-create `profiles` row on email verification
-- [ ] `POST /api/auth/approve` + `POST /api/auth/reject`
+- [ ] `POST /api/mpn/auth/approve` + `POST /api/mpn/auth/reject`
 - [ ] Admin members panel (pending tab only — approve/reject)
 - [ ] Admin notification email (Resend) on new pending member
 - [ ] Welcome / rejection emails to member
@@ -31,12 +33,12 @@
 - [ ] FloatingNav + MobileMenu (Client Components)
 - [ ] FilterLayout + FilterSidebar components
 - [ ] Resources page (list + filter sidebar, Shared/Workshop tabs)
-- [ ] Resource detail page + `GET /api/resources/[id]/download`
+- [ ] Resource detail page + `GET /api/mpn/resources/[id]/download`
 - [ ] Workshop materials detail + photo gallery
-- [ ] `POST /api/resources/upload` (admin)
+- [ ] `POST /api/mpn/resources/upload` (admin)
 - [ ] Publications catalogue (list + filters)
 - [ ] Publication detail page (with AuthorHoverCard)
-- [ ] `POST /api/publications/submit` + submit form
+- [ ] `POST /api/mpn/publications/submit` + submit form
 - [ ] Expert directory (grid + filter sidebar)
 - [ ] Expert detail page (contact buttons)
 - [ ] Profile page (view + edit + photo upload)
@@ -53,12 +55,12 @@
 - [ ] Virtual Café thread list (category tabs)
 - [ ] Thread detail page
 - [ ] `ReplyFeed` Client Component + Supabase Realtime subscription
-- [ ] `POST /api/cafe/threads` + `POST /api/cafe/[id]/replies`
+- [ ] `POST /api/mpn/cafe/threads` + `POST /api/mpn/cafe/[id]/replies`
 - [ ] New thread form (modal)
 - [ ] Webinar library (grid + filter + VideoModal)
 - [ ] Members list (search + country filter + profile modal)
 - [ ] Committee directory
-- [ ] Global search (`GET /api/search` + search overlay UI)
+- [ ] Global search (`GET /api/mpn/search` + search overlay UI)
 
 **Deliverable:** Full community features. Members can discuss, search, and browse the network.
 
@@ -69,13 +71,13 @@
 **Goal:** Full admin dashboard complete.
 
 - [ ] Admin layout (sidebar + mobile tab strip)
-- [ ] Overview stats panel (`GET /api/admin/stats`)
+- [ ] Overview stats panel (`GET /api/mpn/admin/stats`)
 - [ ] Members panel (all tabs: pending / active / rejected)
 - [ ] Resources management panel (upload, edit, delete)
 - [ ] Publications moderation queue + review modal
-- [ ] `POST /api/publications/[id]/review`
+- [ ] `POST /api/mpn/publications/[id]/review`
 - [ ] Publication approved/rejected emails
-- [ ] Announcements composer + `POST /api/announcements/send`
+- [ ] Announcements composer + `POST /api/mpn/announcements/send`
 - [ ] Audience resolution + Resend batch send
 - [ ] Analytics panel (charts: downloads, member growth, top content)
 - [ ] Admin controls in Café (pin, lock, delete thread)
@@ -97,7 +99,7 @@
 - [ ] Error states: empty states, loading skeletons, 404/500 pages
 - [ ] Bulk member import script (past workshop attendees)
 - [ ] Staging review with SCPH team
-- [ ] DNS configuration (`mpn.sunwayplanetaryhealth.com`)
+- [ ] Confirm production deployment at `/community/mpn` (no MPN subdomain DNS)
 - [ ] Production deploy
 - [ ] Community tab link added to SCPH main site nav
 

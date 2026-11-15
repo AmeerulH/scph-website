@@ -37,15 +37,15 @@ Stats cards at a glance:
 | Downloads (30 days) | `COUNT(*) FROM resource_downloads WHERE downloaded_at > now() - interval '30 days'` |
 | Active Threads | `COUNT(*) FROM cafe_threads WHERE is_locked = false` |
 
-Fetched from `GET /api/admin/stats`.
+Fetched from `GET /api/mpn/admin/stats`.
 
 ---
 
 ## Panel: Members (`/admin/members`)
 
 - **Pending tab:** list of users with `role = 'pending'` — name, org, country, workshop, registration date
-  - Approve button → `POST /api/auth/approve`
-  - Reject button (with reason modal) → `POST /api/auth/reject`
+  - Approve button → `POST /api/mpn/auth/approve`
+  - Reject button (with reason modal) → `POST /api/mpn/auth/reject`
 - **Active tab:** all members — name, org, country, workshop, join date
   - Suspend action → sets `role = 'rejected'`
   - View profile link
@@ -67,7 +67,7 @@ const { data } = await supabase
 
 - **Table:** all resources — title, type, theme, upload date, download count, visibility
 - **Upload button:** opens upload form (title, description, type, theme, source, date, visibility, workshop, tags, file)
-  - Calls `POST /api/resources/upload`
+  - Calls `POST /api/mpn/resources/upload`
 - **Edit:** inline edit of metadata (no file re-upload for metadata-only changes)
 - **Delete:** soft-delete or hard-delete (admin decision)
 - **Filter:** by type, theme, workshop
@@ -78,7 +78,7 @@ const { data } = await supabase
 
 - **Pending tab:** publications awaiting review — title, author, outlet, date, submitted date
   - "Review" button → opens review modal with full publication details
-  - Approve → `POST /api/publications/[id]/review` with `{ action: 'approve' }`
+  - Approve → `POST /api/mpn/publications/[id]/review` with `{ action: 'approve' }`
   - Reject → same endpoint with `{ action: 'reject', reason: '...' }`
 - **Approved tab:** approved publications — can un-publish (set back to pending)
 - **All tab:** everything with status column
@@ -100,7 +100,7 @@ const { data } = await supabase
 - **Compose button:** opens announcement form
   - Fields: Title, Body (rich text or markdown), Audience (`all` | `workshop:{n}` | `country:{cc}`), Priority
   - Save as Draft or Send Now
-- "Send" button → `POST /api/announcements/send` → emails target audience via Resend, marks as sent
+- "Send" button → `POST /api/mpn/announcements/send` → emails target audience via Resend, marks as sent
 - Sent announcements are read-only history
 
 ```ts

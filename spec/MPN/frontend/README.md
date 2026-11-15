@@ -1,5 +1,12 @@
 # Frontend Architecture
 
+> **Phase 0 update:** This document predates the decision to integrate MPN into
+> the existing SCPH app. Its standalone directory tree is illustrative only.
+> Implement MPN at `src/app/(scph)/community/mpn/`, components at
+> `src/components/mpn/`, Supabase clients at `src/lib/mpn/supabase/`, APIs at
+> `src/app/api/mpn/`, and the Next.js 16 root `proxy.ts`. See
+> [`../DECISIONS.md`](../DECISIONS.md).
+
 ## Routes
 
 See [`../auth/README.md`](../auth/README.md) for access control. Full route table:

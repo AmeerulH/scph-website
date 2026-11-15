@@ -37,10 +37,10 @@ Use a consistent path convention within each bucket:
 Resources, publications, and workshop materials are never served directly. Flow:
 
 ```
-Member requests download
-  → GET /api/resources/[id]/download
-  → Server validates session (must be member or admin)
-  → Server checks RLS: does this member have access to this resource?
+Authenticated user requests download
+  → GET /api/mpn/resources/[id]/download
+  → Server validates session (pending users may download shared resources)
+  → Server checks the resource visibility and workshop access
   → Server logs download: INSERT INTO resource_downloads
   → supabase.storage.from('resources').createSignedUrl(file_url, 60)
   → Returns { data: { url: '<signed URL valid 60 seconds>' } }
@@ -49,13 +49,26 @@ Member requests download
 
 The 60-second expiry means links cannot be shared. Each download requires a fresh server round-trip.
 
+### Storage policy requirements
+
+- `resources`, `publications`, and `workshop-materials` remain private. No
+  anonymous `SELECT` policy may make files directly accessible.
+- Signed URLs are created only in server-side routes after a verified session
+  and database authorization check. The service-role key is never sent to the
+  browser.
+- `avatars`, `expert-photos`, and `event-covers` may be public-read. Their
+  write policies must be scoped respectively to the owner or administrator.
+- Upsert paths require `INSERT`, `SELECT`, and `UPDATE` Storage policies.
+- Validate file size and MIME type server-side before upload; client-provided
+  MIME types are advisory only.
+
 ---
 
 ## Upload Flow (Admin — Resources)
 
 ```ts
 // 1. Admin selects file in UI
-// 2. POST /api/resources/upload (multipart/form-data)
+// 2. POST /api/mpn/resources/upload (multipart/form-data)
 // 3. Server uploads to Supabase Storage:
 const { data, error } = await supabase.storage
   .from('resources')
@@ -73,7 +86,7 @@ const { data, error } = await supabase.storage
 
 ## Upload Flow (Member — Publication PDF)
 
-Same pattern via `POST /api/publications/submit`. Members upload to the `publications` bucket under their own user ID subfolder.
+Same pattern via `POST /api/mpn/publications/submit`. Members upload to the `publications` bucket under their own user ID subfolder.
 
 ---
 
