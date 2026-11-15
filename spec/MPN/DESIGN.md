@@ -1,8 +1,9 @@
 # MPN Design Contract
 
 **Status:** Canonical implementation reference  
-**Source of truth:** Approved `media-portal-demo.html` prototype. This document
-captures its implementation rules; it does not introduce new visual decisions.
+**Source of truth:** Approved [`prototype/index.html`](prototype/index.html).
+This document captures its implementation rules; it does not introduce new
+visual decisions.
 
 All MPN UI changes must conform to this contract. If the prototype and this
 document appear to differ, preserve the prototype and update this document

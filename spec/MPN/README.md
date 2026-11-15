@@ -14,6 +14,7 @@ Media Professional Network — technical specification for the Next.js + Supabas
 | [`frontend/`](frontend/README.md) | Routes, component architecture, server vs client decisions |
 | [`frontend/design-system.md`](frontend/design-system.md) | Brand tokens, typography, UI conventions from POC |
 | [`DESIGN.md`](DESIGN.md) | Canonical MPN design contract derived from the approved prototype |
+| [`prototype/`](prototype/index.html) | Approved interactive HTML mockup and its local assets; visual source of truth |
 | [`email/`](email/README.md) | Transactional email triggers and templates |
 | [`deployment/`](deployment/README.md) | SCPH integration, environment variables |
 | [`deployment/roadmap.md`](deployment/roadmap.md) | 5-phase development roadmap |
@@ -25,7 +26,7 @@ Media Professional Network — technical specification for the Next.js + Supabas
 - **Who:** Journalists → register → await admin approval → access portal
 - **Stack:** Next.js 16 App Router · TypeScript · Tailwind · Supabase · Vercel
 - **Lives under:** Community tab on SCPH website (`/community/mpn`)
-- **UI source of truth:** `media-portal-demo.html` (approved POC, all 8 passes complete)
+- **UI source of truth:** [`prototype/index.html`](prototype/index.html) (approved POC, all 8 passes complete)
 
 ## Deferred Questions
 
