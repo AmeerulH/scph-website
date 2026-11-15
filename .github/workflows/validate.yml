@@ -46,5 +46,6 @@ jobs:
           cache: npm
           cache-dependency-path: studio/package-lock.json
       - run: npm ci --ignore-scripts
+      - run: npm ls --all
       - run: npx --no-install tsc --noEmit
       - run: npm run build -- --no-auto-updates

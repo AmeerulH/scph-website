@@ -22,6 +22,10 @@ updates:
 
   - package-ecosystem: "npm"
     directory: "/studio"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
     schedule:
       interval: "weekly"
       day: "monday"
