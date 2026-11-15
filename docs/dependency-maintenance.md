@@ -82,3 +82,33 @@ from 83 affected packages to 54 (0 critical, 25 high, 26 moderate, 3 low).
 This batch is not a complete remediation of the dependency tree. Remaining
 framework/CLI, email and tooling upgrades need separate review. Close covered
 PRs only once this replacement has passed GitHub checks and merged.
+
+## Completed batches and remaining queue
+
+- #183 merged: website/Studio validation and baseline lint repairs.
+- #201 merged: website security batch, with passing GitHub checks, Vercel preview
+  and local desktop/mobile smoke checks. Its production deployment reached READY.
+- #202 merged: Studio lockfile refresh and peer correction. The hosted Studio
+  still needs its normal deployment procedure; no CMS content was published.
+- The workflow maintenance batch updates checkout/setup-node to v7 and pins
+  metadata v3.1.0, adds full Studio peer validation, and keeps Studio Node types
+  on the Node 24 major line. Close #22/#184/#185/#195 once that batch merges.
+- Repository auto-merge is enabled behind the required checks. Historical job
+  logs explicitly reported that it had been disabled in repository settings.
+
+Keep the following work tracked rather than discarding unresolved fixes:
+
+| Priority | Work | PRs / next step |
+| --- | --- | --- |
+| 1 | Email security | #200 targets Nodemailer 10.5.0; #175 targets older 10.1.4. Review breaking changes and confirmation-email behavior, then retire the older proposal. |
+| 2 | CMS/CLI security | Coordinate next-sanity #198 with the fixes tracked by #134/#80; coordinate Studio major upgrades #191/#196 with #133/#65. Prove every older advisory is covered before closing those proposals. |
+| 3 | Build tools | #190 includes a newer linter and Unlighthouse. The linter update reproduced 13 new rule failures and needs its own code changes. #176's Hono server upgrade also needs parent-tool compatibility review. |
+| 4 | Optional major maintenance | Google APIs #197, icons #199 and Studio #187/#188/#189/#192/#193/#194 need individual release/compatibility review. Do not upgrade solely because a higher version exists. |
+| Separate feature | Unlimited sponsors | #162 remains a draft with conflicts; preserve it for a frontend feature review. |
+
+The full website dependency listing still reports optional tooling peer issues:
+existing TypeScript 6 against TypeScript 5-only optional consumers, and a
+Puppeteer browser downloader's optional proxy-agent peer against the older
+installed proxy agent. These are not a clean full-tree peer result. Review them
+with the tooling batch; website lint/build and tested page flows passed. Studio's
+full dependency listing passes and is now checked in CI.
