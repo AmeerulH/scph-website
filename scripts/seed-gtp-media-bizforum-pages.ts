@@ -91,9 +91,9 @@ async function main() {
 
   let tx = client!.transaction();
   for (const doc of docs) {
-    tx = tx.createOrReplace(
-      doc as unknown as {_id: string; _type: string} & Record<string, unknown>,
-    );
+    const typed = doc as unknown as {_id: string; _type: string} & Record<string, unknown>;
+    // Media now holds editor-uploaded albums/episodes: never replace it (use seed-gtp-media-page to fill gaps).
+    tx = typed._id === MEDIA_ID ? tx.createIfNotExists(typed) : tx.createOrReplace(typed);
   }
   await tx.commit({ autoGenerateArrayKeys: true });
 

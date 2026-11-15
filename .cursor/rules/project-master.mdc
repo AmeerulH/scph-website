@@ -13,4 +13,6 @@ Before non-trivial work (new pages/sections, CMS fields, or large UI changes):
 
 3. **Quality:** Minimal diffs, match existing patterns, Server Components by default, `next/image` for media. **Performance:** full-site Unlighthouse **Lighthouse Performance ≥ 80** per scanned URL (see `docs/performance.md`, `AGENTS.md` §7); use Vercel Speed Insights for real-user data.
 
+4. **UI craft:** Impeccable leads the visual world. Emil Kowalski's skills refine motion and feel. Follow [`.cursor/rules/impeccable-emil.mdc`](.cursor/rules/impeccable-emil.mdc) and `AGENTS.md` §6.1. Do not start a site-wide animation pass unless asked.
+
 If `AGENTS.md` and this rule conflict, **prefer updating `AGENTS.md`** and keep this rule as a pointer.

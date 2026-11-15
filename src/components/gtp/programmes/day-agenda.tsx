@@ -96,9 +96,6 @@ export function DayAgenda({
                 key={i}
                 session={session}
                 calendarTabId={calendarTabId}
-                onClick={() => setSelectedSession(session)}
-                onWorkshopClick={(w) => openWorkshop(w, session)}
-                highlightSpeaker={highlightSpeaker}
               />
             );
           }

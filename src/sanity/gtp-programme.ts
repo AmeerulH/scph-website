@@ -8,6 +8,8 @@ import {
 } from "@/components/gtp/programmes/data";
 import type {
   ConferenceThemeId,
+  ProgrammeHostedByOverride,
+  ProgrammeHost,
   ProgrammeVenueType,
   Session,
   SessionType,
@@ -16,7 +18,16 @@ import type {
 } from "@/components/gtp/programmes/types";
 import { client } from "./client";
 
-const TAB_ORDER = ["pre", "day1", "day2", "day3", "day4"] as const satisfies readonly TabId[];
+/** CMS may still define an optional pre-conference day; it is omitted from static fallbacks. */
+export type GtpProgrammeTabId = TabId | "pre";
+
+const TAB_ORDER = [
+  "pre",
+  "day1",
+  "day2",
+  "day3",
+  "day4",
+] as const satisfies readonly GtpProgrammeTabId[];
 
 const SESSION_TYPES = new Set<SessionType>([
   "opening",
@@ -43,7 +54,7 @@ const VENUE_TYPES = new Set<ProgrammeVenueType>([
   "other",
 ]);
 
-export type GtpProgrammeTab = { id: TabId; label: string };
+export type GtpProgrammeTab = { id: GtpProgrammeTabId; label: string };
 
 /** Conference days shown in the events preview carousel (not pre-conference). */
 export type GtpCarouselDayTab = "day1" | "day2" | "day3" | "day4";
@@ -55,6 +66,7 @@ export type GtpCarouselMeta = Record<
 
 /** “Hosted by” block in the programme session detail modal (from `gtp2026Programme`). */
 export type GtpSessionModalHostedBy = {
+  hosts?: ProgrammeHost[];
   sectionTitle: string;
   logoUrl: string | null;
   logoAlt: string;
@@ -62,17 +74,23 @@ export type GtpSessionModalHostedBy = {
   logoHeight?: number;
   name: string;
   subtitle: string;
+  /** When false, the location line is omitted in session and workshop popups. */
+  showSubtitle: boolean;
 };
+
+export const DEFAULT_SESSION_MODAL_HOSTED_LOGO_URL = "/images/scph/logo-round.png";
 
 export const DEFAULT_SESSION_MODAL_HOSTED_BY: GtpSessionModalHostedBy = {
   sectionTitle: "Hosted By",
-  logoUrl: null,
-  logoAlt: "",
+  logoUrl: DEFAULT_SESSION_MODAL_HOSTED_LOGO_URL,
+  logoAlt: "Sunway Centre for Planetary Health logo",
   name: "Sunway Centre for Planetary Health",
   subtitle: "Sunway University, Kuala Lumpur",
+  showSubtitle: true,
 };
 
 export type GtpProgrammePageData = {
+  isPublished?: boolean;
   tabs: GtpProgrammeTab[];
   carouselMeta: GtpCarouselMeta;
   sessionModalHostedBy: GtpSessionModalHostedBy;
@@ -100,11 +118,29 @@ const CAROUSEL_TABS: GtpCarouselDayTab[] = ["day1", "day2", "day3", "day4"];
 
 const CAROUSEL_EXCLUDED_TYPES = new Set<SessionType>(["break", "reconvening"]);
 
-interface SanityWorkshopRow {
+interface SanityHostedByFields {
+  hostedByHosts?: {
+    _key?: string | null;
+    name?: string | null;
+    subtitle?: string | null;
+    logo?: SanitySessionModalHostedLogo | null;
+  }[] | null;
+  hostedByName?: string | null;
+  hostedByLocation?: string | null;
+  hostedByShowLocation?: boolean | null;
+  hostedByLogo?: SanitySessionModalHostedLogo | null;
+}
+
+interface SanityWorkshopRow extends SanityHostedByFields {
+  _key?: string;
+  poster?: {alt?: string | null; asset?: {url?: string | null} | null} | null;
+  venueLine?: string | null;
+  presentations?: {_key?: string | null; presenterName?: string | null; presentationTitle?: string | null; presenterImageUrl?: string | null}[] | null;
   number?: string;
   title?: string;
   objective?: string;
   speakers?: SanitySpeakerRow[];
+  facilitators?: SanitySpeakerRow[];
   speakerCount?: number;
 }
 
@@ -112,19 +148,26 @@ interface SanitySpeakerRow {
   name?: string;
   designation?: string;
   sessionRole?: string;
+  roles?: (string | null)[] | null;
   imageUrl?: string | null;
 }
 
-interface SanitySessionRow {
+interface SanitySessionRow extends SanityHostedByFields {
+  _key?: string;
   time?: string;
   durationMins?: number;
   type?: string;
+  closedEvent?: boolean | null;
   title?: string;
   objective?: string;
+  subpageButtonLabel?: string | null;
+  subpageButtonUrl?: string | null;
   theme?: string;
   speakerCount?: number;
   speakers?: SanitySpeakerRow[];
+  facilitators?: SanitySpeakerRow[];
   workshops?: SanityWorkshopRow[];
+  researchTables?: {sourceVenue?: string | null; title?: string | null; venueLabel?: string | null}[] | null;
   breakLabel?: string;
   breakIcon?: string;
   workshopNote?: string;
@@ -161,15 +204,33 @@ interface SanityGtpProgrammeDoc {
   sessionModalHostedSectionTitle?: string | null;
   sessionModalHostedName?: string | null;
   sessionModalHostedSubtitle?: string | null;
+  sessionModalHostedShowSubtitle?: boolean | null;
   sessionModalHostedLogo?: SanitySessionModalHostedLogo | null;
   days?: SanityProgrammeDayRow[];
 }
+
+const hostedByProjection = `
+  hostedByHosts[]{
+    _key, name, subtitle,
+    logo { alt, asset->{ url, metadata { dimensions { width, height } } } }
+  },
+  hostedByName,
+  hostedByLocation,
+  hostedByShowLocation,
+  hostedByLogo {
+    alt,
+    asset->{
+      url,
+      metadata { dimensions { width, height } }
+    }
+  }`;
 
 const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Programme"][0]{
   _id,
   sessionModalHostedSectionTitle,
   sessionModalHostedName,
   sessionModalHostedSubtitle,
+  sessionModalHostedShowSubtitle,
   sessionModalHostedLogo {
     alt,
     asset->{
@@ -183,9 +244,11 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
     carouselDateLabel,
     carouselDayLabel,
     sessions[]{
+      _key,
       time,
       durationMins,
       type,
+      closedEvent,
       title,
       objective,
       theme,
@@ -194,19 +257,42 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
         name,
         designation,
         sessionRole,
+        roles,
         "imageUrl": image.asset->url
       },
+      facilitators[]{
+        name,
+        designation,
+        sessionRole,
+        roles,
+        "imageUrl": image.asset->url
+      },
+      ${hostedByProjection},
+      researchTables[]{_key, sourceVenue, title, venueLabel},
       workshops[]{
+        _key,
         number,
         title,
+        poster {alt, asset->{url}},
         objective,
+        venueLine,
+        presentations[]{_key, presenterName, presentationTitle, "presenterImageUrl": presenterImage.asset->url},
         speakerCount,
         speakers[]{
           name,
           designation,
           sessionRole,
+          roles,
           "imageUrl": image.asset->url
-        }
+        },
+        facilitators[]{
+          name,
+          designation,
+          sessionRole,
+          roles,
+          "imageUrl": image.asset->url
+        },
+        ${hostedByProjection}
       },
       breakLabel,
       breakIcon,
@@ -215,6 +301,8 @@ const gtpProgrammeQuery = `*[_type == "gtp2026Programme" && _id == "gtp2026Progr
       venueType,
       venueLine,
       formatLabel,
+      subpageButtonLabel,
+      subpageButtonUrl,
       carouselBackgroundImage {
         alt,
         asset->{ url }
@@ -269,6 +357,17 @@ function mapSessionModalHostedBy(
   const w = logo?.asset?.metadata?.dimensions?.width;
   const h = logo?.asset?.metadata?.dimensions?.height;
 
+  if (!url) {
+    return {
+      ...d,
+      sectionTitle,
+      name,
+      subtitle,
+      logoAlt: `${name} logo`,
+      showSubtitle: doc.sessionModalHostedShowSubtitle !== false,
+    };
+  }
+
   return {
     sectionTitle,
     name,
@@ -277,6 +376,7 @@ function mapSessionModalHostedBy(
     logoAlt: altRaw || (name ? `${name} logo` : "Host organisation logo"),
     logoWidth: typeof w === "number" && w > 0 ? w : undefined,
     logoHeight: typeof h === "number" && h > 0 ? h : undefined,
+    showSubtitle: doc.sessionModalHostedShowSubtitle !== false,
   };
 }
 
@@ -334,21 +434,173 @@ function mapSpeaker(row: SanitySpeakerRow): Speaker | null {
   return speaker;
 }
 
+type StoredPersonRole = "speaker" | "facilitator";
+
+function uniquePersonRoles(roles: StoredPersonRole[]): StoredPersonRole[] {
+  const unique: StoredPersonRole[] = [];
+  for (const role of roles) {
+    if (!unique.includes(role)) unique.push(role);
+  }
+  return unique;
+}
+
+function checkboxRoles(row: SanitySpeakerRow): StoredPersonRole[] {
+  if (!Array.isArray(row.roles)) return [];
+  return row.roles.filter(
+    (role): role is StoredPersonRole => role === "speaker" || role === "facilitator",
+  );
+}
+
+/** Legacy free-text role. Moderator and other labels are not treated as Speaker or Facilitator. */
+function legacyTextRoles(sessionRole: string | undefined): StoredPersonRole[] {
+  const value = sessionRole?.trim().toLowerCase() ?? "";
+  if (value === "speaker" || value === "speakers") return ["speaker"];
+  if (value === "facilitator" || value === "facilitators") return ["facilitator"];
+  return [];
+}
+
+/**
+ * An explicitly empty Roles selection hides generic labels. Otherwise legacy text wins,
+ * so a facilitator typed into the speakers list stays a facilitator. The list they were
+ * saved in is the fallback.
+ */
+function rolesForRow(row: SanitySpeakerRow, fromList: StoredPersonRole): StoredPersonRole[] {
+  const checks = checkboxRoles(row);
+  if (Array.isArray(row.roles) && row.roles.length === 0) return [];
+  const text = legacyTextRoles(
+    typeof row.sessionRole === "string" ? row.sessionRole : undefined,
+  );
+  if (checks.length > 0) return uniquePersonRoles([...checks, ...text]);
+  if (text.length > 0) return text;
+  return [fromList];
+}
+
+function mergeProgrammePeople(
+  speakerRows: SanitySpeakerRow[] | undefined,
+  facilitatorRows: SanitySpeakerRow[] | undefined,
+): Speaker[] {
+  const merged = new Map<string, Speaker>();
+
+  const add = (row: SanitySpeakerRow, fromList: StoredPersonRole) => {
+    const person = mapSpeaker(row);
+    if (!person) return;
+    const key = person.name.trim().toLowerCase();
+    const roles = rolesForRow(row, fromList);
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, { ...person, roles });
+      return;
+    }
+    merged.set(key, {
+      name: existing.name,
+      designation: existing.designation || person.designation,
+      imageUrl: existing.imageUrl || person.imageUrl,
+      sessionRole: existing.sessionRole || person.sessionRole,
+      roles: uniquePersonRoles([...(existing.roles ?? []), ...roles]),
+    });
+  };
+
+  for (const row of speakerRows ?? []) add(row, "speaker");
+  for (const row of facilitatorRows ?? []) add(row, "facilitator");
+  return [...merged.values()];
+}
+
+function splitSpeakersAndFacilitators(
+  speakerRows: SanitySpeakerRow[] | undefined,
+  facilitatorRows: SanitySpeakerRow[] | undefined,
+): { speakers: Speaker[]; facilitators: Speaker[] } {
+  const people = mergeProgrammePeople(speakerRows, facilitatorRows);
+  return {
+    speakers: people.filter((person) => !person.roles?.length || person.roles.includes("speaker")),
+    facilitators: people.filter((person) => person.roles?.includes("facilitator")),
+  };
+}
+
+function cmsPlainText(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.replace(/[\u0000-\u001F\u007F]/g, "").trim();
+}
+
+function mapHostedByOverride(row: SanityHostedByFields): ProgrammeHostedByOverride | undefined {
+  const hosts: ProgrammeHost[] = (row.hostedByHosts ?? []).flatMap((host, index) => {
+    const name = cmsPlainText(host.name);
+    if (!name) return [];
+    const logo = host.logo;
+    return [{
+      id: host._key || `host-${index}`,
+      name,
+      subtitle: cmsPlainText(host.subtitle) || undefined,
+      logoUrl: logo?.asset?.url?.trim() || undefined,
+      logoAlt: logo?.alt?.trim() || `${name} logo`,
+      logoWidth: logo?.asset?.metadata?.dimensions?.width ?? undefined,
+      logoHeight: logo?.asset?.metadata?.dimensions?.height ?? undefined,
+    }];
+  });
+  const name = cmsPlainText(row.hostedByName);
+  const location = cmsPlainText(row.hostedByLocation);
+  const logo = row.hostedByLogo;
+  const logoUrl =
+    typeof logo?.asset?.url === "string" && logo.asset.url.trim() ? logo.asset.url.trim() : "";
+  if (!hosts.length && !name && !logoUrl && !location) return undefined;
+
+  const override: ProgrammeHostedByOverride = {};
+  if (hosts.length) override.hosts = hosts;
+  if (name) override.name = name;
+  if (location) override.location = location;
+  if (row.hostedByShowLocation === false) override.showLocation = false;
+  if (row.hostedByShowLocation === true) override.showLocation = true;
+  if (logoUrl) {
+    override.logoUrl = logoUrl;
+    const alt = typeof logo?.alt === "string" ? logo.alt.trim() : "";
+    if (alt) override.logoAlt = alt;
+    const width = logo?.asset?.metadata?.dimensions?.width;
+    const height = logo?.asset?.metadata?.dimensions?.height;
+    if (typeof width === "number" && width > 0) override.logoWidth = width;
+    if (typeof height === "number" && height > 0) override.logoHeight = height;
+  }
+  return override;
+}
+
 function mapWorkshop(row: SanityWorkshopRow): Workshop | null {
   const number = typeof row.number === "string" ? row.number.trim() : "";
   const title = typeof row.title === "string" ? row.title.trim() : "";
   if (!number || !title) return null;
 
   const workshop: Workshop = { number, title };
+  if (row._key) workshop.id = row._key;
+  const posterUrl = row.poster?.asset?.url?.trim();
+  if (posterUrl) {
+    workshop.posterUrl = posterUrl;
+    workshop.posterAlt = row.poster?.alt?.trim() || `${title} poster`;
+  }
+  const presentations = (row.presentations ?? []).flatMap((presentation, index) => {
+    const presenterName = presentation.presenterName?.trim();
+    const presentationTitle = presentation.presentationTitle?.trim();
+    if (!presenterName || !presentationTitle) return [];
+    const imageUrl = presentation.presenterImageUrl?.trim();
+    return [{
+      id: presentation._key || `presentation-${index}`, presenterName, presentationTitle,
+      presenters: [{name: presenterName, ...(imageUrl ? {imageUrl} : {})}],
+    }];
+  });
+  if (presentations.length) workshop.presentations = presentations;
 
   if (typeof row.objective === "string" && row.objective.trim()) {
     workshop.objective = row.objective.trim();
   }
 
-  if (Array.isArray(row.speakers) && row.speakers.length > 0) {
-    const speakers = row.speakers.map(mapSpeaker).filter((s): s is Speaker => s !== null);
-    if (speakers.length > 0) workshop.speakers = speakers;
-  }
+  const { speakers, facilitators } = splitSpeakersAndFacilitators(
+    row.speakers,
+    row.facilitators,
+  );
+
+  if (speakers.length > 0) workshop.speakers = speakers;
+  if (facilitators.length > 0) workshop.facilitators = facilitators;
+
+  const hostedBy = mapHostedByOverride(row);
+  if (hostedBy) workshop.hostedBy = hostedBy;
+  const venueLine = row.venueLine?.trim() || hostedBy?.location;
+  if (venueLine) workshop.venueLine = venueLine;
 
   if (typeof row.speakerCount === "number" && Number.isFinite(row.speakerCount)) {
     workshop.speakerCount = row.speakerCount;
@@ -369,10 +621,13 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
   }
 
   const session: Session = {
+    id: row._key,
     time,
     title,
     type: type as SessionType,
   };
+
+  if (row.closedEvent === true) session.closedEvent = true;
 
   if (typeof row.objective === "string" && row.objective.trim()) {
     session.objective = row.objective.trim();
@@ -390,15 +645,27 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
     session.speakerCount = row.speakerCount;
   }
 
-  if (Array.isArray(row.speakers) && row.speakers.length > 0) {
-    const speakers = row.speakers.map(mapSpeaker).filter((s): s is Speaker => s !== null);
-    if (speakers.length > 0) session.speakers = speakers;
-  }
+  const { speakers, facilitators } = splitSpeakersAndFacilitators(
+    row.speakers,
+    row.facilitators,
+  );
+  if (speakers.length > 0) session.speakers = speakers;
+  if (facilitators.length > 0) session.facilitators = facilitators;
+
+  const hostedBy = mapHostedByOverride(row);
+  if (hostedBy) session.hostedBy = hostedBy;
 
   if (Array.isArray(row.workshops) && row.workshops.length > 0) {
     const workshops = row.workshops.map(mapWorkshop).filter((w): w is Workshop => w !== null);
     if (workshops.length > 0) session.workshops = workshops;
   }
+
+  const researchTables = (row.researchTables ?? []).flatMap((table) => {
+    const sourceVenue = table.sourceVenue?.trim();
+    if (!sourceVenue) return [];
+    return [{sourceVenue, title: table.title?.trim() || undefined, venueLabel: table.venueLabel?.trim() || undefined}];
+  });
+  if (researchTables.length) session.researchTables = researchTables;
 
   if (typeof row.breakLabel === "string" && row.breakLabel.trim()) {
     session.breakLabel = row.breakLabel.trim();
@@ -424,6 +691,14 @@ function mapSession(row: SanitySessionRow, devLog: boolean): Session | null {
 
   if (typeof row.formatLabel === "string" && row.formatLabel.trim()) {
     session.formatLabel = row.formatLabel.trim();
+  }
+
+  if (typeof row.subpageButtonLabel === "string" && row.subpageButtonLabel.trim()) {
+    session.subpageButtonLabel = row.subpageButtonLabel.trim();
+  }
+
+  if (typeof row.subpageButtonUrl === "string" && row.subpageButtonUrl.trim()) {
+    session.subpageButtonUrl = row.subpageButtonUrl.trim();
   }
 
   const carouselBg = row.carouselBackgroundImage;
@@ -459,13 +734,13 @@ function buildTabsFromSanityDays(days: SanityProgrammeDayRow[]): GtpProgrammeTab
     if (id && !byTab.has(id)) byTab.set(id, day);
   }
 
-  return TAB_ORDER.map((id) => {
-    const fromSanity = byTab.get(id);
-    const fallback = staticTabs.find((t) => t.id === id)!;
+  return TAB_ORDER.filter((id) => byTab.has(id)).map((id) => {
+    const fromSanity = byTab.get(id)!;
+    const fallback = staticTabs.find((t) => t.id === id);
     const label =
-      typeof fromSanity?.label === "string" && fromSanity.label.trim()
+      typeof fromSanity.label === "string" && fromSanity.label.trim()
         ? fromSanity.label.trim()
-        : fallback.label;
+        : (fallback?.label ?? id);
     return { id, label };
   });
 }
@@ -500,6 +775,7 @@ function mapSanityDocumentToProgramme(doc: SanityGtpProgrammeDoc | null): GtpPro
   const day4 = mapDaySessions(byTab.get("day4")?.sessions, devLog);
 
   const data: GtpProgrammePageData = {
+    isPublished: true,
     tabs: buildTabsFromSanityDays(doc.days),
     carouselMeta: buildCarouselMetaFromSanityDays(byTab),
     sessionModalHostedBy: mapSessionModalHostedBy(doc),

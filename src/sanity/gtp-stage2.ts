@@ -17,6 +17,13 @@ import {
   type SanityWorkshopFormRaw,
 } from "./gtp-submissions-form-merge";
 import type { SectionBlock } from "./section-block-types";
+import type {
+  GtpActionWorkshopPartnerDay,
+  GtpProgrammeActivityPage,
+  GtpProgrammeActivitySlug,
+  GtpProgrammeActivityStation,
+} from "@/data/gtp-programme-activity-defaults";
+import { DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES } from "@/data/gtp-programme-activity-defaults";
 
 export type {
   GtpGetInvolvedResolvedCopy,
@@ -491,13 +498,6 @@ export type GtpMarketingSectionPageData = {
   sections: SectionBlock[] | null;
 };
 
-const mediaPageQuery = `*[_type == "gtp2026MediaPage"][0]{
-  pageTitle,
-  heroLede,
-  placeholderDescription,
-  sections
-}`;
-
 const bizForumPageQuery = `*[_type == "gtp2026BizForumPage"][0]{
   pageTitle,
   heroLede,
@@ -505,10 +505,243 @@ const bizForumPageQuery = `*[_type == "gtp2026BizForumPage"][0]{
   sections
 }`;
 
-export async function getGtp2026MediaPage(): Promise<GtpMarketingSectionPageData | null> {
-  return client.fetch(mediaPageQuery);
-}
-
 export async function getGtp2026BizForumPage(): Promise<GtpMarketingSectionPageData | null> {
   return client.fetch(bizForumPageQuery);
+}
+
+// ─── Programme activity pages ───────────────────────────────────────────────
+
+type SanityProgrammeActivityPage = {
+  slug?: string | null;
+  pageTitle?: string | null;
+  heroImageUrl?: string | null;
+  heroLede?: string | null;
+  intro?: string | null;
+  combinedIntro?: string | null;
+  actionWorkshopsTitle?: string | null;
+  researchSessionsTitle?: string | null;
+  researchSessionsIntro?: string | null;
+  researchPresenterColumnLabel?: string | null;
+  researchPresentationColumnLabel?: string | null;
+  registrationStatus?: string | null;
+  registrationLabel?: string | null;
+  registrationUrl?: string | null;
+  scentRegistrationUrl?: string | null;
+  tasteRegistrationUrl?: string | null;
+  showcasePosterUrl?: string | null;
+  showcasePosterAlt?: string | null;
+  showcasePosterWidth?: number | null;
+  showcasePosterHeight?: number | null;
+  entries?: {
+    title?: string | null;
+    dateLabel?: string | null;
+    description?: string | null;
+    posterUrl?: string | null;
+    posterAlt?: string | null;
+    posterWidth?: number | null;
+    posterHeight?: number | null;
+    sessionDate?: string | null;
+    format?: string | null;
+    time?: string | null;
+    venue?: string | null;
+    registrationUrl?: string | null;
+    registrationLabel?: string | null;
+    registrationPendingLabel?: string | null;
+  }[] | null;
+  knowledgePartnerDays?: {
+    dateLabel?: string | null;
+    label?: string | null;
+    partners?: {
+      name?: string | null;
+      logoUrl?: string | null;
+      logoAlt?: string | null;
+      url?: string | null;
+    }[] | null;
+  }[] | null;
+  stationsTitle?: string | null;
+  stations?: {
+    _key?: string | null;
+    category?: string | null;
+    headline?: string | null;
+    body?: string | null;
+    imageUrl?: string | null;
+    imageAlt?: string | null;
+    link?: { label?: string | null; href?: string | null } | null;
+  }[] | null;
+};
+
+function positiveDimension(value: number | null | undefined): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value > 0 ? value : undefined;
+}
+
+const programmeActivityPageQuery = `*[_type == "gtp2026ProgrammeActivityPage" && slug == $slug][0]{
+  slug,
+  pageTitle,
+  "heroImageUrl": heroImage.asset->url,
+  heroLede,
+  intro,
+  combinedIntro,
+  actionWorkshopsTitle,
+  researchSessionsTitle,
+  researchSessionsIntro,
+  researchPresenterColumnLabel,
+  researchPresentationColumnLabel,
+  registrationStatus,
+  registrationLabel,
+  registrationUrl,
+  scentRegistrationUrl,
+  tasteRegistrationUrl,
+  "showcasePosterUrl": showcasePoster.asset->url,
+  "showcasePosterAlt": showcasePoster.alt,
+  "showcasePosterWidth": showcasePoster.asset->metadata.dimensions.width,
+  "showcasePosterHeight": showcasePoster.asset->metadata.dimensions.height,
+  entries[]{ title, dateLabel, description, "posterUrl": poster.asset->url, "posterAlt": poster.alt, "posterWidth": poster.asset->metadata.dimensions.width, "posterHeight": poster.asset->metadata.dimensions.height, sessionDate, format, time, venue, registrationUrl, registrationLabel, registrationPendingLabel },
+  knowledgePartnerDays[]{
+    dateLabel,
+    label,
+    partners[]{
+      name,
+      "logoUrl": logo.asset->url,
+      "logoAlt": logo.alt,
+      url
+    }
+  },
+  stationsTitle,
+  stations[]{
+    _key, category, headline, body,
+    "imageUrl": image.asset->url, "imageAlt": image.alt,
+    link{ label, href }
+  }
+}`;
+
+function safePartnerHref(value: string | null | undefined) {
+  const href = value?.trim();
+  if (!href) return undefined;
+  if (href.startsWith("/") && !href.startsWith("//")) return href;
+  if (/^https?:\/\//i.test(href)) return href;
+  return undefined;
+}
+
+function mergeKnowledgePartnerDays(
+  raw: SanityProgrammeActivityPage["knowledgePartnerDays"],
+): GtpActionWorkshopPartnerDay[] {
+  if (!raw?.length) return [];
+  return raw.flatMap((day) => {
+    const dateLabel = day.dateLabel?.trim();
+    if (!dateLabel) return [];
+    const partners = (day.partners ?? []).flatMap((partner) => {
+      const name = partner.name?.trim();
+      const logoUrl = partner.logoUrl?.trim();
+      if (!name || !logoUrl) return [];
+      const href = safePartnerHref(partner.url);
+      return [
+        {
+          name,
+          logoUrl,
+          logoAlt: partner.logoAlt?.trim() || name,
+          ...(href ? { href } : {}),
+        },
+      ];
+    });
+    if (partners.length === 0) return [];
+    return [
+      {
+        dateLabel,
+        label: day.label?.trim() || "Knowledge partners",
+        partners,
+      },
+    ];
+  });
+}
+
+function safeStationHref(value: string | null | undefined) {
+  const href = value?.trim();
+  return href && (href.startsWith("/") || /^https:\/\//i.test(href)) ? href : undefined;
+}
+
+function mergeStations(
+  raw: SanityProgrammeActivityPage["stations"],
+  defaults: GtpProgrammeActivityStation[],
+): GtpProgrammeActivityStation[] {
+  if (!raw?.length) return defaults;
+  return raw
+    .filter((station) => station.headline?.trim())
+    .map((station, index) => {
+      const headline = station.headline!.trim();
+      const href = safeStationHref(station.link?.href);
+      const linkLabel = station.link?.label?.trim();
+      return {
+        id: station._key?.trim() || `station-${index}`,
+        category: station.category?.trim() || "",
+        headline,
+        body: station.body?.trim() || "",
+        image: station.imageUrl?.trim()
+          ? { src: station.imageUrl.trim(), alt: station.imageAlt?.trim() || headline }
+          : undefined,
+        link: href && linkLabel ? { label: linkLabel, href } : undefined,
+      };
+    });
+}
+
+export async function getGtpProgrammeActivityPage(
+  slug: GtpProgrammeActivitySlug,
+): Promise<GtpProgrammeActivityPage> {
+  const fallback = DEFAULT_GTP_PROGRAMME_ACTIVITY_PAGES[slug];
+  const doc = await client
+    .fetch<SanityProgrammeActivityPage | null>(programmeActivityPageQuery, { slug })
+    .catch(() => null);
+  if (!doc) return fallback;
+
+  const status =
+    doc.registrationStatus === "open" ||
+    doc.registrationStatus === "comingSoon" ||
+    doc.registrationStatus === "closed"
+      ? doc.registrationStatus
+      : fallback.registrationStatus;
+  const entries =
+    doc.entries
+      ?.filter((entry) => entry.title?.trim())
+      .map((entry) => ({
+        title: entry.title!.trim(),
+        dateLabel: entry.dateLabel?.trim() || undefined,
+        description: entry.description?.trim() || undefined,
+        posterUrl: entry.posterUrl?.trim() || undefined,
+        posterAlt: entry.posterAlt?.trim() || undefined,
+        posterWidth: positiveDimension(entry.posterWidth),
+        posterHeight: positiveDimension(entry.posterHeight),
+        sessionDate: entry.sessionDate?.trim() || undefined,
+        format: entry.format?.trim() || undefined,
+        time: entry.time?.trim() || undefined,
+        venue: entry.venue?.trim() || undefined,
+        registrationUrl: entry.registrationUrl?.trim() || undefined,
+        registrationLabel: entry.registrationLabel?.trim() || undefined,
+        registrationPendingLabel: entry.registrationPendingLabel?.trim() || undefined,
+      })) ?? fallback.entries;
+
+  return {
+    slug,
+    pageTitle: doc.pageTitle?.trim() || fallback.pageTitle,
+    heroImageUrl: doc.heroImageUrl?.trim() || fallback.heroImageUrl,
+    heroLede: doc.heroLede?.trim() || fallback.heroLede,
+    intro: doc.intro?.trim() || fallback.intro,
+    combinedIntro: doc.combinedIntro?.trim() || fallback.combinedIntro,
+    actionWorkshopsTitle: doc.actionWorkshopsTitle?.trim() || fallback.actionWorkshopsTitle,
+    researchSessionsTitle: doc.researchSessionsTitle?.trim() || fallback.researchSessionsTitle,
+    researchSessionsIntro: doc.researchSessionsIntro?.trim() || fallback.researchSessionsIntro,
+    researchPresenterColumnLabel: doc.researchPresenterColumnLabel?.trim() || fallback.researchPresenterColumnLabel,
+    researchPresentationColumnLabel: doc.researchPresentationColumnLabel?.trim() || fallback.researchPresentationColumnLabel,
+    registrationStatus: status,
+    registrationLabel: doc.registrationLabel?.trim() || fallback.registrationLabel,
+    registrationUrl: doc.registrationUrl?.trim() || fallback.registrationUrl,
+    scentRegistrationUrl: doc.scentRegistrationUrl?.trim() || undefined,
+    tasteRegistrationUrl: doc.tasteRegistrationUrl?.trim() || undefined,
+    showcasePosterUrl: doc.showcasePosterUrl?.trim() || undefined,
+    showcasePosterAlt: doc.showcasePosterAlt?.trim() || undefined,
+    showcasePosterWidth: positiveDimension(doc.showcasePosterWidth),
+    showcasePosterHeight: positiveDimension(doc.showcasePosterHeight),
+    entries,
+    knowledgePartnerDays: mergeKnowledgePartnerDays(doc.knowledgePartnerDays),
+    stationsTitle: doc.stationsTitle?.trim() || fallback.stationsTitle,
+    stations: mergeStations(doc.stations, fallback.stations),
+  };
 }

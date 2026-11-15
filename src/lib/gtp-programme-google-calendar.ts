@@ -117,6 +117,8 @@ export function buildProgrammeGoogleCalendarUrl(params: {
   detailsPrefixLines?: string[];
   /** Set false for parallel-slot rows where `session` is the parent block. */
   includeSessionObjective?: boolean;
+  /** Workshop room. Falls back to the parent session venue line. */
+  location?: string;
 }): string | null {
   const {
     tabId,
@@ -124,6 +126,7 @@ export function buildProgrammeGoogleCalendarUrl(params: {
     title = session.title,
     detailsPrefixLines = [],
     includeSessionObjective = true,
+    location: locationOverride,
   } = params;
   const range = parseProgrammeSessionTimeRange(session.time, session.durationMins);
   if (!range) return null;
@@ -140,7 +143,10 @@ export function buildProgrammeGoogleCalendarUrl(params: {
     detailsPrefixLines,
     includeSessionObjective,
   );
-  const location = getSessionVenueLine(session);
+  const location =
+    typeof locationOverride === "string" && locationOverride.trim()
+      ? locationOverride.trim()
+      : getSessionVenueLine(session);
 
   const url = new URL("https://www.google.com/calendar/render");
   url.searchParams.set("action", "TEMPLATE");

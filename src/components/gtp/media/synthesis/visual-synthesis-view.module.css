@@ -1,0 +1,21 @@
+.page {
+  background-color: var(--color-gtp-dark-teal-dark);
+  background-image:
+    radial-gradient(
+      ellipse 85% 32rem at 0% 24rem,
+      color-mix(in srgb, var(--color-gtp-teal) 32%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse 70% 38rem at 100% 68rem,
+      color-mix(in srgb, var(--color-gtp-orange) 18%, transparent),
+      transparent 72%
+    );
+  /* Repeat the atmosphere through any number of published maps. */
+  background-size: 100% 96rem;
+  background-repeat: repeat-y;
+}
+
+.role {
+  color: color-mix(in srgb, var(--color-gtp-teal-light) 55%, white);
+}

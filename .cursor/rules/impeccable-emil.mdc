@@ -1,0 +1,37 @@
+---
+description: UI craft handoff — Impeccable leads the GTP visual world; Emil Kowalski skills refine motion and feel
+alwaysApply: true
+---
+
+# Impeccable leads, Emil refines motion
+
+On any UI, motion, or "feel" task for this site, use both skill sets in this order. Do not start a site-wide animation pass unless the user asks for one.
+
+## Order
+
+1. **Impeccable first.** Load its context (`PRODUCT.md`, the surface brief, the craft floor) and follow the GTP visual world: palette, type, and the rule that third-party artwork is shown whole, with its credit visible.
+2. **Then the matching Emil Kowalski skill** for motion implementation, motion review, or worst-case content. His skills are installed globally from `emilkowalski/skill` (`~/.agents/skills/`). If a named skill is missing, say so. Do not invent his curves or durations.
+3. **When they disagree, the GTP / Impeccable world wins.** Emil extends tokens that already exist (for example `--ease-out`). He does not add a second easing system, a new palette, or Apple-like motion unless the user asks for `apple-design`.
+
+Skip Emil's "reply with the ready line only" greeting. Do the task.
+
+## Which skill
+
+| Ask | Use |
+|---|---|
+| New or redesigned page, layout, type, colour, polish | Impeccable (`/impeccable` and its command) |
+| Whether motion belongs, and what the one moment is | `/impeccable animate` |
+| Curve, duration, interrupt, exit, and the implementation | Emil `animate` |
+| Review motion that already exists | `review-animations` |
+| A codebase motion plan, no edits yet | `improve-animations` |
+| Places that should move, and places that should stay still | `find-animation-opportunities` |
+| Long names, missing fields, huge counts | `break-ui` |
+| Phone CSS that still feels like a desktop site | `mobile-native` |
+
+Leave `animate-expo` and `write-swift` unused on this site. Do not pin `/animate`.
+
+## Later animation pass
+
+When the user asks to improve animations or feel across the site: run `improve-animations` or `find-animation-opportunities` and return the plan first. Implement only the approved items, with `prefers-reduced-motion` shipped in the same change, then `review-animations`. The Lighthouse Performance ≥ 80 bar in `AGENTS.md` still applies.
+
+Example: "Animate the map viewer" means Impeccable sets the moment, Emil `animate` writes it with existing tokens, and `review-animations` checks the result.

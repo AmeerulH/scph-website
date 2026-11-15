@@ -1,3 +1,6 @@
+import {gtp2026ResourceType} from './gtp2026ResourceType'
+import {gtp2026ResourcesPageType} from './gtp2026ResourcesPageType'
+import {gtp2026VideoType} from './gtp2026VideoType'
 import {cmsSandboxPageType} from './cmsSandboxPageType'
 import {gtpAboutPageBandObjectTypes} from './objects/gtpAboutPageBands'
 import {gtpAboutWhatIsBandType} from './objects/gtpAboutWhatIsBandType'
@@ -6,7 +9,10 @@ import {gtp2026BizForumPageType} from './gtp2026BizForumPageType'
 import {gtp2026GetInvolvedPageType} from './gtp2026GetInvolvedPageType'
 import {gtp2026SpeakersPageType} from './gtp2026SpeakersPageType'
 import {gtp2026SpeakerType} from './gtp2026SpeakerType'
+import {gtp2026NewsArticleType} from './gtp2026NewsArticleType'
 import {gtp2026MediaPageType} from './gtp2026MediaPageType'
+import {gtp2026SustainabilityPageType} from './gtp2026SustainabilityPageType'
+import {gtp2026BookLaunchPageType} from './gtp2026BookLaunchPageType'
 import {gtp2026SubmissionsPageType} from './gtp2026SubmissionsPageType'
 import {
   gtp2026AbstractFormCopyType,
@@ -32,6 +38,7 @@ import {gtp2026FaqGroupType} from './gtp2026FaqGroupType'
 import {gtp2026HighlightSessionSlotType} from './gtp2026HighlightSessionSlotType'
 import {gtp2026HighlightSpeakerType} from './gtp2026HighlightSpeakerType'
 import {gtp2026ProgrammeType} from './gtp2026ProgrammeType'
+import {gtp2026ProgrammeActivityPageType} from './gtp2026ProgrammeActivityPageType'
 import {scphFooterType} from './scphFooterType'
 import {scphHomePageType} from './scphHomePageType'
 import {scphJournalistWorkshopsPageType} from './scphJournalistWorkshopsPageType'
@@ -47,14 +54,22 @@ import {programmeDayType} from './programmeDayType'
 import {programmeSessionType} from './programmeSessionType'
 import {programmeSpeakerType} from './programmeSpeakerType'
 import {programmeWorkshopType} from './programmeWorkshopType'
+import {programmeResearchPresentationType} from './programmeResearchPresentationType'
+import {programmeResearchTableType} from './programmeResearchTableType'
 import {teamMemberType} from './teamMemberType'
 
 export const schemaTypes = [
+  gtp2026ResourceType,
+  gtp2026ResourcesPageType,
+  gtp2026VideoType,
   programmeSpeakerType,
+  programmeResearchPresentationType,
+  programmeResearchTableType,
   programmeWorkshopType,
   programmeSessionType,
   programmeDayType,
   gtp2026ProgrammeType,
+  gtp2026ProgrammeActivityPageType,
   gtp2026HighlightSessionSlotType,
   gtp2026HighlightSpeakerType,
   gtp2026CommitteeMemberType,
@@ -79,6 +94,9 @@ export const schemaTypes = [
   gtp2026SpeakersPageType,
   gtp2026SpeakerType,
   gtp2026MediaPageType,
+  gtp2026NewsArticleType,
+  gtp2026SustainabilityPageType,
+  gtp2026BookLaunchPageType,
   gtp2026BizForumPageType,
   teamMemberType,
   ...sectionObjectTypes,

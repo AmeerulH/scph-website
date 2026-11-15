@@ -3,6 +3,7 @@ import type {
   GtpAboutGalleryBandCopy,
   GtpAboutGallerySlideCopy,
   GtpAboutHeroCopy,
+  GtpAboutCampaignSlide,
   GtpAboutImportantDateEntry,
   GtpAboutPageResolved,
   GtpAboutQuoteCardCopy,
@@ -19,6 +20,7 @@ import type {
 } from "@/data/gtp-about-page-defaults";
 import {
   DEFAULT_GTP_ABOUT_HERO,
+  DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES,
   DEFAULT_GTP_EVENT_INQUIRY,
   DEFAULT_GTP_GALLERY_BAND,
   DEFAULT_GTP_QUOTES_BAND,
@@ -69,6 +71,17 @@ export type GtpAboutHeroBandRaw = {
   primaryCtaHref?: string | null;
   secondaryCtaLabel?: string | null;
   secondaryCtaHref?: string | null;
+  campaignSlides?: {
+    badge?: string | null;
+    title?: string | null;
+    lede?: string | null;
+    primaryCtaLabel?: string | null;
+    primaryCtaHref?: string | null;
+    secondaryCtaLabel?: string | null;
+    secondaryCtaHref?: string | null;
+    backgroundImageUrl?: string | null;
+    mobileBackgroundImageUrl?: string | null;
+  }[] | null;
   importantDatesEyebrow?: string | null;
   importantDates?: GtpAboutHeroImportantDateRaw[] | null;
 } | null;
@@ -81,11 +94,7 @@ export type GtpAboutWhyMattersBandRaw = {
   ctaLabel?: string | null;
   ctaHref?: string | null;
   tallImageSrc?: string | null;
-  topRightImageSrc?: string | null;
-  bottomRightImageSrc?: string | null;
   tallImageAlt?: string | null;
-  topRightImageAlt?: string | null;
-  bottomRightImageAlt?: string | null;
 } | null;
 
 export type GtpAboutThemeCardRaw = {
@@ -254,7 +263,7 @@ function mergeImportantDates(
 
 function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
   const d = DEFAULT_GTP_ABOUT_HERO;
-  if (!raw) return d;
+  if (!raw) return { ...d, campaignSlides: DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES };
   return {
     enabled: raw.enabled !== false,
     badge: s(raw.badge, d.badge),
@@ -267,32 +276,49 @@ function mergeHero(raw: GtpAboutHeroBandRaw): GtpAboutHeroCopy {
     ),
     secondaryCtaLabel: s(raw.secondaryCtaLabel, d.secondaryCtaLabel),
     secondaryCtaHref: s(raw.secondaryCtaHref, d.secondaryCtaHref),
+    campaignSlides: mergeCampaignSlides(raw),
     importantDatesEyebrow: s(raw.importantDatesEyebrow, d.importantDatesEyebrow),
     importantDates: mergeImportantDates(raw, d.importantDates),
   };
 }
 
-function splitThree(
-  body: string,
-  fallback: [string, string, string],
-): [string, string, string] {
-  const parts = body
-    .split(/\n\n/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  return [
-    parts[0] ?? fallback[0],
-    parts[1] ?? fallback[1],
-    parts[2] ?? fallback[2],
-  ];
+function mergeCampaignSlides(raw: GtpAboutHeroBandRaw): GtpAboutCampaignSlide[] {
+  const slides = raw?.campaignSlides
+    ?.map((slide) => {
+      const title = slide?.title?.trim();
+      if (!title) return null;
+      const primaryCtaLabel = slide.primaryCtaLabel?.trim();
+      const primaryCtaHref = slide.primaryCtaHref?.trim();
+      const secondaryCtaLabel = slide.secondaryCtaLabel?.trim();
+      const secondaryCtaHref = slide.secondaryCtaHref?.trim();
+      const backgroundImageUrl = slide.backgroundImageUrl?.trim();
+      const mobileBackgroundImageUrl = slide.mobileBackgroundImageUrl?.trim();
+      return {
+        badge: s(slide.badge, ""),
+        title,
+        lede: s(slide.lede, ""),
+        ...(primaryCtaLabel && primaryCtaHref
+          ? { primaryCtaLabel, primaryCtaHref }
+          : {}),
+        ...(secondaryCtaLabel && secondaryCtaHref
+          ? { secondaryCtaLabel, secondaryCtaHref }
+          : {}),
+        ...(backgroundImageUrl ? { backgroundImageUrl } : {}),
+        ...(mobileBackgroundImageUrl ? { mobileBackgroundImageUrl } : {}),
+      };
+    })
+    .filter((slide): slide is GtpAboutCampaignSlide => Boolean(slide));
+  return slides?.length ? slides : DEFAULT_GTP_ABOUT_CAMPAIGN_SLIDES;
 }
 
 function mergeWhyMatters(raw: GtpAboutWhyMattersBandRaw): GtpAboutWhyMattersCopy {
   const d = DEFAULT_GTP_WHY_MATTERS;
   if (!raw) return d;
-  const bodyParagraphs = raw.body?.trim()
-    ? splitThree(raw.body, d.bodyParagraphs)
-    : d.bodyParagraphs;
+  // A cleared CMS body is intentional; defaults apply only when the band is absent.
+  const bodyParagraphs = (raw.body ?? "")
+    .split(/\r?\n\s*\r?\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
   return {
     enabled: raw.enabled !== false,
     eyebrow: s(raw.eyebrow, d.eyebrow),
@@ -301,11 +327,7 @@ function mergeWhyMatters(raw: GtpAboutWhyMattersBandRaw): GtpAboutWhyMattersCopy
     ctaLabel: s(raw.ctaLabel, d.ctaLabel),
     ctaHref: s(raw.ctaHref, d.ctaHref),
     tallImageSrc: s(raw.tallImageSrc, d.tallImageSrc),
-    topRightImageSrc: s(raw.topRightImageSrc, d.topRightImageSrc),
-    bottomRightImageSrc: s(raw.bottomRightImageSrc, d.bottomRightImageSrc),
     tallImageAlt: s(raw.tallImageAlt, d.tallImageAlt),
-    topRightImageAlt: s(raw.topRightImageAlt, d.topRightImageAlt),
-    bottomRightImageAlt: s(raw.bottomRightImageAlt, d.bottomRightImageAlt),
   };
 }
 

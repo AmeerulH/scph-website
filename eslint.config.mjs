@@ -5,15 +5,26 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    files: ["scripts/import-team-to-sanity.js", "scripts/scrape-team.js"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    ".next-gtp-review/**",
     "out/**",
     "build/**",
+    "unlighthouse/**",
     "next-env.d.ts",
     // Colocated Sanity Studio — separate package.json and eslint.config.mjs
     "studio/**",
+    // Local tooling and review artifacts are outside the application source.
+    ".agents/**",
+    ".cursor/**",
+    ".claude/**",
+    ".impeccable/**",
   ]),
 ]);
 

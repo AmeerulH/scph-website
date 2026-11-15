@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
-import { PlaceholderPage } from "@/components/shared/placeholder-page";
-import { RenderSectionBlocks } from "@/components/sections/render-section-block";
-import { GtpForestHero } from "@/components/sections/heroes";
-import { getGtp2026MediaPage } from "@/sanity/gtp-stage2";
-import { sectionBlocksMayRender } from "@/sanity/section-block-types";
+import { MediaHero } from "@/components/gtp/media/media-hero";
+import { MediaSectionNav } from "@/components/gtp/media/media-section-nav";
+import { PhotoAlbums } from "@/components/gtp/media/photo-albums";
+import { PodcastSection } from "@/components/gtp/media/podcast-section";
+import { VideoSection } from "@/components/gtp/media/video-section";
+import { getGtpVideoPreview } from "@/sanity/gtp-videos";
+import { getGtpMediaPage } from "@/sanity/gtp-media-page";
+import { getGtpVisualSynthesis, synthesisHeroMeta } from "@/sanity/gtp-visual-synthesis";
 
 const description =
-  "Media resources and press information for Global Tipping Points Conference 2026, hosted by Sunway Centre for Planetary Health in Kuala Lumpur.";
+  "Articles, photos, podcasts and videos from the Global Tipping Points Conference 2026, hosted by Sunway Centre for Planetary Health in Kuala Lumpur.";
 
 export const metadata: Metadata = {
   title: "Media",
@@ -26,32 +29,28 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-const defaultPageTitle = "Media";
-
 export default async function GtpMediaPage() {
-  const cms = await getGtp2026MediaPage().catch(() => null);
-  const title = cms?.pageTitle?.trim() || defaultPageTitle;
-  const sections = cms?.sections ?? null;
-  const heroLede = cms?.heroLede?.trim();
-
-  if (sectionBlocksMayRender(sections)) {
-    return (
-      <>
-        <GtpForestHero
-          title={title}
-          lede={heroLede || undefined}
-          bottomSpacing="spacious"
-        />
-        <RenderSectionBlocks blocks={sections ?? []} />
-      </>
-    );
-  }
+  const [media, synthesis, videoPreview] = await Promise.all([getGtpMediaPage(), getGtpVisualSynthesis(), getGtpVideoPreview()]);
 
   return (
-    <PlaceholderPage
-      title={title}
-      description={cms?.placeholderDescription?.trim() || undefined}
-      theme="gtp"
-    />
+    <div className="bg-gtp-dark-teal-dark">
+      <MediaHero
+        hero={media.hero}
+        synthesisMeta={synthesisHeroMeta(synthesis.maps)}
+        counts={{
+          albums: media.photos.albums.length,
+          episodes: media.podcasts.episodes.length,
+          videos: videoPreview.total,
+        }}
+      />
+      <MediaSectionNav />
+      <PhotoAlbums
+        title={media.photos.title}
+        intro={media.photos.intro}
+        albums={media.photos.albums}
+      />
+      <PodcastSection podcasts={media.podcasts} />
+      <VideoSection title={media.videos.title} intro={media.videos.intro} preview={videoPreview} />
+    </div>
   );
 }

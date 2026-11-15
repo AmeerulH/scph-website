@@ -8,6 +8,13 @@ export const gtp2026ProgrammeType = defineType({
     'Conference agenda for the programme page. Prefer a single document with fixed id gtp2026Programme so the website query stays stable (create in Studio with Custom ID, or import).',
   fields: [
     defineField({
+      name: 'workshopArtworkMigrationVersion',
+      type: 'number',
+      hidden: true,
+      readOnly: true,
+      description: 'Internal migration marker. Prevents archived artwork from being restored over later editor changes.',
+    }),
+    defineField({
       name: 'internalTitle',
       title: 'Internal title',
       type: 'string',
@@ -18,14 +25,16 @@ export const gtp2026ProgrammeType = defineType({
     defineField({
       name: 'sessionModalHostedSectionTitle',
       title: 'Session modal — “Hosted by” heading',
-      description: 'Shown above the host block when a visitor opens a session from the programme.',
+      description:
+        'Default heading for every popup. A session or workshop can set its own organisation below.',
       type: 'string',
       initialValue: 'Hosted By',
     }),
     defineField({
       name: 'sessionModalHostedLogo',
-      title: 'Session modal — host logo',
-      description: 'Square or compact logo. If empty, the site shows a text placeholder.',
+      title: 'Session modal — organisation logo',
+      description:
+        'Default logo when a session or workshop does not set its own. If empty, the site shows the SCPH round logo.',
       type: 'image',
       options: {hotspot: true},
       fields: [
@@ -47,15 +56,25 @@ export const gtp2026ProgrammeType = defineType({
     }),
     defineField({
       name: 'sessionModalHostedName',
-      title: 'Session modal — host name',
+      title: 'Session modal — organisation',
+      description: 'Default organisation when a session or workshop does not set its own.',
       type: 'string',
       initialValue: 'Sunway Centre for Planetary Health',
     }),
     defineField({
       name: 'sessionModalHostedSubtitle',
-      title: 'Session modal — host subtitle / location',
+      title: 'Session modal — location',
+      description:
+        'Default location. Hidden when “Show location” is off. A session that sets its own organisation uses its own location instead.',
       type: 'string',
       initialValue: 'Sunway University, Kuala Lumpur',
+    }),
+    defineField({
+      name: 'sessionModalHostedShowSubtitle',
+      title: 'Session modal — show location',
+      description: 'Turn off to hide the location line. The organisation name and logo stay visible.',
+      type: 'boolean',
+      initialValue: true,
     }),
     defineField({
       name: 'days',

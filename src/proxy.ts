@@ -1,8 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { canReviewGtpLibrary } from "@/lib/gtp-library-review-access";
 import { getMpnSupabaseConfig } from "@/lib/mpn/supabase/env";
 
 const MPN_BASE_PATH = "/community/mpn";
+const LIBRARY_REVIEW_PATH = "/dev/gtp-library-review";
 const ADMIN_PATH = `${MPN_BASE_PATH}/admin`;
 const MEMBER_PATHS = [`${MPN_BASE_PATH}/publications/submit`];
 const GUEST_ONLY_PATHS = [`${MPN_BASE_PATH}/login`, `${MPN_BASE_PATH}/register`];
@@ -22,7 +24,14 @@ function redirectToLogin(request: NextRequest) {
   return url;
 }
 
-export async function proxy(request: NextRequest) {
+function reviewLibrary(request: NextRequest) {
+  if (!canReviewGtpLibrary()) {
+    return new NextResponse(null, { status: 404 });
+  }
+  return NextResponse.next({ request });
+}
+
+async function protectMpn(request: NextRequest) {
   let response = NextResponse.next({ request });
   const { url, publishableKey } = getMpnSupabaseConfig();
 
@@ -83,6 +92,12 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
+export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+  if (path.startsWith(LIBRARY_REVIEW_PATH)) return reviewLibrary(request);
+  return protectMpn(request);
+}
+
 export const config = {
-  matcher: ["/community/mpn/:path*"],
+  matcher: ["/community/mpn/:path*", "/dev/gtp-library-review/:path*"],
 };

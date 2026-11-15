@@ -1,0 +1,152 @@
+[
+  {
+    "path": "/",
+    "performance": 82,
+    "error": null
+  },
+  {
+    "path": "/about-us",
+    "performance": 80,
+    "error": null
+  },
+  {
+    "path": "/events",
+    "performance": 83,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/about",
+    "performance": 74,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/biz-forum",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/faq",
+    "performance": 82,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/get-involved",
+    "performance": 88,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/media",
+    "performance": 80,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/media/on-the-news",
+    "performance": 83,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/media/videos",
+    "performance": 82,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/media/visual-synthesis",
+    "performance": 90,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/organising-committee",
+    "performance": 81,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes",
+    "performance": 78,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes/action-workshops",
+    "performance": 83,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes/artificial-intelligence-sessions",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes/book-launch",
+    "performance": 90,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes/film-screening",
+    "performance": 73,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/programmes/sensorial-station",
+    "performance": 87,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/resources",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/speakers",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/submissions",
+    "performance": 87,
+    "error": null
+  },
+  {
+    "path": "/events/gtp-2026/sustainability",
+    "performance": 77,
+    "error": null
+  },
+  {
+    "path": "/media",
+    "performance": 90,
+    "error": null
+  },
+  {
+    "path": "/network",
+    "performance": 89,
+    "error": null
+  },
+  {
+    "path": "/network/community-hub",
+    "performance": 91,
+    "error": null
+  },
+  {
+    "path": "/network/journalist-workshops",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/planetary-health",
+    "performance": 84,
+    "error": null
+  },
+  {
+    "path": "/programmes",
+    "performance": 90,
+    "error": null
+  },
+  {
+    "path": "/projects",
+    "performance": 85,
+    "error": null
+  },
+  {
+    "path": "/research",
+    "performance": 84,
+    "error": null
+  }
+]

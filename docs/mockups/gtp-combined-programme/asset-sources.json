@@ -1,0 +1,142 @@
+{
+  "note": "Existing GTP website assets, acquired for this local design proposal on 6 October 2026. No AI-generated imagery. Workshop posters and titles are layout references; the mockup shows a subset of the published programme.",
+  "sourcePage": "https://www.sunwayplanetaryhealth.com.my/events/gtp-2026/programmes/action-workshops",
+  "sourceInventory": {
+    "assets": [
+      {
+        "contentType": "font/woff2",
+        "id": "c3fe78ee9394d361",
+        "kind": "font",
+        "name": "47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/c3fe78ee9394d361.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "font/woff2",
+        "id": "f346b7e236b23adb",
+        "kind": "font",
+        "name": "83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/f346b7e236b23adb.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/83afe278b6a6bb3c-s.p.2bn3s6zvc0dyp.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "font/woff2",
+        "id": "df9c9981feba6faf",
+        "kind": "font",
+        "name": "8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/df9c9981feba6faf.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "font/woff2",
+        "id": "e48d958cdc86a886",
+        "kind": "font",
+        "name": "a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/e48d958cdc86a886.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "font/woff2",
+        "id": "8d8bdef9bba63b72",
+        "kind": "font",
+        "name": "c875c6f5d3e977ac-s.p.1h18_wedhzk4h.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/8d8bdef9bba63b72.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/c875c6f5d3e977ac-s.p.1h18_wedhzk4h.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "font/woff2",
+        "id": "2736aa214e5db9cf",
+        "kind": "font",
+        "name": "e2334d715941921e-s.p.3o_v2fun1jzxk.woff2",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/2736aa214e5db9cf.woff2",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2?dpl=dpl_5x7vpSGxpCRSDPrDJPdp4csd9BP8"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "0b5d57cb5471787e",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/0b5d57cb5471787e",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2Ffea1db9e36b79ffa7b06f6bdbdbb2c105e64afb3-2400x1200.png&w=1920&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "b0b3c5f091160f71",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/b0b3c5f091160f71",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F710c2e915059fb74e679d100cfe0f444016a946f-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "21b3ca8b28711996",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/21b3ca8b28711996",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F522b7a8ebb4e0ba5c2deb04fd847932d34c44c51-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "1b5185ff8d81d5f1",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/1b5185ff8d81d5f1",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2Fa2836ad4b833e973c8772cb3c7ede8c6bf1b5d87-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "764e6c14735aaada",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/764e6c14735aaada",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F6e3b2d10a197b4f4a88a2fd904245ea24efe0bdf-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "1223257cfa381e52",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/1223257cfa381e52",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F51ae4bbc599629736865867afdb83ef0f66d2f79-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/svg+xml",
+        "id": "c768df95041dd093",
+        "kind": "image",
+        "name": "logo-blue-wide.svg",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/1dcb8630-d61e-4e81-bdbc-9ef14271db76/c768df95041dd093.svg",
+        "url": "https://www.sunwayplanetaryhealth.com.my/images/gtp/logo-blue-wide.svg"
+      }
+    ],
+    "failures": []
+  },
+  "additionalInventory": {
+    "assets": [
+      {
+        "contentType": "image/webp",
+        "id": "e458b7fa59ebab71",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/fccb42ca-78b6-4509-ba97-137dfd760cc6/e458b7fa59ebab71",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F846b604b8fe17c137132f9fa529f29804625ef9b-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "2148d64d13a48077",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/fccb42ca-78b6-4509-ba97-137dfd760cc6/2148d64d13a48077",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F15f137fdc1e3c3b562e914afd64f667f50b36a91-600x800.png&w=256&q=75"
+      },
+      {
+        "contentType": "image/webp",
+        "id": "8c2af5929ab29eeb",
+        "kind": "image",
+        "name": "image",
+        "path": "/var/folders/g_/86hqyrpn0g1brvtc_x3y1r_m0000gn/T/browser-use/assets/fccb42ca-78b6-4509-ba97-137dfd760cc6/8c2af5929ab29eeb",
+        "url": "https://www.sunwayplanetaryhealth.com.my/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fy0tkemxm%2Fproduction%2F8f006112a4f256104c4de6deb533252dd5d3adbc-600x800.png&w=256&q=75"
+      }
+    ],
+    "failures": []
+  }
+}

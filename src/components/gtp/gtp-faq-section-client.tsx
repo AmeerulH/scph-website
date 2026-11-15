@@ -41,13 +41,10 @@ export function GtpFaqSectionClient({ groups }: Props) {
   const [activeGroupId, setActiveGroupId] = useState(() => groups[0]?._id ?? "");
   const [openFaqId, setOpenFaqId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (groups.length === 0) return;
-    if (!groups.some((g) => g._id === activeGroupId)) {
-      setActiveGroupId(groups[0]._id);
-      setOpenFaqId(null);
-    }
-  }, [groups, activeGroupId]);
+  if (groups.length > 0 && !groups.some((g) => g._id === activeGroupId)) {
+    setActiveGroupId(groups[0]._id);
+    setOpenFaqId(null);
+  }
 
   useEffect(() => {
     const el = tabRefs.current.get(activeGroupId);

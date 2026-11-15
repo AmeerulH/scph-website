@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, Lock, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
@@ -11,12 +11,14 @@ import { TYPE_META } from "./data";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
 import { SpeakerPlaceholder } from "./speaker-placeholder";
 import { SessionObjectiveBlock } from "./session-objective-block";
+import { SpecialSessionRegistrationLink } from "./special-session-registration-link";
 import { getSessionVenueLine } from "./session-display-helpers";
 import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
+import { normalizeSpeakerName } from "./programme-speaker-filter";
 import {
-  normalizeSpeakerName,
-  sortSpeakersModeratorFirst,
-} from "./programme-speaker-filter";
+  actionWorkshopPeople,
+  programmePersonRoleLabel,
+} from "./programme-person-roles";
 
 function programmeSessionReference(title: string): string | null {
   const normalized = normalizeProgrammeSessionTitle(title).toLowerCase();
@@ -44,7 +46,7 @@ export function SessionCard({
   const MetaIcon = meta.Icon;
   const cardRef = React.useRef<HTMLDivElement>(null);
 
-  const namedSpeakers = sortSpeakersModeratorFirst(session.speakers ?? []);
+  const namedSpeakers = actionWorkshopPeople(session);
   const placeholderCount =
     namedSpeakers.length === 0 && session.speakerCount
       ? session.speakerCount
@@ -135,15 +137,23 @@ export function SessionCard({
             {getSessionVenueLine(session)}
           </span>
         </div>
-        <span
-          className={cn(
-            "ml-auto flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
-            meta.headerBadgeClass,
-          )}
-        >
-          <MetaIcon className="h-3 w-3" />
-          {meta.label}
-        </span>
+        <div className="ml-auto flex items-center gap-2">
+          <span
+            className={cn(
+              "flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold",
+              meta.headerBadgeClass,
+            )}
+          >
+            <MetaIcon className="h-3 w-3" />
+            {meta.label}
+          </span>
+          {session.closedEvent ? (
+            <span className="flex items-center gap-1.5 rounded-full bg-gtp-dark-teal px-3 py-1 text-xs font-semibold text-white">
+              <Lock className="h-3 w-3" />
+              Closed
+            </span>
+          ) : null}
+        </div>
         {googleCalHref ? (
           <div className="flex w-full basis-full justify-end pt-1">
             <AddToGoogleCalendarLink
@@ -164,6 +174,7 @@ export function SessionCard({
           className="mt-4"
           collapsibleOnMobile
         />
+        <SpecialSessionRegistrationLink session={session} calendarTabId={calendarTabId} />
 
         {/* Named speakers */}
         {namedSpeakers.length > 0 && (
@@ -175,6 +186,7 @@ export function SessionCard({
               const isMatched =
                 !!speakerKey && normalizeSpeakerName(sp.name) === speakerKey;
               const isMuted = !!speakerKey && !isMatched;
+              const role = programmePersonRoleLabel(sp);
               return (
                 <button
                   type="button"
@@ -200,11 +212,7 @@ export function SessionCard({
                     sizeClassName="h-8 w-8"
                   />
                   <div className="min-w-0">
-                    {sp.sessionRole?.trim() ? (
-                      <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">
-                        {sp.sessionRole.trim()}
-                      </p>
-                    ) : null}
+                    {role ? <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-teal">{role}</p> : null}
                     <p className="text-xs font-semibold text-gray-800">{sp.name}</p>
                     {sp.designation && (
                       <p className="text-xs text-gray-400">{sp.designation}</p>

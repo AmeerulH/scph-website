@@ -353,31 +353,29 @@ function TierHeader({
 function GtpLogoTierCell({
   entry,
   sleek,
-  compact,
+  contained,
 }: {
   entry: GtpAboutSponsorLogoEntry;
-  /** Partners: larger slots + multiply so white logo mats disappear on light grounds. */
+  /** Partners: multiply so white logo mats disappear on light grounds. */
   sleek?: boolean;
-  /** Supported-by logos use a quieter, subordinate scale. */
-  compact?: boolean;
+  /** Fill a fixed parent slot so artwork cannot spill into the next logo. */
+  contained?: boolean;
 }) {
   const remote = imgUnoptimized(entry.logoUrl);
   const image = (
     <span
       className={cn(
-        "flex items-center justify-center",
-        compact
-          ? "h-14 w-36 sm:h-16 sm:w-44"
-          : sleek
-          ? "h-auto min-h-16 w-44 max-h-24 sm:min-h-18 sm:w-52 sm:max-h-28 md:w-56"
-          : "h-16 w-44 sm:h-20 sm:w-52",
+        "flex items-center justify-center overflow-hidden",
+        contained
+          ? "h-16 w-full sm:h-20 md:h-24"
+          : "h-24 w-44 sm:h-28 sm:w-52 md:w-56",
       )}
     >
       <Image
         src={entry.logoUrl}
         alt={entry.name}
-        width={sleek ? 260 : 220}
-        height={sleek ? 104 : 80}
+        width={260}
+        height={104}
         className={cn(
           "max-h-full max-w-full object-contain",
           sleek && "mix-blend-multiply",
@@ -391,7 +389,8 @@ function GtpLogoTierCell({
   if (href) {
     const internal = href.startsWith("/") || href.startsWith("#");
     const className = cn(
-      "inline-flex items-center justify-center transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+      "inline-flex max-w-full items-center justify-center transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+      contained && "w-full",
       sleek
         ? "opacity-80 hover:opacity-100 hover:-translate-y-0.5"
         : "opacity-90 hover:opacity-100",
@@ -417,7 +416,14 @@ function GtpLogoTierCell({
   }
 
   return (
-    <span className="inline-flex items-center justify-center">{image}</span>
+    <span
+      className={cn(
+        "inline-flex max-w-full items-center justify-center",
+        contained && "w-full",
+      )}
+    >
+      {image}
+    </span>
   );
 }
 
@@ -432,7 +438,7 @@ function LogoGrid({
   reduceMotion: boolean;
   emptyBorderClassName: string;
   sleek?: boolean;
-  /** Equal-width columns so partner rows read centered regardless of logo aspect ratio. */
+  /** Fixed slots and a shared gap so different logo sizes wrap instead of overlapping. */
   balanced?: boolean;
 }) {
   if (logos.length === 0) {
@@ -466,12 +472,12 @@ function LogoGrid({
       className={cn(
         "flex list-none flex-wrap items-center p-0",
         balanced
-          ? "w-full justify-center gap-y-0 py-0"
+          ? "w-full justify-center gap-x-6 gap-y-8 py-1 sm:gap-x-10 sm:gap-y-10 md:gap-x-12 md:gap-y-12 xl:gap-x-16 xl:gap-y-14"
           : cn(
               "justify-center",
               sleek
                 ? "gap-x-12 gap-y-10 py-2 sm:gap-x-16 sm:gap-y-12 md:gap-x-20"
-                : "mt-10 gap-x-10 gap-y-8 py-2 sm:mt-12 sm:gap-x-12 sm:py-3",
+                : "mt-14 gap-x-10 gap-y-8 py-2 sm:mt-16 sm:gap-x-12 sm:py-3",
             ),
       )}
       initial="hidden"
@@ -492,7 +498,7 @@ function LogoGrid({
           key={`${entry.name}-${i}`}
           className={cn(
             balanced &&
-              "flex min-w-44 flex-1 basis-0 justify-center px-3 sm:min-w-48 sm:px-5 md:max-w-64",
+              "flex w-32 shrink-0 items-center justify-center sm:w-40 md:w-48",
           )}
           variants={{
             hidden: reduceMotion
@@ -515,7 +521,11 @@ function LogoGrid({
             },
           }}
         >
-          <GtpLogoTierCell entry={entry} sleek={sleek} />
+          <GtpLogoTierCell
+            entry={entry}
+            sleek={sleek}
+            contained={balanced}
+          />
         </motion.li>
       ))}
     </motion.ul>
@@ -557,7 +567,7 @@ function SupportedByFooter({
           <ul className="flex list-none flex-wrap items-center justify-center gap-x-8 gap-y-5 p-0 sm:gap-x-10">
             {logos.map((entry, index) => (
               <li key={`${entry.name}-${index}`}>
-                <GtpLogoTierCell entry={entry} sleek compact />
+                <GtpLogoTierCell entry={entry} sleek />
               </li>
             ))}
           </ul>

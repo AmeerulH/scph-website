@@ -43,7 +43,9 @@ function sessionMatchesTheme(session: Session, theme: ThemeFilterId): boolean {
   return session.theme === theme;
 }
 
-function sessionMatchesType(session: Session, type: SessionType | "all"): boolean {
+export type ProgrammeTypeFilter = SessionType | "all";
+
+function sessionMatchesType(session: Session, type: ProgrammeTypeFilter): boolean {
   if (type === "all") return true;
   return session.type === type;
 }
@@ -53,12 +55,18 @@ export function sessionIncludesSpeaker(session: Session, speakerName: string): b
   const key = normalizeSpeakerName(speakerName);
   if (!key) return false;
 
-  if (session.speakers?.some((s) => normalizeSpeakerName(s.name) === key)) {
+  if (
+    [...(session.speakers ?? []), ...(session.facilitators ?? [])].some(
+      (s) => normalizeSpeakerName(s.name) === key,
+    )
+  ) {
     return true;
   }
   return (
     session.workshops?.some((w) =>
-      w.speakers?.some((s) => normalizeSpeakerName(s.name) === key),
+      [...(w.speakers ?? []), ...(w.facilitators ?? [])].some(
+        (s) => normalizeSpeakerName(s.name) === key,
+      ),
     ) ?? false
   );
 }
@@ -73,10 +81,13 @@ function workshopIncludesSpeaker(
 }
 
 export function workshopHasSpeaker(
-  workshop: { speakers?: { name: string }[] },
+  workshop: { speakers?: { name: string }[]; facilitators?: { name: string }[] },
   speakerName: string,
 ): boolean {
-  return workshopIncludesSpeaker(workshop.speakers, speakerName);
+  return (
+    workshopIncludesSpeaker(workshop.speakers, speakerName) ||
+    workshopIncludesSpeaker(workshop.facilitators, speakerName)
+  );
 }
 
 /** Deduped A–Z list of named speakers across all sessions (incl. workshops). */
@@ -84,7 +95,7 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
   const byKey = new Map<string, SpeakerOption>();
 
   for (const session of sessions) {
-    for (const sp of session.speakers ?? []) {
+    for (const sp of [...(session.speakers ?? []), ...(session.facilitators ?? [])]) {
       const key = normalizeSpeakerName(sp.name);
       if (!key || byKey.has(key)) continue;
       const option: SpeakerOption = { name: sp.name.trim() };
@@ -93,7 +104,7 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
       byKey.set(key, option);
     }
     for (const workshop of session.workshops ?? []) {
-      for (const sp of workshop.speakers ?? []) {
+      for (const sp of [...(workshop.speakers ?? []), ...(workshop.facilitators ?? [])]) {
         const key = normalizeSpeakerName(sp.name);
         if (!key || byKey.has(key)) continue;
         const option: SpeakerOption = { name: sp.name.trim() };
@@ -115,9 +126,10 @@ export function collectSpeakers(sessions: Session[]): SpeakerOption[] {
  */
 export function filterSessionsWithSpeaker(
   sessions: Session[],
-  type: SessionType | "all",
+  type: ProgrammeTypeFilter,
   theme: ThemeFilterId,
   speakerName: string | null,
+  closedOnly = false,
 ): Session[] {
   let filtered = sessions;
 
@@ -128,6 +140,16 @@ export function filterSessionsWithSpeaker(
     if (!hasMatch) return [];
     filtered = filtered.filter(
       (s) => s.type === type || s.type === "break" || s.type === "reconvening",
+    );
+  }
+
+  if (closedOnly) {
+    const hasMatch = filtered.some(
+      (s) => s.type !== "break" && s.type !== "reconvening" && s.closedEvent === true,
+    );
+    if (!hasMatch) return [];
+    filtered = filtered.filter(
+      (s) => s.closedEvent === true || s.type === "break" || s.type === "reconvening",
     );
   }
 
@@ -176,8 +198,9 @@ type DayBucket = {
 export function findSpeakerAppearances(
   days: DayBucket[],
   speakerName: string,
-  type: SessionType | "all",
+  type: ProgrammeTypeFilter,
   theme: ThemeFilterId,
+  closedOnly = false,
 ): SpeakerAppearance[] {
   const appearances: SpeakerAppearance[] = [];
 
@@ -185,6 +208,7 @@ export function findSpeakerAppearances(
     for (const session of day.sessions) {
       if (session.type === "break" || session.type === "reconvening") continue;
       if (!sessionMatchesType(session, type)) continue;
+      if (closedOnly && session.closedEvent !== true) continue;
       if (!sessionMatchesTheme(session, theme)) continue;
       if (!sessionIncludesSpeaker(session, speakerName)) continue;
 

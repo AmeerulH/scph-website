@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-gtp-review/
 /out/
 
 # production
@@ -27,16 +28,19 @@
 # Local agent hooks (machine-specific paths)
 .cursor/hooks.json
 .codex/hooks.json
+.codex/agents/
 .cursor/settings.json
 
 # Vendor agent skills (reinstall locally; optional pin in skills-lock.json)
-.agents/skills/
+.agents/
+.cursor/agents/
+.cursor/skills/impeccable/
 .claude/skills/
+.claude/agents/
 .claude/worktrees/
 .claude/launch.json
 
-# Impeccable session context (local design briefs, not site spec)
-PRODUCT.md
+# Local design briefs. PRODUCT.md is tracked with the site.
 DESIGN.md
 !spec/MPN/DESIGN.md
 

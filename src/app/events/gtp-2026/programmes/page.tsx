@@ -42,7 +42,7 @@ function ProgrammeClientFallback() {
       <div className="sticky top-18 z-40">
         <div className="flex items-center justify-center gap-3 px-4 py-3">
           <div className="flex gap-1 rounded-full border border-white/10 bg-gtp-dark-teal/50 p-1.5 shadow-lg backdrop-blur-xl [&::-webkit-scrollbar]:hidden">
-            {Array.from({ length: 5 }, (_, i) => (
+            {Array.from({ length: 4 }, (_, i) => (
               <div
                 key={i}
                 className="h-9 w-14 shrink-0 rounded-full bg-white/15 sm:w-20"

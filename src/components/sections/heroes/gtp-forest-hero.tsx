@@ -13,8 +13,10 @@ const titleSizeClasses = {
 } as const;
 
 export type GtpForestHeroProps = {
-  eyebrow?: string;
+  eyebrow?: string | null;
   title: React.ReactNode;
+  /** Optional CMS-managed background image; the forest artwork is the fallback. */
+  backgroundImageUrl?: string;
   /** Primary line under accent (text-base md:text-lg) */
   lede?: string;
   /** Secondary line (smaller, e.g. programme disclaimer) */
@@ -28,6 +30,7 @@ export type GtpForestHeroProps = {
 export function GtpForestHero({
   eyebrow = "GTP 2026",
   title,
+  backgroundImageUrl,
   lede,
   ledeSecondary,
   titleSize = "default",
@@ -42,7 +45,7 @@ export function GtpForestHero({
       )}
     >
       <Image
-        src={FOREST_BG}
+        src={backgroundImageUrl || FOREST_BG}
         alt=""
         fill
         className="object-cover object-center"
@@ -50,18 +53,19 @@ export function GtpForestHero({
         quality={40}
         priority
         fetchPriority="high"
-        placeholder="blur"
-        blurDataURL={FOREST_BG_BLUR}
+        placeholder={backgroundImageUrl ? "empty" : "blur"}
+        blurDataURL={backgroundImageUrl ? undefined : FOREST_BG_BLUR}
       />
       <div className="absolute inset-0 bg-gtp-dark-teal/75" />
 
       <div className="relative mx-auto max-w-4xl">
-        <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
+        {eyebrow ? <span className="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           {eyebrow}
-        </span>
+        </span> : null}
         <h1
           className={cn(
-            "mt-6 font-heading font-bold leading-tight text-white",
+            "font-heading font-bold leading-tight text-white",
+            eyebrow && "mt-6",
             titleSizeClasses[titleSize],
           )}
         >

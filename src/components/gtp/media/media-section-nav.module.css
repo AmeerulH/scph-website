@@ -1,0 +1,11 @@
+.link { transition: color 160ms var(--ease-out-strong), background-color 160ms var(--ease-out-strong), transform 160ms var(--ease-out-strong); }
+.link:active:not(:focus-visible) { transform: scale(.97); transition-duration: 100ms; }
+.nav .link:focus-visible { outline: 3px solid var(--color-gtp-green); outline-offset: 1px; transform: none; }
+.nav:has(:focus-visible) .link { transition-duration: 0ms; }
+.nav[data-instant] .link { transition-duration: 0ms !important; }
+@media (hover: hover) and (pointer: fine) {
+  .link:not([aria-current]):hover { background: rgb(255 255 255 / .1); color: white; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .link:active:not(:focus-visible) { transform: none; }
+}

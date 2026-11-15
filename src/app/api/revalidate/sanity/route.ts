@@ -13,9 +13,17 @@ const GTP_PROGRAMME_DOC_ID = "gtp2026Programme";
 /** Document `_type` values that power the Next.js app → paths to revalidate on webhook. */
 const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   gtp2026Programme: [
+    "/events/gtp-2026/programmes/action-workshops",
     "/events/gtp-2026/programmes",
     "/events/gtp-2026/about",
   ],
+  gtp2026ProgrammeActivityPage: [
+    "/events/gtp-2026/programmes/action-workshops",
+    "/events/gtp-2026/programmes/artificial-intelligence-sessions",
+    "/events/gtp-2026/programmes/film-screening",
+    "/events/gtp-2026/programmes/sensorial-station",
+  ],
+  gtp2026BookLaunchPage: ["/events/gtp-2026/programmes/book-launch"],
   gtp2026HighlightSpeaker: ["/", "/events/gtp-2026/about"],
   gtp2026Speaker: ["/", "/events/gtp-2026/about", "/events/gtp-2026/speakers"],
   gtp2026SpeakersPage: ["/events/gtp-2026/speakers"],
@@ -24,7 +32,15 @@ const SANITY_TYPE_TO_PATHS: Record<string, readonly string[]> = {
   gtp2026FaqGroup: ["/events/gtp-2026/faq"],
   gtp2026GetInvolvedPage: ["/events/gtp-2026/get-involved"],
   gtp2026SubmissionsPage: ["/events/gtp-2026/submissions"],
-  gtp2026MediaPage: ["/events/gtp-2026/media"],
+  gtp2026Resource: ["/events/gtp-2026/resources"],
+  gtp2026ResourcesPage: ["/events/gtp-2026/resources"],
+  gtp2026Video: ["/events/gtp-2026/media", "/events/gtp-2026/media/videos"],
+  gtp2026MediaPage: ["/events/gtp-2026/media/videos", "/events/gtp-2026/media", "/events/gtp-2026/media/visual-synthesis", "/events/gtp-2026/media/on-the-news"],
+  gtp2026NewsArticle: ["/events/gtp-2026/media/on-the-news"],
+  gtp2026SustainabilityPage: [
+    "/events/gtp-2026/sustainability",
+    "/events/gtp-2026/about",
+  ],
   gtp2026BizForumPage: ["/events/gtp-2026/biz-forum"],
   scphHomePage: ["/"],
   scphAboutPage: ["/about-us"],

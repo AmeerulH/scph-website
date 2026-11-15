@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/events/gtp-2026/media",
+    "score": 0.94,
+    "performance": 0.81,
+    "accessibility": 0.97,
+    "best-practices": 0.96,
+    "seo": 1
+  },
+  {
+    "path": "/events/gtp-2026/media/videos",
+    "score": 0.93,
+    "performance": 0.81,
+    "accessibility": 0.96,
+    "best-practices": 0.96,
+    "seo": 1
+  }
+]

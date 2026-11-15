@@ -18,7 +18,6 @@ import {
 // ─── Tab configuration ────────────────────────────────────────────────────────
 
 export const TABS = [
-  { id: "pre", label: "Pre-Conference" },
   { id: "day1", label: "Day 1 · 12 Oct" },
   { id: "day2", label: "Day 2 · 13 Oct" },
   { id: "day3", label: "Day 3 · 14 Oct" },

@@ -3,7 +3,7 @@
  *
  * Fixes legacy string paths (`*Src`, gallery `src`) on:
  * - galleryBand.slides → `image` + `alt`
- * - whyMattersBand → `tallImage`, `topRightImage`, `bottomRightImage`
+ * - whyMattersBand → `tallImage` (single section image)
  * - quotesBand.quotes → `photo`
  *
  * Patches both published and draft documents (Studio edits the draft).

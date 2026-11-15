@@ -69,7 +69,17 @@ Use these to **upload or refresh** default content. Requires `SANITY_API_TOKEN` 
 | `seed-gtp-about-gallery-images` | `scripts/seed-gtp-about-gallery-images.ts` | Alias — patches all About image bands (same as `seed-gtp-about-page-images`) |
 | `seed-gtp-about-page-images` | `scripts/seed-gtp-about-page-images.ts` | Patches `gtp2026AboutPage` gallery + why-matters + quote photos (published + draft); removes legacy `*Src` fields |
 | `seed-gtp-about-accommodation-activities` | `scripts/seed-gtp-about-accommodation-activities.ts` | Patches `gtp2026AboutPage.accommodationActivitiesBand` (carousel hotels/activities; published + draft) |
-| `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage`, `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
+| `seed-gtp-media-page` | `scripts/seed-gtp-media-page.ts` | `gtp2026MediaPage` copy + empty album shells, plus Visual Synthesis contributor copy and an empty `synthesisMaps` list (`createIfNotExists` + `setIfMissing`; also On the News copy + empty `newsFeaturedArticles` references; no articles, images or maps; intro/live note intentionally not seeded; guarded production) |
+| `seed-gtp-resources-page` | `scripts/seed-gtp-resources-page.ts` | Resources settings + three pending resource shells; PDF attachments stay empty; defaults to dry-run, `APPLY=1`, guarded production |
+| `seed-gtp-video-library` | `scripts/seed-gtp-video-library.ts` | Missing Media collection copy + four pending highlights; never enables cutover; defaults to dry-run, `APPLY=1`, guarded production |
+| `migrate-gtp-media-videos` | `scripts/migrate-gtp-media-videos.ts` | Copies legacy videos into playlist documents; raw backup, reviewed plan/revision/parity guards, atomic cutover; retains original array; production requires explicit approval |
+| `seed-gtp-book-launch-page` | `scripts/seed-gtp-book-launch-page.ts` | `gtp2026BookLaunchPage` singleton: placeholder copy only; no book facts or images (`setIfMissing`; refuses production) |
+| `seed-gtp-sustainability-page` | `scripts/seed-gtp-sustainability-page.ts` | `gtp2026SustainabilityPage` singleton: intro, 5 commitments, Home teaser copy (`setIfMissing`; refuses production) |
+| `seed-gtp-media-bizforum-pages` | `scripts/seed-gtp-media-bizforum-pages.ts` | `gtp2026MediaPage` (create-if-missing only), `gtp2026BizForumPage`, `gtp2026AboutPage` (About uses same builder as `seed-gtp-about-page`) |
+| `seed-gtp-programme-subpages` | `scripts/seed-gtp-programme-subpages.ts` | Creates missing `gtp2026ProgrammeActivityPage` documents for Action Workshops, Artificial Intelligence Sessions, Film Screening, and Sensorial Station; intentionally refuses production |
+| `seed-gtp-combined-programme` | `scripts/seed-gtp-combined-programme.ts` | Adds missing combined-page introduction/headings only; full backup + revision check; `DRY_RUN=1`, production requires `ALLOW_PRODUCTION=1` and explicit approval |
+| `migrate-gtp-workshop-records` | `scripts/migrate-gtp-workshop-records.ts` | One-time keyed poster migration into Programme slots + approved REACH correction; raw published/draft backup, exact dry-run plan/revision guards, atomic patch, no full-array replacement; production requires approval and `ALLOW_PRODUCTION=1` |
+| `import-gtp-research-schedule` | `scripts/import-gtp-research-schedule.ts` | Approved JSON → keyed research sessions on Day 2/3; preserves other agenda entries/assets; backup + revision guard; dry run before any write |
 | `seed-scph-meet-the-team-page` | `scripts/seed-scph-meet-the-team-page.ts` | `scphMeetTheTeamPage` |
 | `seed-scph-journalist-workshops-page` | `scripts/seed-scph-journalist-workshops-page.ts` | `scphJournalistWorkshopsPage` singleton shell (empty `workshops` until rows seed or Studio) |
 | `seed-scph-journalist-workshop-rows` | `scripts/seed-scph-journalist-workshop-rows.ts` | Patches `workshops[]` from [`scripts/data/journalist-workshops-seed.json`](scripts/data/journalist-workshops-seed.json); optional `JOURNALIST_WORKSHOP_ACCESS_CODES` (comma-separated, 7 values) |
@@ -104,6 +114,12 @@ Prefer **colocating** feature UI under `src/components/` with names that match d
 - **Reuse** — Extend existing merge helpers, section renderers, and UI primitives (`src/components/ui/`) before adding parallel systems.
 - **Types** — Keep TypeScript strict and honest at Sanity boundaries (null/undefined from GROQ).
 - **Comments** — Short and only where behaviour is non-obvious; do not restate the code.
+
+### 6.1 UI craft: Impeccable and Emil Kowalski
+
+Impeccable leads every UI task (brand, `PRODUCT.md`, surface brief, craft floor). Emil Kowalski's skills, installed globally from `emilkowalski/skill`, refine motion and feel after that world is set. The handoff, the skill table, and the rule against pinning `/animate` live in [`.cursor/rules/impeccable-emil.mdc`](.cursor/rules/impeccable-emil.mdc). Human setup notes are in [`README.md`](README.md) under **UI craft skills**.
+
+Do not open a site-wide animation pass unless asked. When asked to improve animations or feel, plan first with `improve-animations` or `find-animation-opportunities`, implement only what is approved, and keep the performance bar in §7.
 
 ---
 

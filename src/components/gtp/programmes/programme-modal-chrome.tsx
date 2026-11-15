@@ -10,9 +10,13 @@ import {
   Twitter,
   Mail,
 } from "lucide-react";
-import { GTP_2026_REGISTRATION_URL } from "@/lib/gtp-registration-url";
 import type { GtpSessionModalHostedBy } from "@/sanity/queries";
 import { cn } from "@/lib/utils";
+import { ActionWorkshopRegistration } from "./action-workshop-registration";
+import { ProgrammeSpeakerAvatar } from "./programme-speaker-avatar";
+import { sortSpeakersModeratorFirst } from "./programme-speaker-filter";
+import type { ProgrammeHost, Speaker } from "./types";
+import type { ActivityRegistrationState } from "@/lib/gtp-activity-registration";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -22,7 +26,7 @@ export function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-function hostedLogoDisplayDimensions(hostedBy: GtpSessionModalHostedBy): {
+function hostedLogoDisplayDimensions(hostedBy: ProgrammeHost): {
   width: number;
   height: number;
 } {
@@ -38,36 +42,114 @@ function hostedLogoDisplayDimensions(hostedBy: GtpSessionModalHostedBy): {
   };
 }
 
+/** Same shape as a speaker row. Hover uses orange so it stays distinct from the teal speaker wash. */
+export function FacilitatorPersonCard({
+  name,
+  designation,
+  imageUrl,
+  role = "Facilitator",
+}: {
+  name: string;
+  designation?: string;
+  imageUrl?: string;
+  role?: string;
+}) {
+  return (
+    <div className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-gtp-orange/10">
+      <ProgrammeSpeakerAvatar imageUrl={imageUrl} name={name} />
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-orange">{role}</p>
+        <p className="text-sm font-semibold text-gray-800">{name}</p>
+        {designation ? (
+          <p className="text-xs leading-relaxed text-gtp-orange">{designation}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** Placeholder card when a session or workshop has no facilitators yet. */
+export function FacilitatorToBeConfirmedCard() {
+  return (
+    <div className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-gtp-orange/10">
+      <ProgrammeSpeakerAvatar />
+      <div className="min-w-0">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-gtp-orange">
+          Facilitator
+        </p>
+        <p className="text-sm font-semibold text-gray-800">To be confirmed</p>
+      </div>
+    </div>
+  );
+}
+
+export function FacilitatorCards({ people }: { people: Speaker[] }) {
+  if (people.length === 0) {
+    return (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <FacilitatorToBeConfirmedCard />
+      </div>
+    );
+  }
+
+  return (
+    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {sortSpeakersModeratorFirst(people).map((person, index) => (
+        <li key={`${person.name}-${index}`}>
+          <FacilitatorPersonCard
+            name={person.name}
+            designation={person.designation}
+            imageUrl={person.imageUrl}
+            role={person.sessionRole?.trim() || "Facilitator"}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /** “Hosted by” block — shared by main session modal and parallel workshop modal. */
 export function ProgrammeModalHostedByBlock({
   hostedBy,
 }: {
   hostedBy: GtpSessionModalHostedBy;
 }) {
+  const hosts: ProgrammeHost[] = hostedBy.hosts?.length ? hostedBy.hosts : [{
+    name: hostedBy.name,
+    subtitle: hostedBy.subtitle,
+    logoUrl: hostedBy.logoUrl || undefined,
+    logoAlt: hostedBy.logoAlt,
+    logoWidth: hostedBy.logoWidth,
+    logoHeight: hostedBy.logoHeight,
+  }];
   return (
     <div>
-      <p className="mb-3 text-sm font-semibold text-gray-700">
+      <p className="mb-3 text-sm font-semibold text-gtp-dark-teal">
         {hostedBy.sectionTitle}
       </p>
-      <div className="flex items-center gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
-          {hostedBy.logoUrl ? (
+      <ul className={cn("grid gap-5", hosts.length > 1 && "sm:grid-cols-2")}>
+        {hosts.map((host, index) => (
+        <li key={host.id || `${host.name}-${index}`} className="flex min-w-0 items-center gap-3">
+          {host.logoUrl ? (
+            <div className="flex size-16 shrink-0 items-center justify-center">
             <Image
-              src={hostedBy.logoUrl}
-              alt={hostedBy.logoAlt}
-              {...hostedLogoDisplayDimensions(hostedBy)}
-              className="max-h-12 max-w-12 object-contain"
-              unoptimized={hostedBy.logoUrl.toLowerCase().includes(".svg")}
+              src={host.logoUrl}
+              alt={host.logoAlt || `${host.name} logo`}
+              {...hostedLogoDisplayDimensions(host)}
+              className="max-h-16 max-w-16 object-contain"
+              unoptimized={host.logoUrl.toLowerCase().includes(".svg")}
             />
-          ) : (
-            <span className="text-xs font-bold text-gtp-dark-teal">SCPH</span>
-          )}
+            </div>
+          ) : null}
+        <div className="min-w-0 text-xs leading-relaxed text-gtp-dark-teal/80">
+          <p className="font-semibold text-gtp-dark-teal wrap-anywhere">{host.name}</p>
+          {hostedBy.showSubtitle && host.subtitle ? (
+            <p>{host.subtitle}</p>
+          ) : null}
         </div>
-        <div className="text-xs leading-relaxed text-gray-500">
-          <p className="font-semibold text-gray-700">{hostedBy.name}</p>
-          <p>{hostedBy.subtitle}</p>
-        </div>
-      </div>
+        </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -79,10 +161,23 @@ const SHARE_FALLBACK_URL =
 export function ProgrammeModalShareRegisterColumn({
   shareTitle,
   hostedBy,
+  showWorkshopRegistration = false,
+  workshopRegistration = "redirect",
+  workshopTitle,
+  registration,
+  verificationEndpoint,
 }: {
   shareTitle: string;
   /** When present, render host details alongside share controls. */
   hostedBy?: GtpSessionModalHostedBy;
+  /** Show the attendee-verification gate for Action Workshop details. */
+  showWorkshopRegistration?: boolean;
+  /** `redirect` sends visitors to the Action Workshops page. `inline` opens verification here. */
+  workshopRegistration?: "redirect" | "inline";
+  /** When set, send users to this workshop on the Action Workshops page. */
+  workshopTitle?: string;
+  registration?: ActivityRegistrationState;
+  verificationEndpoint?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
 
@@ -191,15 +286,13 @@ export function ProgrammeModalShareRegisterColumn({
         </p>
       </div>
 
-      <a
-        href={GTP_2026_REGISTRATION_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-gtp-orange py-3 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-gtp-orange-dark"
-      >
-        Register to Join
-        <span aria-hidden>→</span>
-      </a>
+      {showWorkshopRegistration ? (
+        workshopRegistration === "inline" ? (
+          <ActionWorkshopRegistration registration={registration} verificationEndpoint={verificationEndpoint} />
+        ) : (
+          <ActionWorkshopRegistration redirectToWorkshops workshopTitle={workshopTitle} />
+        )
+      ) : null}
     </div>
   );
 }

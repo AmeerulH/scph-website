@@ -16,5 +16,11 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+    templates: previous => [
+      ...previous.filter(template => template.schemaType !== 'gtp2026ResourcesPage'),
+      ...['dailyHighlights', 'sessionRecordings', 'playlist'].map(collection => ({
+        id: `gtp-video-${collection}`, title: `GTP video: ${collection}`, schemaType: 'gtp2026Video', value: {collection},
+      })),
+    ],
   },
 })

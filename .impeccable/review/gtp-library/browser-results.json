@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "errors": [],
+  "checks": [
+    "public routes",
+    "four pending days",
+    "legacy content preservation",
+    "single iframe",
+    "Escape and focus restoration",
+    "partial downloads",
+    "mobile navigation",
+    "search/day filter",
+    "pagination and Back",
+    "long/empty/error states",
+    "floating collection pills and short final-section scrollspy",
+    "native dropdown chevron spacing",
+    "keyboard pill activation",
+    "existing Media selector",
+    "1280/1024 navigation"
+  ]
+}

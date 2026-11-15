@@ -1,9 +1,11 @@
-import {defineField, defineType} from 'sanity'
+import {defineArrayMember, defineField, defineType} from 'sanity'
+import {programmeHostedByFields} from './programmeHostedByFields'
 
 export const programmeSessionType = defineType({
   name: 'programmeSession',
   title: 'Session',
   type: 'object',
+  fieldsets: [{name: 'hostedBy', title: 'Hosted by', options: {collapsible: false}}],
   fields: [
     defineField({
       name: 'time',
@@ -39,6 +41,15 @@ export const programmeSessionType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'closedEvent',
+      title: 'Closed event',
+      type: 'boolean',
+      initialValue: false,
+      description:
+        'Invitation-only, still listed on the programme. The session keeps its type above (Plenary, Special event, and so on) and also appears when visitors filter by Closed Event.',
+      hidden: ({parent}) => parent?.type === 'break',
+    }),
+    defineField({
       name: 'title',
       title: 'Session title',
       type: 'string',
@@ -51,6 +62,24 @@ export const programmeSessionType = defineType({
       rows: 5,
       description:
         'Shown on the public programme page. Use “TBC” if not final. For parallel slots, you can also set Objective on each workshop row.',
+    }),
+    defineField({
+      name: 'subpageButtonLabel',
+      title: 'Subpage button text',
+      type: 'string',
+      description:
+        'Text on this session’s button. For Special events, enter text to show a button on the card and popup; leave empty to hide it. Without a Registration form URL, the button opens the matching date’s shared Action Workshops registration section. Action Workshops and Research Sessions keep their default wording when empty. This changes the wording only, not registration availability. Publish Programme to update the website.',
+      hidden: ({parent}) =>
+        parent?.type !== 'concurrent' && parent?.type !== 'research' && parent?.type !== 'special',
+    }),
+    defineField({
+      name: 'subpageButtonUrl',
+      title: 'Registration form URL',
+      type: 'url',
+      description:
+        'Special events only. Paste an HTTPS registration form to open it in a new tab instead of the shared Action Workshops page. Use this when the event is open to everyone and has its own form. Leave empty to keep the shared registration link. Publish Programme to update the website.',
+      hidden: ({parent}) => parent?.type !== 'special',
+      validation: (rule) => rule.uri({scheme: ['https']}),
     }),
     defineField({
       name: 'theme',
@@ -71,9 +100,22 @@ export const programmeSessionType = defineType({
       title: 'Speakers',
       type: 'array',
       of: [{type: 'programmeSpeaker'}],
-      description: 'Named speakers. If empty, use Speaker count (TBC) below. Not shown for parallel sessions — add speakers to each individual workshop slot instead.',
+      description:
+        'Named speakers for this session. Tick Roles on each person when they are a speaker, a facilitator, or both. If empty, use Speaker count (TBC) below. Not shown for parallel sessions — add people on each workshop row instead.',
       hidden: ({parent}) =>
         parent?.type === 'concurrent' || parent?.type === 'research',
+    }),
+    defineField({
+      name: 'facilitators',
+      title: 'Facilitators',
+      type: 'array',
+      of: [{type: 'programmeSpeaker'}],
+      description:
+        'Older list, still shown under Facilitators on plenary and other session popups. The site also merges these people into action workshop popups. Prefer Roles on each person when someone is a speaker, a facilitator, or both.',
+      hidden: ({parent}) =>
+        parent?.type === 'break' ||
+        parent?.type === 'concurrent' ||
+        parent?.type === 'research',
     }),
     defineField({
       name: 'speakerCount',
@@ -88,6 +130,23 @@ export const programmeSessionType = defineType({
       title: 'Workshops / parallel slots',
       type: 'array',
       of: [{type: 'programmeWorkshop'}],
+      description:
+        'Each Action Workshop is edited entirely here: title, Workshop poster, objective, room and people. The parent session/day supplies time/date. Publish Programme to update its card and popup. Research: existing one-paper-per-slot rows use Title for the paper and Facilitators/Speakers for presenters, grouped by Room / hall (public). New schedules can use one slot per hall with ordered Research presentations. Drag rows to reorder; add or remove rows here.',
+    }),
+    defineField({
+      name: 'researchTables',
+      title: 'Research table headings and venues',
+      type: 'array',
+      of: [defineArrayMember({type: 'programmeResearchTable'})],
+      hidden: ({parent}) => parent?.type !== 'research',
+      description: 'Optional overrides for the existing research tables in this time block. Add one item per room / hall, then edit its table heading or public venue text. Drag these items to order tables. Unlisted tables keep their existing order and Session 1 / Session 2 headings. Publish Programme to apply changes.',
+      validation: (rule) => rule.custom((items) => {
+        const venues = (items ?? []).flatMap((item) => {
+          if (!item || typeof item !== 'object' || !('sourceVenue' in item) || typeof item.sourceVenue !== 'string') return []
+          return [item.sourceVenue.trim().replace(/\s+/g, ' ').toLowerCase()]
+        }).filter(Boolean)
+        return new Set(venues).size === venues.length || 'Use each room / hall only once'
+      }),
     }),
     defineField({
       name: 'breakLabel',
@@ -123,6 +182,7 @@ export const programmeSessionType = defineType({
       description:
         'Used for default venue wording when Venue line is empty (evening vs daytime defaults on the site).',
     }),
+    ...programmeHostedByFields(({parent}) => parent?.type === 'break'),
     defineField({
       name: 'venueType',
       title: 'Venue type',

@@ -39,7 +39,7 @@ Short `@`-invokable skills; each links to the matching `docs/` file:
 
 Ignore duplicate copies under `.claude/worktrees/`; treat **repo-root** files as source of truth.
 
-Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-master.mdc) (always apply). If anything here conflicts with **`AGENTS.md`**, prefer updating **`AGENTS.md`** and aligning this file and `docs/`.
+Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-master.mdc) and [`.cursor/rules/impeccable-emil.mdc`](.cursor/rules/impeccable-emil.mdc) (both always apply). Impeccable leads UI work; Emil Kowalski's globally installed skills refine motion and feel (`AGENTS.md` §6.1, `README.md` **UI craft skills**). If anything here conflicts with **`AGENTS.md`**, prefer updating **`AGENTS.md`** and aligning this file and `docs/`.
 
 ---
 
@@ -52,6 +52,7 @@ Cursor also loads [`.cursor/rules/project-master.mdc`](.cursor/rules/project-mas
 | Implementing components / TS conventions | [`docs/coding-guidelines.md`](docs/coding-guidelines.md) |
 | PR hygiene, lint/build | [`docs/code-quality.md`](docs/code-quality.md) |
 | Typography, colours, UI primitives, images | [`docs/design-system.md`](docs/design-system.md) |
+| Motion, feel, animation review or a later motion pass | [`.cursor/rules/impeccable-emil.mdc`](.cursor/rules/impeccable-emil.mdc), [`AGENTS.md`](AGENTS.md) §6.1 |
 | Perf regressions, heroes, client JS, full-site lab scores | [`docs/performance.md`](docs/performance.md) |
 | Env, Studio, running Unlighthouse | [`README.md`](README.md) |
 

@@ -1,0 +1,132 @@
+{
+  "passed": true,
+  "evidence": {
+    "pointerEntrance": {
+      "opacity": 1,
+      "duration": "0.2s, 0.2s",
+      "scale": 1,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": false,
+      "animations": []
+    },
+    "pointerExit": {
+      "opacity": 0.563593,
+      "duration": "0.15s",
+      "scale": 0.97818,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": true,
+      "animations": [
+        {
+          "duration": 150,
+          "state": "running"
+        },
+        {
+          "duration": 150,
+          "state": "running"
+        }
+      ]
+    },
+    "pointerExitPhase": {
+      "opacity": 0.0211382,
+      "duration": "0.15s",
+      "scale": 0.951057,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": true,
+      "animations": [
+        {
+          "duration": 150,
+          "state": "running"
+        },
+        {
+          "duration": 150,
+          "state": "running"
+        }
+      ]
+    },
+    "slowEntrancePhase": {
+      "opacity": 0.681869,
+      "duration": "0.2s, 0.2s",
+      "scale": 0.984093,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": false,
+      "animations": [
+        {
+          "duration": 200,
+          "state": "paused"
+        },
+        {
+          "duration": 200,
+          "state": "paused"
+        }
+      ]
+    },
+    "reopen": "Player survives the previous close fallback and retains focus",
+    "keyboardEntrance": {
+      "opacity": 1,
+      "duration": "0s",
+      "scale": 1,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": false,
+      "animations": []
+    },
+    "fallback": "Missing transitionend releases presence, scroll lock and focus within 200ms",
+    "reducedEntrance": {
+      "opacity": 0.43596,
+      "duration": "0.15s",
+      "scale": 1,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": false,
+      "animations": [
+        {
+          "duration": 150,
+          "state": "running"
+        }
+      ]
+    },
+    "reducedExit": {
+      "opacity": 0,
+      "duration": "0.15s",
+      "scale": 1,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -365.102,
+      "inert": true,
+      "animations": []
+    },
+    "desktopControls": "Fine-pointer icon nudge is 2px; keyboard focus remains still",
+    "touchPress": {
+      "opacity": 1,
+      "duration": "0.1s",
+      "scale": 0.97,
+      "background": "rgba(0, 0, 0, 0)",
+      "translateY": 0,
+      "inert": false,
+      "animations": []
+    },
+    "touchMethod": "Coarse-pointer CSS press sampled with forced :active; real taps confirm no sticky hover. Physical held-touch feel remains unverified.",
+    "mobileEntrance": {
+      "opacity": 0.992807,
+      "duration": "0.2s, 0.2s",
+      "scale": 0.99964,
+      "background": "rgb(9, 58, 72)",
+      "translateY": -214.945,
+      "inert": false,
+      "animations": [
+        {
+          "duration": 200,
+          "state": "running"
+        },
+        {
+          "duration": 200,
+          "state": "running"
+        }
+      ]
+    }
+  },
+  "errors": []
+}

@@ -7,6 +7,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  // Keep the opt-in fixture preview separate from the team's normal dev server.
+  distDir: process.env.NODE_ENV === "development" && process.env.GTP_PROGRAMME_REVIEW_MODE === "1"
+    ? ".next-gtp-review" : ".next",
   async redirects() {
     return [
       {
@@ -14,10 +17,17 @@ const nextConfig: NextConfig = {
         destination: GTP_2026_REGISTRATION_URL,
         permanent: true,
       },
+      {
+        source: "/events/gtp-2026/programmes/ai-thinkers-networking-breakfast",
+        destination: "/events/gtp-2026/programmes/artificial-intelligence-sessions",
+        permanent: true,
+      },
     ];
   },
 
   async headers() {
+    // Dev chunk filenames are not content-hashed, so immutable caching serves stale CSS/JS.
+    if (process.env.NODE_ENV !== "production") return [];
     return [
       {
         // Static assets: images, fonts, JS, CSS — cache for 1 year
@@ -70,6 +80,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/**",
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+        pathname: "/vi/**",
       },
     ],
   },

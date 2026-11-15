@@ -1,52 +1,37 @@
-import { Clock, MapPin } from "lucide-react";
+import Link from "next/link";
+import { Clock, Lock, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { buildProgrammeGoogleCalendarUrl } from "@/lib/gtp-programme-google-calendar";
 import type { GtpProgrammeCalendarDayTab } from "@/lib/gtp-programme-google-calendar";
 import { cn } from "@/lib/utils";
-import type { Session, Workshop } from "./types";
+import type { Session } from "./types";
 import { AddToGoogleCalendarLink } from "./add-to-google-calendar-link";
-import { WorkshopSubCard } from "./workshop-sub-card";
 import { SessionObjectiveBlock } from "./session-objective-block";
 import { getSessionVenueLine } from "./session-display-helpers";
+
+const ACTION_WORKSHOPS_HREF =
+  "/events/gtp-2026/programmes/action-workshops#action-workshops";
 
 export function ConcurrentBlock({
   session,
   calendarTabId,
-  onClick,
-  onWorkshopClick,
-  highlightSpeaker,
 }: {
   session: Session;
   calendarTabId: GtpProgrammeCalendarDayTab;
-  onClick?: () => void;
-  onWorkshopClick?: (w: Workshop) => void;
-  highlightSpeaker?: string;
 }) {
   const isResearch = session.type === "research";
-
-  const workshopSessions =
-    session.workshops?.filter((w) => w.title.startsWith("Workshop Session:")) ?? [];
-  const researchSessions =
-    session.workshops?.filter((w) => w.title.startsWith("Research Session:")) ?? [];
-
-  const hasBothTypes = workshopSessions.length > 0 && researchSessions.length > 0;
+  const subpageButtonLabel = session.subpageButtonLabel?.trim() || (
+    isResearch
+      ? "View the research schedule and registration"
+      : "View Action Workshops and Research Sessions"
+  );
+  const researchHref = calendarTabId === "day2" ? "/events/gtp-2026/programmes/action-workshops#day-13-research"
+    : calendarTabId === "day3" ? "/events/gtp-2026/programmes/action-workshops#day-14-research" : null;
 
   const blockGoogleCalHref = buildProgrammeGoogleCalendarUrl({
     tabId: calendarTabId,
     session,
   });
-
-  function workshopGoogleCalHref(w: Workshop): string | null {
-    const extra: string[] = [`Part of: ${session.title}`];
-    const wo = typeof w.objective === "string" ? w.objective.trim() : "";
-    if (wo) extra.push(wo);
-    return buildProgrammeGoogleCalendarUrl({
-      tabId: calendarTabId,
-      session,
-      title: w.title,
-      detailsPrefixLines: extra,
-      includeSessionObjective: false,
-    });
-  }
 
   return (
     <div
@@ -55,12 +40,7 @@ export function ConcurrentBlock({
         isResearch
           ? "border-gtp-orange/25"
           : "border-gtp-teal/20",
-        onClick &&
-          (isResearch
-            ? "cursor-pointer transition-shadow duration-200 hover:border-gtp-orange/45 hover:shadow-md"
-            : "cursor-pointer transition-shadow duration-200 hover:border-gtp-teal/50 hover:shadow-md"),
       )}
-      onClick={onClick}
     >
       {/* Header */}
       <div
@@ -94,16 +74,24 @@ export function ConcurrentBlock({
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           <span className="text-xs italic wrap-anywhere">{getSessionVenueLine(session)}</span>
         </div>
-        <span
-          className={cn(
-            "ml-auto rounded-full px-3 py-1 text-xs font-semibold",
-            isResearch
-              ? "bg-gtp-orange/15 text-gtp-orange-dark"
-              : "bg-gtp-teal/15 text-gtp-dark-teal",
-          )}
-        >
-          {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
-        </span>
+        <div className="ml-auto flex items-center gap-2">
+          <span
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-semibold",
+              isResearch
+                ? "bg-gtp-orange/15 text-gtp-orange-dark"
+                : "bg-gtp-teal/15 text-gtp-dark-teal",
+            )}
+          >
+            {isResearch ? "Parallel research track" : "Sessions running simultaneously"}
+          </span>
+          {session.closedEvent ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-gtp-dark-teal px-3 py-1 text-xs font-semibold text-white">
+              <Lock className="h-3 w-3" />
+              Closed
+            </span>
+          ) : null}
+        </div>
         {blockGoogleCalHref ? (
           <div className="flex w-full basis-full justify-end pt-1">
             <AddToGoogleCalendarLink href={blockGoogleCalHref} className="text-xs" />
@@ -119,59 +107,17 @@ export function ConcurrentBlock({
           collapsibleOnMobile
         />
 
-        {hasBothTypes ? (
-          /* Two-column layout: Workshop Sessions | Research Sessions */
-          <div className="mt-5 grid grid-cols-1 gap-6 border-l-2 border-gtp-teal/25 pl-5 md:grid-cols-2">
-            <div>
-              <h4 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-gtp-teal">
-                <span className="h-1.5 w-1.5 rounded-full bg-gtp-teal" />
-                Workshop Sessions
-              </h4>
-              <div className="space-y-3">
-                {workshopSessions.map((w) => (
-                  <WorkshopSubCard
-                    key={w.number}
-                    w={w}
-                    googleCalendarHref={workshopGoogleCalHref(w)}
-                    onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
-                    highlightSpeaker={highlightSpeaker}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <h4 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-gtp-orange">
-                <span className="h-1.5 w-1.5 rounded-full bg-gtp-orange" />
-                Research Sessions
-              </h4>
-              <div className="space-y-3">
-                {researchSessions.map((w) => (
-                  <WorkshopSubCard
-                    key={w.number}
-                    w={w}
-                    googleCalendarHref={workshopGoogleCalHref(w)}
-                    onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
-                    highlightSpeaker={highlightSpeaker}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* Single-column fallback */
-          <div className="mt-5 space-y-3 border-l-2 border-gtp-teal/25 pl-5">
-            {session.workshops?.map((w) => (
-              <WorkshopSubCard
-                key={w.number}
-                w={w}
-                googleCalendarHref={workshopGoogleCalHref(w)}
-                onSelect={onWorkshopClick ? () => onWorkshopClick(w) : undefined}
-                highlightSpeaker={highlightSpeaker}
-              />
-            ))}
+        {isResearch ? null : (
+          <div className="mt-6">
+            <Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild>
+              <Link href={ACTION_WORKSHOPS_HREF}>
+                {subpageButtonLabel}
+              </Link>
+            </Button>
           </div>
         )}
+
+        {isResearch && researchHref ? <div className="mt-6"><Button variant="gtpCta" className="h-auto whitespace-normal px-5 py-3 text-center" asChild><Link href={researchHref} onClick={(event) => event.stopPropagation()}>{subpageButtonLabel}</Link></Button></div> : null}
       </div>
     </div>
   );
