@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -430,11 +431,14 @@ function PreviewPanel({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useHydrated();
 
   const [loading, setLoading] = useState(true);
-  useEffect(() => { setLoading(true); }, [file?.id]);
+  const [previewId, setPreviewId] = useState(file?.id);
+  if (previewId !== file?.id) {
+    setPreviewId(file?.id);
+    setLoading(true);
+  }
 
   if (!file || !mounted) return null;
 

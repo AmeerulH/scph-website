@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useHydrated } from "@/hooks/useHydrated";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -19,11 +20,7 @@ export function SubmissionSuccessModal({
   email,
   onClose,
 }: SubmissionSuccessModalProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   useEffect(() => {
     if (!show) return;

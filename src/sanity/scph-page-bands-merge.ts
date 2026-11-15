@@ -293,7 +293,7 @@ export function mergeResearchRoadmap(
   const ctasCms = cms.ctas?.length ? cms.ctas : d.ctas;
   const mergedCtas =
     ctasCms?.map((c, i) => {
-      const fb = d.ctas?.[i] ?? d.ctas?.[d.ctas.length - 1]!;
+      const fb = d.ctas?.[i] ?? d.ctas?.at(-1);
       const style: NonNullable<SectionCtaLink["style"]> =
         c.style === "outline" ? "outline" : "primary";
       return {

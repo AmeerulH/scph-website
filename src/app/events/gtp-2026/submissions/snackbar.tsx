@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useHydrated } from "@/hooks/useHydrated";
 import { createPortal } from "react-dom";
 import { CheckCircle2, X } from "lucide-react";
 
@@ -13,11 +14,7 @@ interface SnackbarProps {
 }
 
 export function Snackbar({ show, message, onClose, duration }: SnackbarProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   useEffect(() => {
     if (!show || !duration) return;
