@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
+import { useHydrated } from "@/hooks/useHydrated";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
 import styles from "./route-loading.module.css";
@@ -21,11 +21,7 @@ export function FullPageLoadingOverlay({
   variant = "scph",
   label = "Loading",
 }: Props) {
-  const [mounted, setMounted] = useState(false);
-
-  useLayoutEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
 
   const node = (
     <div
